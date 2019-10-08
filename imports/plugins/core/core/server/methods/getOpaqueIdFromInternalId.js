@@ -1,6 +1,6 @@
 import { check } from "meteor/check";
+import encodeOpaqueId from "@reactioncommerce/api-utils/encodeOpaqueId.js";
 import namespaces from "@reactioncommerce/api-utils/graphql/namespaces.js";
-import { encodeOpaqueId } from "@reactioncommerce/reaction-graphql-xforms/id";
 
 /**
  * @method getOpaqueIdFromInternalId
