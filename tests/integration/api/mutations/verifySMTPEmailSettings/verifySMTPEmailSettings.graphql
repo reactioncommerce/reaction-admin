@@ -1,6 +1,0 @@
-mutation verifySMTPEmailSettings($input: VerifySMTPEmailSettingsInput!) {
-  verifySMTPEmailSettings(input: $input) {
-    clientMutationId
-    isVerified
-  }
-}

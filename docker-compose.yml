@@ -22,14 +22,13 @@ services:
       context: .
       target: meteor-dev
     command: bash -c "time meteor npm install --no-audit && node --experimental-modules ./.reaction/scripts/run.mjs"
-    depends_on:
-      - mongo
     env_file:
       - ./.env
     networks:
       default:
       api:
       auth:
+      streams:
     ports:
       - "3000:3000"
       - "9229:9229"
@@ -38,18 +37,6 @@ services:
       - reaction_meteor_local:/opt/reaction/src/.meteor/local
       - reaction_node_modules:/opt/reaction/src/node_modules # do not link node_modules in, and persist it between dc up runs
 
-  mongo:
-    image: mongo:3.6.3
-    command: mongod --oplogSize 128 --replSet rs0 --storageEngine=wiredTiger
-    networks:
-      default:
-      streams:
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-db:/data/db
-
 volumes:
-  mongo-db:
   reaction_node_modules:
   reaction_meteor_local:
