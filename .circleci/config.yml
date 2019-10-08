@@ -141,34 +141,6 @@ jobs:
               echo "No deploy for forks"
             fi
 
-  deploy-docs:
-    <<: *defaults
-    steps:
-      - checkout
-      - run:
-          name: Install AWS CLI
-          command: sudo apt-get -y -qq install awscli
-      - run:
-          name: NPM Install JSDoc
-          command: sudo npm install -g jsdoc
-      - run:
-          name: Build JSDoc files
-          command: |
-            jsdoc . \
-              --verbose \
-              --configure .reaction/jsdoc/jsdoc.json \
-              --readme .reaction/jsdoc/templates/static/README.md
-      - run:
-          name: Deploy Doc files to S3
-          command: |
-            if [[ "${API_DOC_BUCKET}" && "${API_DOC_BUCKET_REGION}" ]]; then
-              aws s3 sync /tmp/reaction-docs ${API_DOC_BUCKET} --delete --region ${API_DOC_BUCKET_REGION}
-            else
-              echo "S3 bucket configuration not found for jsdocs"
-              echo "Set API_DOC_BUCKET and API_DOC_BUCKET_REGION to build and deploy jsdocs to S3"
-              exit 1;
-            fi
-
   eslint:
     <<: *defaults
     steps:
@@ -177,25 +149,11 @@ jobs:
           keys:
             - reaction-v2-node-modules-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
             - reaction-v2-node-modules-{{ .Branch }}
-            - reaction-v2-node-modules-master
+            - reaction-v2-node-modules-trunk
       - run:
           name: Run Lint
           command: |
             npm run lint -- --quiet
-
-  graphql-lint:
-    <<: *defaults
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - reaction-v2-node-modules-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
-            - reaction-v2-node-modules-{{ .Branch }}
-            - reaction-v2-node-modules-master
-      - run:
-          name: Lint GraphQL schemas
-          command: |
-            npm run lint:gql
 
   test-unit:
     <<: *defaults
@@ -205,43 +163,10 @@ jobs:
           keys:
             - reaction-v2-node-modules-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
             - reaction-v2-node-modules-{{ .Branch }}
-            - reaction-v2-node-modules-master
+            - reaction-v2-node-modules-trunk
       - run:
           name: Run Unit Tests
           command: npm run test:unit
-
-  test-e2e:
-    <<: *defaults
-    docker:
-      - image: reactioncommerce/reaction-automation-client:latest
-    steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Run Tests
-          command: |
-            docker run -t -e URL=${STAGING_URL} reactioncommerce/reaction-automation-client:latest npm run-script chrome
-
-  test-metrics:
-    <<: *defaults
-    steps:
-      - checkout
-      - run:
-          name: California
-          command: |
-            .circleci/bin/calibre-deploy.sh ${STAGING_URL} California
-      - run:
-          name: North Virginia
-          command: |
-            .circleci/bin/calibre-deploy.sh ${STAGING_URL} NorthVirginia
-      - run:
-          name: London
-          command: |
-            .circleci/bin/calibre-deploy.sh ${STAGING_URL} London
-      - run:
-          name: Frankfurt
-          command: |
-            .circleci/bin/calibre-deploy.sh ${STAGING_URL} Frankfurt
 
   dockerfile-lint:
     <<: *defaults
@@ -268,19 +193,9 @@ workflows:
       - eslint:
           requires:
             - build
-      - graphql-lint:
-          requires:
-            - build
-      - docker-build:
-          context: reaction-build-read
-      - docker-push:
-          context: reaction-publish-docker
-          requires:
-            - docker-build
-      - deploy-docs:
-          requires:
-            - test-unit
-            - docker-build
-          filters:
-            branches:
-              only: /^master$/
+      # - docker-build:
+      #     context: reaction-build-read
+      # - docker-push:
+      #     context: reaction-publish-docker
+      #     requires:
+      #       - docker-build
