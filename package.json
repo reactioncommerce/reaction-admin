@@ -189,12 +189,10 @@
     "eslint-plugin-react": "7.8.2",
     "eslint-plugin-react-hooks": "^1.7.0",
     "fs-extra": "^7.0.1",
-    "graphql-schema-linter": "^0.2.0",
     "jest": "^24.8.0",
     "jest-junit": "^6.4.0",
     "js-yaml": "^3.13.1",
     "jsdoc": "^3.6.3",
-    "mongodb-memory-server": "2.7.3",
     "nock": "^9.6.1",
     "nodemon": "1.18.9",
     "react-addons-test-utils": "15.6.2",
@@ -211,7 +209,6 @@
     }
   },
   "scripts": {
-    "devserver": "ROOT_URL=http://localhost:3030 MONGO_URL=mongodb://localhost:27017/reaction NODE_ENV=reaction-node BABEL_DISABLE_CACHE=1 nodemon ./imports/node-app/index.js",
     "dev": "node --experimental-modules ./.reaction/scripts/run.mjs",
     "inspect": "node --experimental-modules ./.reaction/scripts/run.mjs --inspect",
     "inspect-brk": "node --experimental-modules  ./.reaction/scripts/run.mjs --inspect-brk",
@@ -219,9 +216,8 @@
     "inspect-brk-docker": "node --experimental-modules  ./.reaction/scripts/run.mjs --inspect-brk=0.0.0.0:9229",
     "lint": "eslint .",
     "lint:errors": "eslint . --quiet",
-    "lint:gql": "graphql-schema-linter **/schemas/*.graphql",
     "lint:warnings": "eslint --max-warnings=0",
-    "test": "npm run test:unit && npm run test:integration && npm run test:app",
+    "test": "npm run test:unit && npm run test:app",
     "test:app": "MONGO_URL='' SKIP_FIXTURES=true TEST_CLIENT=0 meteor test --no-release-check --once --full-app --driver-package meteortesting:mocha",
     "test:app:watch": "MONGO_URL='' SKIP_FIXTURES=true TEST_CLIENT=0 TEST_WATCH=1 meteor test --no-release-check --full-app --driver-package meteortesting:mocha",
     "test:unit": "NODE_ENV=jesttest BABEL_DISABLE_CACHE=1 REACTION_LOG_LEVEL=ERROR jest --maxWorkers=4 --testPathIgnorePatterns /tests/integration/",
@@ -267,59 +263,6 @@
       ]
     ],
     "env": {
-      "reaction-node": {
-        "presets": [
-          [
-            "@babel/env",
-            {
-              "targets": {
-                "node": "current"
-              }
-            }
-          ]
-        ],
-        "plugins": [
-          "babel-plugin-inline-import",
-          [
-            "@babel/plugin-proposal-decorators",
-            {
-              "legacy": true
-            }
-          ],
-          "@babel/plugin-proposal-function-sent",
-          "@babel/plugin-proposal-export-namespace-from",
-          "@babel/plugin-proposal-numeric-separator",
-          "@babel/plugin-proposal-throw-expressions",
-          "@babel/plugin-syntax-dynamic-import",
-          "@babel/plugin-syntax-import-meta",
-          [
-            "@babel/plugin-proposal-class-properties",
-            {
-              "loose": false
-            }
-          ],
-          "@babel/plugin-proposal-json-strings",
-          [
-            "module-resolver",
-            {
-              "root": [
-                "./"
-              ],
-              "alias": {
-                "@reactioncommerce/api-utils": "./imports/utils",
-                "@reactioncommerce/reaction-collections": "./imports/plugins/core/collections",
-                "@reactioncommerce/reaction-components": "./imports/plugins/core/components/lib",
-                "@reactioncommerce/reaction-graphql-utils": "./imports/plugins/core/graphql/server/no-meteor/util",
-                "@reactioncommerce/reaction-graphql-xforms": "./imports/plugins/core/graphql/server/no-meteor/xforms",
-                "@reactioncommerce/reaction-router": "./imports/plugins/core/router/lib",
-                "@reactioncommerce/reaction-ui": "./imports/plugins/core/ui/client/components",
-                "meteor": "./imports/node-app/mockmeteor",
-                "underscore": "lodash"
-              }
-            }
-          ]
-        ]
-      },
       "jesttest": {
         "presets": [
           [
@@ -370,7 +313,6 @@
                 "@reactioncommerce/reaction-graphql-xforms": "./imports/plugins/core/graphql/server/no-meteor/xforms",
                 "@reactioncommerce/reaction-router": "./imports/plugins/core/router/lib",
                 "@reactioncommerce/reaction-ui": "./imports/plugins/core/ui/client/components",
-                "meteor": "./imports/test-utils/__mocks__/meteor",
                 "underscore": "lodash"
               }
             }
@@ -400,37 +342,5 @@
   },
   "prettier": {
     "arrowParens": "always"
-  },
-  "nodemonConfig": {
-    "delay": "2000",
-    "execMap": {
-      "js": "babel-node"
-    },
-    "ext": "js,json,graphql",
-    "watch": [
-      "imports"
-    ]
-  },
-  "graphql-schema-linter": {
-    "customRulePaths": [
-      ".reaction/graphql-linter/rules/*.js"
-    ],
-    "rules": [
-      "arguments-have-descriptions",
-      "defined-types-are-used",
-      "deprecations-have-a-reason",
-      "descriptions-are-capitalized",
-      "enum-values-have-descriptions",
-      "enum-values-sorted-alphabetically",
-      "fields-have-descriptions",
-      "input-object-fields-sorted-alphabetically",
-      "input-object-values-have-descriptions",
-      "relay-connection-arguments-spec-custom",
-      "relay-connection-types-spec",
-      "relay-page-info-spec",
-      "type-fields-sorted-alphabetically",
-      "types-are-capitalized",
-      "types-have-descriptions"
-    ]
   }
 }
