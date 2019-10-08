@@ -6,17 +6,17 @@
   "directories": {
     "test": "tests"
   },
-  "homepage": "https://github.com/reactioncommerce/reaction",
-  "url": "https://github.com/reactioncommerce/reaction",
+  "homepage": "https://github.com/reactioncommerce/reaction-admin",
+  "url": "https://github.com/reactioncommerce/reaction-admin",
   "email": "reaction@reactioncommerce.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/reactioncommerce/reaction.git"
+    "url": "https://github.com/reactioncommerce/reaction-admin.git"
   },
   "author": "Reaction Commerce <hello@reactioncommerce.com>",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/reactioncommerce/reaction/issues"
+    "url": "https://github.com/reactioncommerce/reaction-admin/issues"
   },
   "dependencies": {
     "@apollo/react-testing": "^3.0.0",
