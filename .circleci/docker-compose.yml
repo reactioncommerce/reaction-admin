@@ -7,7 +7,7 @@ reaction:
   links:
     - mongo
   ports:
-    - "3000:3000"
+    - "4040:4040"
   environment:
     ROOT_URL: "http://localhost"
     MONGO_URL: "mongodb://mongo:27017/reaction"

@@ -12,7 +12,7 @@ function run() {
   const inspect = process.argv
     .filter((arg) => arg.startsWith("--inspect"))
     .join(" ");
-  let cmd = `meteor run --no-lint --no-release-check --raw-logs ${inspect}`;
+  let cmd = `meteor run --port ${process.env.PORT || 3000} --no-lint --no-release-check --raw-logs ${inspect}`;
 
   Log.info(`Running command: ${cmd}`);
   cmd = `REACTION_METEOR_APP_COMMAND_START_TIME=${Date.now()} ${cmd}`;

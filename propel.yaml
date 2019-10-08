@@ -17,8 +17,8 @@ services:
       cpu: 500
       memory: 1800
       port_mappings:
-      - container_port: 3000
-        host_port: 3000
+      - container_port: 4040
+        host_port: 4040
       image: reactioncommerce/reaction
       image_tag: release-2.0.0-rc.7
       env_params:

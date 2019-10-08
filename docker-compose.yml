@@ -30,7 +30,7 @@ services:
       auth:
       streams:
     ports:
-      - "3000:3000"
+      - "4040:4040"
       - "9229:9229"
     volumes:
       - .:/opt/reaction/src:cached
