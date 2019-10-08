@@ -4,7 +4,7 @@ import { Meteor } from "meteor/meteor";
 import { Accounts, Shops } from "/lib/collections";
 import * as Schemas from "/lib/collections/schemas";
 import { Reaction } from "/lib/api";
-import appEvents from "/imports/node-app/core/util/appEvents";
+import appEvents from "/imports/temp-utils/appEvents.js";
 import ReactionError from "@reactioncommerce/reaction-error";
 import getSlug from "/imports/plugins/core/core/server/Reaction/getSlug";
 

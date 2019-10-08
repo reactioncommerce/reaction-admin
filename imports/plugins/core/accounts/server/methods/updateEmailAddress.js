@@ -1,7 +1,7 @@
 import { Accounts as MeteorAccounts } from "meteor/accounts-base";
 import { check } from "meteor/check";
 import Reaction from "/imports/plugins/core/core/server/Reaction";
-import appEvents from "/imports/node-app/core/util/appEvents";
+import appEvents from "/imports/temp-utils/appEvents.js";
 
 /**
  * @name accounts/updateEmailAddress

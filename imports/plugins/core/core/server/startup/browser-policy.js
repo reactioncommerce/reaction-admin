@@ -1,7 +1,6 @@
 import { BrowserPolicy } from "meteor/browser-policy-common";
 import { WebApp } from "meteor/webapp";
 import { Reaction } from "/lib/api";
-import config from "/imports/node-app/core/config";
 
 /**
  * Set headers for Reaction CDN
@@ -24,12 +23,6 @@ if (process.env.NODE_ENV === "development") {
   BrowserPolicy.framing.allowAll();
   // Allow images from anywhere http
   BrowserPolicy.content.allowImageOrigin("http://*");
-}
-
-// GraphQL Playground
-if (config.GRAPHQL_PLAYGROUND_ENABLED) {
-  BrowserPolicy.content.allowOriginForAll("graphcool-playground.netlify.com");
-  BrowserPolicy.content.allowOriginForAll("cdn.jsdelivr.net");
 }
 
 // get current hostname of app

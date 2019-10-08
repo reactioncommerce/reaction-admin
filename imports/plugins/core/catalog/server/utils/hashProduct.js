@@ -1,8 +1,4 @@
 import hash from "object-hash";
-import {
-  customPublishedProductFields,
-  customPublishedProductVariantFields
-} from "/imports/node-app/core-services/catalog/registration.js"; // TODO need to separate from this Node API dependency
 import getCatalogProductMedia from "./getCatalogProductMedia.js";
 import getTopLevelProduct from "./getTopLevelProduct.js";
 
@@ -69,9 +65,6 @@ export async function createProductHash(product, collections) {
   productFieldsThatNeedPublishing.forEach((field) => {
     productForHashing[field] = product[field];
   });
-  customPublishedProductFields.forEach((field) => {
-    productForHashing[field] = product[field];
-  });
 
   // Track changes to all related media, too
   productForHashing.media = await getCatalogProductMedia(product._id, collections);
@@ -80,9 +73,6 @@ export async function createProductHash(product, collections) {
   productForHashing.variants = variants.map((variant) => {
     const variantForHashing = {};
     variantFieldsThatNeedPublishing.forEach((field) => {
-      variantForHashing[field] = variant[field];
-    });
-    customPublishedProductVariantFields.forEach((field) => {
       variantForHashing[field] = variant[field];
     });
     return variantForHashing;

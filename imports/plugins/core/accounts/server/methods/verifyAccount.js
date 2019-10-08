@@ -1,6 +1,6 @@
 import { Meteor } from "meteor/meteor";
 import { Accounts } from "/lib/collections";
-import appEvents from "/imports/node-app/core/util/appEvents";
+import appEvents from "/imports/temp-utils/appEvents.js";
 
 /**
  * @name accounts/verifyAccount
