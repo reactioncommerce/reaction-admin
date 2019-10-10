@@ -2,11 +2,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Random from "@reactioncommerce/random";
 import { Components, registerComponent } from "@reactioncommerce/reaction-components";
-import { Router } from "/client/api";
+import { withRouter } from "react-router-dom";
 
 class Login extends Component {
   static propTypes = {
     credentials: PropTypes.object,
+    location: PropTypes.shape({
+      pathname: PropTypes.string.isRequired
+    }),
     loginFormCurrentView: PropTypes.string,
     uniqueId: PropTypes.string
   }
@@ -20,8 +23,8 @@ class Login extends Component {
   constructor(props) {
     super(props);
 
-    const currentRoute = Router.current().route;
-    const isPasswordReset = ["reset-password", "account/enroll"].includes(currentRoute.name);
+    const { pathname } = props.location;
+    const isPasswordReset = pathname.includes("reset-password") || pathname.includes("account/enroll");
 
     this.state = {
       currentView: isPasswordReset ? "loginFormUpdatePasswordView" : props.loginFormCurrentView
@@ -57,8 +60,8 @@ class Login extends Component {
   }
 
   render() {
-    const currentRoute = Router.current().route;
-    const isOauthFlow = currentRoute.options && currentRoute.options.meta && currentRoute.options.meta.oauthLoginFlow;
+    const { location } = this.props;
+    const isOauthFlow = location.pathname.startsWith("/account/login");
     const idpFormClass = isOauthFlow ? "idp-form" : "";
     const { currentView } = this.state;
     if (currentView === "loginFormSignInView" || currentView === "loginFormSignUpView" || currentView === "loginFormUpdatePasswordView") {
@@ -98,6 +101,6 @@ class Login extends Component {
   }
 }
 
-registerComponent("Login", Login);
+registerComponent("Login", withRouter(Login));
 
-export default Login;
+export default withRouter(Login);
