@@ -1,4 +1,7 @@
-export { default as OAuthFormContainer } from "./containers/auth";
+import OAuthFormContainer from "./containers/auth";
+import { registerRoute } from "/imports/client/ui";
 
-import "./templates.html";
-import "./templates.js";
+registerRoute({
+  path: "/account/login",
+  mainComponent: OAuthFormContainer
+});
