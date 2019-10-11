@@ -11,6 +11,7 @@ import { Reaction } from "/client/api";
 import Logger from "/client/modules/logger";
 import { Shops } from "/lib/collections";
 import Schemas from "@reactioncommerce/schemas";
+import { i18nResourceUrl, i18nNamespaceUrl } from "/config";
 import i18next, { getLabelsFor, getValidationErrorMessages, i18nextDep } from "./main";
 
 const configuredI18next = i18next
@@ -37,7 +38,7 @@ const configuredI18next = i18next
 async function initializeI18n(fallbackLng) {
   // Reaction does not have a predefined list of namespaces. Any API plugin can
   // add any namespaces. So we must first get the list of namespaces from the API.
-  const namespaceResponse = await fetch("/locales/namespaces.json");
+  const namespaceResponse = await fetch(i18nNamespaceUrl);
   const allTranslationNamespaces = await namespaceResponse.json();
 
   try {
@@ -46,7 +47,7 @@ async function initializeI18n(fallbackLng) {
         backend: i18nextFetch,
         backendOption: {
           allowMultiLoading: true,
-          loadPath: "/locales/resources.json?lng={{lng}}&ns={{ns}}"
+          loadPath: i18nResourceUrl
         }
       },
       debug: false,
