@@ -4,10 +4,7 @@ import { HttpLink } from "apollo-link-http";
 import { WebSocketLink } from "apollo-link-ws";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { getOperationAST } from "graphql";
-import { Reaction } from "/client/api";
-
-const httpUrl = Reaction.absoluteUrl("graphql-beta");
-const wsUrl = httpUrl.replace("http", "ws");
+import { graphQlApiUrl, graphQlWebSocketUrl } from "/config";
 
 export const meteorAccountsLink = new ApolloLink((operation, forward) => {
   const token = localStorage.getItem("Meteor.loginToken");
@@ -27,7 +24,7 @@ const link = ApolloLink.split(
     return !!operationAST && operationAST.operation === "subscription";
   },
   new WebSocketLink({
-    uri: wsUrl,
+    uri: graphQlWebSocketUrl,
     options: {
       reconnect: true, // auto-reconnect
       connectionParams: {
@@ -35,7 +32,7 @@ const link = ApolloLink.split(
       }
     }
   }),
-  meteorAccountsLink.concat(new HttpLink({ uri: httpUrl }))
+  meteorAccountsLink.concat(new HttpLink({ uri: graphQlApiUrl }))
 );
 
 /**
