@@ -17,7 +17,7 @@ networks:
 
 services:
 
-  reaction:
+  reaction-admin:
     build:
       context: .
       target: meteor-dev
