@@ -15,8 +15,9 @@ export default (Component) => (
     }
 
     handleSetNavigationTree = (data) => {
-      const { navigationTreeById: { draftItems } } = data;
-      this.props.onSetNavigationTree(draftItems);
+      if (data && data.navigationTreeById && data.navigationTreeById.draftItems) {
+        this.props.onSetNavigationTree(data.navigationTreeById.draftItems);
+      }
     }
 
     render() {
