@@ -16,8 +16,9 @@ import Drawer from "@material-ui/core/Drawer";
 import withStyles from "@material-ui/core/styles/withStyles";
 import SettingsIcon from "mdi-material-ui/Settings";
 import CloseIcon from "mdi-material-ui/Close";
-import ShopLogoWithData from "../ShopLogoWithData";
 import { Translation } from "/imports/plugins/core/ui/client/components";
+import useCurrentShopId from "../../hooks/useCurrentShopId";
+import ShopLogoWithData from "../ShopLogoWithData";
 
 const activeClassName = "nav-item-active";
 
@@ -106,6 +107,8 @@ function Sidebar(props) {
     routes
   } = props;
 
+  const [currentShopId] = useCurrentShopId();
+
   const primaryRoutes = routes.filter(({ isNavigationLink, isSetting }) => isNavigationLink && !isSetting).sort(routeSort);
   const settingRoutes = routes.filter(({ isNavigationLink, isSetting }) => isNavigationLink && isSetting).sort(routeSort);
 
@@ -129,24 +132,9 @@ function Sidebar(props) {
     };
   }
 
-  return (
-    <Drawer {...drawerProps}>
-      <AppBar
-        color="secondary"
-        elevation={0}
-        position="sticky"
-      >
-        <Toolbar className={classes.toolbar}>
-          <ShopLogoWithData className={classes.shopLogo} shouldShowShopName size={32} />
-
-          <Hidden mdUp>
-            <Fab classes={{ root: classes.closeButton }} onClick={onDrawerClose} size="small">
-              <CloseIcon />
-            </Fab>
-          </Hidden>
-
-        </Toolbar>
-      </AppBar>
+  let list;
+  if (currentShopId) {
+    list = (
       <List disablePadding>
         {primaryRoutes.map((route) => (
           <NavLink
@@ -220,6 +208,28 @@ function Sidebar(props) {
           ))}
         </Collapse>
       </List>
+    );
+  }
+
+  return (
+    <Drawer {...drawerProps}>
+      <AppBar
+        color="secondary"
+        elevation={0}
+        position="sticky"
+      >
+        <Toolbar className={classes.toolbar}>
+          <ShopLogoWithData className={classes.shopLogo} shouldShowShopName size={32} />
+
+          <Hidden mdUp>
+            <Fab classes={{ root: classes.closeButton }} onClick={onDrawerClose} size="small">
+              <CloseIcon />
+            </Fab>
+          </Hidden>
+
+        </Toolbar>
+      </AppBar>
+      {list}
     </Drawer>
   );
 }

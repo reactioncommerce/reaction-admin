@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import { compose } from "recompose";
 import { useMutation } from "@apollo/react-hooks";
+import CountryOptions from "@reactioncommerce/api-utils/CountryOptions.js";
 import { composeWithTracker } from "@reactioncommerce/reaction-components";
 import ReactionError from "@reactioncommerce/reaction-error";
 import { Catalog, ReactionProduct } from "/lib/api";
 import { Products } from "/lib/collections";
-import { Countries } from "/client/collections";
 import { Reaction, formatPriceString, i18next } from "/client/api";
 import { Media } from "/imports/plugins/core/files/client";
 import { getVariantIds } from "/lib/selectors/variants";
@@ -165,7 +165,7 @@ function composer(props, onData) {
   }
 
   onData(null, {
-    countries: Countries.find({}).fetch(),
+    countries: CountryOptions,
     editFocus: Reaction.state.get("edit/focus"),
     isAtMaxDepth: variant && variant.ancestors.length === 2,
     productId,

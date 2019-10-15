@@ -3,8 +3,8 @@ import { $ } from "meteor/jquery";
 import { Template } from "meteor/templating";
 import { ReactiveDict } from "meteor/reactive-dict";
 import { AutoForm } from "meteor/aldeed:autoform";
+import CountryOptions from "@reactioncommerce/api-utils/CountryOptions.js";
 import { Shops } from "/lib/collections";
-import { Countries } from "/client/collections";
 import { Taxes } from "../../lib/collections";
 import { i18next } from "/client/api";
 import { Taxes as TaxSchema } from "../../lib/collections/schemas";
@@ -123,7 +123,7 @@ Template.customTaxRates.helpers({
   },
   // list of countries for tax input
   countryOptions() {
-    return Countries.find().fetch();
+    return CountryOptions;
   },
   statesForCountry() {
     const shop = Shops.findOne();

@@ -27,7 +27,7 @@ function isOwnerOfProfile() {
  */
 function getTargetAccount() {
   const targetUserId = Reaction.Router.getQueryParam("userId") || Reaction.getUserId();
-  const account = Collections.Accounts.findOne(targetUserId);
+  const account = Collections.Accounts.findOne({ userId: targetUserId });
 
   return account;
 }
@@ -52,7 +52,7 @@ Template.accountProfile.helpers({
       // is viewing his/her own profile.
       return true;
     }
-    const targetUser = Collections.Accounts.findOne(targetUserId);
+    const targetUser = Collections.Accounts.findOne({ userId: targetUserId });
     return targetUser !== undefined;
   },
 
@@ -89,7 +89,7 @@ Template.accountProfile.helpers({
    * @ignore
    */
   ReactionAvatar() {
-    const account = Collections.Accounts.findOne({ _id: Reaction.getUserId() });
+    const account = Collections.Accounts.findOne({ userId: Reaction.getUserId() });
     if (account && account.profile && account.profile.picture) {
       const { picture } = account.profile;
       return {
@@ -112,22 +112,16 @@ Template.accountProfile.helpers({
    * @ignore
    */
   displayName() {
-    if (Reaction.Subscriptions && Reaction.Subscriptions.Account && Reaction.Subscriptions.Account.ready()) {
-      const account = getTargetAccount();
+    const account = getTargetAccount();
 
-      if (account) {
-        if (account.name) {
-          return account.name;
-        } else if (account.username) {
-          return account.username;
-        } else if (account.profile && account.profile.name) {
-          return account.profile.name;
-        }
+    if (account) {
+      if (account.name) {
+        return account.name;
+      } else if (account.username) {
+        return account.username;
+      } else if (account.profile && account.profile.name) {
+        return account.profile.name;
       }
-    }
-
-    if (Reaction.hasPermission("account/profile")) {
-      return i18next.t("accountsUI.guest", { defaultValue: "Guest" });
     }
 
     return null;
@@ -141,35 +135,13 @@ Template.accountProfile.helpers({
    * @ignore
    */
   displayEmail() {
-    if (Reaction.Subscriptions && Reaction.Subscriptions.Account && Reaction.Subscriptions.Account.ready()) {
-      const account = getTargetAccount();
+    const account = getTargetAccount();
 
-      if (account && Array.isArray(account.emails)) {
-        const defaultEmail = account.emails.find((email) => email.provides === "default");
-        return (defaultEmail && defaultEmail.address) || account.emails[0].address;
-      }
+    if (account && Array.isArray(account.emails)) {
+      const defaultEmail = account.emails.find((email) => email.provides === "default");
+      return (defaultEmail && defaultEmail.address) || account.emails[0].address;
     }
 
     return null;
-  },
-
-  /**
-   * @method showMerchantSignup
-   * @summary determines whether or not to show the button for signing up
-   * as a merchant/seller.
-   * @since 1.5.0
-   * @returns {Boolean} - true if the merchant signup button is to be shown, and false if otherwise.
-   * @ignore
-   */
-  showMerchantSignup() {
-    if (Reaction.Subscriptions && Reaction.Subscriptions.Account && Reaction.Subscriptions.Account.ready()) {
-      const account = Collections.Accounts.findOne({ _id: Reaction.getUserId() });
-      const marketplaceEnabled = Reaction.marketplace && Reaction.marketplace.enabled === true;
-      const allowMerchantSignup = Reaction.marketplace && Reaction.marketplace.allowMerchantSignup === true;
-      // A user has the primaryShopId until a shop is created for them.
-      const userHasShop = account.shopId !== Reaction.getPrimaryShopId();
-      return marketplaceEnabled && allowMerchantSignup && !userHasShop;
-    }
-    return false;
   }
 });

@@ -12,6 +12,7 @@ import StorefrontUrls from "./components/StorefrontUrls";
 
 import "./components/shopBrandImageOption";
 import "./components/ShopBrandMediaManager";
+import "./containers/CreateFirstShopForm.js";
 
 import "./templates/packages/grid/grid.html";
 import "./templates/packages/grid/grid.js";

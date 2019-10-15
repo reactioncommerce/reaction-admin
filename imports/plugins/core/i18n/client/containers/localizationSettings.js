@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { compose } from "recompose";
+import CountryOptions from "@reactioncommerce/api-utils/CountryOptions.js";
+import CurrencyOptions from "@reactioncommerce/api-utils/CurrencyOptions.js";
+import LanguageOptions from "@reactioncommerce/api-utils/LanguageOptions.js";
 import { registerComponent, composeWithTracker, withMomentTimezone } from "@reactioncommerce/reaction-components";
 import { Meteor } from "meteor/meteor";
 import { Reaction, i18next } from "/client/api";
-import { Countries } from "/client/collections";
 import { Shops } from "/lib/collections";
 import { convertWeight, convertLength } from "/lib/api";
 import LocalizationSettings from "../components/localizationSettings";
@@ -21,24 +23,6 @@ function methodAlertCallback(error) {
 const wrapComponent = (Comp) => (
   class LocalizationSettingsContainer extends Component {
     static propTypes = LocalizationSettings.propTypes
-
-    handleUpdateLanguageConfiguration = (event, isChecked, name, callback) => {
-      const language = this.props.languages.find((lang) => lang.value === name);
-
-      if (language) {
-        Meteor.call("shop/updateLanguageConfiguration", language.value, isChecked, (error) => {
-          methodAlertCallback(error);
-          if (callback) callback(error);
-        });
-      }
-    }
-
-    handleUpdateCurrencyConfiguration = (event, isChecked, name, callback) => {
-      Meteor.call("shop/updateCurrencyConfiguration", name, isChecked, (error) => {
-        methodAlertCallback(error);
-        if (callback) callback(error);
-      });
-    }
 
     handleSubmit = (doc) => {
       const shop = Shops.findOne({
@@ -67,22 +51,10 @@ const wrapComponent = (Comp) => (
       });
     }
 
-    handleEnableAllLanguages = (isEnabled) => {
-      Meteor.call("shop/updateLanguageConfiguration", "all", isEnabled, methodAlertCallback);
-    }
-
-    handleEnableAllCurrencies = (isEnabled) => {
-      Meteor.call("shop/updateCurrencyConfiguration", "all", isEnabled, methodAlertCallback);
-    }
-
     render() {
       return (
         <Comp
           {...this.props}
-          onEnableAllCurrencies={this.handleEnableAllCurrencies}
-          onEnableAllLanguages={this.handleEnableAllLanguages}
-          onUpdateCurrencyConfiguration={this.handleUpdateCurrencyConfiguration}
-          onUpdateLanguageConfiguration={this.handleUpdateLanguageConfiguration}
           onUpdateLocalization={this.handleSubmit}
         />
       );
@@ -97,51 +69,9 @@ const wrapComponent = (Comp) => (
  * @returns {undefined}
  */
 function composer(props, onData) {
-  const languages = [];
   const shop = Shops.findOne();
-  const countries = Countries.find().fetch();
 
-  if (typeof shop === "object" && shop.languages) {
-    for (const language of shop.languages) {
-      const i18nKey = `languages.${language.label.toLowerCase()}`;
-      languages.push({
-        label: language.label,
-        value: language.i18n,
-        enabled: (language.i18n === shop.language || language.enabled),
-        i18nKey
-      });
-    }
-  }
-
-  const { currencies } = shop;
-  const currencyList = [];
-  const currencyOptions = [];
-  for (const currency in currencies) {
-    if ({}.hasOwnProperty.call(currencies, currency)) {
-      if (currency === "updatedAt") {
-        continue;
-      }
-
-      const structure = currencies[currency];
-      const label = `${currency}  |  ${structure.symbol}  |  ${structure.format}`;
-
-      currencyList.push({
-        name: currency,
-        label,
-        enabled: (structure.enabled || currency === shop.currency)
-      });
-
-      if (structure.enabled || currency === shop.currency) {
-        currencyOptions.push({
-          label,
-          value: currency
-        });
-      }
-    }
-  }
-
-
-  const { unitsOfMeasure } = Shops.findOne();
+  const { unitsOfMeasure } = shop;
   const uomOptions = [];
   if (Array.isArray(unitsOfMeasure)) {
     for (const measure of unitsOfMeasure) {
@@ -182,11 +112,9 @@ function composer(props, onData) {
   onData(null, {
     preferences: {},
     shop,
-    languages,
-    currencies: currencyList,
-    enabledLanguages: languages.filter((language) => (language.enabled || language.value === shop.language)),
-    countryOptions: countries,
-    currencyOptions,
+    languages: LanguageOptions,
+    countryOptions: CountryOptions,
+    currencyOptions: CurrencyOptions,
     uomOptions,
     uolOptions,
     timezoneOptions

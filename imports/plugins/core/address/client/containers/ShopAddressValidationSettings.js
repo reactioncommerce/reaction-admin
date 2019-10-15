@@ -1,10 +1,10 @@
 import { get, sortBy } from "lodash";
 import { compose, withProps } from "recompose";
+import CountryOptions from "@reactioncommerce/api-utils/CountryOptions.js";
 import { registerComponent, composeWithTracker } from "@reactioncommerce/reaction-components";
 import Random from "@reactioncommerce/random";
 import { Meteor } from "meteor/meteor";
 import { Reaction } from "/client/api";
-import { Countries } from "/client/collections";
 import Logger from "/client/modules/logger";
 import { Packages } from "/lib/collections";
 import ShopAddressValidationSettings from "../components/ShopAddressValidationSettings";
@@ -92,7 +92,7 @@ const composer = (props, onData) => {
   onData(null, {
     addressValidationServices,
     enabledServices,
-    countryOptions: Countries.find().fetch()
+    countryOptions: CountryOptions
   });
 };
 
