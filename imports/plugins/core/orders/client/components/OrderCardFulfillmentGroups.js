@@ -10,6 +10,7 @@ import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import Typography from "@material-ui/core/Typography";
 import Address from "@reactioncommerce/components/Address/v1";
+import { withRouter } from "react-router-dom";
 import { i18next, Reaction } from "/client/api";
 import ConfirmButton from "/imports/client/ui/components/ConfirmButton";
 import cancelOrderItemMutation from "../graphql/mutations/cancelOrderItem";
@@ -43,6 +44,9 @@ const styles = (theme) => ({
 class OrderCardFulfillmentGroups extends Component {
   static propTypes = {
     classes: PropTypes.object,
+    history: PropTypes.shape({
+      push: PropTypes.func
+    }),
     order: PropTypes.shape({
       _id: PropTypes.string,
       fulfillmentGroups: PropTypes.arrayOf(PropTypes.shape({
@@ -80,7 +84,7 @@ class OrderCardFulfillmentGroups extends Component {
   }
 
   handlePrintShippingLabel(fulfillmentGroup) {
-    return Reaction.Router.go(fulfillmentGroup.shippingLabelUrl);
+    return this.props.history.push(fulfillmentGroup.shippingLabelUrl);
   }
 
   renderCancelFulfillmentGroupButton = (fulfillmentGroup) => {
@@ -246,4 +250,4 @@ class OrderCardFulfillmentGroups extends Component {
   }
 }
 
-export default withStyles(styles, { name: "RuiOrderCardFulfillmentGroups" })(OrderCardFulfillmentGroups);
+export default withStyles(styles, { name: "RuiOrderCardFulfillmentGroups" })(withRouter(OrderCardFulfillmentGroups));
