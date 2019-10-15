@@ -5,14 +5,15 @@
  */
 
 /**
- * i18next translation resource url
+ * Storefront homepage url (optional)
+ * This is the fallback value if it's not set in the API
  */
-export const i18nResourceUrl = "http://localhost:3000/locales/resources.json?lng={{lng}}&ns={{ns}}";
+export const storefrontHomeUrl = "http://localhost:4000";
 
 /**
- * i18next translation namespace url
+ * i18next translation resource url
  */
-export const i18nNamespaceUrl = "http://localhost:3000/namespaces.json";
+export const i18nBaseUrl = "http://localhost:3000";
 
 /**
  * Reaction API url
@@ -20,6 +21,6 @@ export const i18nNamespaceUrl = "http://localhost:3000/namespaces.json";
 export const graphQlApiUrl = "http://localhost:3000/graphql-beta";
 
 /**
- * Reaction API websocket url for GraphQL subscriptions
+ * Reaction API websocket url for GraphQL subscriptions (optional)
  */
 export const graphQlWebSocketUrl = "ws://localhost:3000/graphql-beta";
