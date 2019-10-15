@@ -1,72 +1,72 @@
 export default [
   {
     label: "العربية",
-    i18n: "ar"
+    value: "ar"
   }, {
     label: "Български",
-    i18n: "bg"
+    value: "bg"
   }, {
     label: "中文(简体)",
-    i18n: "zh"
+    value: "zh"
   }, {
     label: "České",
-    i18n: "cs"
+    value: "cs"
   }, {
     label: "Deutsch",
-    i18n: "de"
+    value: "de"
   }, {
     label: "English",
-    i18n: "en"
+    value: "en"
   }, {
     label: "Ελληνικά",
-    i18n: "el"
+    value: "el"
   }, {
     label: "Español",
-    i18n: "es"
+    value: "es"
   }, {
     label: "Français",
-    i18n: "fr"
+    value: "fr"
   }, {
     label: "עברית",
-    i18n: "he"
+    value: "he"
   }, {
     label: "Hrvatski",
-    i18n: "hr"
+    value: "hr"
   }, {
     label: "မြန်မာဘာသာ",
-    i18n: "my"
+    value: "my"
   }, {
     label: "Italiano",
-    i18n: "it"
+    value: "it"
   }, {
     label: "Nederlands",
-    i18n: "nl"
+    value: "nl"
   }, {
     label: "Norsk bokmål",
-    i18n: "nb"
+    value: "nb"
   }, {
     label: "Polski",
-    i18n: "pl"
+    value: "pl"
   }, {
     label: "Português",
-    i18n: "pt"
+    value: "pt"
   }, {
     label: "Русский",
-    i18n: "ru"
+    value: "ru"
   }, {
     label: "Română",
-    i18n: "ro"
+    value: "ro"
   }, {
     label: "Slovenščina",
-    i18n: "sl"
+    value: "sl"
   }, {
     label: "Svenska",
-    i18n: "sv"
+    value: "sv"
   }, {
     label: "Türkçe",
-    i18n: "tr"
+    value: "tr"
   }, {
     label: "tiếng Việt",
-    i18n: "vi"
+    value: "vi"
   }
 ];

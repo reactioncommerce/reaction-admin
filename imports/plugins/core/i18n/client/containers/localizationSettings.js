@@ -2,23 +2,13 @@ import React, { Component } from "react";
 import { compose } from "recompose";
 import CountryOptions from "@reactioncommerce/api-utils/CountryOptions.js";
 import CurrencyOptions from "@reactioncommerce/api-utils/CurrencyOptions.js";
-import LanguageDefinitions from "@reactioncommerce/api-utils/LanguageDefinitions.js";
+import LanguageOptions from "@reactioncommerce/api-utils/LanguageOptions.js";
 import { registerComponent, composeWithTracker, withMomentTimezone } from "@reactioncommerce/reaction-components";
 import { Meteor } from "meteor/meteor";
 import { Reaction, i18next } from "/client/api";
 import { Shops } from "/lib/collections";
 import { convertWeight, convertLength } from "/lib/api";
 import LocalizationSettings from "../components/localizationSettings";
-
-const languages = [];
-for (const language of LanguageDefinitions) {
-  const i18nKey = `languages.${language.label.toLowerCase()}`;
-  languages.push({
-    label: language.label,
-    value: language.i18n,
-    i18nKey
-  });
-}
 
 /**
  * @summary Use this as a Meteor.call callback to show a toast alert
@@ -33,24 +23,6 @@ function methodAlertCallback(error) {
 const wrapComponent = (Comp) => (
   class LocalizationSettingsContainer extends Component {
     static propTypes = LocalizationSettings.propTypes
-
-    handleUpdateLanguageConfiguration = (event, isChecked, name, callback) => {
-      const language = this.props.languages.find((lang) => lang.value === name);
-
-      if (language) {
-        Meteor.call("shop/updateLanguageConfiguration", language.value, isChecked, (error) => {
-          methodAlertCallback(error);
-          if (callback) callback(error);
-        });
-      }
-    }
-
-    handleUpdateCurrencyConfiguration = (event, isChecked, name, callback) => {
-      Meteor.call("shop/updateCurrencyConfiguration", name, isChecked, (error) => {
-        methodAlertCallback(error);
-        if (callback) callback(error);
-      });
-    }
 
     handleSubmit = (doc) => {
       const shop = Shops.findOne({
@@ -77,14 +49,6 @@ const wrapComponent = (Comp) => (
           allowCustomUserLocale: doc.allowCustomUserLocale
         }
       });
-    }
-
-    handleEnableAllLanguages = (isEnabled) => {
-      Meteor.call("shop/updateLanguageConfiguration", "all", isEnabled, methodAlertCallback);
-    }
-
-    handleEnableAllCurrencies = (isEnabled) => {
-      Meteor.call("shop/updateCurrencyConfiguration", "all", isEnabled, methodAlertCallback);
     }
 
     render() {
@@ -148,7 +112,7 @@ function composer(props, onData) {
   onData(null, {
     preferences: {},
     shop,
-    languages,
+    languages: LanguageOptions,
     countryOptions: CountryOptions,
     currencyOptions: CurrencyOptions,
     uomOptions,
