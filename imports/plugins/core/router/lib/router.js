@@ -20,6 +20,97 @@ const IDENTITY_PROVIDER_PLUGIN_NAME = "reaction-hydra-oauth";
 // Using a ternary operator here to avoid a mutable export - open to suggestions for a better way to do this
 export const history = Meteor.isClient ? createBrowserHistory() : createMemoryHistory();
 
+const layouts = [
+  {
+    layout: "coreLayout",
+    workflow: "coreAccountsWorkflow",
+    collection: "Accounts",
+    theme: "default",
+    enabled: true,
+    structure: {
+      template: "accountsDashboard",
+      layoutHeader: "NavBar",
+      layoutFooter: "",
+      notFound: "notFound",
+      dashboardHeader: "dashboardHeader",
+      dashboardControls: "",
+      dashboardHeaderControls: "",
+      adminControlsFooter: "adminControlsFooter"
+    }
+  },
+  {
+    layout: "coreLayout",
+    workflow: "coreWorkflow",
+    theme: "default",
+    enabled: true,
+    structure: {
+      template: "products",
+      layoutHeader: "NavBar",
+      layoutFooter: "Footer",
+      notFound: "productNotFound",
+      dashboardControls: "dashboardControls",
+      adminControlsFooter: "adminControlsFooter"
+    }
+  },
+  {
+    layout: "coreLayout",
+    workflow: "coreWorkflow",
+    theme: "default",
+    enabled: true,
+    structure: {
+      template: "unauthorized",
+      layoutHeader: "NavBar",
+      layoutFooter: "Footer"
+    }
+  },
+  {
+    layout: "coreLayout",
+    workflow: "coreEmailWorkflow",
+    theme: "default",
+    enabled: true,
+    structure: {
+      template: "email",
+      layoutHeader: "NavBar",
+      layoutFooter: "",
+      notFound: "notFound",
+      dashboardHeader: "dashboardHeader",
+      dashboardControls: "dashboardControls",
+      adminControlsFooter: "adminControlsFooter"
+    }
+  },
+  {
+    layout: "coreLayout",
+    workflow: "coreTagWorkflow",
+    theme: "default",
+    enabled: true,
+    structure: {
+      template: "tagSettings",
+      layoutHeader: "NavBar",
+      layoutFooter: "",
+      notFound: "notFound",
+      dashboardHeader: "dashboardHeader",
+      dashboardControls: "dashboardControls",
+      adminControlsFooter: "adminControlsFooter"
+    }
+  },
+  {
+    layout: "coreLayout",
+    workflow: "coreDashboardWorkflow",
+    theme: "default",
+    enabled: true,
+    structure: {
+      template: "dashboardPackages",
+      layoutHeader: "NavBar",
+      layoutFooter: "",
+      notFound: "notFound",
+      dashboardHeader: "dashboardHeader",
+      dashboardControls: "dashboardControls",
+      dashboardHeaderControls: "dashboardHeaderControls",
+      adminControlsFooter: "adminControlsFooter"
+    }
+  }
+];
+
 // Private vars
 let currentRoute = Immutable.Map();
 const routerReadyDependency = new Tracker.Dependency();
@@ -414,21 +505,15 @@ function ReactionLayout(options = {}) {
     adminControlsFooter: ""
   };
 
-  let layoutTheme = "default";
-
   // Find a registered layout using the layoutName and workflowName
   if (shop) {
-    const sortedLayout = shop.layout.sort((prev, next) => prev.priority - next.priority);
-    const foundLayout = sortedLayout.find((layout) => selectLayout(layout, layoutName, workflowName));
+    const foundLayout = layouts.find((layout) => selectLayout(layout, layoutName, workflowName));
 
     if (foundLayout) {
       if (foundLayout.structure) {
         layoutStructure = {
           ...foundLayout.structure
         };
-      }
-      if (foundLayout.theme) {
-        layoutTheme = foundLayout.theme;
       }
     }
   }
@@ -466,7 +551,7 @@ function ReactionLayout(options = {}) {
 
   // Render the layout
   return {
-    theme: layoutTheme,
+    theme: "default",
     structure: layoutStructure,
     component: (props) => { // eslint-disable-line react/no-multi-comp, react/display-name
       const structure = {
@@ -504,19 +589,6 @@ Router.initPackageRoutes = (options) => {
   Router.Reaction = options.reactionContext;
   Router.routes = [];
 
-  let marketplaceSettings = {
-    shopPrefix: "/shop" // default value
-  };
-
-  const marketplace = Packages.findOne({
-    name: "reaction-marketplace",
-    shopId: Router.Reaction.getPrimaryShopId()
-  });
-
-  if (marketplace && marketplace.settings && marketplace.settings.public) {
-    marketplaceSettings = marketplace.settings.public;
-  }
-
   const packages = Packages.find().fetch();
 
   // Default layouts
@@ -534,7 +606,7 @@ Router.initPackageRoutes = (options) => {
       structure: indexLayout.structure
     }
   }, {
-    route: `${marketplaceSettings.shopPrefix}/:shopSlug`,
+    route: "shop/:shopSlug",
     name: "index",
     options: {
       name: "index",
