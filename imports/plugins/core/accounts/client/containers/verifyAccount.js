@@ -2,9 +2,8 @@ import { Accounts } from "meteor/accounts-base";
 import { ReactiveVar } from "meteor/reactive-var";
 import { Meteor } from "meteor/meteor";
 import { registerComponent, composeWithTracker } from "@reactioncommerce/reaction-components";
+import { withRouter } from "react-router-dom";
 import VerifyAccount from "../components/verifyAccount";
-import { Reaction } from "/client/api";
-
 
 const verified = new ReactiveVar(null);
 
@@ -20,7 +19,7 @@ Accounts.onEmailVerificationLink((token, done) => {
     } else {
       verified.set(true);
     }
-    Reaction.Router.go("account/verify");
+    location.href = "account/verify";
     done();
   });
 });
@@ -41,7 +40,7 @@ function wrapper(props, onData) {
         }
       });
       Meteor.setTimeout(() => {
-        Reaction.Router.go("/");
+        props.history.push("/");
       }, 2000);
     }
   }, 5000);
@@ -78,4 +77,4 @@ function wrapper(props, onData) {
   onData(null, verified.get());
 }
 
-registerComponent("VerifyAccount", VerifyAccount, composeWithTracker(wrapper));
+registerComponent("VerifyAccount", VerifyAccount, composeWithTracker(withRouter(wrapper)));
