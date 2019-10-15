@@ -73,8 +73,6 @@ class AuthContainer extends Component {
               alerts: [error]
             }
           });
-        } else {
-          Router.go(this.props.currentRoute.route.path);
         }
       });
     } else if (this.props.currentView === "loginFormSignUpView") {
@@ -92,8 +90,6 @@ class AuthContainer extends Component {
               alerts: [error]
             }
           });
-        } else {
-          Router.go(this.props.currentRoute.route.path);
         }
       });
     }
