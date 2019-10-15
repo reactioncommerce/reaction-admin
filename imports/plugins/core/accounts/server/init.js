@@ -63,20 +63,23 @@ Meteor.startup(() => {
     if (!user.name) user.name = options && options.name;
     if (!user.emails) user.emails = [];
 
-    // init default user roles
-    // we won't create users unless we have a shop.
-    const shopId = (options && options.shopId) || Reaction.getShopId(); // current shop; not primary shop
+    // Figure out what initial shop this user is signing up for
+    let { shopId } = options || {};
+    if (!shopId) {
+      const primaryShop = Collections.Shops.findOne({ shopType: "primary" });
+      if (primaryShop) {
+        shopId = primaryShop._id;
+      }
+    }
+
+    // If there is not yet an "owner" user, make this one an owner
+    const ownerUser = Meteor.users.findOne({ "roles.__global_roles__": "owner" });
+    if (!ownerUser) roles.__global_roles__ = ["owner"]; // eslint-disable-line camelcase
+
     if (shopId) {
-      // if we don't have user.services we're an anonymous user
-      if (!user.services) {
-        // TODO: look into getting rid of this guest account
-        const group = Collections.Groups.findOne({ slug: "guest", shopId });
-        // if no group permissions retrieved from DB, use the default Reaction set
-        roles[shopId] = (group && group.permissions) || Reaction.defaultVisitorRoles;
-      } else {
-        const group = Collections.Groups.findOne({ slug: "customer", shopId });
-        // if no group or customer permissions retrieved from DB, use the default Reaction customer set
-        roles[shopId] = (group && group.permissions) || Reaction.defaultCustomerRoles;
+      const group = Collections.Groups.findOne({ slug: "customer", shopId });
+      if (group && group.permissions) {
+        roles[shopId] = group && group.permissions;
       }
     }
 
@@ -120,38 +123,8 @@ Meteor.startup(() => {
     if (user.username) profile.username = user.username;
 
     // Automatically verify "localhost" email addresses
-    let emailIsVerified = false;
     if (user.emails[0] && user.emails[0].address.indexOf("localhost") > -1) {
       user.emails[0].verified = true;
-      emailIsVerified = true;
-    }
-
-    // create a tokenObj and send a welcome email to new users,
-    // but skip the first default admin user and anonymous users
-    // (default admins already get a verification email)
-    let tokenObj;
-    if (shopId && !emailIsVerified && user.emails[0]) {
-      tokenObj = generateVerificationTokenObject({ address: user.emails[0].address });
-    }
-
-    // Get GraphQL context to pass to mutation
-    // This is the only place in the app that still
-    // uses `getGraphQLContextInMeteorMethod`
-    // Prioritize removing if possible
-    const context = Promise.await(getGraphQLContextInMeteorMethod(null));
-
-    Promise.await(context.mutations.createAccount({ ...context, isInternalCall: true }, {
-      emails: user.emails,
-      name: user.name,
-      profile,
-      shopId,
-      userId: user._id,
-      verificationToken: tokenObj && tokenObj.token
-    }));
-
-    // set verification token on user
-    if (tokenObj) {
-      _.set(user, "services.email.verificationTokens", [tokenObj]);
     }
 
     // assign default user roles
