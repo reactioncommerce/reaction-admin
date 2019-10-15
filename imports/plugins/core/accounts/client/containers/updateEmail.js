@@ -46,7 +46,9 @@ const handlers = {
 };
 
 const composer = async (props, onData) => {
-  const account = Accounts.findOne(Reaction.getUserId());
+  const account = Accounts.findOne({ userId: Reaction.getUserId() });
+  if (!account) return;
+
   const [opaqueAccountId] = await getOpaqueIds([{ namespace: "Account", id: account._id }]);
   const email = account.emails.length > 0 ? account.emails[0].address : "";
   onData(null, { accountId: opaqueAccountId, email });
