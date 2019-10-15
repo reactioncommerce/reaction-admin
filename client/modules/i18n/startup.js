@@ -11,8 +11,16 @@ import { Reaction } from "/client/api";
 import Logger from "/client/modules/logger";
 import { Shops } from "/lib/collections";
 import Schemas from "@reactioncommerce/schemas";
-import { i18nResourceUrl, i18nNamespaceUrl } from "/config";
+import ReactionError from "@reactioncommerce/reaction-error";
+import { i18nBaseUrl } from "/config";
 import i18next, { getLabelsFor, getValidationErrorMessages, i18nextDep } from "./main";
+
+// Validate API url variable
+const isI18nUrlAString = typeof i18nBaseUrl === "string";
+
+if (!isI18nUrlAString || (isI18nUrlAString && i18nBaseUrl.length === 0)) {
+  throw new ReactionError("not-defined", "\"i18nBaseUrl\" is not defined or has an empty value in `config.js`. See `config.example.js` more information.");
+}
 
 const configuredI18next = i18next
   // https://github.com/i18next/i18next-browser-languageDetector
@@ -38,7 +46,7 @@ const configuredI18next = i18next
 async function initializeI18n(fallbackLng) {
   // Reaction does not have a predefined list of namespaces. Any API plugin can
   // add any namespaces. So we must first get the list of namespaces from the API.
-  const namespaceResponse = await fetch(i18nNamespaceUrl);
+  const namespaceResponse = await fetch(`${i18nBaseUrl}/locales/namespaces.json`);
   const allTranslationNamespaces = await namespaceResponse.json();
 
   try {
@@ -47,7 +55,7 @@ async function initializeI18n(fallbackLng) {
         backend: i18nextFetch,
         backendOption: {
           allowMultiLoading: true,
-          loadPath: i18nResourceUrl
+          loadPath: `${i18nBaseUrl}/locales/resources.json?lng={{lng}}&ns={{ns}}`
         }
       },
       debug: false,
