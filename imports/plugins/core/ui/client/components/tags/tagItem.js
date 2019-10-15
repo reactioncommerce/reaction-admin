@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 import Autosuggest from "react-autosuggest";
+import { withRouter } from "react-router-dom";
 import { registerComponent } from "@reactioncommerce/reaction-components";
-import { i18next, Reaction } from "/client/api";
+import { i18next } from "/client/api";
 import { Button } from "/imports/plugins/core/ui/client/components";
 import { Router } from "@reactioncommerce/reaction-router";
 import { highlightInput } from "../../helpers/animations";
@@ -51,9 +52,9 @@ class TagItem extends Component {
    * @returns {void} no return value
    */
   handleTagEdit = () => {
-    const { tag } = this.props;
+    const { tag, history } = this.props;
 
-    Reaction.Router.go(`/operator/tags/edit/${tag._id}`);
+    history.push(`/operator/tags/edit/${tag._id}`);
   }
 
   /**
@@ -313,6 +314,9 @@ TagItem.propTypes = {
   draggable: PropTypes.bool, // eslint-disable-line react/boolean-prop-naming
   editable: PropTypes.bool, // eslint-disable-line react/boolean-prop-naming
   fullWidth: PropTypes.bool, // eslint-disable-line react/boolean-prop-naming
+  history: PropTypes.shape({
+    push: PropTypes.func
+  }),
   i18nKeyInputPlaceholder: PropTypes.string,
   index: PropTypes.number,
   inputPlaceholder: PropTypes.string,
@@ -336,6 +340,6 @@ TagItem.propTypes = {
   })
 };
 
-registerComponent("TagItem", TagItem);
+registerComponent("TagItem", withRouter(TagItem));
 
-export default TagItem;
+export default withRouter(TagItem);
