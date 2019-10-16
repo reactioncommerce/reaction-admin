@@ -1,8 +1,9 @@
 import React from "react";
 import AccountIcon from "mdi-material-ui/AccountMultiple";
 
-import { registerOperatorRoute } from "/imports/client/ui";
+import { registerOperatorRoute, registerRoute } from "/imports/client/ui";
 import Accounts from "./containers/accountsDashboardContainer";
+import Login from "./components/login";
 
 export { default as AccountsDashboard } from "./components/accountsDashboard";
 export { default as AdminInviteForm } from "./components/adminInviteForm";
@@ -50,6 +51,8 @@ import "./templates/profile/userOrdersList.js";
 import "./templates/updatePassword/updatePassword.html";
 import "./templates/updatePassword/updatePassword.js";
 
+const ENROLL_URI_BASE = "account/enroll";
+
 registerOperatorRoute({
   isNavigationLink: true,
   isSetting: false,
@@ -76,4 +79,24 @@ registerOperatorRoute({
   isSetting: false,
   path: "/profile",
   mainComponent: "accountProfile"
+});
+
+registerRoute({
+  path: "/account/profile/verify",
+  mainComponent: "loginFormUpdatePassword"
+});
+
+registerRoute({
+  path: "/reset-password/:token/:status?",
+  mainComponent: Login
+});
+
+registerRoute({
+  path: `/${ENROLL_URI_BASE}/:token/:status?`,
+  mainComponent: Login
+});
+
+registerRoute({
+  path: "/account/invite",
+  mainComponent: Login
 });

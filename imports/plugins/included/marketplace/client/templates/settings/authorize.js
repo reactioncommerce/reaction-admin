@@ -1,6 +1,6 @@
 import { Meteor } from "meteor/meteor";
 import { Template } from "meteor/templating";
-import { Reaction, Router, i18next } from "client/api";
+import { Reaction, i18next } from "client/api";
 import { Components } from "@reactioncommerce/reaction-components";
 
 Template.stripeConnectAuthorize.onCreated(() => {
@@ -19,7 +19,7 @@ Template.stripeConnectAuthorize.onCreated(() => {
       } else {
         Alerts.toast(`${i18next.t("admin.connect.stripeConnectAccountLinkSuccess")}`, "success");
       }
-      Router.go("/");
+      location.href = "/";
     });
   }
 

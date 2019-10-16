@@ -1,6 +1,6 @@
 import graphql from "graphql.js";
 import { Accounts } from "meteor/accounts-base";
-import { Reaction } from "/client/modules/core";
+import { graphQlApiUrl } from "/config";
 import createFlatRateFulfillmentMethod from "../mutations/createFlatRateFulfillmentMethod.graphql";
 import updateFlatRateFulfillmentMethod from "../mutations/updateFlatRateFulfillmentMethod.graphql";
 import deleteFlatRateFulfillmentMethod from "../mutations/deleteFlatRateFulfillmentMethod.graphql";
@@ -12,7 +12,7 @@ import paymentMethods from "../queries/paymentMethods.graphql";
  * components and other code, but ideally we will not need this forever.
  */
 
-const client = graphql(Reaction.absoluteUrl("graphql-beta"), { asJSON: true });
+const client = graphql(graphQlApiUrl, { asJSON: true });
 
 /**
  * @summary Sets the meteor-login-token header for all GraphQL requests done

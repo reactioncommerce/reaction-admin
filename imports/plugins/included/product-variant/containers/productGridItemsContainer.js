@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
+import { withRouter } from "react-router-dom";
 import { compose } from "recompose";
 import { registerComponent } from "@reactioncommerce/reaction-components";
 import { Session } from "meteor/session";
@@ -11,6 +12,9 @@ import ProductGridItems from "../components/productGridItems";
 const wrapComponent = (Comp) => (
   class ProductGridItemsContainer extends Component {
     static propTypes = {
+      history: PropTypes.shape({
+        push: PropTypes.func
+      }),
       isSearch: PropTypes.bool,
       itemSelectHandler: PropTypes.func,
       onSelectAllProducts: PropTypes.func,
@@ -64,9 +68,9 @@ const wrapComponent = (Comp) => (
     }
 
     onDoubleClick = () => {
-      const { product } = this.props;
+      const { product, history } = this.props;
 
-      Reaction.Router.go(`/operator/products/${product._id}`);
+      history.push(`/operator/products/${product._id}`);
 
       // Open actionView to productDetails panel
       Reaction.state.set("edit/focus", "productDetails");
@@ -84,10 +88,10 @@ const wrapComponent = (Comp) => (
 
     onClick = (event) => {
       event.preventDefault();
-      const { product } = this.props;
+      const { product, history } = this.props;
 
       if (this.props.isSearch) {
-        Reaction.Router.go(`/operator/products/${product._id}`);
+        history.push(`/operator/products/${product._id}`);
         this.props.unmountMe();
         return;
       }
@@ -137,7 +141,8 @@ const wrapComponent = (Comp) => (
 );
 
 registerComponent("ProductGridItems", ProductGridItems, [
+  withRouter,
   wrapComponent
 ]);
 
-export default compose(wrapComponent)(ProductGridItems);
+export default compose(wrapComponent)(withRouter(ProductGridItems));

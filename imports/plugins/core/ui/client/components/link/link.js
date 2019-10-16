@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 
 /**
  * @file
@@ -10,7 +11,7 @@ import PropTypes from "prop-types";
  * @extends Component
  */
 
-export default class Link extends Component {
+class Link extends Component {
   static propTypes = {
     href: PropTypes.string.isRequired,
     onClick: PropTypes.func
@@ -19,7 +20,7 @@ export default class Link extends Component {
   handleClick = (event) => {
     event.preventDefault();
     this.props.onClick(event);
-    ReactionRouter.go(this.props.href); // eslint-disable-line no-undef
+    history.push(this.props.href); // eslint-disable-line no-undef
 
     if (typeof window !== "undefined" && typeof window.scrollTo === "function") {
       window.scrollTo(0, 0);
@@ -35,3 +36,5 @@ export default class Link extends Component {
     );
   }
 }
+
+export default withRouter(Link);

@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactionError from "@reactioncommerce/reaction-error";
 import Random from "@reactioncommerce/random";
+import { withRouter } from "react-router-dom";
 import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
 import { Components, registerComponent } from "@reactioncommerce/reaction-components";
@@ -15,6 +16,9 @@ const wrapComponent = (Comp) => (
     static propTypes = {
       callback: PropTypes.func,
       formMessages: PropTypes.object,
+      history: PropTypes.shape({
+        push: PropTypes.func
+      }),
       isOpen: PropTypes.bool,
       type: PropTypes.string,
       uniqueId: PropTypes.string
@@ -79,7 +83,7 @@ const wrapComponent = (Comp) => (
           const { storefrontUrls } = Reaction.getCurrentShop();
 
           if (Reaction.hasDashboardAccessForAnyShop()) {
-            Router.go("/operator");
+            this.props.history("/operator");
           } else if (!storefrontUrls || !storefrontUrls.storefrontLoginUrl) {
             throw new ReactionError("error-occurred", "Missing storefront URLs. Please set these properties from the shop settings panel.");
           } else {
@@ -149,6 +153,6 @@ const wrapComponent = (Comp) => (
   }
 );
 
-registerComponent("UpdatePassword", UpdatePassword, wrapComponent);
+registerComponent("UpdatePassword", UpdatePassword, withRouter(wrapComponent));
 
-export default wrapComponent(UpdatePassword);
+export default wrapComponent(withRouter(UpdatePassword));

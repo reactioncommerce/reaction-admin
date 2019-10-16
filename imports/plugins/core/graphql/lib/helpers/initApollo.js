@@ -4,10 +4,15 @@ import { HttpLink } from "apollo-link-http";
 import { WebSocketLink } from "apollo-link-ws";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { getOperationAST } from "graphql";
-import { Reaction } from "/client/api";
+import ReactionError from "@reactioncommerce/reaction-error";
+import { graphQlApiUrl, graphQlWebSocketUrl } from "/config";
 
-const httpUrl = Reaction.absoluteUrl("graphql-beta");
-const wsUrl = httpUrl.replace("http", "ws");
+// Validate API url variable
+const isApiUrlAString = typeof graphQlApiUrl === "string";
+
+if (!isApiUrlAString || (isApiUrlAString && graphQlApiUrl.length === 0)) {
+  throw new ReactionError("not-defined", "\"graphQlApiUrl\" is not defined or has an empty value in `config.js`. See `config.example.js` more information.");
+}
 
 export const meteorAccountsLink = new ApolloLink((operation, forward) => {
   const token = localStorage.getItem("Meteor.loginToken");
@@ -21,22 +26,33 @@ export const meteorAccountsLink = new ApolloLink((operation, forward) => {
   return forward(operation);
 });
 
-const link = ApolloLink.split(
-  (operation) => {
-    const operationAST = getOperationAST(operation.query, operation.operationName);
-    return !!operationAST && operationAST.operation === "subscription";
-  },
-  new WebSocketLink({
-    uri: wsUrl,
-    options: {
-      reconnect: true, // auto-reconnect
-      connectionParams: {
-        authToken: localStorage.getItem("Meteor.loginToken")
+const httpLink = new HttpLink({ uri: graphQlApiUrl });
+
+const standardLink = ApolloLink.from([
+  meteorAccountsLink,
+  httpLink
+]);
+
+let linkWithSubscriptions;
+
+if (graphQlWebSocketUrl) {
+  linkWithSubscriptions = ApolloLink.split(
+    (operation) => {
+      const operationAST = getOperationAST(operation.query, operation.operationName);
+      return !!operationAST && operationAST.operation === "subscription";
+    },
+    new WebSocketLink({
+      uri: graphQlWebSocketUrl,
+      options: {
+        reconnect: true, // auto-reconnect
+        connectionParams: {
+          authToken: localStorage.getItem("Meteor.loginToken")
+        }
       }
-    }
-  }),
-  meteorAccountsLink.concat(new HttpLink({ uri: httpUrl }))
-);
+    }),
+    standardLink
+  );
+}
 
 /**
  * @name initApollo
@@ -45,7 +61,7 @@ const link = ApolloLink.split(
  */
 export default function initApollo() {
   return new ApolloClient({
-    link,
+    link: linkWithSubscriptions || standardLink,
     cache: new InMemoryCache()
   });
 }

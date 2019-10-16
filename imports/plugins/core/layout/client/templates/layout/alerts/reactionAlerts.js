@@ -6,7 +6,7 @@ import { Meteor } from "meteor/meteor";
 import "sweetalert2/dist/sweetalert2.css";
 import Alerts from "./inlineAlerts";
 import Alert from "react-s-alert";
-import { getRootNode } from "/imports/plugins/core/router/client/browserRouter.js";
+import getRootNode from "/imports/client/ui/utils/getRootNode";
 
 /**
  * @file ReactionAlerts - Shows a popup alert, extends Bootstrap Alerts and adds more alert types. See Bootstrap Alert documentation: https://getbootstrap.com/docs/3.3/components/#alerts
