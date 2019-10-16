@@ -31,14 +31,10 @@ const useStyles = makeStyles((theme) => ({
  * @returns {React.ReactElement} React component
  */
 function DefaultPage() {
-  const { isAdmin, isLoggedIn, isLoading, onSignOut } = useAuth();
+  const { isAdmin, isLoggedIn, onSignOut } = useAuth();
   const classes = useStyles();
 
   let content = <Components.Login />;
-
-  if (isLoading) {
-    return null;
-  }
 
   if (isLoggedIn && !isAdmin) {
     content = (
