@@ -116,7 +116,7 @@ const StyledCoreLayout = withStyles(styles, { name: "RuiCoreLayout" })(CoreLayou
 function composer(props, onData) {
   const isAdmin = Reaction.hasDashboardAccessForAnyShop();
   const shop = Reaction.getCurrentShop();
-  const isLoading = (isAdmin !== true && isAdmin !== false) || !shop;
+  const isLoading = (isAdmin !== true && isAdmin !== false);
   const isLoggedIn = !!Reaction.getUserId();
 
   onData(null, {

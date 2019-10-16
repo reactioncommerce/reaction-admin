@@ -5,13 +5,13 @@ import _ from "lodash";
 import { withRouter } from "react-router";
 import { compose, withState } from "recompose";
 import { useMutation } from "@apollo/react-hooks";
+import CountryOptions from "@reactioncommerce/api-utils/CountryOptions.js";
 import { composeWithTracker } from "@reactioncommerce/reaction-components";
 import { Media } from "/imports/plugins/core/files/client";
 import { Meteor } from "meteor/meteor";
 import { Reaction, formatPriceString, i18next } from "/client/api";
 import { getPrimaryMediaForItem, ReactionProduct, Catalog } from "/lib/api";
 import { Tags, Templates } from "/lib/collections";
-import { Countries } from "/client/collections";
 import { getVariantIds } from "/lib/selectors/variants";
 import getOpaqueIds from "/imports/plugins/core/core/client/util/getOpaqueIds";
 
@@ -277,8 +277,6 @@ function composer(props, onData) {
       value: template.name
     }));
 
-    const countries = Countries.find({}).fetch();
-
     let variants = getTopVariants();
 
     if (variants) {
@@ -310,7 +308,7 @@ function composer(props, onData) {
       media,
       tags,
       templates,
-      countries,
+      countries: CountryOptions,
       editable,
       variants
     });

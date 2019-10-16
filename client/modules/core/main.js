@@ -2,13 +2,11 @@ import _ from "lodash";
 import { Accounts as MeteorAccounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
 import { Session } from "meteor/session";
-import { check } from "meteor/check";
 import { Tracker } from "meteor/tracker";
 import { ReactiveVar } from "meteor/reactive-var";
 import { ReactiveDict } from "meteor/reactive-dict";
 import { Roles } from "meteor/alanning:roles";
 import Logger from "/client/modules/logger";
-import { Countries } from "/client/collections";
 import { Packages, Shops } from "/lib/collections";
 import { Router } from "/client/modules/router";
 import { DomainsMixin } from "./domains";
@@ -76,13 +74,6 @@ export default {
 
         if (shop) {
           this._primaryShopId.set(shop._id);
-
-          // We'll initialize locale and currency for the primary shop
-
-          // initialize local client Countries collection
-          if (!Countries.findOne()) {
-            createCountryCollection(shop.locales.countries);
-          }
 
           // if we don't have an active shopId, try to retrieve it from the userPreferences object
           // and set the shop from the storedShopId
@@ -945,40 +936,3 @@ export default {
     return marketplaceSettings && marketplaceSettings.settings;
   }
 };
-
-/**
- * Create a client-side only collection of Countries for a dropdown form
- * properly sorted*
- * @name createCountryCollection
- * @method
- * @param {Object} countries -  The countries array on the Shop collection
- * @returns {Array} countryOptions - Sorted array of countries
- * @private
- */
-function createCountryCollection(countries) {
-  check(countries, Object);
-  const countryOptions = [];
-  for (const locale in countries) {
-    if ({}.hasOwnProperty.call(countries, locale)) {
-      const country = countries[locale];
-      countryOptions.push({
-        label: country.name,
-        value: locale
-      });
-    }
-  }
-  countryOptions.sort((itemA, itemB) => {
-    if (itemA.label < itemB.label) {
-      return -1;
-    }
-    if (itemA.label > itemB.label) {
-      return 1;
-    }
-    return 0;
-  });
-
-  for (const country of countryOptions) {
-    Countries.insert(country);
-  }
-  return countryOptions;
-}

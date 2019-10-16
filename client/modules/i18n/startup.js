@@ -111,14 +111,9 @@ async function initializeI18n(fallbackLng) {
 }
 
 Meteor.startup(() => {
-  // Autorun only long enough to be sure we have a shop ID
-  Tracker.autorun((computation) => {
+  Tracker.autorun(() => {
     const shopId = Reaction.getPrimaryShopId();
-    if (!shopId) return; // will reactively rerun after there is a shop ID
-
-    computation.stop();
-
-    const shop = Shops.findOne({ _id: shopId });
+    const shop = shopId && Shops.findOne({ _id: shopId });
     const shopLanguage = (shop && shop.language) || null;
 
     initializeI18n(shopLanguage || "en");
