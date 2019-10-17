@@ -3,8 +3,9 @@ import PropTypes from "prop-types";
 import getServiceConfig from "nodemailer-wellknown";
 import { withApollo } from "react-apollo";
 import { compose, withProps } from "recompose";
-import { registerComponent, composeWithTracker } from "@reactioncommerce/reaction-components";
+import { composeWithTracker } from "@reactioncommerce/reaction-components";
 import { Meteor } from "meteor/meteor";
+import { Packages } from "/lib/collections";
 import { Reaction } from "/client/api";
 import actions from "../actions";
 import SMTPEmailConfig from "../components/SMTPEmailConfig";
@@ -104,8 +105,13 @@ const wrapComponent = (Comp) => (
 );
 
 const composer = (props, onData) => {
-  if (Meteor.subscribe("Packages").ready()) {
-    const shopSettings = Reaction.getShopSettings();
+  const shopId = Reaction.getShopId();
+  if (!shopId) return;
+
+  const pkgSub = Meteor.subscribe("Packages", shopId);
+  if (pkgSub.ready()) {
+    const pkg = Packages.findOne({ name: "core", shopId }) || {};
+    const shopSettings = pkg.settings || {};
     const settings = shopSettings.mail || {};
 
     if (settings.service && settings.service !== "custom") {
@@ -122,13 +128,6 @@ const composer = (props, onData) => {
 };
 
 const handlers = { saveSettings: actions.settings.saveSettings };
-
-registerComponent("SMTPEmailConfig", SMTPEmailConfig, [
-  composeWithTracker(composer),
-  withProps(handlers),
-  withApollo,
-  wrapComponent
-]);
 
 export default compose(
   composeWithTracker(composer),

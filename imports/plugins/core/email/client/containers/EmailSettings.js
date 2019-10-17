@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import EmailConfig from "./EmailConfigContainer";
+import { Blocks } from "@reactioncommerce/reaction-components";
 import EmailLogs from "./emailLogs";
 
 export default class EmailSettings extends Component {
@@ -7,7 +7,7 @@ export default class EmailSettings extends Component {
     return (
       <Fragment>
         <div>
-          <EmailConfig />
+          <Blocks region="EmailSettings" />
         </div>
         <div>
           <EmailLogs />

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Components } from "@reactioncommerce/reaction-components";
 import { Translation } from "/imports/plugins/core/ui/client/components";
@@ -15,7 +15,6 @@ class SMTPEmailConfig extends Component {
     this.togglePassword = this.togglePassword.bind(this);
     this.toggleSettings = this.toggleSettings.bind(this);
   }
-
 
   togglePassword() {
     this.setState({
@@ -45,24 +44,24 @@ class SMTPEmailConfig extends Component {
           />
         </div>
         <div className="email-config-status">
-          <strong><Translation defaultValue={"Status"} i18nKey={"admin.settings.status"} /></strong>: {status ?
+          <strong><Translation defaultValue="Status" i18nKey="admin.settings.status" /></strong>: {status ?
             <i className={`fa fa-circle ${status}`} />
             : <i className={"fa fa-refresh fa-spin"} />}
         </div>
         <div>
-          <strong><Translation defaultValue={"Service"} i18nKey={"admin.settings.service"} /></strong>: {service || <NotSet/>}
+          <strong><Translation defaultValue="Service" i18nKey="admin.settings.service" /></strong>: {service || <NotSet/>}
         </div>
         <div className="truncate">
-          <strong><Translation defaultValue={"Host"} i18nKey={"admin.settings.host"} /></strong>: {host || <NotSet/>}
+          <strong><Translation defaultValue="Host" i18nKey="admin.settings.host" /></strong>: {host || <NotSet/>}
         </div>
         <div>
-          <strong><Translation defaultValue={"Port"} i18nKey={"admin.settings.port"} /></strong>: {port || <NotSet/>}
+          <strong><Translation defaultValue="Port" i18nKey="admin.settings.port" /></strong>: {port || <NotSet/>}
         </div>
         <div className="truncate">
-          <strong><Translation defaultValue={"User"} i18nKey={"admin.settings.user"} /></strong>: {user || <NotSet/>}
+          <strong><Translation defaultValue="User" i18nKey="admin.settings.user" /></strong>: {user || <NotSet/>}
         </div>
         <div>
-          <strong><Translation defaultValue={"Password"} i18nKey={"admin.settings.password"} /></strong>:&nbsp;&nbsp;
+          <strong><Translation defaultValue="Password" i18nKey="admin.settings.password" /></strong>:&nbsp;&nbsp;
           {password ?
             <span>
               {showPassword ? password : "********"}
@@ -97,8 +96,8 @@ class SMTPEmailConfig extends Component {
           <hr />
           <h4>
             <Translation
-              defaultValue={"Edit Settings"}
-              i18nKey={"admin.settings.editSettings"}
+              defaultValue="Edit Settings"
+              i18nKey="admin.settings.editSettings"
             />
           </h4>
           <Components.SMTPEmailSettings showSettings={showSettings} />
@@ -111,10 +110,19 @@ class SMTPEmailConfig extends Component {
 
   render() {
     return (
-      <Fragment>
-        {this.renderSettingsDisplay()}
-        {this.renderSettingsUpdate()}
-      </Fragment>
+      <Components.CardGroup>
+        <Components.Card>
+          <Components.CardHeader
+            actAsExpander={true}
+            i18nKeyTitle="admin.settings.mailProvider"
+            title="Mail Provider"
+          />
+          <Components.CardBody>
+            {this.renderSettingsDisplay()}
+            {this.renderSettingsUpdate()}
+          </Components.CardBody>
+        </Components.Card>
+      </Components.CardGroup>
     );
   }
 }
