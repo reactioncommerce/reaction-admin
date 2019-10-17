@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import { Components } from "@reactioncommerce/reaction-components";
 import { i18next } from "/client/api";
 import ShopLogoWithData from "/imports/client/ui/components/ShopLogoWithData/ShopLogoWithData";
+import useIsAppLoading from "/imports/client/ui/hooks/useIsAppLoading.js";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId.js";
 
 /**
@@ -18,7 +19,10 @@ import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId.js";
  * @returns {Node} React component
  */
 function OperatorLanding() {
+  const [isAppLoading] = useIsAppLoading();
   const [currentShopId] = useCurrentShopId();
+
+  if (isAppLoading) return <Components.Loading />;
 
   let content;
   if (currentShopId) {

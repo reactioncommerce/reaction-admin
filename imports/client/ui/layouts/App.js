@@ -2,9 +2,11 @@ import React from "react";
 import Helmet from "react-helmet";
 import { Route, Switch } from "react-router-dom";
 import i18next from "i18next";
+import { Components } from "@reactioncommerce/reaction-components";
 import useAuth from "../hooks/useAuth";
 import Dashboard from "./Dashboard";
 import { routes } from "/imports/client/ui";
+import useIsAppLoading from "/imports/client/ui/hooks/useIsAppLoading.js";
 import ContentViewFullLayout from "./ContentViewFullLayout";
 import ContentViewStandardLayout from "./ContentViewStandardLayout";
 import DefaultPage from "./DefaultPage";
@@ -14,12 +16,15 @@ import DefaultPage from "./DefaultPage";
  * @returns {React.ReactElement} React component
  */
 function App() {
-  const { isAdmin, isLoggedIn, redirectUrl } = useAuth();
+  const { isAdmin, isLoading, isLoggedIn, redirectUrl } = useAuth();
+  const [isAppLoading] = useIsAppLoading();
 
   if (redirectUrl) {
     window.location.href = redirectUrl;
     return null;
   }
+
+  if (isLoading || isAppLoading) return <Components.Loading />;
 
   if (isLoggedIn) {
     return isAdmin ? <Dashboard /> : <DefaultPage />;
