@@ -54,7 +54,7 @@ class TagItem extends Component {
   handleTagEdit = () => {
     const { tag, history } = this.props;
 
-    history.push(`/operator/tags/edit/${tag._id}`);
+    history.push(`/tags/edit/${tag._id}`);
   }
 
   /**

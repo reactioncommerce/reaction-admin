@@ -140,7 +140,7 @@ function Sidebar(props) {
           <NavLink
             activeClassName={!isSettingsOpen ? activeClassName : null}
             className={classes.link}
-            to={`/operator${route.path}`}
+            to={route.path}
             key={route.path}
             onClick={() => {
               setIsSettingsOpen(false);
@@ -170,7 +170,7 @@ function Sidebar(props) {
               const [firstRoute] = settingRoutes;
 
               if (firstRoute) {
-                history.push(`/operator${firstRoute.path}`);
+                history.push(firstRoute.path);
               }
             }
             setIsSettingsOpen(!isSettingsOpen);
@@ -192,7 +192,7 @@ function Sidebar(props) {
             <NavLink
               activeClassName={activeClassName}
               className={classes.link}
-              to={`/operator${route.path}`}
+              to={route.path}
               key={route.path}
               onClick={onDrawerClose}
             >

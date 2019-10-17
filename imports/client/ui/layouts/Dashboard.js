@@ -131,7 +131,7 @@ class Dashboard extends Component {
                 <Route
                   exact
                   key={route.path}
-                  path={`/operator${route.path}`}
+                  path={route.path}
                   render={(props) => {
                     const title = i18next.t(route.sidebarI18nLabel, { defaultValue: "Reaction Admin" });
                     // If the layout component is explicitly null

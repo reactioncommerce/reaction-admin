@@ -45,12 +45,6 @@ function CoreLayout({ classes, isAdmin, isLoading, isLoggedIn, location, storefr
   // If we're not on /account or /account/login for hydra, and the user is signed in,
   // then we will redirect or show a logout button
   if (!location.pathname.startsWith("/account") && !location.pathname.startsWith("/reset")) {
-    // If the current user is an admin then redirect to /operator
-    if (!location.pathname.startsWith("/operator") && isAdmin) {
-      window.location.replace("/operator");
-      return null;
-    }
-
     // If the user is logged in, which makes them no longer anonymous
     // But they aren't an admin, then give them a logout button.
     if (isLoggedIn && !isAdmin) {

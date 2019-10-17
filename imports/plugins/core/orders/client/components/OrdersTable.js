@@ -87,7 +87,7 @@ function OrdersTable({ history }) {
 
   // Row click callback
   const onRowClick = useCallback(async ({ row }) => {
-    history.push(`/operator/orders/${row.values.referenceId}`);
+    history.push(`/orders/${row.values.referenceId}`);
   }, [history]);
 
   const dataTableProps = useDataTable({

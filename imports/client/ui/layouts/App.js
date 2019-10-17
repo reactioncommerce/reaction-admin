@@ -3,7 +3,6 @@ import Helmet from "react-helmet";
 import { Route, Switch } from "react-router-dom";
 import i18next from "i18next";
 import useAuth from "../hooks/useAuth";
-import useRouter from "../hooks/useRouter";
 import Dashboard from "./Dashboard";
 import { routes } from "/imports/client/ui";
 import ContentViewFullLayout from "./ContentViewFullLayout";
@@ -16,24 +15,14 @@ import DefaultPage from "./DefaultPage";
  */
 function App() {
   const { isAdmin, isLoggedIn, redirectUrl } = useAuth();
-  const { location } = useRouter();
-
-
-  if (location.pathname === "/") {
-    window.location.replace("/operator");
-  }
-
-  if (isLoggedIn && !isAdmin) {
-    return <DefaultPage />;
-  }
-
-  if (isAdmin && location.pathname.startsWith("/operator")) {
-    return <Dashboard />;
-  }
 
   if (redirectUrl) {
     window.location.href = redirectUrl;
     return null;
+  }
+
+  if (isLoggedIn) {
+    return isAdmin ? <Dashboard /> : <DefaultPage />;
   }
 
   return (
@@ -43,7 +32,7 @@ function App() {
           routes.map((route, index) => (
             <Route
               key={route.path || `app-route-${index}`}
-              path={`${route.path}`}
+              path={route.path}
               exact={route.exact}
               render={(props) => {
                 const title = i18next.t(route.sidebarI18nLabel, { defaultValue: "Reaction Admin" });

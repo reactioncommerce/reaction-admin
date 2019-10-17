@@ -73,7 +73,7 @@ class ProfileImageWithData extends Component {
                 open={Boolean(menuAnchorEl)}
                 onClose={() => setMenuAnchorEl(null)}
               >
-                <Link to={"/operator/profile"}>
+                <Link to={"/profile"}>
                   <MenuItem>{i18next.t("admin.userAccountDropdown.profileLabel")}</MenuItem>
                 </Link>
                 <MenuItem onClick={() => Meteor.logout()}>{i18next.t("accountsUI.signOut")}</MenuItem>

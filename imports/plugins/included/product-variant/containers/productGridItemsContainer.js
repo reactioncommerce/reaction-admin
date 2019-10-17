@@ -29,7 +29,7 @@ const wrapComponent = (Comp) => (
         if (this.props.product.__published) {
           ({ handle } = this.props.product.__published);
         }
-        return `/operator/products/${handle}`;
+        return `/products/${handle}`;
       }
 
       return "/";
@@ -70,7 +70,7 @@ const wrapComponent = (Comp) => (
     onDoubleClick = () => {
       const { product, history } = this.props;
 
-      history.push(`/operator/products/${product._id}`);
+      history.push(`/products/${product._id}`);
 
       // Open actionView to productDetails panel
       Reaction.state.set("edit/focus", "productDetails");
@@ -91,7 +91,7 @@ const wrapComponent = (Comp) => (
       const { product, history } = this.props;
 
       if (this.props.isSearch) {
-        history.push(`/operator/products/${product._id}`);
+        history.push(`/products/${product._id}`);
         this.props.unmountMe();
         return;
       }

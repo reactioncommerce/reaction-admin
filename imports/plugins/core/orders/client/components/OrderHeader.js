@@ -66,7 +66,7 @@ function OrderHeader(props) {
           {paymentStatusChip}
           <Grid item>
             <Button
-              href={`/operator/orders/print/${order.referenceId}`}
+              href={`/orders/print/${order.referenceId}`}
               variant="text"
             >
               {i18next.t("admin.orderWorkflow.invoice.printInvoice", "Print invoice")}
