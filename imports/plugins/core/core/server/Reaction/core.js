@@ -377,9 +377,6 @@ export default {
 
     // use the primary shop id by default
     if (!shopId) {
-      const domain = this.connectionDomain();
-      Logger.warn(`No shop matching domain '${domain}'. Defaulting to Primary Shop.`);
-
       shopId = this.getPrimaryShopId();
     }
 
