@@ -1,42 +1,28 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { Query } from "react-apollo";
-import getPrimaryShopId from "../queries/getPrimaryShopId";
+import useCurrentShopId from "../../../../../client/ui/hooks/useCurrentShopId";
 
-export default (Component) => (
-  class PrimaryShopId extends React.Component {
-    static propTypes = {
-      shouldSkipGraphql: PropTypes.bool // Whether to skip this HOC's GraphQL query & data
-    };
+/**
+ * @summary withPrimaryShopId HOC wrapper
+ * @deprecated Function components should use `useCurrentShopId` hook directly
+ * @param {React.Component} Component React component
+ * @return {Function} HOC
+ */
+function withPrimaryShopId(Component) {
+  /**
+ * @summary WithPrimaryShopId HOC
+ * @deprecated Function components should use `useCurrentShopId` hook directly
+ * @param {Object} props React props
+ * @return {Object} Rendered component instance
+ */
+  function WithPrimaryShopId(props) {
+    const [shopId] = useCurrentShopId();
 
-    render() {
-      const { shouldSkipGraphql } = this.props;
-
-      if (shouldSkipGraphql) {
-        return (
-          <Component {...this.props} />
-        );
-      }
-
-      return (
-        <Query query={getPrimaryShopId}>
-          {({ loading, data }) => {
-            const props = {
-              ...this.props,
-              isLoadingPrimaryShopId: loading
-            };
-
-            if (!loading && data) {
-              const { primaryShopId } = data;
-              props.shopId = primaryShopId;
-            }
-
-            return (
-              <Component {...props} />
-            );
-          }}
-        </Query>
-      );
-    }
+    return (
+      <Component {...props} shopId={shopId} />
+    );
   }
-);
+
+  return WithPrimaryShopId;
+}
+
+export default withPrimaryShopId;
