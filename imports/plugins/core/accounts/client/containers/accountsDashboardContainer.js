@@ -105,9 +105,12 @@ const handlers = {
 
 const composer = (props, onData) => {
   const shopId = Reaction.getShopId();
-  const grpSub = Meteor.subscribe("Groups", { shopId });
+  if (!shopId) return;
 
-  if (Reaction.Subscriptions.Account.ready() && grpSub.ready()) {
+  const grpSub = Meteor.subscribe("Groups", { shopId });
+  const accountSub = Meteor.subscribe("Accounts");
+
+  if (accountSub.ready() && grpSub.ready()) {
     const groups = Groups.find({ shopId }).fetch();
     const adminGroups = groups.filter((group) => group.slug !== "customer" && group.slug !== "guest");
 

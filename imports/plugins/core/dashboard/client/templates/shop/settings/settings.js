@@ -29,6 +29,13 @@ Template.shopSettings.onCreated(function onCreated() {
         Logger.error(error);
       });
   });
+
+  this.autorun(async () => {
+    const shopId = Reaction.getShopId();
+    if (shopId) {
+      this.subscribe("Packages", shopId);
+    }
+  });
 });
 
 /**
@@ -69,11 +76,6 @@ Template.shopSettings.helpers({
     if (template === "optionsShopSettings" || template === "ShopAddressValidationSettings") {
       // do not have switch for options card/panel
       return false;
-    }
-
-    if (Reaction.getMarketplaceSettings()) {
-      // if marketplace is enabled, only the primary shop can switch apps on and off.
-      return Reaction.getShopId() === Reaction.getPrimaryShopId();
     }
 
     // If marketplace is disabled, every shop can switch apps
@@ -166,9 +168,5 @@ Template.optionsShopSettings.helpers({
       name: "core",
       shopId: Reaction.getShopId()
     });
-  },
-
-  isPackageEnabled(name) {
-    return Reaction.isPackageEnabled(name);
   }
 });
