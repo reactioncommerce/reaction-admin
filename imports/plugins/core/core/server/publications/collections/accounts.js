@@ -8,7 +8,7 @@ import Reaction from "/imports/plugins/core/core/server/Reaction";
  * accounts
  */
 
-Meteor.publish("Accounts", function () {
+Meteor.publish("Accounts", function publishAccounts() {
   const userId = Reaction.getUserId();
 
   if (!userId) {
@@ -48,7 +48,7 @@ Meteor.publish("Accounts", function () {
 /**
  * Own account
  */
-Meteor.publish("MyAccount", () => {
+Meteor.publish("MyAccount", function publishMyAccount() {
   const userId = Reaction.getUserId();
   if (!userId) return this.ready();
 
@@ -59,7 +59,7 @@ Meteor.publish("MyAccount", () => {
  * Single account
  * @param {String} userId -  id of user to find
  */
-Meteor.publish("UserAccount", function (userId) {
+Meteor.publish("UserAccount", function publishUserAccount(userId) {
   check(userId, Match.OneOf(String, null));
 
   const shopId = Reaction.getShopId();
@@ -80,7 +80,7 @@ Meteor.publish("UserAccount", function (userId) {
  * customers"] may view the profileUserId"s profile data.
  *
  */
-Meteor.publish("UserProfile", function () {
+Meteor.publish("UserProfile", function publishUserProfile() {
   const userId = Reaction.getUserId();
   if (!userId) return this.ready();
 
