@@ -134,20 +134,6 @@ Template.memberSettings.helpers({
     return Boolean(permissions.length);
   },
 
-  /**
-   * showAvalaraTaxSettings
-   * @returns {Boolean} True if avalara is enabled. Defaults to false if not found
-   * @ignore
-   */
-  showAvalaraTaxSettings() {
-    const avalara = Packages.findOne({
-      name: "taxes-avalara",
-      shopId: Reaction.getShopId()
-    });
-
-    return _.get(avalara, "settings.avalara.enabled", false);
-  },
-
   accountsDetail() {
     return {
       component: AccountsDashboard
