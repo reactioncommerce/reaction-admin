@@ -46,6 +46,16 @@ Meteor.publish("Accounts", function () {
 });
 
 /**
+ * Own account
+ */
+Meteor.publish("MyAccount", () => {
+  const userId = Reaction.getUserId();
+  if (!userId) return this.ready();
+
+  return Collections.Accounts.find({ userId });
+});
+
+/**
  * Single account
  * @param {String} userId -  id of user to find
  */
@@ -69,19 +79,11 @@ Meteor.publish("UserAccount", function (userId) {
  * users with permissions  ["dashboard/orders", "owner", "admin", "dashboard/
  * customers"] may view the profileUserId"s profile data.
  *
- * @param {String} profileUserId -  view this users profile when permitted
  */
-Meteor.publish("UserProfile", function (profileUserId) {
-  check(profileUserId, Match.OneOf(String, null));
-  if (this.userId === null) {
-    return this.ready();
-  }
-  const shopId = Reaction.getShopId();
-  if (!shopId) {
-    return this.ready();
-  }
-  const permissions = ["dashboard/orders", "owner", "admin",
-    "dashboard/customers"];
+Meteor.publish("UserProfile", function () {
+  const userId = Reaction.getUserId();
+  if (!userId) return this.ready();
+
   // no need to normal user so see his password hash
   const fields = {
     "emails": 1,
@@ -98,26 +100,6 @@ Meteor.publish("UserProfile", function (profileUserId) {
     "services.github.username": 1,
     "services.instagram.profile_picture": 1
   };
-  // TODO: this part currently not working as expected.
-  // we could have three situation here:
-  // 1 - registered user log in.
-  // 2 - admin log in
-  // 3 - admin want to get user data
-  // I'm not sure about the 3rd case, but we do not cover 2nd case here, because
-  // we can see a situation when anonymous user still represented by
-  // `profileUserId`, but admin user already could be found by `this.userId`
-  // In that case what we should do here?
-  if (profileUserId !== this.userId && Roles.userIsInRole(
-    this.userId,
-    permissions, shopId ||
-    Roles.userIsInRole(this.userId, permissions, Roles.GLOBAL_GROUP)
-  )) {
-    return Meteor.users.find({
-      _id: profileUserId
-    }, {
-      fields
-    });
-  }
 
   return Meteor.users.find({
     _id: this.userId
