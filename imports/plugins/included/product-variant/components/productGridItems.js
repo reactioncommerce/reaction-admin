@@ -135,7 +135,7 @@ class ProductGridItems extends Component {
           {this.renderMedia()}
         </TableCell>
         <TableCell>
-          <Link to={`/operator/products/${product._id}`}>{product.title}</Link>
+          <Link to={`/products/${product._id}`}>{product.title}</Link>
         </TableCell>
         <TableCell>
           {product._id}

@@ -21,7 +21,7 @@ function OrderIdCell({ row, history }) {
   const classes = useStyles();
 
   const handleClick = () => {
-    history.push(`/operator/orders/${row.values.referenceId}`);
+    history.push(`/orders/${row.values.referenceId}`);
   };
 
   let chipColor;

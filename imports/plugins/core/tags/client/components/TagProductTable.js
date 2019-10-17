@@ -75,7 +75,7 @@ class TagProductTable extends Component {
                       <TableRow key={product._id}>
                         <TableCell component="th" scope="row">{product._id}</TableCell>
                         <TableCell>
-                          <Link href={`/operator/products/${product._id}`}>{product.title}</Link>
+                          <Link href={`/products/${product._id}`}>{product.title}</Link>
                         </TableCell>
                         <TableCell align="right">
                           <TextInput

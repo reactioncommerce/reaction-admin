@@ -83,7 +83,7 @@ const wrapComponent = (Comp) => (
           const { storefrontUrls } = Reaction.getCurrentShop();
 
           if (Reaction.hasDashboardAccessForAnyShop()) {
-            this.props.history("/operator");
+            this.props.history("/");
           } else if (!storefrontUrls || !storefrontUrls.storefrontLoginUrl) {
             throw new ReactionError("error-occurred", "Missing storefront URLs. Please set these properties from the shop settings panel.");
           } else {

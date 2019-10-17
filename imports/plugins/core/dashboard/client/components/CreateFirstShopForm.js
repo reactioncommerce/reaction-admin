@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import SimpleSchema from "simpl-schema";
 import Button from "@reactioncommerce/catalyst/Button";
@@ -31,6 +31,7 @@ function CreateFirstShopForm(props) {
   const { onSubmit } = props;
 
   const classes = useStyles();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     getFirstErrorMessage,
@@ -38,7 +39,11 @@ function CreateFirstShopForm(props) {
     hasErrors,
     submitForm
   } = useReactoForm({
-    onSubmit,
+    async onSubmit(...args) {
+      setIsSubmitting(true);
+      await onSubmit(...args);
+      setIsSubmitting(false);
+    },
     validator
   });
 
@@ -55,7 +60,15 @@ function CreateFirstShopForm(props) {
         }}
         {...getInputProps("name", muiOptions)}
       />
-      <Button color="primary" variant="contained" fullWidth onClick={submitForm}>Submit</Button>
+      <Button
+        color="primary"
+        fullWidth
+        isDisabled={isSubmitting}
+        onClick={submitForm}
+        variant="contained"
+      >
+        {isSubmitting ? "Creating Shop..." : "Create Shop"}
+      </Button>
     </div>
   );
 }

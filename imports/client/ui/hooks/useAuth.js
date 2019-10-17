@@ -31,7 +31,7 @@ export default function useAuth() {
       setLoggedIn(!!Reaction.getUserId());
 
       // Attempt to check if we are still loading this data
-      setLoading((hasDashboardAccessForAnyShop !== true && hasDashboardAccessForAnyShop !== false) || !shop);
+      setLoading((hasDashboardAccessForAnyShop !== true && hasDashboardAccessForAnyShop !== false));
 
       if (!hasStorefrontHomeUrl && !isLoading) {
         Logger.warn("Missing storefront home URL. Please set this from the shop settings panel so that customer users can be redirected to your storefront.");

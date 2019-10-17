@@ -125,7 +125,7 @@ ShopLogoWithData.propTypes = {
 };
 
 ShopLogoWithData.defaultProps = {
-  linkTo: "/operator",
+  linkTo: "/",
   shouldShowShopName: false,
   size: 60
 };

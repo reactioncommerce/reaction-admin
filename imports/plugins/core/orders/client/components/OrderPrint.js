@@ -61,7 +61,7 @@ function OrderPrint(props) {
           <Grid container alignItems="center" direction="row" justify="space-between">
             <Grid item>
               <Button
-                href={`/operator/orders/${order.referenceId}`}
+                href={`/orders/${order.referenceId}`}
               >
                 <ChevronLeftIcon className={classes.iconButton} />
                 Back

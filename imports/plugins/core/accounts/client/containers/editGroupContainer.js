@@ -6,8 +6,10 @@ import EditGroup from "../components/editGroup";
 
 const composer = (props, onData) => {
   const shopId = Reaction.getShopId();
-  const pkg = Meteor.subscribe("Packages", shopId);
-  if (pkg.ready()) {
+  if (!shopId) return;
+
+  const pkgSub = Meteor.subscribe("Packages", shopId);
+  if (pkgSub.ready()) {
     const packages = Packages.find({ shopId }).fetch();
     onData(null, { packages, ...props });
   }

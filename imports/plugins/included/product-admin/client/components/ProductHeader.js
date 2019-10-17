@@ -74,14 +74,14 @@ function ProductHeader(props) {
       title={i18next.t("admin.productTable.bulkActions.archiveTitle")}
       message={i18next.t("productDetailEdit.archiveThisProduct")}
       onConfirm={() => {
-        let redirectUrl = "/operator/products";
+        let redirectUrl = "/products";
 
         if (parentVariant) {
-          redirectUrl = `/operator/products/${product._id}/${parentVariant._id}`;
+          redirectUrl = `/products/${product._id}/${parentVariant._id}`;
         } else if (variant) {
-          redirectUrl = `/operator/products/${product._id}`;
+          redirectUrl = `/products/${product._id}`;
         } else {
-          redirectUrl = "/operator/products";
+          redirectUrl = "/products";
         }
 
         onArchiveProduct(currentProduct, redirectUrl);
@@ -113,9 +113,9 @@ function ProductHeader(props) {
   return (
     <div className={classes.root}>
       <div className={classes.breadcrumbs}>
-        <Link className={classes.breadcrumbLink} to="/operator/products">{"Products"}</Link>
+        <Link className={classes.breadcrumbLink} to="/products">{"Products"}</Link>
         <ChevronRight className={classes.breadcrumbIcon} />
-        <Link className={classes.breadcrumbLink} to={`/operator/products/${product._id}`}>
+        <Link className={classes.breadcrumbLink} to={`/products/${product._id}`}>
           {product.title || "Untitled Product"}
         </Link>
 
@@ -124,7 +124,7 @@ function ProductHeader(props) {
             <ChevronRight className={classes.breadcrumbIcon} />
             <Link
               className={classes.breadcrumbLink}
-              to={`/operator/products/${product._id}/${parentVariant._id}`}
+              to={`/products/${product._id}/${parentVariant._id}`}
             >
               {parentVariant.optionTitle || parentVariant.title || "Untitled Variant"}
             </Link>
@@ -136,7 +136,7 @@ function ProductHeader(props) {
             <ChevronRight className={classes.breadcrumbIcon} />
             <Link
               className={classes.breadcrumbLink}
-              to={`/operator/products/${variant.ancestors.join("/")}/${variant._id}`}
+              to={`/products/${variant.ancestors.join("/")}/${variant._id}`}
             >
               {variant.optionTitle || variant.title || "Untitled Variant"}
             </Link>

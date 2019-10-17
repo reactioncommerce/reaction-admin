@@ -18,16 +18,16 @@ import { Reaction } from "/client/api";
 function getURL(item) {
   // Top level product
   if (item.type === "simple") {
-    return `/operator/products/${item._id}`;
+    return `/products/${item._id}`;
   }
 
   // Variant
   if (item.ancestors.length === 1) {
-    return `/operator/products/${item.ancestors[0]}/${item._id}`;
+    return `/products/${item.ancestors[0]}/${item._id}`;
   }
 
   // Option
-  return `/operator/products/${item.ancestors[0]}/${item.ancestors[1]}/${item._id}`;
+  return `/products/${item.ancestors[0]}/${item.ancestors[1]}/${item._id}`;
 }
 
 /**

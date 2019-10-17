@@ -17,6 +17,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import SettingsIcon from "mdi-material-ui/Settings";
 import CloseIcon from "mdi-material-ui/Close";
 import { Translation } from "/imports/plugins/core/ui/client/components";
+import useIsAppLoading from "/imports/client/ui/hooks/useIsAppLoading.js";
 import useCurrentShopId from "../../hooks/useCurrentShopId";
 import ShopLogoWithData from "../ShopLogoWithData";
 
@@ -107,6 +108,7 @@ function Sidebar(props) {
     routes
   } = props;
 
+  const [isAppLoading] = useIsAppLoading();
   const [currentShopId] = useCurrentShopId();
 
   const primaryRoutes = routes.filter(({ isNavigationLink, isSetting }) => isNavigationLink && !isSetting).sort(routeSort);
@@ -133,14 +135,14 @@ function Sidebar(props) {
   }
 
   let list;
-  if (currentShopId) {
+  if (!isAppLoading && currentShopId) {
     list = (
       <List disablePadding>
         {primaryRoutes.map((route) => (
           <NavLink
             activeClassName={!isSettingsOpen ? activeClassName : null}
             className={classes.link}
-            to={`/operator${route.path}`}
+            to={route.path}
             key={route.path}
             onClick={() => {
               setIsSettingsOpen(false);
@@ -170,7 +172,7 @@ function Sidebar(props) {
               const [firstRoute] = settingRoutes;
 
               if (firstRoute) {
-                history.push(`/operator${firstRoute.path}`);
+                history.push(firstRoute.path);
               }
             }
             setIsSettingsOpen(!isSettingsOpen);
@@ -192,7 +194,7 @@ function Sidebar(props) {
             <NavLink
               activeClassName={activeClassName}
               className={classes.link}
-              to={`/operator${route.path}`}
+              to={route.path}
               key={route.path}
               onClick={onDrawerClose}
             >

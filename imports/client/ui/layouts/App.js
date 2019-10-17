@@ -2,10 +2,11 @@ import React from "react";
 import Helmet from "react-helmet";
 import { Route, Switch } from "react-router-dom";
 import i18next from "i18next";
+import { Components } from "@reactioncommerce/reaction-components";
 import useAuth from "../hooks/useAuth";
-import useRouter from "../hooks/useRouter";
 import Dashboard from "./Dashboard";
 import { routes } from "/imports/client/ui";
+import useIsAppLoading from "/imports/client/ui/hooks/useIsAppLoading.js";
 import ContentViewFullLayout from "./ContentViewFullLayout";
 import ContentViewStandardLayout from "./ContentViewStandardLayout";
 import DefaultPage from "./DefaultPage";
@@ -15,25 +16,18 @@ import DefaultPage from "./DefaultPage";
  * @returns {React.ReactElement} React component
  */
 function App() {
-  const { isAdmin, isLoggedIn, redirectUrl } = useAuth();
-  const { location } = useRouter();
-
-
-  if (location.pathname === "/") {
-    window.location.replace("/operator");
-  }
-
-  if (isLoggedIn && !isAdmin) {
-    return <DefaultPage />;
-  }
-
-  if (isAdmin && location.pathname.startsWith("/operator")) {
-    return <Dashboard />;
-  }
+  const { isAdmin, isLoading, isLoggedIn, redirectUrl } = useAuth();
+  const [isAppLoading] = useIsAppLoading();
 
   if (redirectUrl) {
     window.location.href = redirectUrl;
     return null;
+  }
+
+  if (isLoading || isAppLoading) return <Components.Loading />;
+
+  if (isLoggedIn) {
+    return isAdmin ? <Dashboard /> : <DefaultPage />;
   }
 
   return (
@@ -43,7 +37,7 @@ function App() {
           routes.map((route, index) => (
             <Route
               key={route.path || `app-route-${index}`}
-              path={`${route.path}`}
+              path={route.path}
               exact={route.exact}
               render={(props) => {
                 const title = i18next.t(route.sidebarI18nLabel, { defaultValue: "Reaction Admin" });

@@ -350,20 +350,6 @@ export default {
   },
 
   /**
-   * @name getPrimaryShopSettings
-   * @method
-   * @memberof Core/Client
-   * @returns {Object} shop settings of the primary shop
-   */
-  getPrimaryShopSettings() {
-    const settings = Packages.findOne({
-      name: "core",
-      shopId: this.getPrimaryShopId()
-    }) || {};
-    return settings.settings || {};
-  },
-
-  /**
    * @name getCurrentShop
    * @summary Get the proper current shop based on various checks. This mirrors the logic in
    *   Reaction.getShopId on the server
@@ -461,36 +447,6 @@ export default {
     return this.getShopId() === this.getPrimaryShopId();
   },
 
-  /**
-   * @name getShopName
-   * @method
-   * @memberof Core/Client
-   * @summary gets name of shop by provided shopId, or current active shop if shopId is not provided
-   * @param {String} providedShopId - shopId of shop to return name of
-   * @returns {String} - shop name
-   */
-  getShopName(providedShopId) {
-    const shopId = providedShopId || this.getShopId();
-    const shop = Shops.findOne({
-      _id: shopId
-    });
-    return shop && shop.name;
-  },
-
-  /**
-   * @name getShopSettings
-   * @method
-   * @memberof Core/Client
-   * @returns {Object} shop settings
-   */
-  getShopSettings() {
-    const settings = Packages.findOne({
-      name: "core",
-      shopId: this.shopId
-    }) || {};
-    return settings.settings || {};
-  },
-
   getShopLanguage() {
     const shopId = this.getShopId();
     const shop = Shops.findOne({ _id: shopId });
@@ -530,45 +486,16 @@ export default {
   },
 
   /**
-   * @name getPackageSettings
-   * @method
-   * @memberof Core/Client
-   * @param {String} name package name
-   * @returns {Object} package settings
-   */
-  getPackageSettings(name) {
-    const shopId = this.getShopId();
-    const query = { name };
-
-    if (shopId) {
-      query.shopId = shopId;
-    }
-
-    return Packages.findOne(query);
-  },
-
-  /**
-   * @name getPackageSettingsWithOptions
-   * @method
-   * @memberof Core/Client
-   * @param {Object} options options to pass to query
-   * @returns {Object} package settings with options
-   */
-  getPackageSettingsWithOptions(options) {
-    const query = options;
-    return Packages.findOne(query);
-  },
-
-  /**
    * @name allowGuestCheckout
    * @method
    * @memberof Core/Client
    * @returns {Boolean} is guest checkout allowed
    */
   allowGuestCheckout() {
-    const settings = this.getShopSettings();
+    const pkg = Packages.findOne({ name: "core", shopId: this.getShopId() }) || {};
+    const shopSettings = pkg.settings || {};
     // we can disable in admin, let's check.
-    return !!(settings.public && settings.public.allowGuestCheckout);
+    return !!(shopSettings.public && shopSettings.public.allowGuestCheckout);
   },
 
   /**
@@ -917,22 +844,5 @@ export default {
     }
     Logger.debug("getRegistryForCurrentRoute not found", template, provides);
     return {};
-  },
-
-  /**
-   * @name getMarketplaceSettings
-   * @method
-   * @memberof Core/Client
-   * @summary finds the enabled `reaction-marketplace` package for the primary shop and returns the settings
-   * @returns {Object} The marketplace settings from the primary shop or undefined
-   */
-  getMarketplaceSettings() {
-    const marketplaceSettings = Packages.findOne({
-      name: "reaction-marketplace",
-      shopId: this.getPrimaryShopId(), // the primary shop always owns the marketplace settings
-      enabled: true // only use the marketplace settings if marketplace is enabled
-    });
-
-    return marketplaceSettings && marketplaceSettings.settings;
   }
 };

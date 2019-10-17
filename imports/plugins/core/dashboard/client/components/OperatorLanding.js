@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import { Components } from "@reactioncommerce/reaction-components";
 import { i18next } from "/client/api";
 import ShopLogoWithData from "/imports/client/ui/components/ShopLogoWithData/ShopLogoWithData";
+import useIsAppLoading from "/imports/client/ui/hooks/useIsAppLoading.js";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId.js";
 
 /**
@@ -18,7 +19,10 @@ import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId.js";
  * @returns {Node} React component
  */
 function OperatorLanding() {
+  const [isAppLoading] = useIsAppLoading();
   const [currentShopId] = useCurrentShopId();
+
+  if (isAppLoading) return <Components.Loading />;
 
   let content;
   if (currentShopId) {
@@ -27,7 +31,7 @@ function OperatorLanding() {
         <Grid item>
           <Typography align="center" variant="body1">
             {/* eslint-disable-next-line max-len */}
-            Use Reaction Admin to manage <Link to="/operator/orders">Orders</Link>, <Link to="/operator/products">Products</Link>, <Link to="/operator/tags">Tags</Link>, <Link to="/operator/accounts">Accounts</Link>, and <Link to="/operator/navigation">Navigation</Link>, or change shop settings.
+            Use Reaction Admin to manage <Link to="/orders">Orders</Link>, <Link to="/products">Products</Link>, <Link to="/tags">Tags</Link>, <Link to="/accounts">Accounts</Link>, and <Link to="/navigation">Navigation</Link>, or change shop settings.
           </Typography>
         </Grid>
         <Grid item>

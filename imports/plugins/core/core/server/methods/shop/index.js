@@ -1,4 +1,3 @@
-import createShop from "./createShop";
 import createTag from "./createTag";
 import locateAddress from "./locateAddress";
 import togglePackage from "./togglePackage";
@@ -17,7 +16,6 @@ import updateShopExternalServices from "./updateShopExternalServices";
 */
 
 export default {
-  "shop/createShop": createShop,
   "shop/createTag": createTag,
   "shop/locateAddress": locateAddress,
   "shop/togglePackage": togglePackage,

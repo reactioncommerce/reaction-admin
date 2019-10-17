@@ -1,27 +1,5 @@
 <template name="paymentSettings">
   <div class="panel-group" id="paymentSettingsAccordian" role="tablist" aria-multiselectable="true">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <div class="panel-title">
-          <a
-            href="#payment-methods"
-            aria-controls="paymentMethods"
-            role="button"
-            data-toggle="collapse"
-            data-parent="#paymentSettingsAccordian"
-            data-i18n="admin.paymentSettings.paymentMethod">Default Method</a>
-        </div>
-      </div>
-      <div id="payment-methods" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="paymentMethods">
-        <div class="panel-body">
-          {{#autoForm collection=Collections.Shops doc=shop id="shopEditPaymentMethodsForm" type="update"
-          autosave=true}}
-            {{> afQuickField name='defaultPaymentMethod' options=paymentMethodOptions}}
-          {{/autoForm}}
-        </div>
-      </div>
-    </div>
-
     {{> discountsPaymentSettings}}
 
     {{#each paymentPlugins}}
