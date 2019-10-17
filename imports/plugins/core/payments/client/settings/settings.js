@@ -2,19 +2,32 @@ import _ from "lodash";
 import getOpaqueIds from "/imports/plugins/core/core/client/util/getOpaqueIds";
 import simpleGraphQLClient from "/imports/plugins/core/graphql/lib/helpers/simpleClient";
 import { Template } from "meteor/templating";
-import { AutoForm } from "meteor/aldeed:autoform";
 import { Meteor } from "meteor/meteor";
-import { Reaction, i18next } from "/client/api";
+import { Reaction } from "/client/api";
 import { ReactiveDict } from "meteor/reactive-dict";
-import { Shops } from "/lib/collections";
 
 Template.paymentSettings.onCreated(async function () {
   this.state = new ReactiveDict();
-  this.state.setDefault({ shopId: null, paymentMethods: [] });
+  this.state.setDefault({ paymentMethods: [], shopId: null });
 
-  const [shopId] = await getOpaqueIds([{ namespace: "Shop", id: Reaction.getShopId() }]);
-  const { paymentMethods } = await simpleGraphQLClient.queries.paymentMethods({ shopId });
-  this.state.set({ paymentMethods, shopId });
+  this.autorun(async () => {
+    const shopId = Reaction.getShopId();
+    if (!shopId) {
+      this.state.set({ paymentMethods: [], shopId: null });
+      return;
+    }
+
+    const [opaqueShopId] = await getOpaqueIds([{ namespace: "Shop", id: shopId }]);
+    const { paymentMethods } = await simpleGraphQLClient.queries.paymentMethods({ shopId: opaqueShopId });
+    this.state.set({ paymentMethods, shopId: opaqueShopId });
+  });
+
+  this.autorun(async () => {
+    const shopId = Reaction.getShopId();
+    if (shopId) {
+      this.subscribe("Packages", shopId);
+    }
+  });
 });
 
 Template.paymentSettings.helpers({
@@ -24,31 +37,11 @@ Template.paymentSettings.helpers({
     // Omit discounts, which we have a separate template for
     return plugins.filter(({ packageName }) => packageName !== "discount-codes");
   },
-  paymentMethodOptions() {
-    const options = [{ label: "Auto", value: "none" }];
-
-    // This should return true payment methods only, i.e., not the discounts method.
-    const paymentMethods = Template.instance().state.get("paymentMethods");
-    if (_.isArray(paymentMethods)) {
-      for (const method of paymentMethods) {
-        if (!method.isEnabled) continue;
-        options.push({
-          label: method.displayName,
-          value: method.name
-        });
-      }
-    }
-
-    return options;
-  },
   paymentMethodsForPlugin() {
     const paymentMethods = Template.instance().state.get("paymentMethods");
     if (!Array.isArray(paymentMethods)) return [];
 
     return paymentMethods.filter((method) => method.pluginName === this.packageName);
-  },
-  shop() {
-    return Shops.findOne(Reaction.getShopId());
   }
 });
 
@@ -69,17 +62,6 @@ Template.paymentSettings.events({
     });
     const paymentMethods = _.get(response, "enablePaymentMethodForShop.paymentMethods");
     state.set("paymentMethods", paymentMethods);
-  }
-});
-
-AutoForm.hooks({
-  shopEditPaymentMethodsForm: {
-    onSuccess() {
-      return Alerts.toast(i18next.t("shopSettings.shopPaymentMethodsSaved"), "success");
-    },
-    onError(operation, error) {
-      return Alerts.toast(`${i18next.t("shopSettings.shopPaymentMethodsFailed")} ${error}`, "error");
-    }
   }
 });
 
