@@ -16,7 +16,7 @@ import Reaction from "/imports/plugins/core/core/server/Reaction";
  *   and `account` (the account document in case the calling code needs it without another request)
  */
 export default function getCart(cartId, { cartToken, throwIfNotFound = false } = {}) {
-  const shopId = Reaction.getCartShopId();
+  const shopId = Reaction.getPrimaryShopId();
   if (!shopId) {
     throw new Meteor.Error("not-found", "Cart not found");
   }
