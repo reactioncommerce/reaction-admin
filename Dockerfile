@@ -41,14 +41,14 @@ RUN meteor npm install --production
 FROM node:8.11.4-slim
 
 # Default environment variables
-ENV ROOT_URL "http://localhost"
-ENV PORT 4040
+ENV ROOT_URL "http://localhost:4080"
+ENV PORT 4080
 
 # grab the dependencies and built app from the previous builder image
 COPY --chown=node --from=builder /opt/reaction/dist/bundle /app
 
 WORKDIR /app
 
-EXPOSE 4040
+EXPOSE 4080
 
 CMD ["node", "main.js"]
