@@ -135,7 +135,6 @@
     "@babel/preset-env": "7.4.5",
     "@babel/preset-react": "7.0.0",
     "@reactioncommerce/eslint-config": "^2.1.0",
-    "apollo-server-testing": "2.8.1",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "8.2.3",
     "babel-jest": "^24.8.0",
@@ -162,7 +161,6 @@
     "js-yaml": "^3.13.1",
     "jsdoc": "^3.6.3",
     "nock": "^9.6.1",
-    "nodemon": "1.18.9",
     "react-addons-test-utils": "15.6.2",
     "snyk": "^1.217.3",
     "wait-for-expect": "^1.2.0"
