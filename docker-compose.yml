@@ -31,7 +31,7 @@ services:
       streams:
     ports:
       - "4040:4040"
-      - "9230:9229"
+      - "9229:9229"
     volumes:
       - .:/opt/reaction/src:cached
       - reaction_meteor_local:/opt/reaction/src/.meteor/local
