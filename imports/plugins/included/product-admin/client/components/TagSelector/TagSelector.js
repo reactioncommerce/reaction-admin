@@ -18,7 +18,6 @@ import {
 import { getTags } from "./helpers";
 import { ADD_TAGS_TO_PRODUCTS, REMOVE_TAGS_FROM_PRODUCTS } from "./mutations";
 
-
 const ACTION_OPTIONS = [{
   label: "Add tags to products",
   type: "ADD"
@@ -175,4 +174,3 @@ TagSelector.propTypes = {
 };
 
 export default TagSelector;
-
