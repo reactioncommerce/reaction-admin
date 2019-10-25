@@ -16,6 +16,8 @@ import theme from "./theme";
 import App from "./layouts/App";
 import getRootNode from "./utils/getRootNode";
 import RouterContext from "./context/RouterContext";
+import { SnackbarProvider } from "notistack";
+import snackbarPosition from "./utils/getSnackbarPosition";
 
 Meteor.startup(() => {
   loadRegisteredBlocks();
@@ -35,13 +37,15 @@ Meteor.startup(() => {
                 <ComponentsProvider value={appComponents}>
                   <ThemeProvider theme={theme}>
                     <MuiThemeProvider theme={defaultTheme}>
-                      <Route>
-                        {(routeProps) => (
-                          <RouterContext.Provider value={routeProps}>
-                            <App />
-                          </RouterContext.Provider>
-                        )}
-                      </Route>
+                      <SnackbarProvider anchorOrigin={snackbarPosition} maxSnack={3}>
+                        <Route>
+                          {(routeProps) => (
+                            <RouterContext.Provider value={routeProps}>
+                              <App />
+                            </RouterContext.Provider>
+                          )}
+                        </Route>
+                      </SnackbarProvider>
                     </MuiThemeProvider>
                   </ThemeProvider>
                 </ComponentsProvider>
