@@ -1,25 +1,16 @@
-# Reaction Commerce
+# Reaction Admin
 
-[![Circle CI](https://circleci.com/gh/reactioncommerce/reaction.svg?style=svg)](https://circleci.com/gh/reactioncommerce/reaction) [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/reactioncommerce/reaction?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Open Source Helpers](https://www.codetriage.com/reactioncommerce/reaction/badges/users.svg)](https://www.codetriage.com/reactioncommerce/reaction)
+[![Circle CI](https://circleci.com/gh/reactioncommerce/reaction-admin.svg?style=svg)](https://circleci.com/gh/reactioncommerce/reaction-admin) [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/reactioncommerce/reaction?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [Reaction](http://reactioncommerce.com) is an API-first, headless commerce platform built using Node.js, React, and GraphQL. It plays nicely with npm, Docker and Kubernetes.
 
-Reaction v2.0.0 is built as a truly headless commerce platform that decouples the Reaction backend services from the frontend. We’ve decoupled the storefront application from the API. Reaction platform consists of this `reaction` project - which is now primarily our GraphQL API (and for the time being Reaction Admin and our identity provider) - alongside our new-to-2.0 [Example Storefront](https://github.com/reactioncommerce/example-storefront), which connects with the Reaction application via GraphQL API to provide a customer-facing storefront.
+This project, Reaction Admin, is the user interface used by administrators and shop managers.
 
 ![Reaction Admin](https://user-images.githubusercontent.com/20409254/61161477-bb033c80-a4b8-11e9-9c5e-4f4f6a68b8d0.png)
-
-## Features
-
-Reaction comes with a robust set of core commerce capabilities right out of the box. And since anything in our codebase can be extended, overwritten, or installed as a package, you may also customize anything on our platform.
-
-Check out the full list of Reaction [features](https://www.reactioncommerce.com/features) and [release history](https://reactioncommerce.com/roadmap) for more info.
-
 
 # Getting started
 
 Follow the documentation to install Reaction with [Reaction Platform](https://docs.reactioncommerce.com/docs/installation-reaction-platform) for all supported operating systems.
-
 
 # Get involved
 
@@ -32,7 +23,6 @@ Follow the documentation to install Reaction with [Reaction Platform](https://do
 - [Storefront Component Library](http://designsystem.reactioncommerce.com/)
 - [API documentation](http://api.docs.reactioncommerce.com)
 - [Engineering blog posts](https://blog.reactioncommerce.com/tag/engineering/)
-
 
 ## Get help & contact the team
 
@@ -77,6 +67,5 @@ We use the [Probot DCO GitHub app](https://github.com/apps/dco) to check for DCO
 
 If you forget to sign-off your commits, the DCO bot will remind you and give you detailed instructions for how to amend your commits to add a signature.
 
-
 ### License
-Reaction is [GNU GPLv3 Licensed](./LICENSE.md)
+Reaction Admin is [GNU GPLv3 Licensed](./LICENSE.md)
