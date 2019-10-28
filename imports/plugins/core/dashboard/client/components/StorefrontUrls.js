@@ -56,6 +56,7 @@ class StorefrontUrls extends Component {
   static propTypes = {
     classes: PropTypes.object,
     shop: PropTypes.shape({
+      _id: PropTypes.string.isRequired,
       storefrontUrls: PropTypes.shape({
         storefrontHomeUrl: PropTypes.string,
         storefrontLoginUrl: PropTypes.string,

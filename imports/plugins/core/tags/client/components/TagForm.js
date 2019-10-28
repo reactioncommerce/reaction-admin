@@ -76,6 +76,9 @@ TagDropzone.propTypes = {
 // eslint-disable-next-line react/no-multi-comp
 class TagForm extends Component {
   static propTypes = {
+    client: PropTypes.shape({
+      mutate: PropTypes.func.isRequired
+    }),
     isLoadingShopId: PropTypes.bool,
     onCancel: PropTypes.func,
     onCreate: PropTypes.func,

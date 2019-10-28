@@ -24,6 +24,9 @@ const verifySMTPEmailSettings = gql`
 const wrapComponent = (Comp) => (
   class SMTPEmailConfigContainer extends Component {
     static propTypes = {
+      client: PropTypes.shape({
+        mutate: PropTypes.func.isRequired
+      }),
       settings: PropTypes.shape({
         host: PropTypes.string,
         password: PropTypes.string,
@@ -121,10 +124,9 @@ const composer = (props, onData) => {
       settings.host = config.host || "localhost";
       settings.port = config.port;
     }
-    return onData(null, { settings });
-  }
 
-  return null;
+    onData(null, { settings });
+  }
 };
 
 const handlers = { saveSettings: actions.settings.saveSettings };

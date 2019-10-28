@@ -6,10 +6,6 @@ import { Components, registerComponent } from "@reactioncommerce/reaction-compon
 import { i18next } from "/client/api";
 
 class MultiSelect extends Component {
-  static defaultProps = {
-    multi: true
-  }
-
   static propTypes = {
     i18nKeyLabel: PropTypes.string,
     i18nKeyPlaceholder: PropTypes.string,
@@ -20,6 +16,10 @@ class MultiSelect extends Component {
     options: PropTypes.array,
     placeholder: PropTypes.string,
     value: PropTypes.any
+  }
+
+  static defaultProps = {
+    multi: true
   }
 
   renderLabel() {

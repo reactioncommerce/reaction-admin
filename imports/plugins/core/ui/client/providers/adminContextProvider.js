@@ -3,13 +3,13 @@ import PropTypes from "prop-types";
 import { composeWithTracker } from "@reactioncommerce/reaction-components";
 
 class AdminContextProvider extends Component {
-  static childContextTypes = {
-    adminContext: PropTypes.object.isRequired
-  };
-
   static propTypes = {
     adminContext: PropTypes.object.isRequired,
     children: PropTypes.node
+  };
+
+  static childContextTypes = {
+    adminContext: PropTypes.object.isRequired
   };
 
   getChildContext() {

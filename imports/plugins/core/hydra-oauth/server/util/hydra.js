@@ -24,7 +24,7 @@ function get(flow, challenge) {
       if (res.status < 200 || res.status > 302) {
         const json = await res.json();
         Logger.error(`An error occurred while making GET ${flow}-${challenge} HTTP request to Hydra: `, json.error_description);
-        return Promise.reject(new Error(json.error_description));
+        throw new Error(json.error_description);
       }
       return res.json();
     });
@@ -53,7 +53,7 @@ function put(flow, action, challenge, body) {
       if (res.status < 200 || res.status > 302) {
         const json = await res.json();
         Logger.error(`An error occurred while making PUT ${flow}-${challenge} request to Hydra: `, json.error_description);
-        return Promise.reject(new Error(json.error_description));
+        throw new Error(json.error_description);
       }
       return res.json();
     });
@@ -72,7 +72,7 @@ function deleteUserSession(id) {
       if (res.status < 200 || res.status > 302) {
         const json = await res.json();
         Logger.error(`An error occurred while deleting session in Hydra for user ${id} `, json.error_description);
-        return Promise.reject(new Error(json.error_description));
+        throw new Error(json.error_description);
       }
       return null;
     });

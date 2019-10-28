@@ -15,7 +15,7 @@ import { getUserId } from "./accountUtils";
  */
 
 // Unpack the named Collections we use.
-const { Packages, Shops, Accounts: AccountsCollection } = Collections;
+const { Shops, Accounts: AccountsCollection } = Collections;
 
 export default {
   ...AbsoluteUrlMixin,

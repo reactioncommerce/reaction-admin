@@ -4,10 +4,6 @@ import classnames from "classnames";
 import { Components, registerComponent } from "@reactioncommerce/reaction-components";
 
 class Switch extends Component {
-  static defaultProps = {
-    checked: false
-  }
-
   static propTypes = {
     checked: PropTypes.bool, // eslint-disable-line react/boolean-prop-naming
     disabled: PropTypes.bool, // eslint-disable-line react/boolean-prop-naming
@@ -20,6 +16,10 @@ class Switch extends Component {
     name: PropTypes.string,
     onChange: PropTypes.func,
     onLabel: PropTypes.string
+  }
+
+  static defaultProps = {
+    checked: false
   }
 
   constructor(props) {

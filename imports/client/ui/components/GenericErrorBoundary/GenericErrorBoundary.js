@@ -3,14 +3,14 @@ import PropTypes from "prop-types";
 import Logger from "@reactioncommerce/logger";
 
 class GenericErrorBoundary extends Component {
-  static propTypes = {
-    children: PropTypes.node,
-    fallbackComponent: PropTypes.node
-  }
-
   static getDerivedStateFromError() {
     // Update state so the next render will show the fallback UI.
     return { hasError: true };
+  }
+
+  static propTypes = {
+    children: PropTypes.node,
+    fallbackComponent: PropTypes.node
   }
 
   constructor(props) {

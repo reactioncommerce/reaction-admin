@@ -1,5 +1,5 @@
 import { Template } from "meteor/templating";
-import { i18next, Reaction } from "/client/api";
+import { Reaction } from "/client/api";
 import * as Collections from "/lib/collections";
 import { Components } from "@reactioncommerce/reaction-components";
 

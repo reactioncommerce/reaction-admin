@@ -22,6 +22,10 @@ const getViewer = gql`
 `;
 
 class ProfileImageWithData extends Component {
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
   static propTypes = {
     components: PropTypes.shape({
       ProfileImage: CustomPropTypes.component.isRequired
@@ -29,10 +33,6 @@ class ProfileImageWithData extends Component {
     menuAnchorEl: PropTypes.any,
     setMenuAnchorEl: PropTypes.func
   };
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
 
   state = {
     hasError: false

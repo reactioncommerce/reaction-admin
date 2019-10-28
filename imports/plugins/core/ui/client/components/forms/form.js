@@ -6,12 +6,6 @@ import classnames from "classnames";
 import { Components, registerComponent } from "@reactioncommerce/reaction-components";
 
 class Form extends Component {
-  static defaultProps = {
-    autoSave: false,
-    renderFromFields: false,
-    fieldsProp: {}
-  }
-
   /**
   * @name Form propTypes
   * @type {propTypes}
@@ -40,6 +34,12 @@ class Form extends Component {
     onSubmit: PropTypes.func,
     renderFromFields: PropTypes.bool, // eslint-disable-line react/boolean-prop-naming
     schema: PropTypes.object // eslint-disable-line react/boolean-prop-naming
+  }
+
+  static defaultProps = {
+    autoSave: false,
+    renderFromFields: false,
+    fieldsProp: {}
   }
 
   constructor(props) {

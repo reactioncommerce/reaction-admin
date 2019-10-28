@@ -52,6 +52,7 @@
     "graphql": "^14.5.8",
     "graphql-tag": "2.9.2",
     "graphql.js": "0.4.20",
+    "history": "^4.10.1",
     "hoist-non-react-statics": "^2.3.1",
     "i18next": "17.0.13",
     "i18next-browser-languagedetector": "3.0.3",
@@ -139,7 +140,7 @@
     "@babel/preset-react": "7.0.0",
     "@reactioncommerce/eslint-config": "^2.1.0",
     "babel-core": "7.0.0-bridge.0",
-    "babel-eslint": "8.2.3",
+    "babel-eslint": "10.0.3",
     "babel-jest": "^24.8.0",
     "babel-plugin-inline-import": "3.0.0",
     "babel-plugin-lodash": "3.3.2",
@@ -170,17 +171,8 @@
     "snyk": "^1.217.3",
     "wait-for-expect": "^1.2.0"
   },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {
-        "browsers": [
-          "last 2 versions"
-        ]
-      }
-    }
-  },
   "scripts": {
-    "dev": "node --experimental-modules ./.reaction/scripts/run.mjs",
+    "start:dev": "node --experimental-modules ./.reaction/scripts/run.mjs",
     "inspect": "node --experimental-modules ./.reaction/scripts/run.mjs --inspect",
     "inspect-brk": "node --experimental-modules  ./.reaction/scripts/run.mjs --inspect-brk",
     "inspect-docker": "node --experimental-modules  ./.reaction/scripts/run.mjs --inspect=0.0.0.0:9229",
@@ -288,6 +280,11 @@
       }
     }
   },
+  "browserslist": [
+    "last 2 versions",
+    "> 1%",
+    "IE 11"
+  ],
   "eslintConfig": {
     "extends": "@reactioncommerce",
     "globals": {
@@ -298,7 +295,10 @@
       "Package": true
     },
     "settings": {
-      "import/resolver": "meteor"
+      "import/resolver": "meteor",
+      "react": {
+        "version": "detect"
+      }
     },
     "rules": {
       "jsx-a11y/label-has-for": "off",

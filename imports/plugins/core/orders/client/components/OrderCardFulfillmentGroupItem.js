@@ -23,6 +23,7 @@ class OrderCardFulfillmentGroupItem extends Component {
       subtotal: PropTypes.shape({
         displayAmount: PropTypes.string.isRequired
       }).isRequired,
+      title: PropTypes.string,
       variantTitle: PropTypes.string.isRequired
     }).isRequired
   };

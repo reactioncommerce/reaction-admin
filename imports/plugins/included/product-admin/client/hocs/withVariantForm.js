@@ -41,6 +41,7 @@ const wrapComponent = (Comp) => (
     static propTypes = {
       client: PropTypes.object,
       history: PropTypes.object,
+      shopId: PropTypes.string,
       variant: PropTypes.object
     }
 

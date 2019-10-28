@@ -158,8 +158,9 @@ class ActionView extends Component {
     viewportWidth: PropTypes.number
   };
 
-  static getDerivedStateFromProps(props) {
-    const { actionView, detailView, prevProps = {} } = props;
+  static getDerivedStateFromProps(props, state) {
+    const { actionView, detailView } = props;
+    const { prevProps = {} } = state || {};
 
     const stateUpdates = { prevProps: props };
 
