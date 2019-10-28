@@ -23,7 +23,7 @@ jobs:
             - reaction-admin-v3-node-modules-{{ .Branch }}
       - run:
           name: Install the same NPM version that Meteor uses
-          command: npm i -g npm@6.4.1
+          command: sudo npm i -g npm@6.4.1
       - run:
           name: Install NPM dependencies
           command: npm -v && npm ci
