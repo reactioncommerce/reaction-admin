@@ -22,8 +22,11 @@ jobs:
             - reaction-admin-v3-node-modules-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
             - reaction-admin-v3-node-modules-{{ .Branch }}
       - run:
+          name: Install the same NPM version that Meteor uses
+          command: npm i -g npm@6.4.1
+      - run:
           name: Install NPM dependencies
-          command: npm install
+          command: npm -v && npm ci
       - save_cache:
           key: reaction-admin-v3-node-modules-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
           paths:
