@@ -11,12 +11,12 @@ import { TranslationProvider } from "/imports/plugins/core/ui/client/providers";
 import initApollo from "/imports/plugins/core/graphql/lib/helpers/initApollo";
 import { defaultTheme } from "@reactioncommerce/catalyst";
 import { loadRegisteredBlocks, loadRegisteredComponents } from "@reactioncommerce/reaction-components";
+import { SnackbarProvider } from "notistack";
 import appComponents from "./appComponents";
 import theme from "./theme";
 import App from "./layouts/App";
 import getRootNode from "./utils/getRootNode";
 import RouterContext from "./context/RouterContext";
-import { SnackbarProvider } from "notistack";
 import snackbarPosition from "./utils/getSnackbarPosition";
 
 Meteor.startup(() => {
