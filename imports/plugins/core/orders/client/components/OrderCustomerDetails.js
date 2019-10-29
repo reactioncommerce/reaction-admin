@@ -41,9 +41,11 @@ OrderCustomerDetails.propTypes = {
   order: PropTypes.shape({
     email: PropTypes.string,
     fulfillmentGroups: PropTypes.arrayOf(PropTypes.shape({
-      shippingAddress: PropTypes.shape({
-        fullName: PropTypes.string,
-        phone: PropTypes.string
+      data: PropTypes.shape({
+        shippingAddress: PropTypes.shape({
+          fullName: PropTypes.string,
+          phone: PropTypes.string
+        })
       })
     }))
   })

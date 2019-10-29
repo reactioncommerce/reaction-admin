@@ -15,11 +15,14 @@ import { tagListingQuery } from "../../lib/queries";
 import { updateTagMutation, removeTagMutation } from "../../lib/mutations";
 
 const ButtonBar = styled.div`
-  margin-bottom: 20px
+  margin-bottom: 20px;
 `;
 
 class TagSettings extends Component {
   static propTypes = {
+    client: PropTypes.shape({
+      mutate: PropTypes.func.isRequired
+    }),
     history: PropTypes.shape({
       push: PropTypes.func.isRequired
     }),

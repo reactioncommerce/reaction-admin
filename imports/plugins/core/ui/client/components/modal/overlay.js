@@ -19,15 +19,15 @@ const styles = {
 };
 
 class Overlay extends Component {
-  static defaultProps = {
-    isVisible: true
-  };
-
   static propTypes = {
     CSSTransition: PropTypes.func,
     children: PropTypes.node,
     isVisible: PropTypes.bool,
     onClick: PropTypes.func
+  };
+
+  static defaultProps = {
+    isVisible: true
   };
 
   render() {

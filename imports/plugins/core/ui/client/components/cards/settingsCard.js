@@ -10,11 +10,6 @@ import { Reaction } from "/client/api";
 import ReactComponentOrBlazeTemplate from "/imports/plugins/core/components/lib/ReactComponentOrBlazeTemplate";
 
 class SettingsCard extends Component {
-  static defaultProps = {
-    preferences: {},
-    showSwitch: true
-  }
-
   static propTypes = {
     children: PropTypes.node,
     enabled: PropTypes.bool, // eslint-disable-line react/boolean-prop-naming
@@ -31,6 +26,11 @@ class SettingsCard extends Component {
     showSwitch: PropTypes.bool, // eslint-disable-line react/boolean-prop-naming
     template: PropTypes.any,
     title: PropTypes.string
+  }
+
+  static defaultProps = {
+    preferences: {},
+    showSwitch: true
   }
 
   handleSwitchChange = (event, isChecked) => {

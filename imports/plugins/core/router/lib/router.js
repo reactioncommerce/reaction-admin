@@ -1,7 +1,6 @@
 import React from "react";
 import { Route } from "react-router";
-import createBrowserHistory from "history/createBrowserHistory";
-import createMemoryHistory from "history/createMemoryHistory";
+import { createBrowserHistory, createMemoryHistory } from "history";
 import pathToRegexp from "path-to-regexp";
 import queryParse from "query-parse";
 import Immutable from "immutable";

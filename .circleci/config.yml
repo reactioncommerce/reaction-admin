@@ -5,141 +5,46 @@ version: 2
 # typing. See http://yaml.org/type/merge.html for details.
 defaults: &defaults
   environment:
-    - DOCKER_REPOSITORY: "reactioncommerce/reaction"
-    - DOCKER_NAMESPACE: "reactioncommerce"
-    - DOCKER_NAME: "reaction"
-    - GLOBAL_CACHE_VERSION: "v2"
-    - TOOL_NODE_FLAGS: "--max-old-space-size=4096"
-  working_directory: ~/reaction-app
+    CI_SCRIPTS: 'npx --quiet --package @reactioncommerce/ci-scripts@1.6.2'
+    DOCKER_REPOSITORY: "reactioncommerce/admin"
+    DOCKER_NAMESPACE: "reactioncommerce"
+    DOCKER_NAME: "admin"
   docker:
-    - image: circleci/node:8-stretch
+    - image: circleci/node:8.11.4-stretch
 
 jobs:
-  build:
+  install-dependencies:
     <<: *defaults
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - restore_cache:
-          name: Restoring Meteor cache
-          key: reaction-v2-meteor
+          keys:
+            - reaction-admin-v3-node-modules-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+            - reaction-admin-v3-node-modules-{{ .Branch }}
       - run:
-          name: Install Meteor
-          command: |
-            if [[ -f ~/.meteor/meteor ]]; then \
-              printf "\nMeteor already installed. Creating symlink.\n"
-              sudo ln -s ~/.meteor/meteor /usr/local/bin/meteor;
-            else
-              printf "\Installing Meteor\n"
-              curl https://install.meteor.com | /bin/sh
-            fi
+          name: Install the same NPM version that Meteor uses
+          command: sudo npm i -g npm@6.4.1
+      - run:
+          name: Install NPM dependencies
+          command: npm -v && npm ci
       - save_cache:
-          name: Saving Meteor to cache
-          key: reaction-v2-meteor-{{ epoch }}
-          paths:
-            - ~/.meteor
-      - run:
-          name: Meteor NPM Install
-          command: meteor npm install
-      - run:
-          name: Build dist bundle
-          command: meteor build --directory ../build/
-      - run:
-          name: Check .js file size
-          command: |
-            maxSize=2967000
-            size=$( wc -c ../build/bundle/programs/web.browser/*.js | awk '{$1=$1};1' | cut -d " " -f 1 )
-            if [[ $size -gt $maxSize ]]; then
-              echo "The production js file has size" $size "which exceeds limit of" $maxSize 1>&2
-              exit 3
-            else
-              echo "The js file size is" $size
-            fi
-      - run:
-          name: Check .css file size
-          command: |
-            maxSize=24888
-            size=$( wc -c ../build/bundle/programs/web.browser/*.css | awk '{$1=$1};1' | cut -d " " -f 1 )
-            if [[ $size -gt $maxSize ]]; then
-              echo "The production js file has size" $size "which exceeds limit of" $maxSize 1>&2
-              exit 3
-            else
-              echo "The css file size is" $size
-            fi
-      # Store node_modules dependency cache.
-      # Saved with package.json checksum and timestamped branch name keys.
-      - save_cache:
-          key: reaction-v2-node-modules-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+          key: reaction-admin-v3-node-modules-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
       - save_cache:
-          key: reaction-v2-node-modules-{{ .Branch }}-{{ epoch }}
+          key: reaction-admin-v3-node-modules-{{ .Branch }}
           paths:
             - node_modules
 
-  docker-build:
+  dockerfile-lint:
     <<: *defaults
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - attach_workspace:
-          at: docker-cache
       - run:
-          name: Discover Docker Tags
-          command: |
-            mkdir -p docker-cache
-            .circleci/bin/docker-tags "$CIRCLE_SHA1" "$CIRCLE_BRANCH" | sed 's/\//-/g' \
-              > docker-cache/docker-tags.txt
-      - run:
-          name: Docker build
-          command: |
-            docker build \
-              --build-arg TOOL_NODE_FLAGS="--max-old-space-size=4096" \
-              -t "$DOCKER_REPOSITORY:$CIRCLE_SHA1" .
-            mkdir -p docker-cache
-            docker save \
-              -o docker-cache/docker-image.tar \
-              "$DOCKER_REPOSITORY:$CIRCLE_SHA1"
-          no_output_timeout: 30m
-      - persist_to_workspace:
-          root: docker-cache
-          paths:
-            - docker-image.tar
-            - docker-tags.txt
-
-  docker-push:
-    <<: *defaults
-    steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - attach_workspace:
-          at: docker-cache
-      - run:
-          name: Load Docker Image
-          command: |
-            docker load < docker-cache/docker-image.tar
-      - run:
-          name: Tag Docker Image
-          command: |
-            cat docker-cache/docker-tags.txt \
-              | xargs -t -I % \
-                docker tag \
-                  "$DOCKER_REPOSITORY:$CIRCLE_SHA1" \
-                  "$DOCKER_REPOSITORY:%"
-      - run:
-          name: Docker Push
-          command: |
-            if [ -z "$CIRCLE_PR_USERNAME" ]; then \
-              docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-              docker push "$DOCKER_REPOSITORY:$CIRCLE_SHA1"
-              cat docker-cache/docker-tags.txt \
-                | xargs -t -I % \
-                  docker push "$DOCKER_REPOSITORY:%"
-            else
-              echo "No deploy for forks"
-            fi
+          name: Lint Dockerfiles
+          command: ${CI_SCRIPTS} lint-dockerfiles
 
   eslint:
     <<: *defaults
@@ -147,13 +52,11 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - reaction-v2-node-modules-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
-            - reaction-v2-node-modules-{{ .Branch }}
-            - reaction-v2-node-modules-trunk
+            - reaction-admin-v3-node-modules-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+            - reaction-admin-v3-node-modules-{{ .Branch }}
       - run:
-          name: Run Lint
-          command: |
-            npm run lint -- --quiet
+          name: Lint JavaScript
+          command: npm run lint
 
   test-unit:
     <<: *defaults
@@ -161,41 +64,39 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - reaction-v2-node-modules-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
-            - reaction-v2-node-modules-{{ .Branch }}
-            - reaction-v2-node-modules-trunk
+            - reaction-admin-v3-node-modules-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+            - reaction-admin-v3-node-modules-{{ .Branch }}
       - run:
           name: Run Unit Tests
           command: npm run test:unit
 
-  dockerfile-lint:
+  docker-build-push:
     <<: *defaults
-    docker:
-      - image: hadolint/hadolint:v1.6.6-6-g254b4ff
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
-          name: Dockerfile Lint
-          command: |
-            hadolint Dockerfile
+          name: Build and push production Docker image
+          command: ${CI_SCRIPTS} docker-build-tag-push . ${DOCKER_REPOSITORY}
 
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
-      - dockerfile-lint
-      - test-unit:
+      - install-dependencies
+      - dockerfile-lint:
           requires:
-            - build
+            - install-dependencies
       - eslint:
           requires:
-            - build
-      # - docker-build:
-      #     context: reaction-build-read
-      # - docker-push:
-      #     context: reaction-publish-docker
-      #     requires:
-      #       - docker-build
+            - install-dependencies
+      - test-unit:
+          requires:
+            - install-dependencies
+      - docker-build-push:
+          context: reaction-publish-docker
+          requires:
+            - dockerfile-lint
+            - eslint
+            - test-unit

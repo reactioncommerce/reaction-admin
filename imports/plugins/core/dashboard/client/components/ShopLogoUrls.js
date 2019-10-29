@@ -43,6 +43,7 @@ class ShopLogoUrls extends Component {
   static propTypes = {
     refetchShop: PropTypes.func,
     shop: PropTypes.shape({
+      _id: PropTypes.string.isRequired,
       shopLogoUrls: PropTypes.shape({
         primaryShopLogoUrl: PropTypes.string
       })

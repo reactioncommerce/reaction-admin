@@ -37,7 +37,7 @@ export default (Component) => (
       return (
         <Query query={getCatalogItems} variables={variables}>
           {({ loading, data, fetchMore }) => {
-            const { catalogItems = {} } = data;
+            const { catalogItems = {} } = data || {};
             const props = {
               ...this.props,
               isLoadingCatalogItems: loading,
@@ -57,7 +57,7 @@ export default (Component) => (
                 });
               });
 
-              const { pageInfo } = data.catalogItems;
+              const { pageInfo } = catalogItems;
               if (pageInfo) {
                 const { hasNextPage } = pageInfo;
                 props.hasMoreCatalogItems = hasNextPage;

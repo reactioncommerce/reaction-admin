@@ -155,14 +155,18 @@ function OrderPayments(props) {
 OrderPayments.propTypes = {
   classes: PropTypes.object,
   order: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
     payments: PropTypes.arrayOf(PropTypes.shape({
-      _id: PropTypes.string,
+      _id: PropTypes.string.isRequired,
       amount: PropTypes.shape({
         displayAmount: PropTypes.string
       }),
       displayName: PropTypes.string,
       status: PropTypes.string
-    }))
+    })),
+    shop: PropTypes.shape({
+      _id: PropTypes.string.isRequired
+    })
   })
 };
 
