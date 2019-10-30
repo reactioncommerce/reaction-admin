@@ -4,11 +4,6 @@ import classnames from "classnames";
 import { Components, registerComponent } from "@reactioncommerce/reaction-components";
 
 class CardHeader extends Component {
-  static defaultProps = {
-    actAsExpander: false,
-    expandable: false
-  };
-
   static propTypes = {
     actAsExpander: PropTypes.bool, // eslint-disable-line react/boolean-prop-naming
     children: PropTypes.node,
@@ -24,6 +19,11 @@ class CardHeader extends Component {
     switchName: PropTypes.string,
     switchOn: PropTypes.bool, // eslint-disable-line react/boolean-prop-naming
     title: PropTypes.string
+  };
+
+  static defaultProps = {
+    actAsExpander: false,
+    expandable: false
   };
 
   handleClick = (event) => {

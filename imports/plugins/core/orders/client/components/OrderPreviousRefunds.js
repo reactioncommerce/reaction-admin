@@ -90,6 +90,14 @@ OrderPreviousRefunds.propTypes = {
   classes: PropTypes.object,
   order: PropTypes.shape({
     _id: PropTypes.string,
+    refunds: PropTypes.arrayOf(PropTypes.shape({
+      amount: PropTypes.shape({
+        displayAmount: PropTypes.string.isRequired
+      }).isRequired,
+      createdAt: PropTypes.instanceOf(Date).isRequired,
+      paymentDisplayName: PropTypes.string.isRequired,
+      reason: PropTypes.string
+    })),
     shop: PropTypes.shape({
       _id: PropTypes.string
     })

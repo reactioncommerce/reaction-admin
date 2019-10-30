@@ -147,6 +147,7 @@ OrderPayment.propTypes = {
     }).isRequired,
     captureErrorMessage: PropTypes.string,
     displayName: PropTypes.string.isRequired,
+    mode: PropTypes.string.isRequired,
     processor: PropTypes.string.isRequired,
     riskLevel: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,

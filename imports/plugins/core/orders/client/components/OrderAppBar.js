@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Mutation } from "react-apollo";
 import { i18next, Reaction } from "/client/api";
+import Logger from "/client/modules/logger";
 import ConfirmButton from "/imports/client/ui/components/ConfirmButton";
 import PrimaryAppBar from "/imports/client/ui/components/PrimaryAppBar/PrimaryAppBar";
 import cancelOrderItemMutation from "../graphql/mutations/cancelOrderItem";
@@ -22,18 +23,20 @@ function OrderAppBar(props) {
 
       // We need to loop over every fulfillmentGroup
       // and then loop over every item inside group
-      fulfillmentGroups.forEach(async (fulfillmentGroup) => {
-        fulfillmentGroup.items.nodes.forEach(async (item) => {
-          await mutation({
+      for (const fulfillmentGroup of fulfillmentGroups) {
+        for (const item of fulfillmentGroup.items.nodes) {
+          mutation({
             variables: {
               cancelQuantity: item.quantity,
               itemId: item._id,
               orderId: order._id,
               reason: "Order cancelled inside Catalyst operator UI"
             }
+          }).catch((error) => {
+            Logger.error(error);
           });
-        });
-      });
+        }
+      }
     }
 
     return null;
@@ -69,6 +72,7 @@ function OrderAppBar(props) {
 OrderAppBar.propTypes = {
   classes: PropTypes.object,
   order: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
     status: PropTypes.string
   })
 };

@@ -1,7 +1,6 @@
 import React from "react";
 import { Route } from "react-router";
-import createBrowserHistory from "history/createBrowserHistory";
-import createMemoryHistory from "history/createMemoryHistory";
+import { createBrowserHistory, createMemoryHistory } from "history";
 import pathToRegexp from "path-to-regexp";
 import queryParse from "query-parse";
 import Immutable from "immutable";
@@ -16,7 +15,6 @@ import { getComponent } from "@reactioncommerce/reaction-components/components";
 import Hooks from "./hooks";
 import { addRoutePrefixToPackageRoutes, getEnabledPackageRoutes } from "./utils";
 
-const IDENTITY_PROVIDER_PLUGIN_NAME = "reaction-hydra-oauth";
 // Using a ternary operator here to avoid a mutable export - open to suggestions for a better way to do this
 export const history = Meteor.isClient ? createBrowserHistory() : createMemoryHistory();
 
@@ -573,7 +571,7 @@ Router.initPackageRoutes = (options) => {
   const indexLayout = ReactionLayout(options.indexRoute);
   const defaultNotFoundLayout = ReactionLayout({ template: "notFound" });
 
-  let defaultRouteDefinitions = [{
+  const defaultRouteDefinitions = [{
     route: "/",
     name: "index",
     options: {
@@ -605,10 +603,6 @@ Router.initPackageRoutes = (options) => {
       structure: defaultNotFoundLayout.structure
     }
   }];
-
-  // when running in idp-only mode, the default routes are not to show up
-  const idpPackage = packages.find((pkg) => pkg.name === IDENTITY_PROVIDER_PLUGIN_NAME);
-  if (idpPackage && idpPackage.identityProviderMode === "idp-only") defaultRouteDefinitions = [];
 
   const enabledPackageRoutes = getEnabledPackageRoutes(ReactionLayout, packages);
   const updatedPackageRoutes = addRoutePrefixToPackageRoutes(enabledPackageRoutes);

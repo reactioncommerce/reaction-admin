@@ -92,6 +92,9 @@ OrderHeader.propTypes = {
   order: PropTypes.shape({
     createdAt: PropTypes.string,
     displayStatus: PropTypes.string,
+    payments: PropTypes.arrayOf(PropTypes.shape({
+      status: PropTypes.string.isRequired
+    })),
     referenceId: PropTypes.string,
     status: PropTypes.string
   })

@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { Components, registerComponent, composeWithTracker } from "@reactioncommerce/reaction-components";
 import { Reaction } from "/client/api";
 
-
 class EditContainer extends Component {
   handleEditButtonClick = (event) => {
     const { props } = this;
@@ -120,8 +119,11 @@ EditContainer.propTypes = {
   autoHideEditButton: PropTypes.bool, // eslint-disable-line react/boolean-prop-naming
   children: PropTypes.node,
   data: PropTypes.object,
+  editView: PropTypes.string,
   field: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   hasPermission: PropTypes.bool,
+  i18nKeyLabel: PropTypes.string,
+  label: PropTypes.string,
   onEditButtonClick: PropTypes.func,
   onVisibilityButtonClick: PropTypes.func,
   showsVisibilityButton: PropTypes.bool // eslint-disable-line react/boolean-prop-naming

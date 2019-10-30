@@ -12,16 +12,16 @@ const styles = {
 };
 
 class CardBody extends Component {
-  static defaultProps = {
-    expandable: false,
-    expanded: true
-  };
-
   static propTypes = {
     AnimateHeight: PropTypes.func,
     children: PropTypes.node,
     expanded: PropTypes.bool, // eslint-disable-line react/boolean-prop-naming
     padded: PropTypes.bool // eslint-disable-line react/boolean-prop-naming
+  };
+
+  static defaultProps = {
+    expandable: false,
+    expanded: true
   };
 
   render() {

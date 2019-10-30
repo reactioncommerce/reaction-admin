@@ -108,6 +108,9 @@ function composer(props, onData) {
 }
 
 ProductPublishContainer.propTypes = {
+  client: PropTypes.shape({
+    mutate: PropTypes.func.isRequired
+  }),
   product: PropTypes.object,
   tags: PropTypes.arrayOf(PropTypes.object)
 };
