@@ -9,7 +9,7 @@ import { Reaction, i18next } from "/client/api";
 import TagList from "../components/tags/tagList";
 import { Tags } from "/lib/collections";
 import { getTagIds } from "/lib/selectors/tags";
-import getTagSuggestions from "/imports/plugins/core/ui-tagnav/client/util/getTagSuggestions";
+import getTagSuggestions from "../helpers/getTagSuggestions";
 
 const wrapComponent = (Comp) => (
   class TagListContainer extends Component {
