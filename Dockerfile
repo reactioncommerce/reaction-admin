@@ -18,7 +18,7 @@ WORKDIR $APP_SOURCE_DIR
 USER node
 
 # Ensure we have a config file
-RUN if [[ ! -f "config.js" ]]; then cp config.example.js config.js; fi
+RUN if [ ! -f "config.js" ]; then cp config.example.js config.js; fi
 
 RUN npm install --no-audit
 RUN printf "\\n[-] Building Meteor application...\\n" \
