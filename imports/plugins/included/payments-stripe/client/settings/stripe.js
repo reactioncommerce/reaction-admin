@@ -23,16 +23,6 @@ Template.stripeSettings.helpers({
   packageData
 });
 
-Template.stripe.helpers({
-  packageData
-});
-
-Template.stripe.events({
-  "click [data-event-action=showStripeSettings]"() {
-    Reaction.showActionView();
-  }
-});
-
 AutoForm.hooks({
   "stripe-update-form": {
     onSuccess() {

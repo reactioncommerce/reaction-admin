@@ -53,10 +53,6 @@ export const StripePackageConfig = PackageConfig.clone().extend({
     type: Boolean,
     defaultValue: false
   },
-  "settings.api_key": {
-    type: String,
-    label: "API Secret Key"
-  },
   // This field only applies to marketplace style orders where a payment is taken on behalf of another store
   "settings.applicationFee": {
     type: Number,
@@ -64,25 +60,9 @@ export const StripePackageConfig = PackageConfig.clone().extend({
     optional: true,
     defaultValue: 5
   },
-  "settings.connectAuth": {
-    type: StripeConnectAuthorizationCredentials,
-    label: "Connect Authorization Credentials",
-    optional: true
-  },
   "settings.public": {
     type: Object,
     defaultValue: {}
-  },
-  // Public Settings
-  "settings.public.client_id": {
-    type: String,
-    label: "Public Client ID",
-    optional: true
-  },
-  "settings.public.publishable_key": {
-    type: String,
-    label: "Publishable Key",
-    optional: true
   }
 });
 
