@@ -1,9 +1,24 @@
 import { useState, useEffect } from "react";
+import gql from "graphql-tag";
+import { useQuery } from "@apollo/react-hooks";
 import { Meteor } from "meteor/meteor";
 import { Tracker } from "meteor/tracker";
 import { Reaction } from "/client/api";
 import Logger from "/client/modules/logger";
 import { storefrontHomeUrl as defaultStorefrontHomeUrl } from "/config";
+
+const viewerQuery = gql`
+{
+  viewer {
+    _id
+    firstName
+    language
+    lastName
+    name
+    primaryEmailAddress
+  }
+}
+`;
 
 /**
  * Hook to get user permissions for the App component
@@ -15,6 +30,21 @@ export default function useAuth() {
   const [isLoading, setLoading] = useState(true);
   const [isLoggingOut, setLoggingOut] = useState(true);
   const [redirectUrl, setRedirect] = useState();
+
+  const {
+    loading: isLoadingViewer,
+    data: viewerData,
+    refetch: refetchViewer,
+    networkStatus: viewerQueryNetworkStatus
+  } = useQuery(
+    viewerQuery,
+    {
+      onError(fetchError) {
+        Logger.error(fetchError);
+      },
+      notifyOnNetworkStatusChange: true
+    },
+  );
 
   useEffect(() => {
     Tracker.autorun(() => {
@@ -31,7 +61,10 @@ export default function useAuth() {
       setLoggedIn(!!Reaction.getUserId());
 
       // Attempt to check if we are still loading this data
-      setLoading((hasDashboardAccessForAnyShop !== true && hasDashboardAccessForAnyShop !== false));
+      const isLoadingPermissions = (hasDashboardAccessForAnyShop !== true && hasDashboardAccessForAnyShop !== false);
+
+      // When `viewerQueryNetworkStatus` is `4`, it is refetching because we logged in/out
+      setLoading(isLoadingPermissions || isLoadingViewer || viewerQueryNetworkStatus === 4);
 
       if (!hasStorefrontHomeUrl && !isLoading) {
         Logger.warn("Missing storefront home URL. Please set this from the shop settings panel so that customer users can be redirected to your storefront.");
@@ -46,6 +79,11 @@ export default function useAuth() {
     });
   });
 
+  // Perform a `viewer` query whenever we log in or out
+  useEffect(() => {
+    refetchViewer();
+  }, [isLoggedIn, refetchViewer]);
+
   const handleSignOut = () => {
     setLoggingOut(true);
     Meteor.logout((error) => {
@@ -56,11 +94,12 @@ export default function useAuth() {
 
   return {
     isAdmin,
-    isLoggedIn,
     isLoading,
-    redirectUrl,
+    isLoggedIn,
     isLoggingOut,
+    onSignOut: handleSignOut,
+    redirectUrl,
     setLoggingOut,
-    onSignOut: handleSignOut
+    viewer: viewerData ? viewerData.viewer : null
   };
 }
