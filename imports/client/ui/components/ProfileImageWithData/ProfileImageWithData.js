@@ -54,7 +54,7 @@ class ProfileImageWithData extends Component {
     return (
       <Query query={getViewer}>
         {({ loading, data }) => {
-          if (loading) return null;
+          if (loading || !data || !data.viewer) return null;
 
           return (
             <Fragment>
@@ -74,7 +74,7 @@ class ProfileImageWithData extends Component {
                 onClose={() => setMenuAnchorEl(null)}
               >
                 <Link to={"/profile"}>
-                  <MenuItem>{i18next.t("admin.userAccountDropdown.profileLabel")}</MenuItem>
+                  <MenuItem onClick={() => setMenuAnchorEl(null)}>{i18next.t("admin.userAccountDropdown.profileLabel")}</MenuItem>
                 </Link>
                 <MenuItem onClick={() => Meteor.logout()}>{i18next.t("accountsUI.signOut")}</MenuItem>
               </Menu>
