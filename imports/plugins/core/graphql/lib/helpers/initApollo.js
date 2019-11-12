@@ -17,11 +17,13 @@ if (!isApiUrlAString || (isApiUrlAString && graphQlApiUrl.length === 0)) {
 export const meteorAccountsLink = new ApolloLink((operation, forward) => {
   const token = localStorage.getItem("Meteor.loginToken");
 
-  operation.setContext(() => ({
-    headers: {
-      "meteor-login-token": token
-    }
-  }));
+  if (typeof token === "string") {
+    operation.setContext(() => ({
+      headers: {
+        "meteor-login-token": token
+      }
+    }));
+  }
 
   return forward(operation);
 });
