@@ -20,7 +20,7 @@ services:
   reaction-admin:
     build:
       context: .
-      target: meteor-dev
+      dockerfile: Dockerfile-dev
     command: bash -c "time meteor npm install --no-audit && node --experimental-modules ./.reaction/scripts/run.mjs"
     env_file:
       - ./.env
@@ -33,9 +33,9 @@ services:
       - "4080:4080"
       - "9229:9229"
     volumes:
-      - .:/opt/reaction/src:cached
-      - reaction_meteor_local:/opt/reaction/src/.meteor/local
-      - reaction_node_modules:/opt/reaction/src/node_modules # do not link node_modules in, and persist it between dc up runs
+      - .:/usr/local/src/app:cached
+      - reaction_meteor_local:/usr/local/src/app/.meteor/local
+      - reaction_node_modules:/usr/local/src/app/node_modules # do not link node_modules in, and persist it between dc up runs
 
 volumes:
   reaction_node_modules:
