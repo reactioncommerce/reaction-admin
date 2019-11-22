@@ -8,8 +8,7 @@ import { Session } from "meteor/session";
 import { Tracker } from "meteor/tracker";
 import { Reaction } from "/client/api";
 import { ITEMS_INCREMENT } from "/client/config/defaults";
-import { Products, Tags, Shops } from "/lib/collections";
-import { resubscribeAfterCloning } from "/lib/api/products";
+import { Products, Tags } from "/lib/collections";
 import ProductsComponent from "../components/products";
 
 const reactiveProductIds = new ReactiveVar([], (oldVal, newVal) => JSON.stringify(oldVal.sort()) === JSON.stringify(newVal.sort()));
@@ -23,6 +22,29 @@ Tracker.autorun(() => {
   const isActionViewOpen = Reaction.isActionViewOpen();
   if (isActionViewOpen === false) {
     Session.set("productGrid/selectedProducts", []);
+  }
+});
+
+Tracker.autorun(() => {
+  const selectedProducts = Session.get("productGrid/selectedProducts");
+
+  if (Array.isArray(selectedProducts)) {
+    if (selectedProducts.length > 0) {
+      // Show the actionView if there are products selected.
+      Reaction.showActionView({
+        label: "Grid Settings",
+        i18nKeyLabel: "gridSettingsPanel.title",
+        template: "productSettings",
+        type: "product"
+      });
+    } else {
+      // If no products are selected, and we're currently displaying the "productSettings" grid admin component,
+      // then hide the actionView.
+      const currentActionView = Reaction.getActionView();
+      if (currentActionView && currentActionView.template === "productSettings") {
+        Reaction.hideActionView();
+      }
+    }
   }
 });
 
@@ -109,14 +131,12 @@ const wrapComponent = (Comp) => (
 );
 
 /**
- * @summary Products composer
+ * @summary Products subscription composer
  * @param {Object} props Props from parent
  * @param {Function} onData Call with props changes
  * @returns {undefined}
  */
-function composer(props, onData) {
-  window.prerenderReady = false;
-
+function productsSubscriptionComposer(props, onData) {
   const queryParams = Object.assign({}, Reaction.Router.current().query);
 
   const filterByProductIds = Session.get("filterByProductIds");
@@ -142,85 +162,48 @@ function composer(props, onData) {
     queryParams.tags = [tag._id];
   }
 
-  // Filter by shop
-  const shopIdOrSlug = Reaction.Router.getParam("shopSlug");
-  if (shopIdOrSlug) {
-    queryParams.shops = [shopIdOrSlug];
-  }
-
   const scrollLimit = Session.get("productScrollLimit");
   const productPage = Session.get("products/page") || 0;
   const sort = { createdAt: 1 };
 
   // Now that we have the necessary info, we can subscribe to Products we need
-  let productsSubscription = Meteor.subscribe("ProductsAdminList", productPage, scrollLimit, queryParams, sort);
+  const productsSubscription = Meteor.subscribe("ProductsAdminList", productPage, scrollLimit, queryParams, sort);
 
-  // Force re-running products subscription when a product is cloned
-  const resubscribe = resubscribeAfterCloning.get();
-  if (resubscribe) {
-    resubscribeAfterCloning.set(false);
-    productsSubscription.stop();
-    productsSubscription = Meteor.subscribe("ProductsAdminList", productPage, scrollLimit, queryParams, sort);
-  }
+  onData(null, {
+    isProductsSubscriptionReady: productsSubscription.ready()
+  });
+}
 
-  if (productsSubscription.ready()) {
-    window.prerenderReady = true;
-  }
+/**
+ * @summary Products composer
+ * @param {Object} props Props from parent
+ * @param {Function} onData Call with props changes
+ * @returns {undefined}
+ */
+function productsComposer(props, onData) {
+  const scrollLimit = Session.get("productScrollLimit");
+  const sort = { createdAt: 1 };
 
-  const activeShopsIds = Shops.find({
-    $or: [
-      { "workflow.status": "active" },
-      { _id: Reaction.getPrimaryShopId() }
-    ]
-  }).map((activeShop) => activeShop._id);
-
-  const products = Products.find({
-    ancestors: [],
-    type: "simple",
-    shopId: { $in: activeShopsIds }
-  }, {
-    sort
-  }).fetch();
-  Session.set("productGrid/products", products);
+  const products = Products.find({ type: "simple" }, { sort }).fetch();
 
   // Update ID list for ProductGridMedia subscription
   const productIds = products.map((product) => product._id);
   reactiveProductIds.set(productIds);
 
-  const selectedProducts = Session.get("productGrid/selectedProducts");
-
-  if (Array.isArray(selectedProducts)) {
-    if (selectedProducts.length > 0) {
-      // Show the actionView if there are products selected.
-      Reaction.showActionView({
-        label: "Grid Settings",
-        i18nKeyLabel: "gridSettingsPanel.title",
-        template: "productSettings",
-        type: "product"
-      });
-    } else {
-      // If no products are selected, and we're currently displaying the "productSettings" grid admin component,
-      // then hide the actionView.
-      const currentActionView = Reaction.getActionView();
-      if (currentActionView && currentActionView.template === "productSettings") {
-        Reaction.hideActionView();
-      }
-    }
-  }
-
   onData(null, {
     canLoadMoreProducts: products.length >= scrollLimit,
-    isProductsSubscriptionReady: productsSubscription.ready(),
     products
   });
 }
 
 registerComponent("ProductsAdmin", ProductsComponent, [
-  composeWithTracker(composer),
+  composeWithTracker(productsSubscriptionComposer),
+  composeWithTracker(productsComposer),
   wrapComponent
 ]);
 
 export default compose(
-  composeWithTracker(composer),
+  composeWithTracker(productsSubscriptionComposer),
+  composeWithTracker(productsComposer),
   wrapComponent
 )(ProductsComponent);

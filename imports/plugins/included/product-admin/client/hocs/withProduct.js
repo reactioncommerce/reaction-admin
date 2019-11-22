@@ -243,7 +243,9 @@ function composer(props, onData) {
 
   if (productSub && productSub.ready()) {
     product = ReactionProduct.setProduct(productId, variantId);
-    product && Meteor.subscribe("Tags", product.hashtags);
+    if (product && product.hashtags && product.hashtags.length) {
+      Meteor.subscribe("Tags", product.hashtags);
+    }
 
     if (variantId) {
       ReactionProduct.setCurrentVariant(variantId);

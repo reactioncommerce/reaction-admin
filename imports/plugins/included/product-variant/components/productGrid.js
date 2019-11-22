@@ -132,6 +132,13 @@ class ProductGrid extends Component {
     selected: []
   }
 
+  componentDidUpdate(prevProps) {
+    const { setFilteredProductIdsCount, totalProductCount } = this.props;
+    if (prevProps.totalProductCount !== totalProductCount) {
+      setFilteredProductIdsCount(totalProductCount);
+    }
+  }
+
   onPageClick = (event) => {
     // Don't trigger the clear selection if we're clicking on a grid item.
     if (event.target.closest(".product-grid-item") === null) {
@@ -428,7 +435,6 @@ class ProductGrid extends Component {
   render() {
     const { totalProductCount, page, productsPerPage, onChangePage, onChangeRowsPerPage, classes } = this.props;
     const { isAllSelected } = this.state;
-    this.props.setFilteredProductIdsCount(totalProductCount);
 
     return (
       <Card raised>
