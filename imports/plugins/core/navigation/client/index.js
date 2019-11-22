@@ -5,7 +5,6 @@ import { registerOperatorRoute } from "/imports/client/ui";
 import NavigationDashboard from "./containers/navigationDashboardContainer";
 
 import "./containers";
-import "./templates";
 
 registerOperatorRoute({
   isNavigationLink: true,

@@ -18,8 +18,7 @@ export default (Component) => (
         <Query query={defaultNavigationTreeIdQuery}>
           {({ data, loading }) => {
             const props = { ...this.props };
-            if (!loading) {
-              props.shopId = data.primaryShop._id;
+            if (!loading && data && data.primaryShop) {
               props.defaultNavigationTreeId = data.primaryShop.defaultNavigationTreeId;
             }
             return <Component {...props} />;
