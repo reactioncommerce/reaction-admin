@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Query } from "react-apollo";
-import { Reaction } from "/client/api";
 import defaultNavigationTreeQuery from "./defaultNavigationTreeQuery";
 
 export default (Component) => (

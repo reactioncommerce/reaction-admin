@@ -469,7 +469,6 @@ class TagDataTable extends Component {
     return (
       <Query query={query} variables={variables}>
         {({ data, error, fetchMore, refetch }) => {
-
           if (error || !data) {
             if (error) Logger.error(error);
             return null;
