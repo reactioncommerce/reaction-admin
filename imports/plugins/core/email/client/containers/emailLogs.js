@@ -1,7 +1,6 @@
-import { compose, withProps } from "recompose";
+import { compose } from "recompose";
 import { composeWithTracker } from "@reactioncommerce/reaction-components";
 import { Meteor } from "meteor/meteor";
-import { i18next } from "/client/api";
 import EmailLogs from "../components/emailLogs";
 import { Jobs } from "/lib/collections";
 
@@ -12,23 +11,4 @@ const composer = (props, onData) => {
   }
 };
 
-const handlers = {
-  /**
-   * Restart a failed or cancelled email job
-   * @param {Object} email - the email job object
-   * @returns {null} triggers an alert
-   */
-  resend(email) {
-    Meteor.call("emails/retryFailed", email._id, (err) => {
-      if (err) {
-        return Alerts.toast(i18next.t("app.error", { error: err.reason }), "error");
-      }
-      return Alerts.toast(i18next.t("mail.alerts.resendSuccess", { email: email.data.to }), "success");
-    });
-  }
-};
-
-export default compose(
-  composeWithTracker(composer),
-  withProps(handlers)
-)(EmailLogs);
+export default compose(composeWithTracker(composer))(EmailLogs);
