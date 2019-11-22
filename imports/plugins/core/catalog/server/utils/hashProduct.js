@@ -1,5 +1,4 @@
 import hash from "object-hash";
-import getCatalogProductMedia from "./getCatalogProductMedia.js";
 import getTopLevelProduct from "./getTopLevelProduct.js";
 
 const productFieldsThatNeedPublishing = [
@@ -59,7 +58,9 @@ const variantFieldsThatNeedPublishing = [
  * @returns {String} product hash
  */
 export async function createProductHash(product, collections) {
-  const variants = await collections.Products.find({ ancestors: product._id, type: "variant" }).toArray();
+  const { MediaRecords, Products } = collections;
+
+  const variants = await Products.find({ ancestors: product._id, type: "variant" }).toArray();
 
   const productForHashing = {};
   productFieldsThatNeedPublishing.forEach((field) => {
@@ -67,7 +68,26 @@ export async function createProductHash(product, collections) {
   });
 
   // Track changes to all related media, too
-  productForHashing.media = await getCatalogProductMedia(product._id, collections);
+  const mediaArray = await MediaRecords.find(
+    {
+      "metadata.productId": product._id,
+      "metadata.workflow": { $nin: ["archived", "unpublished"] }
+    },
+    {
+      sort: { "metadata.priority": 1, "uploadedAt": 1 }
+    }
+  ).toArray();
+
+  productForHashing.media = mediaArray
+    .map((media) => {
+      const { priority } = media.metadata || {};
+
+      return {
+        id: media._id,
+        priority
+      };
+    })
+    .sort((mediaA, mediaB) => mediaA.priority - mediaB.priority);
 
   // Track changes to all variants, too
   productForHashing.variants = variants.map((variant) => {

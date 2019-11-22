@@ -11,6 +11,7 @@ import styled from "styled-components";
 import Select from "@reactioncommerce/components/Select/v1";
 import TextInput from "@reactioncommerce/components/TextInput/v1";
 import Button from "@reactioncommerce/catalyst/Button";
+import Logger from "/client/modules/logger";
 import { i18next } from "/client/api";
 import { pagination } from "./util/pagination";
 import TagTableSelect from "./TagTableSelect";
@@ -467,7 +468,12 @@ class TagDataTable extends Component {
     // All available props: https://github.com/tannerlinsley/react-table#props
     return (
       <Query query={query} variables={variables}>
-        {({ data, fetchMore, refetch }) => {
+        {({ data, error, fetchMore, refetch }) => {
+          if (error || !data) {
+            if (error) Logger.error(error);
+            return null;
+          }
+
           const result = (data[otherProps.dataKey] && data[otherProps.dataKey].nodes) || [];
           const resultCount = (Array.isArray(result) && result.length) || 0;
           const pageInfo = pagination({

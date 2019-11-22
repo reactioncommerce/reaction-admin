@@ -1,15 +1,11 @@
+import * as registeredCollections from "/lib/collections";
+
 const collections = {};
 
-/**
- * @summary Use this to set the raw collections after all plugins
- *   have been registered.
- * @param {Object} registeredCollections Collections map
- * @returns {undefined}
- */
-export function setCollections(registeredCollections) {
-  for (const name in registeredCollections) {
-    if ({}.hasOwnProperty.call(registeredCollections, name)) {
-      collections[name] = registeredCollections[name];
+for (const name in registeredCollections) {
+  if ({}.hasOwnProperty.call(registeredCollections, name) && registeredCollections[name]) {
+    if (typeof registeredCollections[name].rawCollection === "function") {
+      collections[name] = registeredCollections[name].rawCollection();
     }
   }
 }

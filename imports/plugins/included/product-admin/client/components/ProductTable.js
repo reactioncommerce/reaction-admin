@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import gql from "graphql-tag";
-import { withRouter } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useMutation } from "@apollo/react-hooks";
 import { Components } from "@reactioncommerce/reaction-components";
 import InlineAlert from "@reactioncommerce/components/InlineAlert/v1";
@@ -27,10 +26,9 @@ mutation createProduct($input: CreateProductInput!) {
 
 /**
  * ProductTable component
- * @param {Object} props Component props
  * @returns {Node} React node
  */
-function ProductTable({ history }) {
+function ProductTable() {
   // Filter by file state
   const [files, setFiles] = useState([]);
   const [isFiltered, setFiltered] = useState(false);
@@ -39,6 +37,7 @@ function ProductTable({ history }) {
   const [filteredProductIdsCount, setFilteredProductIdsCount] = useState(0);
   const [noProductsFoundError, setNoProductsFoundError] = useState(false);
   const [createProduct, { error: createProductError }] = useMutation(CREATE_PRODUCT);
+  const history = useHistory();
 
   const onDrop = (accepted) => {
     if (accepted.length === 0) return;
@@ -234,8 +233,4 @@ function ProductTable({ history }) {
   );
 }
 
-ProductTable.propTypes = {
-  history: PropTypes.object
-};
-
-export default withRouter(ProductTable);
+export default ProductTable;

@@ -18,8 +18,8 @@ export const tagListingQuery = gql`
 `;
 
 export const getTag = gql`
-  query getTag($slugOrId: String!) {
-    tag(slugOrId: $slugOrId, shouldIncludeInvisible: true) {
+  query getTag($shopId: ID!, $slugOrId: String!) {
+    tag(slugOrId: $slugOrId, shopId: $shopId, shouldIncludeInvisible: true) {
       ${Tag}
     }
   }

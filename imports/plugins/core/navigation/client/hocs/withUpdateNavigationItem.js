@@ -44,7 +44,8 @@ export default (Component) => {
       defaultNavigationTreeId: PropTypes.string,
       onDeleteNavigationItem: PropTypes.func,
       onUpdateNavigationItem: PropTypes.func,
-      refetchNavigationTree: PropTypes.func
+      refetchNavigationTree: PropTypes.func,
+      shopId: PropTypes.string
     }
 
     static defaultProps = {
@@ -66,13 +67,14 @@ export default (Component) => {
     }
 
     handlePublishNavigationChanges = () => {
-      const { client, defaultNavigationTreeId } = this.props;
+      const { client, defaultNavigationTreeId, shopId } = this.props;
 
       client.mutate({
         mutation: publishNavigationChangesMutation,
         variables: {
           input: {
-            _id: defaultNavigationTreeId
+            id: defaultNavigationTreeId,
+            shopId
           }
         }
       });

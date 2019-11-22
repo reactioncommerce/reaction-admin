@@ -105,7 +105,7 @@ class TagFormPageWithData extends Component {
     // that tag and render the edit form
     if (this.tagId) {
       return (
-        <Query query={getTag} variables={{ slugOrId: this.tagId }} fetchPolicy="network-only">
+        <Query query={getTag} variables={{ shopId, slugOrId: this.tagId }} fetchPolicy="network-only">
           {({ data }) => {
             const tag = data && data.tag;
 

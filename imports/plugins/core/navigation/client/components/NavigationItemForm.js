@@ -52,6 +52,7 @@ class NavigationItemForm extends Component {
     navigationItem: PropTypes.object,
     onCloseForm: PropTypes.func,
     onSetSortableNavigationTree: PropTypes.func,
+    shopId: PropTypes.string,
     sortableTreeNode: PropTypes.object,
     updateNavigationItem: PropTypes.func
   }
@@ -61,7 +62,7 @@ class NavigationItemForm extends Component {
   handleFormValidate = (doc) => navigationItemValidator(navigationItemFormSchema.clean(doc));
 
   handleFormSubmit = (input) => {
-    const { createNavigationItem, mode, navigationItem, onCloseForm, updateNavigationItem, sortableTreeNode, onSetSortableNavigationTree } = this.props;
+    const { createNavigationItem, mode, navigationItem, onCloseForm, updateNavigationItem, shopId, sortableTreeNode, onSetSortableNavigationTree } = this.props;
     const { name, url, isUrlRelative, isVisible, isPrivate, isSecondary, shouldOpenInNewWindow, classNames } = input;
 
     const navigationItemUpdate = {
@@ -74,7 +75,8 @@ class NavigationItemForm extends Component {
         isUrlRelative,
         shouldOpenInNewWindow,
         classNames
-      }
+      },
+      shopId
     };
 
     if (mode === "create") {
@@ -89,8 +91,9 @@ class NavigationItemForm extends Component {
       updateNavigationItem({
         variables: {
           input: {
-            _id: navigationItem._id,
-            navigationItem: navigationItemUpdate
+            id: navigationItem._id,
+            navigationItem: navigationItemUpdate,
+            shopId
           }
         }
       });
@@ -114,11 +117,12 @@ class NavigationItemForm extends Component {
   }
 
   handleClickDelete = () => {
-    const { deleteNavigationItem, navigationItem, onCloseForm } = this.props;
+    const { deleteNavigationItem, navigationItem, onCloseForm, shopId } = this.props;
     deleteNavigationItem({
       variables: {
         input: {
-          _id: navigationItem._id
+          id: navigationItem._id,
+          shopId
         }
       }
     });

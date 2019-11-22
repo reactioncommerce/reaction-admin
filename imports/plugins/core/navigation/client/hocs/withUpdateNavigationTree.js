@@ -26,6 +26,7 @@ export default (Component) => (
       }),
       onUpdateNavigationTree: PropTypes.func,
       publishNavigationChanges: PropTypes.func,
+      shopId: PropTypes.string,
       sortableNavigationTree: PropTypes.arrayOf(PropTypes.object)
     }
 
@@ -65,12 +66,13 @@ export default (Component) => (
             <Component
               {...this.props}
               updateNavigationTree={() => {
-                const { defaultNavigationTreeId, sortableNavigationTree } = this.props;
+                const { defaultNavigationTreeId, shopId, sortableNavigationTree } = this.props;
                 const input = {
-                  _id: defaultNavigationTreeId,
+                  id: defaultNavigationTreeId,
                   navigationTree: {
                     draftItems: this.sortableNavigationTreeToDraftItems(sortableNavigationTree)
-                  }
+                  },
+                  shopId
                 };
 
                 updateNavigationTree({

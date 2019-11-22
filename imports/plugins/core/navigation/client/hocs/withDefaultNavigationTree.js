@@ -1,14 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Query } from "react-apollo";
-import { Reaction } from "/client/api";
 import defaultNavigationTreeQuery from "./defaultNavigationTreeQuery";
 
 export default (Component) => (
   class WithDefaultNavigationTree extends React.Component {
     static propTypes = {
       defaultNavigationTreeId: PropTypes.string.isRequired,
-      onSetNavigationTree: PropTypes.func
+      onSetNavigationTree: PropTypes.func,
+      shopId: PropTypes.string
     }
 
     static defaultProps = {
@@ -22,17 +22,16 @@ export default (Component) => (
     }
 
     render() {
-      const props = { ...this.props };
-      const { defaultNavigationTreeId } = this.props;
+      const { defaultNavigationTreeId, shopId } = this.props;
 
       if (!defaultNavigationTreeId) {
-        return <Component {...props} />;
+        return <Component {...this.props} />;
       }
 
       const variables = {
         id: defaultNavigationTreeId,
         language: "en",
-        shopId: Reaction.getShopId()
+        shopId
       };
 
       return (
@@ -43,12 +42,20 @@ export default (Component) => (
           notifyOnNetworkStatusChange={true}
         >
           {({ data, loading, refetch }) => {
+            let navigationTreeName;
             if (!loading) {
               if (data && data.navigationTreeById && data.navigationTreeById.name) {
-                props.navigationTreeName = data.navigationTreeById.name;
+                navigationTreeName = data.navigationTreeById.name;
               }
             }
-            return <Component {...props} refetchNavigationTree={refetch} />;
+
+            return (
+              <Component
+                {...this.props}
+                navigationTreeName={navigationTreeName}
+                refetchNavigationTree={refetch}
+              />
+            );
           }}
         </Query>
       );

@@ -34,6 +34,7 @@ class NavigationDashboard extends Component {
     navigationItems: PropTypes.array,
     onDiscardNavigationTreeChanges: PropTypes.func,
     onSetSortableNavigationTree: PropTypes.func,
+    shopId: PropTypes.string,
     sortableNavigationTree: PropTypes.arrayOf(PropTypes.object),
     uiState: PropTypes.shape({
       isLeftDrawerOpen: PropTypes.bool
@@ -97,6 +98,7 @@ class NavigationDashboard extends Component {
       deleteNavigationItem,
       navigationItems,
       onSetSortableNavigationTree,
+      shopId,
       sortableNavigationTree,
       onDiscardNavigationTreeChanges,
       updateNavigationItem,
@@ -140,6 +142,7 @@ class NavigationDashboard extends Component {
               deleteNavigationItem={deleteNavigationItem}
               mode={modalMode}
               navigationItem={navigationItem}
+              shopId={shopId}
               sortableTreeNode={sortableTreeNode}
               onCloseForm={this.handleCloseModal}
               updateNavigationItem={updateNavigationItem}
