@@ -15,13 +15,11 @@ IFS="$(printf "\n\t")"
 
 __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 env_file=${__dir}/../.env
-config_file=${__dir}/../config.js
 
 function main() {
   set -e
 
   add_new_env_vars
-  copy_config
 }
 
 function file_ends_with_newline() {
@@ -60,12 +58,6 @@ function add_new_env_vars() {
         fi
       done
     }
-}
-
-function copy_config() {
-  [[ ! -f "${config_file}" ]] && {
-    cp "config.example.js" "${config_file}"
-  }
 }
 
 main

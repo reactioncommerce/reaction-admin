@@ -1,18 +1,20 @@
 import graphql from "graphql.js";
 import { Accounts } from "meteor/accounts-base";
-import { graphQlApiUrl } from "/config";
+import { Meteor } from "meteor/meteor";
 import createFlatRateFulfillmentMethod from "../mutations/createFlatRateFulfillmentMethod.graphql";
 import updateFlatRateFulfillmentMethod from "../mutations/updateFlatRateFulfillmentMethod.graphql";
 import deleteFlatRateFulfillmentMethod from "../mutations/deleteFlatRateFulfillmentMethod.graphql";
 import enablePaymentMethodForShop from "../mutations/enablePaymentMethodForShop.graphql";
 import paymentMethods from "../queries/paymentMethods.graphql";
 
+const { graphQlApiUrlHttp } = Meteor.settings.public;
+
 /**
  * In React components, you should use Apollo. This client is available for Blaze
  * components and other code, but ideally we will not need this forever.
  */
 
-const client = graphql(graphQlApiUrl, { asJSON: true });
+const client = graphql(graphQlApiUrlHttp, { asJSON: true });
 
 /**
  * @summary Sets the meteor-login-token header for all GraphQL requests done

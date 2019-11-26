@@ -17,9 +17,6 @@ WORKDIR $APP_SOURCE_DIR
 
 USER node
 
-# Ensure we have a config file
-RUN if [ ! -f "config.js" ]; then cp config.example.js config.js; fi
-
 RUN npm install --no-audit
 RUN printf "\\n[-] Building Meteor application...\\n" \
  && /home/node/.meteor/meteor build --server-only --architecture os.linux.x86_64 --directory "$APP_BUNDLE_DIR"
