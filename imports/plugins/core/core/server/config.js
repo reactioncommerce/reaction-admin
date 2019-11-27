@@ -8,6 +8,7 @@ export default envalid.cleanEnv(process.env, {
     example: "http://localhost:3000/graphql-beta"
   }),
   PUBLIC_GRAPHQL_API_URL_WS: str({
+    default: "",
     desc: "A URL that is accessible from browsers and accepts GraphQL WebSocket connections",
     example: "ws://localhost:3000/graphql-beta"
   }),

@@ -31,7 +31,7 @@ const standardLink = ApolloLink.from([
 
 let linkWithSubscriptions;
 
-if (graphQlApiUrlWebSocket) {
+if (graphQlApiUrlWebSocket && graphQlApiUrlWebSocket.length) {
   linkWithSubscriptions = ApolloLink.split(
     (operation) => {
       const operationAST = getOperationAST(operation.query, operation.operationName);
