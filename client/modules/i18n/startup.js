@@ -11,16 +11,9 @@ import { Reaction } from "/client/api";
 import Logger from "/client/modules/logger";
 import { Shops } from "/lib/collections";
 import Schemas from "@reactioncommerce/schemas";
-import ReactionError from "@reactioncommerce/reaction-error";
-import { i18nBaseUrl } from "/config";
 import i18next, { getLabelsFor, getValidationErrorMessages, i18nextDep } from "./main";
 
-// Validate API url variable
-const isI18nUrlAString = typeof i18nBaseUrl === "string";
-
-if (!isI18nUrlAString || (isI18nUrlAString && i18nBaseUrl.length === 0)) {
-  throw new ReactionError("not-defined", "\"i18nBaseUrl\" is not defined or has an empty value in `config.js`. See `config.example.js` more information.");
-}
+const { i18nBaseUrl } = Meteor.settings.public;
 
 const configuredI18next = i18next
   // https://github.com/i18next/i18next-browser-languageDetector

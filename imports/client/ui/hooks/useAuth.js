@@ -5,7 +5,8 @@ import { Meteor } from "meteor/meteor";
 import { Tracker } from "meteor/tracker";
 import { Reaction } from "/client/api";
 import Logger from "/client/modules/logger";
-import { storefrontHomeUrl as defaultStorefrontHomeUrl } from "/config";
+
+const { storefrontHomeUrl: defaultStorefrontHomeUrl } = Meteor.settings.public;
 
 const viewerQuery = gql`
 {

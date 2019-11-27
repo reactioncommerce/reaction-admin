@@ -23,8 +23,6 @@ pids
 results
 allure-results
 
-/config.js
-
 client/plugins.js
 client/plugins.css
 client/plugins.less
