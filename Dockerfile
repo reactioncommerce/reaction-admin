@@ -18,6 +18,7 @@ WORKDIR $APP_SOURCE_DIR
 USER node
 
 RUN npm install --no-audit
+RUN node --experimental-modules ./.reaction/scripts/build.mjs
 RUN printf "\\n[-] Building Meteor application...\\n" \
  && /home/node/.meteor/meteor build --server-only --architecture os.linux.x86_64 --directory "$APP_BUNDLE_DIR"
 
