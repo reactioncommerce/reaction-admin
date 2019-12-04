@@ -1,4 +1,4 @@
-import { useLazyQuery } from "@apollo/react-hooks";
+import { useApolloClient } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
 const getTaxRatesQuery = gql`
@@ -25,23 +25,25 @@ const getTaxRatesQuery = gql`
  *  The `isLoadingTaxRates` property will be `true` until the query is done running.
  */
 export default function useCustomTaxRates(shopId) {
-  const [getTaxRates, { called, data, loading, refetch }] = useLazyQuery(getTaxRatesQuery, {
-    fetchPolicy: "network-only"
-  });
+  const client = useApolloClient();
 
   return {
-    fetchTaxRates({ first = 20, offset = 0 }) {
-      getTaxRates({
+    fetchTaxRates: async ({ first = 20, offset = 0 }) => {
+      const { called, data, loading } = await client.query({
+        query: getTaxRatesQuery,
         variables: {
           first,
           offset,
           shopId
         }
       });
-    },
-    isLoadingTaxRates: loading || !called,
-    refetchTaxRates: refetch,
-    taxRates: (data && data.taxRates && data.taxRates.nodes) || [],
-    totalTaxRatesCount: (data && data.taxRates && data.taxRates.totalCount) || 0
+
+      return {
+        isLoadingTaxRates: loading || !called,
+        refetchTaxRates: () => {},
+        taxRates: (data && data.taxRates && data.taxRates.nodes) || [],
+        totalTaxRatesCount: (data && data.taxRates && data.taxRates.totalCount) || 0
+      };
+    }
   };
 }
