@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import i18next from "i18next";
-import ReactTable from "react-table";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
 import { makeStyles } from "@material-ui/styles";
 import { Components } from "@reactioncommerce/reaction-components";
+import DataTable, { useDataTable } from "@reactioncommerce/catalyst/DataTable";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import useCustomTaxRates from "../hooks/useCustomTaxRates.js";
 import useTaxCodes from "../hooks/useTaxCodes.js";
@@ -17,15 +16,8 @@ import CustomTaxRateForm from "./CustomTaxRateForm.js";
 const useStyles = makeStyles((theme) => ({
   createButton: {
     marginBottom: theme.spacing(3)
-  },
-  row: {
-    cursor: "pointer"
   }
 }));
-
-const cellWithDefaultText = ({ value }) => ((value && value.length) ? value : i18next.t("admin.taxGrid.any"));
-
-const DEFAULT_PAGE_SIZE = 2;
 
 /**
  * @summary React component that renders the custom tax rate settings card,
@@ -38,46 +30,71 @@ export default function CustomTaxRatesSettings() {
   const [shopId] = useCurrentShopId();
   const [isCreating, setIsCreating] = useState(false);
   const [editDoc, setEditDoc] = useState(null);
-  const [selectedPageSize, setSelectedPageSize] = useState(DEFAULT_PAGE_SIZE);
+  // const [selectedPageSize, setSelectedPageSize] = useState(DEFAULT_PAGE_SIZE);
 
   const { isLoadingTaxCodes, taxCodes } = useTaxCodes(shopId);
-  const {
-    fetchTaxRates,
-    isLoadingTaxRates,
-    refetchTaxRates,
-    taxRates,
-    totalTaxRatesCount
-  } = useCustomTaxRates(shopId);
+  const { fetchTaxRates } = useCustomTaxRates(shopId);
 
-  if (!shopId || isLoadingTaxCodes) {
-    return <Components.Loading />;
-  }
+  const CellWithDefaultText = useCallback(({ cell }) => (
+    (cell.value && cell.value.length) ? cell.value : i18next.t("admin.taxGrid.any")
+  ), []);
 
-  const columns = [{
+  const columns = useMemo(() => ([{
     accessor: "rate",
-    Header: i18next.t("admin.taxGrid.rate")
+    Header: () => i18next.t("admin.taxGrid.rate")
   }, {
     accessor: "country",
-    Cell: cellWithDefaultText,
-    Header: i18next.t("admin.taxGrid.country")
+    Cell: CellWithDefaultText,
+    Header: () => i18next.t("admin.taxGrid.country")
   }, {
     accessor: "region",
-    Cell: cellWithDefaultText,
-    Header: i18next.t("admin.taxGrid.region")
+    Cell: CellWithDefaultText,
+    Header: () => i18next.t("admin.taxGrid.region")
   }, {
     accessor: "postal",
-    Cell: cellWithDefaultText,
-    Header: i18next.t("admin.taxGrid.postal")
+    Cell: CellWithDefaultText,
+    Header: () => i18next.t("admin.taxGrid.postal")
   }, {
     accessor: "taxCode",
-    Cell: cellWithDefaultText,
-    Header: i18next.t("admin.taxGrid.taxCode")
-  }];
+    Cell: CellWithDefaultText,
+    Header: () => i18next.t("admin.taxGrid.taxCode")
+  }]), [CellWithDefaultText]);
 
   const handleDialogClose = () => {
     setIsCreating(false);
     setEditDoc(null);
   };
+
+  // Fetch data for the DataTable
+  const onFetchData = useCallback(async ({ pageIndex, pageSize }) => {
+    const data = await fetchTaxRates({
+      first: pageSize,
+      offset: pageIndex * pageSize
+    });
+
+    // Return the fetched data as an array of objects and the calculated page count
+    return {
+      data: data.taxRates,
+      pageCount: Math.ceil(data.totalTaxRatesCount / pageSize)
+    };
+  }, [fetchTaxRates]);
+
+  // Row click callback
+  const onRowClick = useCallback(async ({ row }) => {
+    setIsCreating(false);
+    setEditDoc(row.original);
+  }, []);
+
+  const dataTableProps = useDataTable({
+    columns,
+    onFetchData,
+    onRowClick,
+    getRowID: (row) => row.id
+  });
+
+  if (!shopId || isLoadingTaxCodes) {
+    return <Components.Loading />;
+  }
 
   return (
     <div>
@@ -87,34 +104,8 @@ export default function CustomTaxRatesSettings() {
           <Button className={classes.createButton} color="primary" variant="contained" onClick={() => { setIsCreating(true); }}>
             {i18next.t("admin.taxGrid.newTaxRateButton")}
           </Button>
-          <ReactTable
-            className="-striped -highlight"
-            columns={columns}
-            data={taxRates}
-            defaultPageSize={DEFAULT_PAGE_SIZE}
-            getTdProps={(state, rowInfo) => {
-              const tdProps = {};
-
-              if (rowInfo && rowInfo.original) {
-                tdProps.onClick = () => {
-                  setIsCreating(false);
-                  setEditDoc(rowInfo.original);
-                };
-              }
-
-              return tdProps;
-            }}
-            getTrProps={() => ({ className: classes.row })}
-            loading={isLoadingTaxRates}
-            manual // informs React Table that you'll be handling sorting and pagination server-side
-            onFetchData={(state) => {
-              setSelectedPageSize(state.pageSize);
-              fetchTaxRates({
-                first: state.pageSize,
-                offset: state.page * state.pageSize
-              });
-            }}
-            pages={Math.ceil(totalTaxRatesCount / selectedPageSize)}
+          <DataTable
+            {...dataTableProps}
           />
         </CardContent>
       </Card>
@@ -124,17 +115,15 @@ export default function CustomTaxRatesSettings() {
         open={!!(isCreating || editDoc)}
         onClose={handleDialogClose}
       >
-        <DialogContent>
-          <CustomTaxRateForm
-            doc={editDoc}
-            onSuccess={() => {
-              handleDialogClose();
-              refetchTaxRates();
-            }}
-            shopId={shopId}
-            taxCodes={taxCodes}
-          />
-        </DialogContent>
+        <CustomTaxRateForm
+          doc={editDoc}
+          onCancel={handleDialogClose}
+          onSuccess={() => {
+            handleDialogClose();
+          }}
+          shopId={shopId}
+          taxCodes={taxCodes}
+        />
       </Dialog>
     </div>
   );
