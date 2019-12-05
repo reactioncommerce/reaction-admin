@@ -1,74 +1,60 @@
-import { compose, withProps } from "recompose";
-import { registerComponent, composeWithTracker } from "@reactioncommerce/reaction-components";
-import { Meteor } from "meteor/meteor";
-import { i18next, Reaction } from "/client/api";
+import React from "react";
+import i18next from "i18next";
+import { useSnackbar } from "notistack";
+import { Components } from "@reactioncommerce/reaction-components";
 import Logger from "/client/modules/logger";
-import { Packages } from "/lib/collections";
-import getOpaqueIds from "/imports/plugins/core/core/client/util/getOpaqueIds";
+import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import GeneralTaxSettings from "../components/GeneralTaxSettings";
-import withTaxServices from "../hoc/withTaxServices";
-
-const PACKAGE_NAME = "reaction-taxes";
-
-/**
- * @returns {Object|null} Settings from Packages collection for the current shop
- */
-function getPluginSettings() {
-  // Get plugin settings for the current shop
-  const plugin = Packages.findOne({ name: PACKAGE_NAME, shopId: Reaction.getShopId() });
-  if (!plugin) return null;
-  return plugin.settings;
-}
+import useTaxServices from "../hooks/useTaxServices";
+import useTaxSettings from "../hooks/useTaxSettings";
+import useUpdateTaxSettings from "../hooks/useUpdateTaxSettings";
 
 /**
- * @summary Updates settings for this plugin for the current shop
- * @param {Object} newSettings The updated settings object
- * @returns {Promise<Object>} Result
+ * @summary Wraps the GeneralTaxSettings component to do Apollo queries and provide data binding
+ * @return {React.Node} React node
  */
-function updatePluginSettings(newSettings) {
-  return new Promise((resolve, reject) => {
-    Meteor.call("package/update", PACKAGE_NAME, "settings", newSettings, (error, result) => {
-      if (error) {
-        Logger.error(error);
-        Alerts.toast(`${i18next.t("admin.settings.settingsSaveFailure")} ${error}`, "error");
-        reject(error);
-      } else {
-        Alerts.toast(i18next.t("admin.settings.settingsSaveSuccess"), "success");
-        resolve(result);
-      }
-    });
-  });
-}
+export default function GeneralTaxSettingsContainer() {
+  const [shopId] = useCurrentShopId();
 
-const handlers = {
-  onSubmit: updatePluginSettings
-};
+  const {
+    defaultTaxCode,
+    fallbackTaxServiceName,
+    isLoadingTaxSettings,
+    primaryTaxServiceName
+  } = useTaxSettings(shopId);
 
-const composer = (props, onData) => {
-  const shopId = Reaction.getShopId();
-  const settingsDoc = getPluginSettings();
+  const {
+    isLoadingTaxServices,
+    taxServices
+  } = useTaxServices(shopId);
 
-  getOpaqueIds([{ namespace: "Shop", id: shopId }])
-    .then(([opaqueShopId]) => {
-      onData(null, {
-        settingsDoc,
-        shopId: opaqueShopId
-      });
-      return null;
-    })
-    .catch((error) => {
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { updateTaxSettings } = useUpdateTaxSettings(shopId, {
+    onCompleted() {
+      enqueueSnackbar(i18next.t("admin.settings.settingsSaveSuccess"), { variant: "success" });
+    },
+    onError(error) {
       Logger.error(error);
-    });
-};
+      enqueueSnackbar(i18next.t("admin.settings.settingsSaveFailure"), { variant: "warning" });
+    }
+  });
 
-registerComponent("GeneralTaxSettings", GeneralTaxSettings, [
-  withProps(handlers),
-  composeWithTracker(composer),
-  withTaxServices
-]);
+  if (!shopId || isLoadingTaxSettings || isLoadingTaxServices) {
+    return <Components.Loading />;
+  }
 
-export default compose(
-  withProps(handlers),
-  composeWithTracker(composer),
-  withTaxServices
-)(GeneralTaxSettings);
+  const settingsDoc = {
+    defaultTaxCode,
+    fallbackTaxServiceName,
+    primaryTaxServiceName
+  };
+
+  return (
+    <GeneralTaxSettings
+      onSubmit={updateTaxSettings}
+      settingsDoc={settingsDoc}
+      taxServices={taxServices}
+    />
+  );
+}
