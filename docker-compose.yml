@@ -1,6 +1,8 @@
-# This docker-compose file is used to run the reaction app in docker for development
-# The local files are mounted into the created container.
+# This docker-compose file is used to run the project's published image
+#
 # Usage: docker-compose up [-d]
+#
+# See comment in docker-compose.dev.yml if you want to run for development.
 
 version: '3.4'
 
@@ -11,32 +13,23 @@ networks:
   auth:
     external:
       name: auth.reaction.localhost
+  reaction:
+    external:
+      name: reaction.localhost
   streams:
     external:
       name: streams.reaction.localhost
 
 services:
-
   reaction-admin:
-    build:
-      context: .
-      dockerfile: Dockerfile-dev
-    command: bash -c "time meteor npm install --no-audit && node --experimental-modules ./.reaction/scripts/run.mjs"
+    image: reactioncommerce/admin:trunk
     env_file:
       - ./.env
     networks:
-      default:
       api:
       auth:
+      reaction:
       streams:
     ports:
       - "4080:4080"
       - "9231:9229"
-    volumes:
-      - .:/usr/local/src/app:cached
-      - reaction_meteor_local:/usr/local/src/app/.meteor/local
-      - reaction_node_modules:/usr/local/src/app/node_modules # do not link node_modules in, and persist it between dc up runs
-
-volumes:
-  reaction_node_modules:
-  reaction_meteor_local:
