@@ -15,7 +15,6 @@
 
 ### Chores
 
-- Remove unused packages from the code [#3](https://github.com/reactioncommerce/reaction-admin/pull/3).
 - Add missing dependency for `subscriptions-transport-ws` [#32](https://github.com/reactioncommerce/reaction-admin/pull/32).
 - Use published image for docker-compose [#131](https://github.com/reactioncommerce/reaction-admin/pull/131).
 
