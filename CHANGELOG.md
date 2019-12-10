@@ -16,17 +16,17 @@
 ### Chores
 
 - Remove unused packages from the code [#3](https://github.com/reactioncommerce/reaction-admin/pull/3).
-- Use published image for docker-compose [#131](https://github.com/reactioncommerce/reaction-admin/pull/131).
 - Add missing dependency for `subscriptions-transport-ws` [#32](https://github.com/reactioncommerce/reaction-admin/pull/32).
+- Use published image for docker-compose [#131](https://github.com/reactioncommerce/reaction-admin/pull/131).
 
 
 ### Fix
 
 - Fix query missing `$` in front of `shopId` [#83](https://github.com/reactioncommerce/reaction-admin/pull/83).
-- Make bin/setup always run from the desired path [#129](https://github.com/reactioncommerce/reaction-admin/pull/129).
 - Fix `reactioncommerce/admin` Docker image that is built and pushed to DockerHub when this is merged to trunk [#86](https://github.com/reactioncommerce/reaction-admin/pull/86).
 - Resolves some reaction-admin bugs such as: creating products and updating them works well now, publishing products, tag page, and navigation [#89](https://github.com/reactioncommerce/reaction-admin/pull/89).
 - Resolve port conflict `9229` with core reaction [#90](https://github.com/reactioncommerce/reaction-admin/pull/90).
+- Make bin/setup always run from the desired path [#129](https://github.com/reactioncommerce/reaction-admin/pull/129).
 
 
 ### Refactor
