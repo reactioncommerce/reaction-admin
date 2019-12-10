@@ -1,7 +1,7 @@
 # v3.0.0-alpha
 
 
-## Features
+### Features
 
 - Add account shop creation [#5](https://github.com/reactioncommerce/reaction-admin/pull/5).
 - Remove `/operator` prefix from all routes [#6](https://github.com/reactioncommerce/reaction-admin/pull/6).
@@ -19,7 +19,7 @@
 - Use published image for docker-compose [#131](https://github.com/reactioncommerce/reaction-admin/pull/131).
 
 
-### Fix
+### Fixes
 
 - Fix query missing `$` in front of `shopId` [#83](https://github.com/reactioncommerce/reaction-admin/pull/83).
 - Fix `reactioncommerce/admin` Docker image that is built and pushed to DockerHub when this is merged to trunk [#86](https://github.com/reactioncommerce/reaction-admin/pull/86).
@@ -28,7 +28,7 @@
 - Make bin/setup always run from the desired path [#129](https://github.com/reactioncommerce/reaction-admin/pull/129).
 
 
-### Refactor
+### Refactors
 
 - Merge the two routers into one simpler router [#3](https://github.com/reactioncommerce/reaction-admin/pull/3).
 - Add `shopId` to `defaultNavitgationTree` code to match updates to API [#45](https://github.com/reactioncommerce/reaction-admin/pull/45).
