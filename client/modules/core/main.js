@@ -6,8 +6,7 @@ import { Tracker } from "meteor/tracker";
 import { ReactiveVar } from "meteor/reactive-var";
 import { ReactiveDict } from "meteor/reactive-dict";
 import { Roles } from "meteor/alanning:roles";
-import Logger from "/client/modules/logger";
-import { Packages, Shops } from "/lib/collections";
+import { Shops } from "/lib/collections";
 import { Router } from "/client/modules/router";
 import { DomainsMixin } from "./domains";
 import { getUserId } from "./helpers/utils";
@@ -486,19 +485,6 @@ export default {
   },
 
   /**
-   * @name allowGuestCheckout
-   * @method
-   * @memberof Core/Client
-   * @returns {Boolean} is guest checkout allowed
-   */
-  allowGuestCheckout() {
-    const pkg = Packages.findOne({ name: "core", shopId: this.getShopId() }) || {};
-    const shopSettings = pkg.settings || {};
-    // we can disable in admin, let's check.
-    return !!(shopSettings.public && shopSettings.public.allowGuestCheckout);
-  },
-
-  /**
    * (similar to server/api canInviteToGroup)
    * @name canInviteToGroup
    * @method
@@ -580,15 +566,9 @@ export default {
 
       Session.set("admin/actionView", viewStack);
     } else {
-      const registryItem = this.getRegistryForCurrentRoute("settings");
-
-      if (registryItem) {
-        this.setActionView(registryItem);
-      } else {
-        this.setActionView({
-          template: "blankControls"
-        });
-      }
+      this.setActionView({
+        template: "blankControls"
+      });
     }
   },
 
@@ -608,13 +588,7 @@ export default {
       actionViewStack.push(viewData);
       Session.set("admin/actionView", actionViewStack);
     } else {
-      const registryItem = this.getRegistryForCurrentRoute("settings");
-
-      if (registryItem) {
-        this.pushActionView(registryItem);
-      } else {
-        this.pushActionView({ template: "blankControls" });
-      }
+      this.pushActionView({ template: "blankControls" });
     }
   },
 
@@ -809,40 +783,5 @@ export default {
     }
 
     return null;
-  },
-
-  /**
-   * @name getRegistryForCurrentRoute
-   * @method
-   * @memberof Core/Client
-   * @param {String} provides type of template from registry
-   * @returns {Object} settings data from this package
-   */
-  getRegistryForCurrentRoute(provides = "dashboard") {
-    this.Router.watchPathChange();
-    const currentRouteName = this.Router.getRouteName();
-    const currentRoute = this.Router.current();
-    const { template } = currentRoute.route.options;
-    // find registry entries for routeName
-    const reactionApp = Packages.findOne({
-      "registry.name": currentRouteName,
-      "registry.provides": provides,
-      "enabled": true
-    }, {
-      enabled: 1,
-      registry: 1,
-      route: 1,
-      name: 1,
-      label: 1,
-      settings: 1
-    });
-
-    // valid application
-    if (reactionApp) {
-      const settingsData = _.find(reactionApp.registry, (item) => item.provides && item.provides.includes(provides) && item.template === template);
-      return settingsData;
-    }
-    Logger.debug("getRegistryForCurrentRoute not found", template, provides);
-    return {};
   }
 };

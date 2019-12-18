@@ -63,16 +63,6 @@ registerOperatorRoute({
 });
 
 registerOperatorRoute({
-  isNavigationLink: true,
-  isSetting: true,
-  path: "/login-services",
-  mainComponent: "accountsSettings",
-  // eslint-disable-next-line react/display-name, react/no-multi-comp
-  // SidebarIconComponent: (props) => <FontAwesomeIcon icon={faSignInAlt} {...props} />,
-  sidebarI18nLabel: "admin.settings.accountSettingsLabel"
-});
-
-registerOperatorRoute({
   isNavigationLink: false,
   isSetting: false,
   path: "/profile",
