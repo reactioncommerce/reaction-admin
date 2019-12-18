@@ -20,39 +20,6 @@ const { Shops, Accounts: AccountsCollection } = Collections;
 export default {
   ...AbsoluteUrlMixin,
 
-  Packages: {},
-
-  /**
-   * @summary This is used only for the old `registerPackage` in this file. After that is removed,
-   *   this likely can be removed, too.
-   * @param {ReactionNodeApp} app App instance
-   * @returns {undefined}
-   */
-  async onAppInstanceCreated(app) {
-    this.reactionNodeApp = app;
-    if (this.whenAppInstanceReadyCallbacks) {
-      for (const callback of this.whenAppInstanceReadyCallbacks) {
-        await callback(this.reactionNodeApp); // eslint-disable-line no-await-in-loop
-      }
-      this.whenAppInstanceReadyCallbacks = [];
-    }
-  },
-
-  /**
-   * @summary This is used only for the old `registerPackage` in this file. After that is removed,
-   *   this likely can be removed, too.
-   * @param {Function} callback Function to call after `this.reactionNodeApp` is set, which might be immediately
-   * @returns {undefined}
-   */
-  whenAppInstanceReady(callback) {
-    if (this.reactionNodeApp) {
-      callback(this.reactionNodeApp);
-    } else {
-      if (!this.whenAppInstanceReadyCallbacks) this.whenAppInstanceReadyCallbacks = [];
-      this.whenAppInstanceReadyCallbacks.push(callback);
-    }
-  },
-
   /**
    * @summary Called to indicate that startup is done, causing all
    *   `onAppStartupComplete` callbacks to run in series.
@@ -82,15 +49,6 @@ export default {
       if (!this.onAppStartupCompleteCallbacks) this.onAppStartupCompleteCallbacks = [];
       this.onAppStartupCompleteCallbacks.push(callback);
     }
-  },
-
-  /**
-   * @deprecated Use `app.registerPlugin` pattern instead. See the simple-pricing plugin.
-   * @param {Object} packageInfo Plugin options
-   * @returns {Object} Plugin options
-   */
-  registerPackage(packageInfo) {
-    this.whenAppInstanceReady((app) => app.registerPlugin(packageInfo));
   },
 
   defaultCustomerRoles: ["guest", "account/profile", "product", "tag", "index", "cart/completed"],
