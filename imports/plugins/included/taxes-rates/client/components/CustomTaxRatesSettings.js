@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 const cellWithDefaultText = ({ value }) => ((value && value.length) ? value : i18next.t("admin.taxGrid.any"));
 
-const DEFAULT_PAGE_SIZE = 2;
+const DEFAULT_PAGE_SIZE = 20;
 
 /**
  * @summary React component that renders the custom tax rate settings card,
