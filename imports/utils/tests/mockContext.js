@@ -36,7 +36,6 @@ const mockContext = {
   "NavigationTrees",
   "Notifications",
   "Orders",
-  "Packages",
   "Products",
   "Revisions",
   "roles",

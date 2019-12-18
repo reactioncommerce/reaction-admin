@@ -80,7 +80,6 @@ export function mockCollection(collectionName) {
   "NavigationTrees",
   "Notifications",
   "Orders",
-  "Packages",
   "Products",
   "Revisions",
   "roles",
