@@ -96,7 +96,7 @@ export default function AddressValidationSettingsForm(props) {
     },
     onError() {
       setIsSubmitting(false);
-      enqueueSnackbar(i18next.t("admin.taxSettings.shopCustomTaxRatesFailed"), { variant: "warning" });
+      enqueueSnackbar(i18next.t("addressValidation.saveFailed"), { variant: "warning" });
     }
   });
 
@@ -108,7 +108,7 @@ export default function AddressValidationSettingsForm(props) {
     },
     onError() {
       setIsSubmitting(false);
-      enqueueSnackbar(i18next.t("admin.taxSettings.shopCustomTaxRatesFailed"), { variant: "warning" });
+      enqueueSnackbar(i18next.t("addressValidation.saveFailed"), { variant: "warning" });
     }
   });
 
@@ -120,7 +120,7 @@ export default function AddressValidationSettingsForm(props) {
     },
     onError() {
       setIsSubmitting(false);
-      enqueueSnackbar(i18next.t("admin.taxSettings.shopCustomTaxRatesFailed"), { variant: "warning" });
+      enqueueSnackbar(i18next.t("addressValidation.saveFailed"), { variant: "warning" });
     }
   });
 
