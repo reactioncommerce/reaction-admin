@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Reaction } from "/client/api";
 import { Components, withMoment, registerComponent } from "@reactioncommerce/reaction-components";
 import { Link } from "@reactioncommerce/reaction-router";
 
@@ -18,30 +17,6 @@ class NotificationRoute extends Component {
       );
     }
     return null;
-  }
-
-  handleClick = (event, notify) => {
-    if (notify.type === "forAdmin") {
-      const actionViewData = Reaction.Apps({
-        name: "reaction-orders",
-        provides: "dashboard"
-      });
-      Reaction.showActionView(actionViewData);
-    } else {
-      // Determine if url's basename ends in a file extension (i.e. /sitemap.xml).
-      // If so, use window.location to break out of the Reaction app, otherwise navigate via Reaction router
-      const { url } = notify;
-      const urlSplit = url.split("/");
-      const doesBasenameHavePeriod = urlSplit[urlSplit.length - 1].includes(".");
-      if (doesBasenameHavePeriod) {
-        window.location = url;
-      } else {
-        Reaction.Router.go(url);
-      }
-    }
-
-    const { markOneAsRead } = this.props;
-    return markOneAsRead(notify._id);
   }
 
   handleMarkAllAsRead = () => {
