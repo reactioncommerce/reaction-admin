@@ -12,8 +12,9 @@ import { Meteor } from "meteor/meteor";
 import { Reaction, formatPriceString, i18next } from "/client/api";
 import { getPrimaryMediaForItem, ReactionProduct, Catalog } from "/lib/api";
 import { Tags, Templates } from "/lib/collections";
-import { getVariantIds } from "/lib/selectors/variants";
 import getOpaqueIds from "/imports/plugins/core/core/client/util/getOpaqueIds";
+
+const getVariantIds = (variants) => Array.isArray(variants) && variants.map((variant) => variant._id);
 
 const ARCHIVE_PRODUCTS = gql`
   mutation archiveProducts($input: ArchiveProductsInput!) {

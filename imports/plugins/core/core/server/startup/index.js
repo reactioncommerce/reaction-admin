@@ -9,6 +9,7 @@ import RateLimiters from "./rate-limits";
 const {
   PUBLIC_GRAPHQL_API_URL_HTTP,
   PUBLIC_GRAPHQL_API_URL_WS,
+  PUBLIC_FILES_BASE_URL,
   PUBLIC_I18N_BASE_URL,
   PUBLIC_STOREFRONT_HOME_URL,
   REACTION_METEOR_APP_COMMAND_START_TIME
@@ -37,6 +38,7 @@ export default function startup() {
   // Meteor's settings feature.
   // See https://docs.meteor.com/api/core.html#Meteor-settings
   Object.assign(Meteor.settings.public, {
+    filesBaseUrl: PUBLIC_FILES_BASE_URL,
     graphQlApiUrlHttp: PUBLIC_GRAPHQL_API_URL_HTTP,
     graphQlApiUrlWebSocket: PUBLIC_GRAPHQL_API_URL_WS,
     i18nBaseUrl: PUBLIC_I18N_BASE_URL,

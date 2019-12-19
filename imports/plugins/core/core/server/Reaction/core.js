@@ -1,3 +1,4 @@
+import { URL } from "url";
 import Logger from "@reactioncommerce/logger";
 import _ from "lodash";
 import { Meteor } from "meteor/meteor";
@@ -5,7 +6,7 @@ import { check } from "meteor/check";
 import { Roles } from "meteor/alanning:roles";
 import * as Collections from "/lib/collections";
 import ConnectionDataStore from "/imports/plugins/core/core/server/util/connectionDataStore";
-import { AbsoluteUrlMixin } from "./absoluteUrl";
+import config from "../config.js";
 import { getUserId } from "./accountUtils";
 
 /**
@@ -18,8 +19,6 @@ import { getUserId } from "./accountUtils";
 const { Shops, Accounts: AccountsCollection } = Collections;
 
 export default {
-  ...AbsoluteUrlMixin,
-
   /**
    * @summary Called to indicate that startup is done, causing all
    *   `onAppStartupComplete` callbacks to run in series.
@@ -242,42 +241,6 @@ export default {
   },
 
   /**
-   * @summary **DEPRECATED** This method has been deprecated in favor of using getShopId
-   * and getPrimaryShopId. To be removed.
-   * @deprecated
-   * @memberof Core
-   * @method getCurrentShopCursor
-   * @returns {Cursor} cursor of shops that match the current domain
-   */
-  getCurrentShopCursor() {
-    const domain = this.getDomain();
-    const cursor = Shops.find({
-      domains: domain
-    });
-    if (!cursor.count()) {
-      Logger.debug(domain, "Add a domain entry to shops for ");
-    }
-    return cursor;
-  },
-
-  /**
-   * @summary **DEPRECATED** This method has been deprecated in favor of using getShopId
-   * and getPrimaryShopId. To be removed.
-   * @deprecated
-   * @memberof Core
-   * @method getCurrentShop
-   * @returns {Object} returns the first shop object from the shop cursor
-   */
-  getCurrentShop() {
-    const currentShopCursor = this.getCurrentShopCursor();
-    // also, we could check in such a way: `currentShopCursor instanceof Object` but not instanceof something.Cursor
-    if (typeof currentShopCursor === "object") {
-      return currentShopCursor.fetch()[0];
-    }
-    return null;
-  },
-
-  /**
    * @name getShopId
    * @method
    * @memberof Core
@@ -350,7 +313,8 @@ export default {
    * @returns {StringId} shopId
    */
   getShopIdByDomain() {
-    const domain = this.getDomain();
+    const parsedUrl = new URL(config.ROOT_URL);
+    const domain = parsedUrl.hostname;
     const primaryShop = this.getPrimaryShop();
 
     // in cases where the domain could match multiple shops, we first check

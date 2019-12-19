@@ -8,7 +8,6 @@ import { ReactiveDict } from "meteor/reactive-dict";
 import { Roles } from "meteor/alanning:roles";
 import { Shops } from "/lib/collections";
 import { Router } from "/client/modules/router";
-import { DomainsMixin } from "./domains";
 import { getUserId } from "./helpers/utils";
 
 /**
@@ -32,8 +31,6 @@ let slugify;
 const latinLangs = ["az", "da", "de", "en", "es", "ff", "fr", "ha", "hr", "hu", "ig", "is", "it", "jv", "ku", "ms", "nl", "no", "om", "pl", "pt", "ro", "sv", "sw", "tl", "tr", "uz", "vi", "yo"]; // eslint-disable-line max-len
 
 export default {
-  ...DomainsMixin,
-
   /**
    * @summary The active shop
    * @memberof Core/Client
@@ -361,13 +358,8 @@ export default {
     const activeShopId = this.getUserShopId();
     if (activeShopId) return Shops.findOne({ _id: activeShopId });
 
-    // If no chosen shop, look up the shop by domain
-    let shop = Shops.findOne({ domains: this.getDomain() });
-
-    // Finally fall back to primary shop
-    if (!shop) shop = Shops.findOne({ shopType: "primary" });
-
-    return shop;
+    // If no chosen shop, fall back to primary shop
+    return Shops.findOne({ shopType: "primary" });
   },
 
   /**

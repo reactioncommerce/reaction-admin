@@ -66,7 +66,7 @@ class TagFormPageWithData extends Component {
     });
 
     // Do the upload. chunkSize is optional and defaults to 5MB
-    fileRecord.upload({})
+    fileRecord.upload()
       // We insert only AFTER the server has confirmed that all chunks were uploaded
       .then(async () => {
         const refetchQueries = [{
