@@ -4,8 +4,6 @@ import { Meteor } from "meteor/meteor";
 import createFlatRateFulfillmentMethod from "../mutations/createFlatRateFulfillmentMethod.graphql";
 import updateFlatRateFulfillmentMethod from "../mutations/updateFlatRateFulfillmentMethod.graphql";
 import deleteFlatRateFulfillmentMethod from "../mutations/deleteFlatRateFulfillmentMethod.graphql";
-import enablePaymentMethodForShop from "../mutations/enablePaymentMethodForShop.graphql";
-import paymentMethods from "../queries/paymentMethods.graphql";
 
 const { graphQlApiUrlHttp } = Meteor.settings.public;
 
@@ -55,19 +53,9 @@ export default {
       setTokenHeader();
       return client.mutate(deleteFlatRateFulfillmentMethod)(variables);
     },
-    enablePaymentMethodForShop: (variables) => {
-      setTokenHeader();
-      return client.mutate(enablePaymentMethodForShop)(variables);
-    },
     updateFlatRateFulfillmentMethod: (variables) => {
       setTokenHeader();
       return client.mutate(updateFlatRateFulfillmentMethod)(variables);
-    }
-  },
-  queries: {
-    paymentMethods: (variables) => {
-      setTokenHeader();
-      return client.query(paymentMethods)(variables);
     }
   }
 };

@@ -46,7 +46,7 @@ class ProductImage extends Component {
 
     let mediaUrl;
     if (fileRecord) {
-      mediaUrl = fileRecord.url({ store: size });
+      mediaUrl = fileRecord.url({ absolute: true, store: size });
     } else {
       mediaUrl = MEDIA_PLACEHOLDER;
     }

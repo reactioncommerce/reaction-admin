@@ -17,7 +17,6 @@ export { default as GroupsTableCell } from "./components/groupsTableCell";
 export { default as Login } from "./components/login";
 export { default as LoginButtons } from "./components/loginButtons";
 export { default as LoginFormMessages } from "./components/loginFormMessages";
-export { default as MainDropdown } from "./components/mainDropdown";
 export { default as ManageGroups } from "./components/manageGroups";
 export { default as PermissionsList } from "./components/permissionsList";
 export { default as SignIn } from "./components/signIn";
@@ -30,7 +29,6 @@ export { default as UserOrdersListContainer } from "./containers/userOrdersListC
 export { default as AuthContainer } from "./containers/auth";
 export { default as EditGroupContainer } from "./containers/editGroupContainer";
 export { default as ForgotPasswordContainer } from "./containers/forgotPassword";
-export { default as MainDropdownContainer } from "./containers/mainDropdown";
 export { default as MessagesContainer } from "./containers/messages";
 export { default as UpdatePasswordContainer } from "./containers/updatePassword";
 export { default as VerifyAccount } from "./containers/verifyAccount";
@@ -62,16 +60,6 @@ registerOperatorRoute({
   // eslint-disable-next-line react/display-name, react/no-multi-comp
   SidebarIconComponent: (props) => <AccountIcon {...props} />,
   sidebarI18nLabel: "admin.dashboard.accountsLabel"
-});
-
-registerOperatorRoute({
-  isNavigationLink: true,
-  isSetting: true,
-  path: "/login-services",
-  mainComponent: "accountsSettings",
-  // eslint-disable-next-line react/display-name, react/no-multi-comp
-  // SidebarIconComponent: (props) => <FontAwesomeIcon icon={faSignInAlt} {...props} />,
-  sidebarI18nLabel: "admin.settings.accountSettingsLabel"
 });
 
 registerOperatorRoute({
