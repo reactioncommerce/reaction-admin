@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
+import { useReactOidc } from "@axa-fr/react-oidc-context";
+import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
 import { Tracker } from "meteor/tracker";
+import { setAccessToken } from "/imports/plugins/core/graphql/lib/helpers/initApollo";
 import { Reaction } from "/client/api";
 import Logger from "/client/modules/logger";
-
-const { storefrontHomeUrl: defaultStorefrontHomeUrl } = Meteor.settings.public;
 
 const viewerQuery = gql`
 {
@@ -28,9 +29,10 @@ const viewerQuery = gql`
 export default function useAuth() {
   const [isAdmin, setAdmin] = useState(false);
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const [isLoggingIn, setLoggingIn] = useState(false);
+  const [isLoggingOut, setLoggingOut] = useState(false);
   const [isLoading, setLoading] = useState(true);
-  const [isLoggingOut, setLoggingOut] = useState(true);
-  const [redirectUrl, setRedirect] = useState();
+  const { login, logout: oidcLogout, oidcUser } = useReactOidc();
 
   const {
     loading: isLoadingViewer,
@@ -47,12 +49,17 @@ export default function useAuth() {
     },
   );
 
+  const logout = () => {
+    setLoggingOut(true);
+    Meteor.logout(() => {
+      // This involves redirect, so the page will full refresh at this point
+      oidcLogout();
+    });
+  };
+
   useEffect(() => {
     Tracker.autorun(() => {
       const hasDashboardAccessForAnyShop = Reaction.hasDashboardAccessForAnyShop();
-      const shop = Reaction.getCurrentShop();
-      const storefrontHomeUrl = (shop && shop.storefrontUrls && shop.storefrontUrls.storefrontHomeUrl) || defaultStorefrontHomeUrl;
-      const hasStorefrontHomeUrl = storefrontHomeUrl && storefrontHomeUrl.length;
 
       // Set is admin
       setAdmin(hasDashboardAccessForAnyShop);
@@ -67,15 +74,9 @@ export default function useAuth() {
       // When `viewerQueryNetworkStatus` is `4`, it is refetching because we logged in/out
       setLoading(isLoadingPermissions || isLoadingViewer || viewerQueryNetworkStatus === 4);
 
-      if (!hasStorefrontHomeUrl && !isLoading) {
-        Logger.warn("Missing storefront home URL. Please set this from the shop settings panel so that customer users can be redirected to your storefront.");
-      }
-
-      // Set the redirect for non-admins to go the the storefront
-      if (isLoggedIn && !isAdmin && hasStorefrontHomeUrl && !isLoggingOut) {
-        setRedirect(storefrontHomeUrl);
-      } else {
-        setRedirect(null);
+      // Sign out non-admins
+      if (isLoggedIn && hasDashboardAccessForAnyShop === false) {
+        logout();
       }
     });
   });
@@ -85,22 +86,30 @@ export default function useAuth() {
     refetchViewer();
   }, [isLoggedIn, refetchViewer]);
 
-  const handleSignOut = () => {
-    setLoggingOut(true);
-    Meteor.logout((error) => {
-      if (error) Logger.error(error);
-      setLoggingOut(false);
+  if (!oidcUser && !isLoggingIn) {
+    setLoggingIn(true);
+    login();
+  }
+
+  const { access_token: accessToken } = oidcUser || {};
+
+  if (accessToken && !isLoggedIn && !isLoggingOut) {
+    // If we are logged in with OAuth, log in as the same use with Meteor for the DDP connection
+    Accounts.callLoginMethod({
+      methodArguments: [{
+        accessToken
+      }]
     });
-  };
+  }
+
+  setAccessToken(accessToken);
 
   return {
+    accessToken,
     isAdmin,
     isLoading,
     isLoggedIn,
-    isLoggingOut,
-    onSignOut: handleSignOut,
-    redirectUrl,
-    setLoggingOut,
+    logout,
     viewer: viewerData ? viewerData.viewer : null
   };
 }
