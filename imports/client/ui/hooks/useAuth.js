@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
+import { useLazyQuery } from "@apollo/react-hooks";
 import { useReactOidc } from "@axa-fr/react-oidc-context";
 import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
@@ -10,7 +10,7 @@ import { Reaction } from "/client/api";
 import Logger from "/client/modules/logger";
 
 const viewerQuery = gql`
-{
+query getViewer {
   viewer {
     _id
     firstName
@@ -34,20 +34,28 @@ export default function useAuth() {
   const [isLoading, setLoading] = useState(true);
   const { login, logout: oidcLogout, oidcUser } = useReactOidc();
 
-  const {
-    loading: isLoadingViewer,
+  const { access_token: accessToken } = oidcUser || {};
+  setAccessToken(accessToken);
+
+  const [getViewer, {
     data: viewerData,
-    refetch: refetchViewer,
+    loading: isLoadingViewer,
     networkStatus: viewerQueryNetworkStatus
-  } = useQuery(
+  }] = useLazyQuery(
     viewerQuery,
     {
+      fetchPolicy: "network-only",
+      notifyOnNetworkStatusChange: true,
       onError(fetchError) {
         Logger.error(fetchError);
-      },
-      notifyOnNetworkStatusChange: true
-    },
+      }
+    }
   );
+
+  // Perform a `viewer` query whenever we get a new access token
+  useEffect(() => {
+    if (accessToken) getViewer();
+  }, [accessToken, getViewer]);
 
   const logout = () => {
     setLoggingOut(true);
@@ -81,17 +89,10 @@ export default function useAuth() {
     });
   });
 
-  // Perform a `viewer` query whenever we log in or out
-  useEffect(() => {
-    refetchViewer();
-  }, [isLoggedIn, refetchViewer]);
-
   if (!oidcUser && !isLoggingIn) {
     setLoggingIn(true);
     login();
   }
-
-  const { access_token: accessToken } = oidcUser || {};
 
   if (accessToken && !isLoggedIn && !isLoggingOut) {
     // If we are logged in with OAuth, log in as the same use with Meteor for the DDP connection
@@ -101,8 +102,6 @@ export default function useAuth() {
       }]
     });
   }
-
-  setAccessToken(accessToken);
 
   return {
     accessToken,
