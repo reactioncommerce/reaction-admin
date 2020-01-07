@@ -9,12 +9,12 @@ import useIsAppLoading from "/imports/client/ui/hooks/useIsAppLoading.js";
  * @returns {React.ReactElement} React component
  */
 function App() {
-  const { isLoading, isLoggedIn, logout, viewer } = useAuth();
+  const { isLoading, isLoggedInToMeteor, logout, viewer } = useAuth();
   const [isAppLoading] = useIsAppLoading();
 
   if (isLoading || isAppLoading) return <Components.Loading />;
 
-  return isLoggedIn ? <Dashboard logout={logout} viewer={viewer} /> : null;
+  return isLoggedInToMeteor ? <Dashboard logout={logout} viewer={viewer} /> : null;
 }
 
 export default App;

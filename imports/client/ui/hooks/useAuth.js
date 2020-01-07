@@ -28,7 +28,7 @@ query getViewer {
  */
 export default function useAuth() {
   const [isAdmin, setAdmin] = useState(false);
-  const [isLoggedIn, setLoggedIn] = useState(false);
+  const [isLoggedInToMeteor, setLoggedInToMeteor] = useState(false);
   const [isLoggingIn, setLoggingIn] = useState(false);
   const [isLoggingOut, setLoggingOut] = useState(false);
   const [isLoading, setLoading] = useState(true);
@@ -46,8 +46,15 @@ export default function useAuth() {
     {
       fetchPolicy: "network-only",
       notifyOnNetworkStatusChange: true,
-      onError(fetchError) {
-        Logger.error(fetchError);
+      onError(error) {
+        // Can't find any more reliable way to check the status code from within this hook
+        if (typeof error.message === "string" && error.message.includes("Received status code 401")) {
+          // Token is expired or user was deleted from database
+          setLoggingOut(true);
+          oidcLogout();
+        } else {
+          Logger.error(error);
+        }
       }
     }
   );
@@ -74,7 +81,7 @@ export default function useAuth() {
 
       // Set whether the user is logged in or not. This with `!admin` can be used to determine if the
       // user is a customer
-      setLoggedIn(!!Reaction.getUserId());
+      setLoggedInToMeteor(!!Reaction.getUserId());
 
       // Attempt to check if we are still loading this data
       const isLoadingPermissions = (hasDashboardAccessForAnyShop !== true && hasDashboardAccessForAnyShop !== false);
@@ -83,18 +90,18 @@ export default function useAuth() {
       setLoading(isLoadingPermissions || isLoadingViewer || viewerQueryNetworkStatus === 4);
 
       // Sign out non-admins
-      if (isLoggedIn && hasDashboardAccessForAnyShop === false) {
+      if (isLoggedInToMeteor && hasDashboardAccessForAnyShop === false) {
         logout();
       }
     });
   });
 
-  if (!oidcUser && !isLoggingIn) {
+  if (!oidcUser && !isLoggingIn && !isLoggingOut) {
     setLoggingIn(true);
     login();
   }
 
-  if (accessToken && !isLoggedIn && !isLoggingOut) {
+  if (accessToken && !isLoggedInToMeteor && !isLoggingOut) {
     // If we are logged in with OAuth, log in as the same use with Meteor for the DDP connection
     Accounts.callLoginMethod({
       methodArguments: [{
@@ -107,7 +114,7 @@ export default function useAuth() {
     accessToken,
     isAdmin,
     isLoading,
-    isLoggedIn,
+    isLoggedInToMeteor,
     logout,
     viewer: viewerData ? viewerData.viewer : null
   };
