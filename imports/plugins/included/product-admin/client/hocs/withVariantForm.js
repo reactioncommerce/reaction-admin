@@ -234,7 +234,7 @@ const wrapComponent = (Comp) => (
         return;
       }
 
-      if(["price", "compareAtPrice"].includes(fieldName)){
+      if (["price", "compareAtPrice"].includes(fieldName)) {
         this.updateVariantPrice(variantId, fieldName, value);
         return;
       }
