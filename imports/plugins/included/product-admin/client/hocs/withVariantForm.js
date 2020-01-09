@@ -69,10 +69,6 @@ const wrapComponent = (Comp) => (
         return;
       }
 
-      if (typeof nextProps.variant.isVisible === "boolean") {
-        return;
-      }
-
       if (_.isEqual(nextVariant, currentVariant) === false) {
         this.setState({
           inventoryManagement: nextProps.variant && nextProps.variant.inventoryManagement,
@@ -169,7 +165,7 @@ const wrapComponent = (Comp) => (
       }
     }
 
-    cloneVariant = async (productId, variantId) => {
+    cloneVariant = async (variantId) => {
       const { client, shopId } = this.props;
       const title = i18next.t("productDetailEdit.thisVariant");
       const [opaqueVariantId] = await getOpaqueIds([{ namespace: "Product", id: variantId }]);
