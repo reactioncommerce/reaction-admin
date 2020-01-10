@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import _ from "lodash";
+import { withSnackbar } from "notistack";
 import { withApollo } from "react-apollo";
 import { compose } from "recompose";
 import { composeWithTracker } from "@reactioncommerce/reaction-components";
@@ -142,7 +143,7 @@ const wrapComponent = (Comp) => (
           const id = variant._id;
           Meteor.call("products/updateProductField", id, "isDeleted", false, (error) => {
             if (error) {
-              Alerts.alert({
+              this.props.enqueueSnackbar({
                 text: i18next.t("productDetailEdit.restoreVariantFail", { title }),
                 confirmButtonText: i18next.t("app.close", { defaultValue: "Close" })
               });
@@ -156,7 +157,7 @@ const wrapComponent = (Comp) => (
     }
 
     removeVariant = async (variant, redirectUrl) => {
-      const { client } = this.props;
+      const { client, enqueueSnackbar } = this.props;
       const opaqueVariantId = await getOpaqueIds([{ namespace: "Product", id: variant._id }]);
       const [opaqueShopId] = await getOpaqueIds([{ namespace: "Shop", id: Reaction.getShopId() }]);
 
@@ -171,16 +172,16 @@ const wrapComponent = (Comp) => (
           }
         });
 
-        Alerts.toast(i18next.t("productDetailEdit.archiveProductVariantsSuccess"), "success");
+        enqueueSnackbar(i18next.t("productDetailEdit.archiveProductVariantsSuccess"), { variant: "success" });
         redirectUrl && this.props.history.replace(redirectUrl);
       } catch (error) {
-        Alerts.toast(i18next.t("productDetailEdit.archiveProductVariantsFail", { err: error }), "error");
+        enqueueSnackbar(i18next.t("productDetailEdit.archiveProductVariantsFail", { err: error }), { variant: "error" });
         throw new ReactionError("server-error", "Unable to archive product");
       }
     }
 
     cloneVariant = async (productId, variantId) => {
-      const { client, shopId } = this.props;
+      const { client, shopId, enqueueSnackbar } = this.props;
       const title = i18next.t("productDetailEdit.thisVariant");
       const [opaqueVariantId] = await getOpaqueIds([{ namespace: "Product", id: variantId }]);
 
@@ -195,12 +196,12 @@ const wrapComponent = (Comp) => (
           }
         });
       } catch (error) {
-        Alerts.toast(i18next.t("productDetailEdit.cloneVariantFail", { title }), "error");
+        enqueueSnackbar(i18next.t("productDetailEdit.cloneVariantFail", { title }), { variant: "error" });
       }
     }
 
     updateVariantPrice = async (variantId, fieldName, value) => {
-      const { client, shopId } = this.props;
+      const { client, shopId, enqueueSnackbar } = this.props;
       const [opaqueVariantId] = await getOpaqueIds([{ namespace: "Product", id: variantId }]);
 
       try {
@@ -217,7 +218,7 @@ const wrapComponent = (Comp) => (
           }
         });
       } catch (error) {
-        Alerts.toast(i18next.t("productDetailEdit.updateProductFieldFail", { [fieldName]: value }), "error");
+        enqueueSnackbar(i18next.t("productDetailEdit.updateProductFieldFail", { [fieldName]: value }), { variant: "error" })
       }
     }
 
@@ -241,7 +242,7 @@ const wrapComponent = (Comp) => (
 
       Meteor.call("products/updateProductField", variantId, fieldName, value, (error) => {
         if (error) {
-          Alerts.toast(error.message, "error");
+          this.props.enqueueSnackbar(error.message, { variant: "error" });
         }
 
         if (fieldName === "inventoryPolicy") {
@@ -341,14 +342,14 @@ const wrapComponent = (Comp) => (
         if (inventoryPolicy === true) {
           return Meteor.call("products/updateProductField", parent._id, "inventoryPolicy", true, (error) => {
             if (error) {
-              Alerts.toast(error.message, "error");
+              this.props.enqueueSnackbar(error.message, { variant: "error" });
             }
           });
         }
         // If any child has a false inventoryPolicy, update parent to be false
         return Meteor.call("products/updateProductField", parent._id, "inventoryPolicy", false, (error) => {
           if (error) {
-            Alerts.toast(error.message, "error");
+            this.props.enqueueSnackbar(error.message, { variant: "error" });
           }
         });
       }
@@ -364,7 +365,7 @@ const wrapComponent = (Comp) => (
         variantOptions.forEach((option) =>
           Meteor.call("products/updateProductField", option._id, "lowInventoryWarningThreshold", variant.lowInventoryWarningThreshold, (error) => {
             if (error) {
-              Alerts.toast(error.message, "error");
+              this.props.enqueueSnackbar(error.message, { variant: "error" });
             }
           }));
       }
@@ -414,5 +415,6 @@ export default compose(
   withRouter,
   composeWithTracker(composer),
   withTaxCodes,
+  withSnackbar,
   wrapComponent
 );
