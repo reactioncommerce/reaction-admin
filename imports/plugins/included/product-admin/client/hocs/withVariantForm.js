@@ -36,16 +36,6 @@ const cloneProductVariants = gql`
   }
 `;
 
-const updateProductVariantPrices = gql`
-  mutation updateProductVariantPrices($input: UpdateProductVariantPricesInput!) {
-    updateProductVariantPrices(input: $input) {
-      variant {
-        _id
-      }
-    }
-  }
-`;
-
 const wrapComponent = (Comp) => (
   class VariantFormContainer extends Component {
     static propTypes = {
@@ -76,10 +66,6 @@ const wrapComponent = (Comp) => (
       const currentVariant = this.props.variant || {};
 
       if (!nextProps.variant) {
-        return;
-      }
-
-      if (typeof nextProps.variant.isVisible === "boolean") {
         return;
       }
 
@@ -179,7 +165,7 @@ const wrapComponent = (Comp) => (
       }
     }
 
-    cloneVariant = async (productId, variantId) => {
+    cloneVariant = async (variantId) => {
       const { client, shopId } = this.props;
       const title = i18next.t("productDetailEdit.thisVariant");
       const [opaqueVariantId] = await getOpaqueIds([{ namespace: "Product", id: variantId }]);
@@ -199,28 +185,6 @@ const wrapComponent = (Comp) => (
       }
     }
 
-    updateVariantPrice = async (variantId, fieldName, value) => {
-      const { client, shopId } = this.props;
-      const [opaqueVariantId] = await getOpaqueIds([{ namespace: "Product", id: variantId }]);
-
-      try {
-        await client.mutate({
-          mutation: updateProductVariantPrices,
-          variables: {
-            input: {
-              shopId,
-              variantId: opaqueVariantId,
-              prices: {
-                [fieldName]: value
-              }
-            }
-          }
-        });
-      } catch (error) {
-        Alerts.toast(i18next.t("productDetailEdit.updateProductFieldFail", { [fieldName]: value }), "error");
-      }
-    }
-
     handleVariantFieldSave = (variantId, fieldName, value, variant) => {
       const validationStatus = this.runVariantValidation(variant);
       if (!validationStatus) return;
@@ -231,11 +195,6 @@ const wrapComponent = (Comp) => (
       const fieldIsValid = !validationStatus.fields[fieldName] || validationStatus.fields[fieldName].isValid;
       if (!fieldIsValid) {
         Logger.error(`${fieldName} field is invalid`);
-        return;
-      }
-
-      if(["price", "compareAtPrice"].includes(fieldName)){
-        this.updateVariantPrice(variantId, fieldName, value);
         return;
       }
 
