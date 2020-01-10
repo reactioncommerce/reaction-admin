@@ -111,7 +111,7 @@ function VariantTable(props) {
               </TableCell>
               <TableCell>
                 {(Array.isArray(item.media) && item.media.length &&
-                  <img alt="" src={item.media[0].url({ store: "thumbnail" })} width={36} />
+                  <img alt="" src={item.media[0].url({ absolute: true, store: "thumbnail" })} width={36} />
                 ) || "-"}
               </TableCell>
               <TableCell>

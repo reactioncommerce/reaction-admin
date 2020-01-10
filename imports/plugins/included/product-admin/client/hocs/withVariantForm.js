@@ -80,10 +80,6 @@ const wrapComponent = (Comp) => (
         return;
       }
 
-      if (typeof nextProps.variant.isVisible === "boolean") {
-        return;
-      }
-
       if (_.isEqual(nextVariant, currentVariant) === false) {
         this.setState({
           inventoryManagement: nextProps.variant && nextProps.variant.inventoryManagement,

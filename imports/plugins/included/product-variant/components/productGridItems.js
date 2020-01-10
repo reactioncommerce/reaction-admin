@@ -71,7 +71,7 @@ class ProductGridItems extends Component {
     const fileRecord = productMedia.primaryMedia;
 
     if (fileRecord) {
-      const mediaUrl = fileRecord.url({ store: "thumbnail" });
+      const mediaUrl = fileRecord.url({ absolute: true, store: "thumbnail" });
       return (
         <img alt="" src={mediaUrl} height={30} />
       );

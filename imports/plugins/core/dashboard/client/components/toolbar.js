@@ -5,7 +5,6 @@ import { Tracker } from "meteor/tracker";
 import { Components } from "@reactioncommerce/reaction-components";
 import {
   FlatButton,
-  Icon,
   VerticalDivider
 } from "/imports/plugins/core/ui/client/components";
 import { Translatable } from "/imports/plugins/core/ui/client/providers";
@@ -90,38 +89,6 @@ class PublishControls extends Component {
     return null;
   }
 
-  renderAdminButton() {
-    return (
-      <div className="hidden-xs">
-        <Components.ToolbarGroup visibleOnMobile={true}>
-          <VerticalDivider key={"divder-2"} />
-          <FlatButton
-            key="dashboard-button"
-            onClick={() => {
-              Reaction.showActionView({
-                i18nKeyTitle: "dashboard.coreTitle",
-                title: "Dashboard",
-                template: "dashboardPackages"
-              });
-            }}
-          >
-            <Icon icon="icon icon-reaction-logo" />
-          </FlatButton>
-        </Components.ToolbarGroup>
-      </div>
-    );
-  }
-
-  renderPackageButons() {
-    if (Array.isArray(this.props.packageButtons)) {
-      return this.props.packageButtons.map((packageButton, index) => (
-        <FlatButton {...packageButton} key={index} />
-      ));
-    }
-
-    return null;
-  }
-
   renderCustomControls() {
     if (this.props.dashboardHeaderTemplate && this.props.hasCreateProductAccess) {
       if (this.props.isEnabled) {
@@ -145,10 +112,8 @@ class PublishControls extends Component {
           {this.renderShopSelect()}
         </Components.ToolbarGroup>
         <Components.ToolbarGroup lastChild={true}>
-          {this.renderPackageButons()}
           {this.renderCustomControls()}
         </Components.ToolbarGroup>
-        {this.renderAdminButton()}
       </Components.Toolbar>
     );
   }

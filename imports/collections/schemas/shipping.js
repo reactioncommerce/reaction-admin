@@ -3,7 +3,6 @@ import { registerSchema } from "@reactioncommerce/schemas";
 import { schemaIdAutoValue } from "./helpers";
 import { Address } from "./address";
 import { Invoice } from "./payments";
-import { PackageConfig } from "./registry";
 import { Workflow } from "./workflow";
 
 /**
@@ -526,25 +525,3 @@ export const Shipping = new SimpleSchema({
 });
 
 registerSchema("Shipping", Shipping);
-
-/**
- * @name ShippingPackageConfig
- * @memberof Schemas
- * @type {SimpleSchema}
- * @property {String} settings.name default value: `Flat Rate Service`
- */
-export const ShippingPackageConfig = PackageConfig.clone().extend({
-  // Remove blackbox: true from settings obj
-  "settings": {
-    type: Object,
-    optional: true,
-    blackbox: false,
-    defaultValue: {}
-  },
-  "settings.name": {
-    type: String,
-    defaultValue: "Flat Rate Service"
-  }
-});
-
-registerSchema("ShippingPackageConfig", ShippingPackageConfig);

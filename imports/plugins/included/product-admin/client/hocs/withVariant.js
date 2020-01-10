@@ -10,8 +10,9 @@ import { Catalog, ReactionProduct } from "/lib/api";
 import { Products } from "/lib/collections";
 import { Reaction, formatPriceString, i18next } from "/client/api";
 import { Media } from "/imports/plugins/core/files/client";
-import { getVariantIds } from "/lib/selectors/variants";
 import getOpaqueIds from "/imports/plugins/core/core/client/util/getOpaqueIds";
+
+const getVariantIds = (variants) => Array.isArray(variants) && variants.map((variant) => variant._id);
 
 const CREATE_VARIANT = gql`
 mutation createProductVariant($input: CreateProductVariantInput!) {

@@ -10,10 +10,6 @@ const mockContext = {
     getShopsUserHasPermissionForFunctionForUser: jest.fn().mockName("getShopsUserHasPermissionForFunctionForUser").mockImplementation(() => () => [])
   },
   collections: {},
-  getAbsoluteUrl: jest.fn().mockName("getAbsoluteUrl").mockImplementation((path) => {
-    const adjustedPath = path[0] === "/" ? path : `/${path}`;
-    return `https://app.mock${adjustedPath}`;
-  }),
   getFunctionsOfType: jest.fn().mockName("getFunctionsOfType").mockReturnValue([]),
   mutations: {},
   queries: {},
@@ -80,7 +76,6 @@ export function mockCollection(collectionName) {
   "NavigationTrees",
   "Notifications",
   "Orders",
-  "Packages",
   "Products",
   "Revisions",
   "roles",
