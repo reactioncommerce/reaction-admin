@@ -16,6 +16,14 @@ export default function sortUsersIntoGroups({ accounts, groups }) {
     group.users = _.compact(matchingAccounts);
     return group;
   });
+  const accountsWithoutGroup = accounts.filter((acc) => !acc.groups || acc.groups.length === 0);
+  if (accountsWithoutGroup.length) {
+    newGroups.push({
+      name: "Not In Any Group",
+      slug: "_none",
+      users: accountsWithoutGroup
+    });
+  }
   return newGroups;
 }
 
@@ -76,64 +84,6 @@ export function getDefaultUserInviteGroup(groups) {
 }
 
 /**
- * @method groupPermissions
- * @memberof Accounts
- * @summary Return all permissions for packages
- * @todo Review hardcoded `reaction` in package names
- * @param  {Array} packages [description]
- * @returns {Object}          [description]
- */
-export function groupPermissions(packages) {
-  return packages.reduce((registeredPackages, pkg) => {
-    const permissions = [];
-    if (pkg.registry && pkg.enabled) {
-      for (const registryItem of pkg.registry) {
-        if (!registryItem.route) {
-          continue;
-        }
-
-        // Get all permissions, add them to an array
-        if (registryItem.permissions) {
-          for (const permission of registryItem.permissions) {
-            // check needed because of non-object perms in the permissions array (e.g "admin", "owner")
-            if (typeof permission === "object") {
-              permission.shopId = Reaction.getShopId();
-              permissions.push(permission);
-            }
-          }
-        }
-
-        // Also create an object map of those same permissions as above
-        const permissionMap = getPermissionMap(permissions);
-        if (!permissionMap[registryItem.route]) {
-          permissions.push({
-            shopId: pkg.shopId,
-            permission: registryItem.name || `${pkg.name}/${registryItem.template}`,
-            icon: registryItem.icon,
-            // TODO: Rethink naming convention for permissions list
-            label: registryItem.label || registryItem.route
-          });
-        }
-      }
-      // TODO review this, hardcoded WIP "reaction"
-      const label = pkg.name.replace("reaction", "").replace(/(-.)/g, (string) => ` ${string[1].toUpperCase()}`);
-
-      const newObj = {
-        shopId: pkg.shopId,
-        icon: pkg.icon,
-        name: pkg.name,
-        label,
-        permissions: _.uniq(permissions)
-      };
-
-      registeredPackages.push(newObj);
-    }
-
-    return registeredPackages;
-  }, []);
-}
-
-/**
  * @method getUserByEmail
  * @memberOf Accounts
  * @summary Returns a user that matches the email address
@@ -142,17 +92,4 @@ export function groupPermissions(packages) {
  */
 export function getUserByEmail(email) {
   return Collections.Accounts.findOne({ "emails.address": email });
-}
-
-/**
- *
- * @param {Array} permissions permissions
- * @returns {Array} permissions mapped by label
- */
-function getPermissionMap(permissions) {
-  const permissionMap = {};
-  permissions.forEach(({ label, permission }) => {
-    permissionMap[permission] = label;
-  });
-  return permissionMap;
 }

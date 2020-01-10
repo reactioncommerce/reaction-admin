@@ -76,7 +76,7 @@ function ProductList({ items, title, onCreate, selectedVariantId }) {
               {(Array.isArray(item.media) && item.media.length &&
                 <img
                   alt=""
-                  src={item.media[0].url({ store: "thumbnail" })}
+                  src={item.media[0].url({ absolute: true, store: "thumbnail" })}
                   width={36}
                 />
               ) || ""}

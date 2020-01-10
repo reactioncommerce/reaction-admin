@@ -1,11 +1,10 @@
-import { Meteor } from "meteor/meteor";
 import { Template } from "meteor/templating";
 import { AutoForm } from "meteor/aldeed:autoform";
 import { ReactiveDict } from "meteor/reactive-dict";
 import { Blocks } from "@reactioncommerce/reaction-components";
 import { Reaction, i18next } from "/client/api";
 import Logger from "/client/modules/logger";
-import { Packages, Shops } from "/lib/collections";
+import { Shops } from "/lib/collections";
 import getOpaqueIds from "/imports/plugins/core/core/client/util/getOpaqueIds";
 
 Template.shopSettings.onCreated(function onCreated() {
@@ -28,13 +27,6 @@ Template.shopSettings.onCreated(function onCreated() {
       .catch((error) => {
         Logger.error(error);
       });
-  });
-
-  this.autorun(async () => {
-    const shopId = Reaction.getShopId();
-    if (shopId) {
-      this.subscribe("Packages", shopId);
-    }
   });
 });
 
@@ -60,12 +52,6 @@ Template.shopSettings.helpers({
       _id: Reaction.getShopId()
     });
   },
-  packageData() {
-    return Packages.findOne({
-      name: "core",
-      shopId: Reaction.getShopId()
-    });
-  },
   addressBook() {
     const address = Shops.findOne({
       _id: Reaction.getShopId()
@@ -73,7 +59,7 @@ Template.shopSettings.helpers({
     return address[0];
   },
   showAppSwitch(template) {
-    if (template === "optionsShopSettings" || template === "ShopAddressValidationSettings") {
+    if (template === "ShopAddressValidationSettings") {
       // do not have switch for options card/panel
       return false;
     }
@@ -87,12 +73,10 @@ Template.shopSettings.helpers({
   shopSettingsBlockProps() {
     const shopId = Reaction.getShopId();
     const opaqueShopId = Template.instance().state.get("opaqueShopId");
-    const versionedPackages = Packages.find({ version: { $exists: true }, shopId }).fetch();
 
     return {
       internalShopId: shopId,
-      shopId: opaqueShopId,
-      versionedPackages
+      shopId: opaqueShopId
     };
   }
 });
@@ -120,53 +104,5 @@ AutoForm.hooks({
     onError(operation, error) {
       return Alerts.toast(`${i18next.t("admin.alerts.shopAddressSettingsFailed")} ${error}`, "error");
     }
-  }
-});
-
-AutoForm.hooks({
-  shopEditExternalServicesForm: {
-    onSuccess() {
-      return Alerts.toast(i18next.t("admin.alerts.shopExternalServicesSettingsSaved"), "success");
-    },
-    onError(operation, error) {
-      return Alerts.toast(
-        `${i18next.t("admin.alerts.shopExternalServicesSettingsFailed")} ${error}`,
-        "error"
-      );
-    }
-  }
-});
-
-AutoForm.hooks({
-  shopEditOptionsForm: {
-    onSuccess() {
-      return Alerts.toast(i18next.t("admin.alerts.shopOptionsSettingsSaved"), "success");
-    },
-    onError(operation, error) {
-      return Alerts.toast(`${i18next.t("admin.alerts.shopOptionsSettingsFailed")} ${error}`, "error");
-    }
-  }
-});
-
-Template.shopSettings.events({
-  "change input[name=enabled]": (event) => {
-    const settingsKey = event.target.getAttribute("data-key");
-    const packageId = event.target.getAttribute("data-id");
-    const fields = [{
-      property: "enabled",
-      value: event.target.checked
-    }];
-
-    Meteor.call("registry/update", packageId, settingsKey, fields);
-    Meteor.call("shop/togglePackage", packageId, !event.target.checked);
-  }
-});
-
-Template.optionsShopSettings.helpers({
-  packageData() {
-    return Packages.findOne({
-      name: "core",
-      shopId: Reaction.getShopId()
-    });
   }
 });

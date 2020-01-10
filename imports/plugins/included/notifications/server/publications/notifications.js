@@ -9,7 +9,7 @@ import { Notifications } from "/lib/collections";
  * @returns {Object} return notification cursor
  */
 Meteor.publish("Notification", function (userId) {
-  check(userId, Match.OptionalOrNull(String));
+  check(userId, Match.Maybe(String));
 
   if (!userId) {
     Logger.debug("Ignoring null request on Notification Subscription");

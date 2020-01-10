@@ -255,25 +255,6 @@ Importer.product = function (key, product, shopId) {
   return this.object(Collections.Products, key, product);
 };
 
-/**
- * @name package
- * @method
- * @memberof Importer
- * @summary Store a package in the import buffer.
- * @param {Object} pkg The package data to be updated
- * @param {String} shopId The package data to be updated
- * @returns {undefined}
- */
-Importer.package = function (pkg, shopId) {
-  check(pkg, Object);
-  check(shopId, String);
-  const key = {
-    name: pkg.name,
-    shopId
-  };
-  return this.object(Collections.Packages, key, pkg);
-};
-
 //
 // Importer.translation
 // server/startup/i18n.js

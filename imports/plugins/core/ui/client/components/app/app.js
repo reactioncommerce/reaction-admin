@@ -4,13 +4,12 @@ import PropTypes from "prop-types";
 import classnames from "classnames";
 import ToolbarContainer from "/imports/plugins/core/dashboard/client/containers/toolbarContainer";
 import Toolbar from "/imports/plugins/core/dashboard/client/components/toolbar";
-import { ActionViewContainer, PackageListContainer } from "/imports/plugins/core/dashboard/client/containers";
-import { ActionView, ShortcutBar } from "/imports/plugins/core/dashboard/client/components";
+import { ActionViewContainer } from "/imports/plugins/core/dashboard/client/containers";
+import { ActionView } from "/imports/plugins/core/dashboard/client/components";
 import Dashboard from "/imports/client/ui/layouts/Dashboard";
 
 const ConnectedToolbarComponent = ToolbarContainer(Toolbar);
 const ConnectedAdminViewComponent = ActionViewContainer(ActionView);
-const ConnectedShortcutBarContainer = PackageListContainer(ShortcutBar);
 
 const styles = {
   customerApp: {
@@ -79,7 +78,6 @@ class App extends Component {
           </div>
         </div>
         {this.props.hasDashboardAccess && <ConnectedAdminViewComponent />}
-        {this.props.hasDashboardAccess && <ConnectedShortcutBarContainer />}
       </div>
     );
   }

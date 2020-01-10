@@ -1,7 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Components } from "@reactioncommerce/reaction-components";
-import { getTagIds as getIds } from "/lib/selectors/tags";
+
+const getIds = (state) => {
+  if (Array.isArray(state.tags)) {
+    return state.tags.map((tag) => tag._id);
+  }
+
+  return [];
+};
 
 /** Class representing the Products React component
  * @summary PropTypes for Product React component

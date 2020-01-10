@@ -1,5 +1,5 @@
 import { Meteor } from "meteor/meteor";
-import { registerComponent, composeWithTracker } from "@reactioncommerce/reaction-components";
+import { composeWithTracker } from "@reactioncommerce/reaction-components";
 import { Shipping } from "/lib/collections";
 import ShippingRatesSettings from "../components/ShippingRatesSettings";
 
@@ -17,7 +17,5 @@ function composer(props, onData) {
     fulfillmentMethods: shippingDoc ? shippingDoc.methods : null
   });
 }
-
-registerComponent("ShippingRatesSettings", ShippingRatesSettings, composeWithTracker(composer));
 
 export default composeWithTracker(composer)(ShippingRatesSettings);

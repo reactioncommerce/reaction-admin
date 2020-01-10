@@ -8,8 +8,15 @@ import { Meteor } from "meteor/meteor";
 import { Reaction, i18next } from "/client/api";
 import TagList from "../components/tags/tagList";
 import { Tags } from "/lib/collections";
-import { getTagIds } from "/lib/selectors/tags";
 import getTagSuggestions from "../helpers/getTagSuggestions";
+
+const getTagIds = (state) => {
+  if (Array.isArray(state.tags)) {
+    return state.tags.map((tag) => tag._id);
+  }
+
+  return [];
+};
 
 const wrapComponent = (Comp) => (
   class TagListContainer extends Component {

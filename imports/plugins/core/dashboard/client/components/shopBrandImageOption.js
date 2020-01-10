@@ -51,7 +51,7 @@ function ShopBrandImageOption(props) {
   };
 
   const handleRemoveMedia = (mediaToRemove) => {
-    const imageUrl = mediaToRemove.url({ store: "medium" });
+    const imageUrl = mediaToRemove.url({ absolute: true, store: "medium" });
     const mediaRecordId = mediaToRemove._id;
 
     Alerts.alert({

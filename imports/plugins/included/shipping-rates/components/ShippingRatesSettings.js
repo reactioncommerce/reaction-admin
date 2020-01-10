@@ -3,6 +3,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import SimpleSchema from "simpl-schema";
 import { Meteor } from "meteor/meteor";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
 import { Shipping } from "/lib/collections";
 import { Reaction, formatPriceString, i18next } from "/client/api";
 import { IconButton, Loading, SortableTable } from "/imports/plugins/core/ui/client/components";
@@ -323,11 +326,16 @@ export default class ShippingRatesSettings extends Component {
     const { isEditing = false } = this.state;
 
     return (
-      <div>
-        {this.renderShippingGrid()}
-        {this.renderEditButton()}
-        {isEditing && this.renderShippingMethodForm()}
-      </div>
+      <Card>
+        <CardHeader
+          title={i18next.t("admin.shippingSettings.flatRateLabel")}
+        />
+        <CardContent>
+          {this.renderShippingGrid()}
+          {this.renderEditButton()}
+          {isEditing && this.renderShippingMethodForm()}
+        </CardContent>
+      </Card>
     );
   }
 }

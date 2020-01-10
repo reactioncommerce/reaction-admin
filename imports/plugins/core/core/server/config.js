@@ -12,6 +12,10 @@ export default envalid.cleanEnv(process.env, {
     desc: "A URL that is accessible from browsers and accepts GraphQL WebSocket connections",
     example: "ws://localhost:3000/graphql-beta"
   }),
+  PUBLIC_FILES_BASE_URL: str({
+    desc: "A URL that has /assets/files and /assets/uploads endpoints for uploading and downloading files",
+    example: "http://localhost:3000"
+  }),
   PUBLIC_I18N_BASE_URL: str({
     desc: "A URL that has /locales/namespaces.json and /locales/resources.json endpoints for loading translations",
     example: "http://localhost:3000"
@@ -24,5 +28,9 @@ export default envalid.cleanEnv(process.env, {
     default: 0,
     desc: "Numeric time at which the command to start the server was run. As output by `Date.now()`. For logging how long startup took.",
     example: "1574809954951"
+  }),
+  ROOT_URL: str({
+    desc: "The canonical root URL for the Reaction Admin server",
+    example: "http://localhost:4080"
   })
 });

@@ -38,7 +38,7 @@ function ProductMediaItem(props) {
     source
   } = props;
 
-  const imageSrc = (props && source.url({ store: size })) || defaultSource;
+  const imageSrc = (props && source.url({ absolute: true, store: size })) || defaultSource;
 
   return (
     <TableRow>
