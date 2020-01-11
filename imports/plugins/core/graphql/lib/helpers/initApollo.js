@@ -4,10 +4,12 @@ import { HttpLink } from "apollo-link-http";
 import { WebSocketLink } from "apollo-link-ws";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { getOperationAST } from "graphql";
+import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
 
 const { graphQlApiUrlHttp, graphQlApiUrlWebSocket } = Meteor.settings.public;
 
+let sharedClient;
 let token;
 
 /**
@@ -16,7 +18,25 @@ let token;
  * @return {undefined}
  */
 export function setAccessToken(value) {
+  const previousToken = token;
   token = value;
+
+  // "Resets your entire store by clearing out your cache and then re-executing all of your active queries.
+  // This makes it so that you may guarantee that there is no data left in your store from a time
+  // before you called this method."
+  //
+  // We do this because we have effectively switched users here. We don't want data from the previous user
+  // (or the previous non-authenticated queries) to be kept.
+  if (previousToken !== token) {
+    if (sharedClient) sharedClient.resetStore();
+
+    // If we are logged in with OAuth, log in as the same use with Meteor for the DDP connection
+    Accounts.callLoginMethod({
+      methodArguments: [{
+        accessToken: token
+      }]
+    });
+  }
 }
 
 /**
@@ -72,8 +92,6 @@ if (graphQlApiUrlWebSocket && graphQlApiUrlWebSocket.length) {
     standardLink
   );
 }
-
-let sharedClient;
 
 /**
  * @name initApollo

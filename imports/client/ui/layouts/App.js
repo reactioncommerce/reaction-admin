@@ -1,4 +1,5 @@
 import React from "react";
+import { OidcSecure } from "@axa-fr/react-oidc-context";
 import { Components } from "@reactioncommerce/reaction-components";
 import useAuth from "../hooks/useAuth";
 import Dashboard from "./Dashboard";
@@ -9,12 +10,16 @@ import useIsAppLoading from "/imports/client/ui/hooks/useIsAppLoading.js";
  * @returns {React.ReactElement} React component
  */
 function App() {
-  const { isLoading, isLoggedInToMeteor, logout, viewer } = useAuth();
+  const { logout, viewer } = useAuth();
   const [isAppLoading] = useIsAppLoading();
 
-  if (isLoading || isAppLoading) return <Components.Loading />;
+  if (isAppLoading) return <Components.Loading />;
 
-  return isLoggedInToMeteor ? <Dashboard logout={logout} viewer={viewer} /> : null;
+  return (
+    <OidcSecure>
+      <Dashboard logout={logout} viewer={viewer} />
+    </OidcSecure>
+  );
 }
 
 export default App;
