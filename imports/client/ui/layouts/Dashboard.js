@@ -39,6 +39,8 @@ class Dashboard extends Component {
       IconHamburger: CustomPropTypes.component.isRequired
     }),
     location: PropTypes.object,
+    logout: PropTypes.func,
+    viewer: PropTypes.object,
     width: PropTypes.string
   };
 
@@ -106,7 +108,7 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { classes, width } = this.props;
+    const { classes, logout, viewer, width } = this.props;
     const { isDetailDrawerOpen, isPrimarySidebarOpen } = this.state;
     const isMobile = isWidthDown("sm", width);
 
@@ -114,7 +116,7 @@ class Dashboard extends Component {
       <UIContext.Provider value={this.state}>
         <div className={classes.container}>
           <PrimaryAppBar>
-            <ProfileImageWithData size={40} />
+            <ProfileImageWithData logout={logout} size={40} viewer={viewer} />
           </PrimaryAppBar>
           <Sidebar
             isMobile={isMobile}

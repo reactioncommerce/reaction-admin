@@ -1,6 +1,6 @@
 import graphql from "graphql.js";
-import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
+import { setSimpleClientTokenHeader } from "/imports/plugins/core/graphql/lib/helpers/initApollo";
 import createFlatRateFulfillmentMethod from "../mutations/createFlatRateFulfillmentMethod.graphql";
 import updateFlatRateFulfillmentMethod from "../mutations/updateFlatRateFulfillmentMethod.graphql";
 import deleteFlatRateFulfillmentMethod from "../mutations/deleteFlatRateFulfillmentMethod.graphql";
@@ -14,47 +14,32 @@ const { graphQlApiUrlHttp } = Meteor.settings.public;
 
 const client = graphql(graphQlApiUrlHttp, { asJSON: true });
 
-/**
- * @summary Sets the meteor-login-token header for all GraphQL requests done
- *   through simpleClient.
- * @returns {undefined}
- * @private
- */
-function setTokenHeader() {
-  const token = Accounts._storedLoginToken();
-  if (token) {
-    client.headers({ "meteor-login-token": token });
-  } else {
-    client.headers({});
-  }
-}
-
 export default {
   createMutationFunction(mutation) {
     const cachedMutationFunction = client.mutate(mutation);
     return (variables) => {
-      setTokenHeader();
+      setSimpleClientTokenHeader(client);
       return cachedMutationFunction(variables);
     };
   },
   createQueryFunction(query) {
     const cachedQueryFunction = client.query(query);
     return (variables) => {
-      setTokenHeader();
+      setSimpleClientTokenHeader(client);
       return cachedQueryFunction(variables);
     };
   },
   mutations: {
     createFlatRateFulfillmentMethod: (variables) => {
-      setTokenHeader();
+      setSimpleClientTokenHeader(client);
       return client.mutate(createFlatRateFulfillmentMethod)(variables);
     },
     deleteFlatRateFulfillmentMethod: (variables) => {
-      setTokenHeader();
+      setSimpleClientTokenHeader(client);
       return client.mutate(deleteFlatRateFulfillmentMethod)(variables);
     },
     updateFlatRateFulfillmentMethod: (variables) => {
-      setTokenHeader();
+      setSimpleClientTokenHeader(client);
       return client.mutate(updateFlatRateFulfillmentMethod)(variables);
     }
   }

@@ -51,6 +51,7 @@ const wrapComponent = (Comp) => (
   class VariantFormContainer extends Component {
     static propTypes = {
       client: PropTypes.object,
+      enqueueSnackbar: PropTypes.func,
       history: PropTypes.object,
       shopId: PropTypes.string,
       variant: PropTypes.object
@@ -214,7 +215,7 @@ const wrapComponent = (Comp) => (
           }
         });
       } catch (error) {
-        enqueueSnackbar(i18next.t("productDetailEdit.updateProductFieldFail", { [fieldName]: value }), { variant: "error" })
+        enqueueSnackbar(i18next.t("productDetailEdit.updateProductFieldFail", { [fieldName]: value }), { variant: "error" });
       }
     }
 
@@ -231,7 +232,7 @@ const wrapComponent = (Comp) => (
         return;
       }
 
-      if(["price", "compareAtPrice"].includes(fieldName)){
+      if (["price", "compareAtPrice"].includes(fieldName)) {
         this.updateVariantPrice(variantId, fieldName, value);
         return;
       }

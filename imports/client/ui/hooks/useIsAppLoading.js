@@ -16,8 +16,7 @@ export default function useIsAppLoading() {
         Subscriptions.BrandAssets.ready() &&
         Subscriptions.Groups.ready() &&
         Subscriptions.MyAccount.ready() &&
-        Subscriptions.PrimaryShop.ready() &&
-        Subscriptions.UserProfile.ready()
+        Subscriptions.PrimaryShop.ready()
       );
 
       setIsAppLoading(!allSubscriptionsReady);

@@ -1,5 +1,4 @@
 import { Meteor } from "meteor/meteor";
-import "./init.js";
 import methods from "./methods";
 
 /**
