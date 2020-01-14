@@ -89,7 +89,8 @@ const styles = (theme) => ({
     }
   },
   textNotFound: {
-    textAlign: "right"
+    textAlign: "right",
+    height: "50px"
   },
   tableHead: {
     "& tr th": {
