@@ -15,5 +15,4 @@ import "./templates/theme/theme.js";
 
 import "./components/footer";
 
-export CoreLayout from "./components/coreLayout";
 export PrintLayout from "./components/printLayout";
