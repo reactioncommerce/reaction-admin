@@ -218,22 +218,16 @@ class ProductGrid extends Component {
     const { classes } = this.props;
 
     return (
-      <TableRow className={`product-table-row-item`}>
-        <TableCell>
-        </TableCell>
-        <TableCell>
-        </TableCell>
-        <TableCell>
-        </TableCell>
+      <TableRow className={"product-table-row-item"}>
+        <TableCell />
+        <TableCell />
+        <TableCell />
         <TableCell className={classes.textNotFound}>
           <Components.Translation defaultValue="No Products Found" i18nKey="app.noProductsFound" />
         </TableCell>
-        <TableCell>
-        </TableCell>
-        <TableCell>
-        </TableCell>
-        <TableCell>
-        </TableCell>
+        <TableCell />
+        <TableCell />
+        <TableCell />
       </TableRow>
     );
   }

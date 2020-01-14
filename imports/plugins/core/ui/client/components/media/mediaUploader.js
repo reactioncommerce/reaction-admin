@@ -46,7 +46,7 @@ function MediaUploader(props) {
         }
       }
 
-      await fileRecord.upload({});
+      await fileRecord.upload();
 
       // We insert only AFTER the server has confirmed that all chunks were uploaded
       return createMediaRecord({

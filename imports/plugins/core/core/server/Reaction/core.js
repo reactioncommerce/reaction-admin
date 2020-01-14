@@ -1,3 +1,4 @@
+import { URL } from "url";
 import Logger from "@reactioncommerce/logger";
 import _ from "lodash";
 import { Meteor } from "meteor/meteor";
@@ -5,7 +6,7 @@ import { check } from "meteor/check";
 import { Roles } from "meteor/alanning:roles";
 import * as Collections from "/lib/collections";
 import ConnectionDataStore from "/imports/plugins/core/core/server/util/connectionDataStore";
-import { AbsoluteUrlMixin } from "./absoluteUrl";
+import config from "../config.js";
 import { getUserId } from "./accountUtils";
 
 /**
@@ -18,41 +19,6 @@ import { getUserId } from "./accountUtils";
 const { Shops, Accounts: AccountsCollection } = Collections;
 
 export default {
-  ...AbsoluteUrlMixin,
-
-  Packages: {},
-
-  /**
-   * @summary This is used only for the old `registerPackage` in this file. After that is removed,
-   *   this likely can be removed, too.
-   * @param {ReactionNodeApp} app App instance
-   * @returns {undefined}
-   */
-  async onAppInstanceCreated(app) {
-    this.reactionNodeApp = app;
-    if (this.whenAppInstanceReadyCallbacks) {
-      for (const callback of this.whenAppInstanceReadyCallbacks) {
-        await callback(this.reactionNodeApp); // eslint-disable-line no-await-in-loop
-      }
-      this.whenAppInstanceReadyCallbacks = [];
-    }
-  },
-
-  /**
-   * @summary This is used only for the old `registerPackage` in this file. After that is removed,
-   *   this likely can be removed, too.
-   * @param {Function} callback Function to call after `this.reactionNodeApp` is set, which might be immediately
-   * @returns {undefined}
-   */
-  whenAppInstanceReady(callback) {
-    if (this.reactionNodeApp) {
-      callback(this.reactionNodeApp);
-    } else {
-      if (!this.whenAppInstanceReadyCallbacks) this.whenAppInstanceReadyCallbacks = [];
-      this.whenAppInstanceReadyCallbacks.push(callback);
-    }
-  },
-
   /**
    * @summary Called to indicate that startup is done, causing all
    *   `onAppStartupComplete` callbacks to run in series.
@@ -82,15 +48,6 @@ export default {
       if (!this.onAppStartupCompleteCallbacks) this.onAppStartupCompleteCallbacks = [];
       this.onAppStartupCompleteCallbacks.push(callback);
     }
-  },
-
-  /**
-   * @deprecated Use `app.registerPlugin` pattern instead. See the simple-pricing plugin.
-   * @param {Object} packageInfo Plugin options
-   * @returns {Object} Plugin options
-   */
-  registerPackage(packageInfo) {
-    this.whenAppInstanceReady((app) => app.registerPlugin(packageInfo));
   },
 
   defaultCustomerRoles: ["guest", "account/profile", "product", "tag", "index", "cart/completed"],
@@ -284,42 +241,6 @@ export default {
   },
 
   /**
-   * @summary **DEPRECATED** This method has been deprecated in favor of using getShopId
-   * and getPrimaryShopId. To be removed.
-   * @deprecated
-   * @memberof Core
-   * @method getCurrentShopCursor
-   * @returns {Cursor} cursor of shops that match the current domain
-   */
-  getCurrentShopCursor() {
-    const domain = this.getDomain();
-    const cursor = Shops.find({
-      domains: domain
-    });
-    if (!cursor.count()) {
-      Logger.debug(domain, "Add a domain entry to shops for ");
-    }
-    return cursor;
-  },
-
-  /**
-   * @summary **DEPRECATED** This method has been deprecated in favor of using getShopId
-   * and getPrimaryShopId. To be removed.
-   * @deprecated
-   * @memberof Core
-   * @method getCurrentShop
-   * @returns {Object} returns the first shop object from the shop cursor
-   */
-  getCurrentShop() {
-    const currentShopCursor = this.getCurrentShopCursor();
-    // also, we could check in such a way: `currentShopCursor instanceof Object` but not instanceof something.Cursor
-    if (typeof currentShopCursor === "object") {
-      return currentShopCursor.fetch()[0];
-    }
-    return null;
-  },
-
-  /**
    * @name getShopId
    * @method
    * @memberof Core
@@ -392,7 +313,8 @@ export default {
    * @returns {StringId} shopId
    */
   getShopIdByDomain() {
-    const domain = this.getDomain();
+    const parsedUrl = new URL(config.ROOT_URL);
+    const domain = parsedUrl.hostname;
     const primaryShop = this.getPrimaryShop();
 
     // in cases where the domain could match multiple shops, we first check

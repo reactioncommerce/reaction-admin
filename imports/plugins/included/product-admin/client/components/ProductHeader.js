@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
+import Helmet from "react-helmet";
 import { Link } from "react-router-dom";
 import { i18next, Reaction } from "/client/api";
 import { compose, withState } from "recompose";
@@ -116,6 +117,7 @@ function ProductHeader(props) {
         <Link className={classes.breadcrumbLink} to="/products">{"Products"}</Link>
         <ChevronRight className={classes.breadcrumbIcon} />
         <Link className={classes.breadcrumbLink} to={`/products/${product._id}`}>
+          <Helmet title={product.title} />
           {product.title || "Untitled Product"}
         </Link>
 

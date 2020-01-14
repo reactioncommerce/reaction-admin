@@ -48,11 +48,3 @@ Template.registerHelper("hasAdminAccess", () => Reaction.hasAdminAccess());
  * @returns {Boolean} return true if user has dashboard permission
  */
 Template.registerHelper("hasDashboardAccess", () => Reaction.hasDashboardAccess());
-
-/**
- * @method allowGuestCheckout
- * @memberof BlazeTemplateHelpers
- * @summary check if guest users are allowed to checkout, uses [alanning:meteor-roles](http://alanning.github.io/meteor-roles/classes/Roles.html)
- * @returns {Boolean} return true if shop has guest checkout enabled
- */
-Template.registerHelper("allowGuestCheckout", () => Reaction.allowGuestCheckout());

@@ -1,15 +1,13 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
-
 import { registerOperatorRoute } from "/imports/client/ui";
-
-import "./settings";
+import PaymentSettings from "./PaymentSettings.js";
 
 registerOperatorRoute({
   isNavigationLink: true,
   isSetting: true,
-  mainComponent: "paymentSettings",
+  mainComponent: PaymentSettings,
   priority: 20,
   path: "/payment",
   // eslint-disable-next-line react/display-name

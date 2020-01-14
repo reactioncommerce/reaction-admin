@@ -51,7 +51,7 @@ function flattenCatalogProductVariants(product) {
  * @returns {Object} return product cursor
  */
 Meteor.publish("Product", function (productIdOrHandle, shopIdOrSlug) {
-  check(productIdOrHandle, Match.OptionalOrNull(String));
+  check(productIdOrHandle, Match.Maybe(String));
   check(shopIdOrSlug, Match.Maybe(String));
 
   if (!productIdOrHandle) {

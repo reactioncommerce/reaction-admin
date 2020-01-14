@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { Components } from "@reactioncommerce/reaction-components";
+import Button from "@reactioncommerce/catalyst/Button";
 import { i18next } from "/client/api";
 import { ReactionProduct } from "/lib/api";
 import Card from "@material-ui/core/Card";
@@ -17,9 +18,6 @@ import Switch from "@material-ui/core/Switch";
  */
 function VariantInventoryForm(props) {
   const {
-    components: {
-      Button
-    },
     inventoryInfo,
     isLoadingInventoryInfo,
     recalculateReservedSimpleInventory,
@@ -100,9 +98,8 @@ function VariantInventoryForm(props) {
               value={isEnabled ? inventoryInStock : 0}
             />
             <Button
-              isDisabled={!isEnabled}
-              isShortHeight
-              isTextOnly
+              disabled={!isEnabled}
+              variant="text"
               onClick={() => {
                 recalculateReservedSimpleInventory({
                   variables: {

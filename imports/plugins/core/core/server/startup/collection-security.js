@@ -5,7 +5,6 @@ import Reaction from "/imports/plugins/core/core/server/Reaction";
 
 const {
   Accounts,
-  Packages,
   Emails,
   MediaRecords,
   Orders,
@@ -116,7 +115,7 @@ export default function () {
    */
 
   Security.permit(["insert", "update", "remove"])
-    .collections([Accounts, Products, Tags, Shipping, Orders, Packages, Templates])
+    .collections([Accounts, Products, Tags, Shipping, Orders, Templates])
     .ifHasRoleForActiveShop({ role: "admin" })
     .ifShopIdMatches()
     .exceptProps(["shopId"])

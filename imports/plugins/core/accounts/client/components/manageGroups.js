@@ -54,9 +54,7 @@ class ManageGroups extends Component {
         {this.props.isAdmin &&
           <div className={classes.editGroup}>
             <Components.EditGroup
-              // filter out owner group from editable groups.
-              // The edit group meteor method also prevents editing owner group
-              groups={this.state.groups.filter((grp) => grp.slug !== "owner")}
+              groups={this.state.groups}
               selectedGroup={this.state.group}
               onChangeGroup={this.props.onChangeGroup}
             />
