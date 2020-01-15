@@ -1,12 +1,14 @@
 import React, { useMemo, useCallback } from "react";
 import { useApolloClient } from "@apollo/react-hooks";
+import i18next from "i18next";
 import DataTable, { useDataTable } from "@reactioncommerce/catalyst/DataTable";
+import { useSnackbar } from "notistack";
 import decodeOpaqueId from "/imports/utils/decodeOpaqueId.js";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import { Card, CardHeader, CardContent, Checkbox, makeStyles } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import productsQuery from "../graphql/queries/products";
-import { i18next } from "/client/api";
+import publishProductsToCatalog from "../graphql/mutations/publishProductsToCatalog";
 import PublishedStatusCell from "./DataTable/PublishedStatusCell";
 import StatusIconCell from "./DataTable/StatusIconCell";
 
@@ -28,6 +30,7 @@ function ProductsTable() {
   const apolloClient = useApolloClient();
   const [shopId] = useCurrentShopId();
   const history = useHistory();
+  const { enqueueSnackbar } = useSnackbar();
 
   // Create and memoize the column data
   const columns = useMemo(() => [
@@ -136,8 +139,24 @@ function ProductsTable() {
     confirmTitle: `Publish ${selectedRows.length} products`,
     confirmMessage: `Are you sure you want to publish ${selectedRows.length} products to your storefront?`,
     isDisabled: selectedRows.length === 0,
-    onClick: () => {
-      console.log(`Published ${selectedRows.length} products`);
+    onClick: async () => {
+      if (selectedRows.length === 0) return;
+      const { data, error } = await apolloClient.mutate({
+        mutation: publishProductsToCatalog,
+        variables: {
+          productIds: selectedRows
+        }
+      });
+
+      if (error) {
+        enqueueSnackbar(i18next.t("admin.productTable.bulkActions.error", { variant: "error" }));
+        return;
+      }
+
+      enqueueSnackbar(
+        i18next.t("admin.productTable.bulkActions.published", { count: data.publishProductsToCatalog.length }),
+        { variant: "success" }
+      );
     }
   }, {
     label: "Make Visible",
@@ -171,7 +190,7 @@ function ProductsTable() {
     onClick: () => {
       console.log(`Archived ${selectedRows.length} products`);
     }
-  }], [selectedRows]);
+  }], [apolloClient, enqueueSnackbar, selectedRows]);
 
   const classes = useStyles();
 
