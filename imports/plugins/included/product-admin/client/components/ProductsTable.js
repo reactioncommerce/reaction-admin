@@ -15,10 +15,6 @@ import cloneProducts from "../graphql/mutations/cloneProducts";
 import StatusIconCell from "./DataTable/StatusIconCell";
 import PublishedStatusCell from "./DataTable/PublishedStatusCell";
 
-/* eslint-disable react/prop-types */
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable react/display-name */
-
 const useStyles = makeStyles({
   card: {
     overflow: "visible"
@@ -44,12 +40,16 @@ function ProductsTable() {
         isClickDisabled: true,
         padding: "checkbox"
       },
+      // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
       Header: ({ getToggleAllRowsSelectedProps }) => (
         <Checkbox {...getToggleAllRowsSelectedProps()} />
       ),
+      // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
       Cell: ({ row }) => (
         <Checkbox
+          // eslint-disable-next-line react/prop-types
           {...row.getToggleRowSelectedProps()}
+          // eslint-disable-next-line react/prop-types
           title={`Toggle row selection for ${row.values.fullName}`}
         />
       )
@@ -71,22 +71,26 @@ function ProductsTable() {
     },
     {
       Header: "Published",
+      // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
       Cell: ({ row }) => <PublishedStatusCell row={row} />
     },
     {
       Header: "Status",
+      // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
       Cell: ({ row }) => <StatusIconCell row={row} />,
       id: "isVisible"
     }
   ], []);
 
   const onFetchData = useCallback(async ({ globalFilter, pageIndex, pageSize }) => {
+    // Wait for shop id to be available before fetching products.
     if (!shopId) {
       return {
         data: [],
         pageCount: 0
       };
     }
+
     // TODO: Add loading and error handling
     const { data } = await apolloClient.query({
       query: productsQuery,
