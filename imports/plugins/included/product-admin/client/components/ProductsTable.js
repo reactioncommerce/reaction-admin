@@ -9,9 +9,11 @@ import { Card, CardHeader, CardContent, Checkbox, makeStyles } from "@material-u
 import { useHistory } from "react-router-dom";
 import productsQuery from "../graphql/queries/products";
 import publishProductsToCatalog from "../graphql/mutations/publishProductsToCatalog";
+import archiveProducts from "../graphql/mutations/archiveProducts";
 import updateProduct from "../graphql/mutations/updateProduct";
-import PublishedStatusCell from "./DataTable/PublishedStatusCell";
+import cloneProducts from "../graphql/mutations/cloneProducts";
 import StatusIconCell from "./DataTable/StatusIconCell";
+import PublishedStatusCell from "./DataTable/PublishedStatusCell";
 
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-multi-comp */
@@ -95,7 +97,6 @@ function ProductsTable() {
         offset: pageIndex * pageSize
       }
     });
-    console.log("data", data);
 
     // Return the fetched data as an array of objects and the calculated page count
     return {
@@ -108,6 +109,7 @@ function ProductsTable() {
   const onRowClick = useCallback(async ({ row }) => {
     let variantId = "";
     const { id: productId } = decodeOpaqueId(row.original._id);
+    // check for variant existence
     if (row.original.variants.length) {
       ({ id: variantId } = decodeOpaqueId(row.original.variants[0]._id));
     }
@@ -150,7 +152,7 @@ function ProductsTable() {
         }
       });
 
-      if (error) {
+      if (error && error.length) {
         enqueueSnackbar(i18next.t("admin.productTable.bulkActions.error", { variant: "error" }));
         return;
       }
@@ -226,7 +228,7 @@ function ProductsTable() {
           }
         });
 
-        if (error) errors.push(error);
+        if (error && error.length) errors.push(error);
         if (data) successes.push(data);
       }
 
@@ -245,16 +247,56 @@ function ProductsTable() {
     confirmTitle: `Duplicate ${selectedRows.length} products`,
     confirmMessage: `Are you sure you want to duplicate ${selectedRows.length} products?`,
     isDisabled: selectedRows.length === 0,
-    onClick: () => {
-      console.log(`Duplicated ${selectedRows.length} products`);
+    onClick: async () => {
+      if (selectedRows.length === 0) return;
+
+      const { data, error } = await apolloClient.mutate({
+        mutation: cloneProducts,
+        variables: {
+          input: {
+            productIds: selectedRows,
+            shopId
+          }
+        }
+      });
+
+      if (error && error.length) {
+        enqueueSnackbar(i18next.t("admin.productTable.bulkActions.error", { variant: "error" }));
+        return;
+      }
+
+      enqueueSnackbar(
+        i18next.t("admin.productTable.bulkActions.duplicateSuccess", { count: data.cloneProducts.products.length }),
+        { variant: "success" }
+      );
     }
   }, {
     label: "Archive",
     confirmTitle: `Archive ${selectedRows.length} products`,
     confirmMessage: `Are you sure you want to archive ${selectedRows.length} products? This will hide them from both admins and customers.`,
     isDisabled: selectedRows.length === 0,
-    onClick: () => {
-      console.log(`Archived ${selectedRows.length} products`);
+    onClick: async () => {
+      if (selectedRows.length === 0) return;
+
+      const { data, error } = await apolloClient.mutate({
+        mutation: archiveProducts,
+        variables: {
+          input: {
+            productIds: selectedRows,
+            shopId
+          }
+        }
+      });
+
+      if (error && error.length) {
+        enqueueSnackbar(i18next.t("admin.productTable.bulkActions.error", { variant: "error" }));
+        return;
+      }
+
+      enqueueSnackbar(
+        i18next.t("admin.productTable.bulkActions.archiveSuccess", { count: data.archiveProducts.products.length }),
+        { variant: "success" }
+      );
     }
   }], [apolloClient, enqueueSnackbar, selectedRows, shopId]);
 
