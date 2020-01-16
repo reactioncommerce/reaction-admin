@@ -170,6 +170,7 @@ function ProductsTable() {
 
       const errors = [];
       const successes = [];
+      // TODO: refactor this loop to use a bulk update mutation that needs to be implemented.
       for (const productId of selectedRows) {
         // eslint-disable-next-line no-await-in-loop
         const { data, error } = await apolloClient.mutate({
@@ -204,8 +205,40 @@ function ProductsTable() {
     confirmTitle: `Make ${selectedRows.length} products hidden`,
     confirmMessage: `Are you sure you want to make ${selectedRows.length} products hidden from customers?`,
     isDisabled: selectedRows.length === 0,
-    onClick: () => {
-      console.log(`Made ${selectedRows.length} products hidden`);
+    onClick: async () => {
+      if (selectedRows.length === 0) return;
+
+      const errors = [];
+      const successes = [];
+      // TODO: refactor this loop to use a bulk update mutation that needs to be implemented.
+      for (const productId of selectedRows) {
+        // eslint-disable-next-line no-await-in-loop
+        const { data, error } = await apolloClient.mutate({
+          mutation: updateProduct,
+          variables: {
+            input: {
+              product: {
+                isVisible: false
+              },
+              productId,
+              shopId
+            }
+          }
+        });
+
+        if (error) errors.push(error);
+        if (data) successes.push(data);
+      }
+
+      if (errors.length) {
+        enqueueSnackbar(i18next.t("admin.productTable.bulkActions.error", { variant: "error" }));
+        return;
+      }
+
+      enqueueSnackbar(
+        i18next.t("admin.productTable.bulkActions.makeHiddenSuccess", { count: successes.length }),
+        { variant: "success" }
+      );
     }
   }, {
     label: "Duplicate",
