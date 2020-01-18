@@ -1,5 +1,28 @@
-# v3.0.0-alpha
+# v3.0.0-beta
 
+This is the beta release of the Reaction Admin project that is designed to work with our new Reaction API.
+
+*Reaction releases will no longer be coordinated across all projects - we'll release each project, independently, as needed. This means version numbers will no longer be in sync. The newest versions of each project will work together. This change has two exceptions: we will release all projects in coordination for a `beta` release, and all projects in coordination for the official `v3.0.0` release.*
+
+### Features
+
+feat: add product page title ([#175](https://github.com/reactioncommerce/reaction-admin/pull/175))
+
+### Chores
+
+chore: move packages collection and fix most pages ([#166](https://github.com/reactioncommerce/reaction-admin/pull/166))
+
+### Fixes
+
+fix: use updateProductVariantPrices mutation to save variant price ([#172](https://github.com/reactioncommerce/reaction-admin/pull/172))
+fix: Allow variant fields to be updated on page refresh ([#174](https://github.com/reactioncommerce/reaction-admin/pull/174))
+fix: prop types errors ([#180](https://github.com/reactioncommerce/reaction-admin/pull/180))
+
+### Refactors
+
+refactor: use OAuth flows for login, reg, logout, change password ([#171](https://github.com/reactioncommerce/reaction-admin/pull/171))
+
+# v3.0.0-alpha
 
 ### Features
 
