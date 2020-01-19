@@ -73,7 +73,24 @@ const styles = (theme) => ({
   tableBody: {
     "& tr:nth-child(odd)": {
       backgroundColor: theme.palette.colors.black02
+    },
+    "& td": {
+      borderBottom: "none",
+      letterSpacing: "0.28px",
+      padding: 0,
+      color: theme.palette.colors.coolGrey500
+    },
+    "& td:first-child": {
+      padding: "4px",
+      width: "50px"
+    },
+    "& td:nth-child(2)": {
+      width: "60px"
     }
+  },
+  textNotFound: {
+    textAlign: "right",
+    height: "50px"
   },
   tableHead: {
     "& tr th": {
@@ -192,6 +209,29 @@ class ProductGrid extends Component {
     );
   }
 
+  /**
+   * Render the not found component
+   * @access protected
+   * @returns {Node} React node containing the `NotFound` component.
+   */
+  renderNotFound() {
+    const { classes } = this.props;
+
+    return (
+      <TableRow className={"product-table-row-item"}>
+        <TableCell />
+        <TableCell />
+        <TableCell />
+        <TableCell className={classes.textNotFound}>
+          <Components.Translation defaultValue="No Products Found" i18nKey="app.noProductsFound" />
+        </TableCell>
+        <TableCell />
+        <TableCell />
+        <TableCell />
+      </TableRow>
+    );
+  }
+
   renderProductGridItems() {
     const { productMediaById, products } = this.props;
     const { classes, ...notClasses } = this.props;
@@ -208,15 +248,7 @@ class ProductGrid extends Component {
       ));
     }
 
-    return (
-      <div className="row">
-        <div className="text-center">
-          <h3>
-            <Components.Translation defaultValue="No Products Found" i18nKey="app.noProductsFound" />
-          </h3>
-        </div>
-      </div>
-    );
+    return this.renderNotFound();
   }
 
   handleDisplayTagSelector = () => {
