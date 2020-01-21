@@ -10,10 +10,9 @@ import Blaze from "meteor/gadicc:blaze-react-component";
 import { Template } from "meteor/templating";
 import { Session } from "meteor/session";
 import { Tracker } from "meteor/tracker";
-import { Packages, Shops } from "/lib/collections";
+import { Shops } from "/lib/collections";
 import { getComponent } from "@reactioncommerce/reaction-components/components";
 import Hooks from "./hooks";
-import { addRoutePrefixToPackageRoutes, getEnabledPackageRoutes } from "./utils";
 
 // Using a ternary operator here to avoid a mutable export - open to suggestions for a better way to do this
 export const history = Meteor.isClient ? createBrowserHistory() : createMemoryHistory();
@@ -565,13 +564,11 @@ Router.initPackageRoutes = (options) => {
   Router.Reaction = options.reactionContext;
   Router.routes = [];
 
-  const packages = Packages.find().fetch();
-
   // Default layouts
   const indexLayout = ReactionLayout(options.indexRoute);
   const defaultNotFoundLayout = ReactionLayout({ template: "notFound" });
 
-  const defaultRouteDefinitions = [{
+  const allRouteDefinitions = [{
     route: "/",
     name: "index",
     options: {
@@ -603,10 +600,6 @@ Router.initPackageRoutes = (options) => {
       structure: defaultNotFoundLayout.structure
     }
   }];
-
-  const enabledPackageRoutes = getEnabledPackageRoutes(ReactionLayout, packages);
-  const updatedPackageRoutes = addRoutePrefixToPackageRoutes(enabledPackageRoutes);
-  const allRouteDefinitions = [...updatedPackageRoutes, ...defaultRouteDefinitions];
 
   // Uniq-ify routes
   // Take all route definitions in the order that were received, and reverse it.

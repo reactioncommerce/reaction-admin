@@ -56,3 +56,5 @@ imports/plugins/custom/*
 coverage/*
 
 .reaction/pluginConfig.js
+
+docker-compose.override.yml

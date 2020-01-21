@@ -1,92 +1,67 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
-import gql from "graphql-tag";
-import { Meteor } from "meteor/meteor";
-import { Query } from "react-apollo";
-import { compose, withState } from "recompose";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { withComponents } from "@reactioncommerce/components-context";
 import { CustomPropTypes } from "@reactioncommerce/components/utils";
-import { Logger, i18next } from "/client/api";
+import { i18next } from "/client/api";
 import ButtonBase from "@material-ui/core/ButtonBase";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
-const getViewer = gql`
-  query getViewer {
-    viewer {
-      name
-      primaryEmailAddress
-    }
-  }
-`;
+/**
+ * @summary ProfileImageWithData React component
+ * @param {Object} props React props
+ * @return {React.Node} React node
+ */
+function ProfileImageWithData(props) {
+  const {
+    components: { ProfileImage },
+    logout = () => {},
+    viewer
+  } = props;
 
-class ProfileImageWithData extends Component {
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
+  const history = useHistory();
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
-  static propTypes = {
-    components: PropTypes.shape({
-      ProfileImage: CustomPropTypes.component.isRequired
-    }),
-    menuAnchorEl: PropTypes.any,
-    setMenuAnchorEl: PropTypes.func
-  };
+  if (!viewer) return null;
 
-  state = {
-    hasError: false
-  }
-
-  componentDidCatch(error, info) {
-    Logger.error(error, info);
-  }
-
-  render() {
-    const {
-      components: { ProfileImage },
-      menuAnchorEl,
-      setMenuAnchorEl
-    } = this.props;
-
-    if (this.state.hasError) return null;
-
-    return (
-      <Query query={getViewer}>
-        {({ loading, data }) => {
-          if (loading || !data || !data.viewer) return null;
-
-          return (
-            <Fragment>
-              <ButtonBase
-                centerRipple={true}
-                onClick={(event) => {
-                  setMenuAnchorEl(event.currentTarget);
-                }}
-              >
-                <ProfileImage viewer={data.viewer} {...this.props} />
-              </ButtonBase>
-
-              <Menu
-                id="profile-actions-menu"
-                anchorEl={menuAnchorEl}
-                open={Boolean(menuAnchorEl)}
-                onClose={() => setMenuAnchorEl(null)}
-              >
-                <Link to={"/profile"}>
-                  <MenuItem onClick={() => setMenuAnchorEl(null)}>{i18next.t("admin.userAccountDropdown.profileLabel")}</MenuItem>
-                </Link>
-                <MenuItem onClick={() => Meteor.logout()}>{i18next.t("accountsUI.signOut")}</MenuItem>
-              </Menu>
-            </Fragment>
-          );
+  return (
+    <Fragment>
+      <ButtonBase
+        centerRipple
+        onClick={(event) => {
+          setMenuAnchorEl(event.currentTarget);
         }}
-      </Query>
-    );
-  }
+      >
+        <ProfileImage viewer={viewer} {...props} />
+      </ButtonBase>
+
+      <Menu
+        id="profile-actions-menu"
+        anchorEl={menuAnchorEl}
+        open={Boolean(menuAnchorEl)}
+        onClose={() => setMenuAnchorEl(null)}
+      >
+        <MenuItem
+          onClick={() => {
+            setMenuAnchorEl(null); // close menu
+            history.push("/profile");
+          }}
+        >
+          {i18next.t("admin.userAccountDropdown.profileLabel")}
+        </MenuItem>
+        <MenuItem onClick={logout}>{i18next.t("accountsUI.signOut")}</MenuItem>
+      </Menu>
+    </Fragment>
+  );
 }
 
-export default compose(
-  withComponents,
-  withState("menuAnchorEl", "setMenuAnchorEl", null)
-)(ProfileImageWithData);
+ProfileImageWithData.propTypes = {
+  components: PropTypes.shape({
+    ProfileImage: CustomPropTypes.component.isRequired
+  }),
+  logout: PropTypes.func,
+  viewer: PropTypes.object
+};
+
+export default withComponents(ProfileImageWithData);

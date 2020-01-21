@@ -1,11 +1,8 @@
-import "./accounts/serviceConfiguration";
 import "./collections/accounts";
 import "./collections/cart";
 import "./collections/groups";
 import "./collections/media";
-import "./collections/members";
 import "./collections/orders";
-import "./collections/packages";
 import "./collections/product";
 import "./collections/products";
 import "./collections/reactiveAggregate";

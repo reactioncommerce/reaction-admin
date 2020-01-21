@@ -1,12 +1,10 @@
 import addUserPermissions from "./addUserPermissions";
-import createFallbackLoginToken from "./createFallbackLoginToken";
 import getUserId from "./getUserId";
 import groupMethods from "./group";
 import removeUserPermissions from "./removeUserPermissions";
 import setActiveShopId from "./setActiveShopId";
 import setUserPermissions from "./setUserPermissions";
 import updateEmailAddress from "./updateEmailAddress";
-import updateServiceConfiguration from "./updateServiceConfiguration";
 import verifyAccount from "./verifyAccount";
 
 /**
@@ -25,12 +23,10 @@ import verifyAccount from "./verifyAccount";
 
 export default {
   "accounts/addUserPermissions": addUserPermissions,
-  "accounts/createFallbackLoginToken": createFallbackLoginToken,
   "accounts/removeUserPermissions": removeUserPermissions,
   "accounts/setActiveShopId": setActiveShopId,
   "accounts/setUserPermissions": setUserPermissions,
   "accounts/updateEmailAddress": updateEmailAddress,
-  "accounts/updateServiceConfiguration": updateServiceConfiguration,
   "accounts/verifyAccount": verifyAccount,
   "reaction/getUserId": getUserId,
   ...groupMethods

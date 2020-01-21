@@ -1,15 +1,14 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
+import { useHistory } from "react-router-dom";
+import { useLazyQuery } from "@apollo/react-hooks";
+import { useReactOidc } from "@axa-fr/react-oidc-context";
 import { Meteor } from "meteor/meteor";
-import { Tracker } from "meteor/tracker";
-import { Reaction } from "/client/api";
+import { setAccessToken } from "/imports/plugins/core/graphql/lib/helpers/initApollo";
 import Logger from "/client/modules/logger";
 
-const { storefrontHomeUrl: defaultStorefrontHomeUrl } = Meteor.settings.public;
-
 const viewerQuery = gql`
-{
+query getViewer {
   viewer {
     _id
     firstName
@@ -21,86 +20,66 @@ const viewerQuery = gql`
 }
 `;
 
+let lastLocationChangeUrl = null;
+
+window.addEventListener("popstate", () => {
+  lastLocationChangeUrl = document.location.pathname + document.location.search + document.location.hash;
+});
+
 /**
  * Hook to get user permissions for the App component
  * @return {Object} Permissions
  */
 export default function useAuth() {
-  const [isAdmin, setAdmin] = useState(false);
-  const [isLoggedIn, setLoggedIn] = useState(false);
-  const [isLoading, setLoading] = useState(true);
-  const [isLoggingOut, setLoggingOut] = useState(true);
-  const [redirectUrl, setRedirect] = useState();
+  const history = useHistory();
 
-  const {
-    loading: isLoadingViewer,
-    data: viewerData,
-    refetch: refetchViewer,
-    networkStatus: viewerQueryNetworkStatus
-  } = useQuery(
+  // This is admittedly not ideal, but the `@axa-fr/react-oidc-context` pkg uses `window.history.pushState`
+  // directly when we finish the OIDC login flow, and for whatever reason React Router DOM does not pick it
+  // up. This workaround seems to work reliably: we call React Router's `history.push` with the same URL
+  // we are already on, and it forces a reload.
+  if (history && lastLocationChangeUrl) {
+    history.push(lastLocationChangeUrl);
+    lastLocationChangeUrl = null;
+  }
+
+  const { logout: oidcLogout, oidcUser } = useReactOidc();
+
+  const { access_token: accessToken } = oidcUser || {};
+  setAccessToken(accessToken);
+
+  const [getViewer, {
+    data: viewerData
+  }] = useLazyQuery(
     viewerQuery,
     {
-      onError(fetchError) {
-        Logger.error(fetchError);
-      },
-      notifyOnNetworkStatusChange: true
-    },
+      fetchPolicy: "network-only",
+      notifyOnNetworkStatusChange: true,
+      onError(error) {
+        // Can't find any more reliable way to check the status code from within this hook
+        if (typeof error.message === "string" && error.message.includes("Received status code 401")) {
+          // Token is expired or user was deleted from database
+          oidcLogout();
+        } else {
+          Logger.error(error);
+        }
+      }
+    }
   );
 
+  // Perform a `viewer` query whenever we get a new access token
   useEffect(() => {
-    Tracker.autorun(() => {
-      const hasDashboardAccessForAnyShop = Reaction.hasDashboardAccessForAnyShop();
-      const shop = Reaction.getCurrentShop();
-      const storefrontHomeUrl = (shop && shop.storefrontUrls && shop.storefrontUrls.storefrontHomeUrl) || defaultStorefrontHomeUrl;
-      const hasStorefrontHomeUrl = storefrontHomeUrl && storefrontHomeUrl.length;
+    if (accessToken) getViewer();
+  }, [accessToken, getViewer]);
 
-      // Set is admin
-      setAdmin(hasDashboardAccessForAnyShop);
-
-      // Set whether the user is logged in or not. This with `!admin` can be used to determine if the
-      // user is a customer
-      setLoggedIn(!!Reaction.getUserId());
-
-      // Attempt to check if we are still loading this data
-      const isLoadingPermissions = (hasDashboardAccessForAnyShop !== true && hasDashboardAccessForAnyShop !== false);
-
-      // When `viewerQueryNetworkStatus` is `4`, it is refetching because we logged in/out
-      setLoading(isLoadingPermissions || isLoadingViewer || viewerQueryNetworkStatus === 4);
-
-      if (!hasStorefrontHomeUrl && !isLoading) {
-        Logger.warn("Missing storefront home URL. Please set this from the shop settings panel so that customer users can be redirected to your storefront.");
-      }
-
-      // Set the redirect for non-admins to go the the storefront
-      if (isLoggedIn && !isAdmin && hasStorefrontHomeUrl && !isLoggingOut) {
-        setRedirect(storefrontHomeUrl);
-      } else {
-        setRedirect(null);
-      }
-    });
-  });
-
-  // Perform a `viewer` query whenever we log in or out
-  useEffect(() => {
-    refetchViewer();
-  }, [isLoggedIn, refetchViewer]);
-
-  const handleSignOut = () => {
-    setLoggingOut(true);
-    Meteor.logout((error) => {
-      if (error) Logger.error(error);
-      setLoggingOut(false);
+  const logout = () => {
+    Meteor.logout(() => {
+      // This involves redirect, so the page will full refresh at this point
+      oidcLogout();
     });
   };
 
   return {
-    isAdmin,
-    isLoading,
-    isLoggedIn,
-    isLoggingOut,
-    onSignOut: handleSignOut,
-    redirectUrl,
-    setLoggingOut,
+    logout,
     viewer: viewerData ? viewerData.viewer : null
   };
 }

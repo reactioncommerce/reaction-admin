@@ -1,6 +1,7 @@
+import { URL } from "url";
 import { BrowserPolicy } from "meteor/browser-policy-common";
 import { WebApp } from "meteor/webapp";
-import { Reaction } from "/lib/api";
+import config from "../config.js";
 
 /**
  * Set headers for Reaction CDN
@@ -26,11 +27,11 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // get current hostname of app
-const hostname = Reaction.getDomain();
+const parsedUrl = new URL(config.ROOT_URL);
 
 // allow websockets (Safari fails without this)
-BrowserPolicy.content.allowConnectOrigin(`ws://${hostname}`);
-BrowserPolicy.content.allowConnectOrigin(`wss://${hostname}`);
+BrowserPolicy.content.allowConnectOrigin(`ws://${parsedUrl.hostname}`);
+BrowserPolicy.content.allowConnectOrigin(`wss://${parsedUrl.hostname}`);
 
 BrowserPolicy.content.allowOriginForAll("*.facebook.com");
 BrowserPolicy.content.allowOriginForAll("*.fbcdn.net");

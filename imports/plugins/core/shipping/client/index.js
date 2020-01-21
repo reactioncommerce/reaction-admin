@@ -4,9 +4,6 @@ import { faShippingFast } from "@fortawesome/free-solid-svg-icons";
 
 import { registerOperatorRoute } from "/imports/client/ui";
 import Shipping from "./components/Shipping";
-import "./components";
-import "./containers";
-import "./templates";
 
 registerOperatorRoute({
   isNavigationLink: true,

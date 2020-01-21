@@ -115,8 +115,15 @@ const composer = (props, onData) => {
     const adminGroups = groups.filter((group) => group.slug !== "customer" && group.slug !== "guest");
 
     // Find all accounts that are in any of the admin groups
+    // or not in any group
     const adminGroupIds = adminGroups.map((group) => group._id);
-    const accounts = Accounts.find({ groups: { $in: adminGroupIds } }).fetch();
+    const accounts = Accounts.find({
+      $or: [
+        { groups: { $in: adminGroupIds } },
+        { groups: null },
+        { groups: { $size: 0 } }
+      ]
+    }).fetch();
 
     onData(null, { accounts, adminGroups, groups });
   }

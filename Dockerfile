@@ -25,13 +25,9 @@ RUN printf "\\n[-] Building Meteor application...\\n" \
 ##############################################################################
 # final build stage - create the final production image
 ##############################################################################
-FROM node:8.15.1-alpine
+FROM node:8.15.1-slim
 
 LABEL maintainer="Reaction Commerce <engineering@reactioncommerce.com>"
-
-# hadolint ignore=DL3018
-RUN apk --no-cache --update add bash curl less shadow su-exec tini vim python2 make g++
-SHELL ["/bin/bash", "-o", "pipefail", "-o", "errexit", "-u", "-c"]
 
 # grab the dependencies and built app from the previous temporary builder image
 COPY --chown=node --from=builder /usr/local/src/build/bundle /usr/local/src/app

@@ -9,14 +9,234 @@ import { Reaction, i18next } from "/client/api";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
-import { groupPermissions } from "../helpers/accountsHelper";
+
+const permissionList = [
+  {
+    name: "reaction-dashboard",
+    label: "Dashboard",
+    permissions: [
+      {
+        permission: "dashboard",
+        label: "Dashboard"
+      },
+      {
+        permission: "shopSettings",
+        label: "Shop Settings"
+      }
+    ]
+  },
+  {
+    name: "reaction-taxes-rates",
+    label: "Taxes Rates",
+    permissions: []
+  },
+  {
+    name: "reaction-file-collections",
+    label: "File Collections",
+    permissions: [
+      {
+        permission: "media/create",
+        label: "Create Media"
+      },
+      {
+        permission: "media/update",
+        label: "Update Media"
+      },
+      {
+        permission: "media/delete",
+        label: "Delete Media"
+      }
+    ]
+  },
+  {
+    name: "reaction-taxes",
+    label: "Taxes",
+    permissions: []
+  },
+  {
+    name: "reaction-i18n",
+    label: "I18n",
+    permissions: []
+  },
+  {
+    name: "reaction-product-admin",
+    label: "Product Admin",
+    permissions: [
+      {
+        permission: "product/admin",
+        label: "Product Admin"
+      },
+      {
+        permission: "product/archive",
+        label: "Archive Product"
+      },
+      {
+        permission: "product/clone",
+        label: "Clone Product"
+      },
+      {
+        permission: "product/create",
+        label: "Create Product"
+      },
+      {
+        permission: "product/publish",
+        label: "Publish Product"
+      },
+      {
+        permission: "product/update",
+        label: "Update Product"
+      }
+    ]
+  },
+  {
+    name: "reaction-email",
+    label: "Email",
+    permissions: []
+  },
+  {
+    label: "Address",
+    permissions: []
+  },
+  {
+    name: "reaction-orders",
+    label: "Orders",
+    permissions: [
+      {
+        permission: "order/fulfillment",
+        label: "Order Fulfillment"
+      },
+      {
+        permission: "order/view",
+        label: "Order View"
+      }
+    ]
+  },
+  {
+    name: "reaction-product-variant",
+    label: "Product Variant",
+    permissions: [
+      {
+        permission: "tag",
+        label: "/tag/:slug?"
+      },
+      {
+        permission: "createProduct",
+        label: "Add Product"
+      }
+    ]
+  },
+  {
+    name: "reaction-tags",
+    label: "Tags",
+    permissions: [
+      {
+        permission: "tag/admin",
+        label: "Tag Admin"
+      },
+      {
+        permission: "tag/edit",
+        label: "Edit Tag"
+      }
+    ]
+  },
+  {
+    name: "reaction-accounts",
+    label: "Accounts",
+    permissions: [
+      {
+        permission: "accounts",
+        label: "Accounts"
+      },
+      {
+        permission: "account/verify",
+        label: "Account Verify"
+      },
+      {
+        permission: "reaction-accounts/accountsSettings",
+        label: "Account Settings"
+      },
+      {
+        permission: "dashboard/accounts",
+        label: "Accounts"
+      },
+      {
+        permission: "account/profile",
+        label: "Profile"
+      },
+      {
+        permission: "reset-password",
+        label: "reset-password"
+      },
+      {
+        permission: "account/enroll",
+        label: "Account Enroll"
+      },
+      {
+        permission: "account/invite",
+        label: "Account Invite"
+      }
+    ]
+  },
+  {
+    name: "discount-codes",
+    label: "discount Codes",
+    permissions: [
+      {
+        permission: "discounts/apply",
+        label: "Apply Discounts"
+      }
+    ]
+  },
+  {
+    name: "reaction-shipping",
+    label: "Shipping",
+    permissions: [
+      {
+        permission: "shipping",
+        label: "Shipping"
+      }
+    ]
+  },
+  {
+    name: "reaction-notification",
+    label: "Notification",
+    permissions: [
+      {
+        permission: "notifications",
+        label: "Notifications"
+      }
+    ]
+  },
+  {
+    name: "reaction-templates",
+    label: "Templates",
+    permissions: []
+  },
+  {
+    name: "reaction-discounts",
+    label: "Discounts",
+    permissions: []
+  },
+  {
+    label: "Hydra Oauth",
+    permissions: [
+      {
+        permission: "account/login",
+        label: "OAuth Login"
+      },
+      {
+        permission: "not-found",
+        label: "not-found"
+      }
+    ]
+  }
+];
 
 class EditGroup extends Component {
   static propTypes = {
     accounts: PropTypes.array,
     groups: PropTypes.array,
     onChangeGroup: PropTypes.func,
-    packages: PropTypes.array,
     selectedGroup: PropTypes.object
   };
 
@@ -142,10 +362,11 @@ class EditGroup extends Component {
         {this.state.groups.map((grp, index) => (
           <div key={index} className={this.groupListClass(grp)}>
             <Components.ListItem label={grp.name} onClick={this.selectGroup(grp)} listItemClassName="flex flex-justify-spaceBetween">
-              <Components.IconButton
-                icon="fa fa-pencil"
-                onClick={this.showForm(grp)}
-              />
+              {grp.slug !== "owner" ?
+                <Components.IconButton
+                  icon="fa fa-pencil"
+                  onClick={this.showForm(grp)}
+                /> : null}
             </Components.ListItem>
           </div>
         ))}
@@ -162,7 +383,7 @@ class EditGroup extends Component {
     }
     return (
       <Components.PermissionsList
-        permissions={groupPermissions(this.props.packages)}
+        permissions={permissionList}
         group={this.state.selectedGroup}
         updateGroup={this.updateGroup}
       />

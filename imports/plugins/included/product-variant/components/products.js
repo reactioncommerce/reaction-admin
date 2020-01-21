@@ -1,7 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Components } from "@reactioncommerce/reaction-components";
-import { getTagIds as getIds } from "/lib/selectors/tags";
+
+const getIds = (state) => {
+  if (Array.isArray(state.tags)) {
+    return state.tags.map((tag) => tag._id);
+  }
+
+  return [];
+};
 
 /** Class representing the Products React component
  * @summary PropTypes for Product React component
@@ -102,42 +109,17 @@ class Products extends Component {
   }
 
   /**
-   * Render the not found component
-   * @access protected
-   * @returns {Node} React node containing the `NotFound` component.
-   */
-  renderNotFound() {
-    return (
-      <Components.NotFound
-        i18nKeyTitle="productGrid.noProductsFound"
-        icon="fa fa-barcode"
-        title="No Products Found"
-      />
-    );
-  }
-
-  /**
    * Render component
    * @access protected
    * @returns {Node} React node containing elements that make up the `Products` component.
    */
   render() {
-    const { isProductsSubscriptionReady, isReady, showNotFound } = this.props;
-
-    // Force show the not-found view.
-    if (showNotFound) {
-      return this.renderNotFound();
-    }
+    const { isProductsSubscriptionReady, isReady } = this.props;
 
     if (!isProductsSubscriptionReady || !isReady) {
       return (
         <Components.Loading />
       );
-    }
-
-    // Render not-found view if no products are available.
-    if (!this.hasProducts) {
-      return this.renderNotFound();
     }
 
     return (
