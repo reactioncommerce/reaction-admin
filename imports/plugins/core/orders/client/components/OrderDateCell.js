@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 
@@ -31,9 +31,9 @@ export default function OrderDateCell({ row }) {
   }
 
   return (
-    <Fragment>
+    <span style={{ whiteSpace: "noWrap" }}>
       {dateOrTime}
-    </Fragment>
+    </span>
   );
 }
 
