@@ -26,7 +26,7 @@ export default function updateHeaderTags(tagName, tagId, currentTagId) {
   // Must have 'core' permissions for the current shop ID. We then pass in
   // that shopId to all of the Tags.update calls below to ensure that
   // all of the modified tags belong to this shop.
-  if (!Reaction.hasPermission("core", Reaction.getUserId(), shopId)) {
+  if (!Reaction.hasPermission("reaction:legacy:tags/update", Reaction.getUserId(), shopId)) {
     throw new ReactionError("access-denied", "Access Denied");
   }
   this.unblock();

@@ -25,7 +25,7 @@ export const methods = {
 
     const shopId = Reaction.getShopId();
 
-    if (!Reaction.hasPermission("discounts", Reaction.getUserId(), shopId)) {
+    if (!Reaction.hasPermission("reaction:legacy:discounts/create", Reaction.getUserId(), shopId)) {
       throw new ReactionError("access-denied", "Access Denied");
     }
 
@@ -48,7 +48,7 @@ export const methods = {
 
     const shopId = Reaction.getShopId();
 
-    if (!Reaction.hasPermission("discounts", Reaction.getUserId(), shopId)) {
+    if (!Reaction.hasPermission("reaction:legacy:discounts/update", Reaction.getUserId(), shopId)) {
       throw new ReactionError("access-denied", "Access Denied");
     }
 
@@ -68,7 +68,7 @@ export const methods = {
 
     const shopId = Reaction.getShopId();
 
-    if (!Reaction.hasPermission("discounts", Reaction.getUserId(), shopId)) {
+    if (!Reaction.hasPermission("reaction:legacy:discounts/delete", Reaction.getUserId(), shopId)) {
       throw new ReactionError("access-denied", "Access Denied");
     }
 

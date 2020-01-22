@@ -3,7 +3,7 @@ import { Shops } from "/lib/collections";
 import Reaction from "/imports/plugins/core/core/server/Reaction";
 import ReactionError from "@reactioncommerce/reaction-error";
 
-const shippingRoles = ["admin", "owner", "shipping"];
+const shippingRoles = ["reaction:legacy:shippingMethods/update"];
 
 /**
  * @method shop/updateDefaultParcelSize

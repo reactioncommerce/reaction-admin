@@ -30,7 +30,7 @@ export const methods = {
     const userId = Reaction.getUserId();
 
     // Check that this user has permission to update templates for the active shop
-    if (!Reaction.hasPermission("reaction-templates", userId, shopId)) {
+    if (!Reaction.hasPermission("reaction:legacy:email-templates/update", userId, shopId)) {
       throw new ReactionError("access-denied", "Access Denied");
     }
 
