@@ -140,7 +140,7 @@ export default {
       // set permissions array with shopId as key on accountPermissions object
       uniqueShopIds.forEach((shopId) => {
         const groupPermissionsForShop = groups.filter((group) => group.shopId === shopId).map((group) => group.permissions);
-        const flattenedGroupPermissionsForShop = groupPermissionsForShop.flat();
+        const flattenedGroupPermissionsForShop = _.flattenDeep(groupPermissionsForShop);
         const uniquePermissionsForShop = _.uniq(flattenedGroupPermissionsForShop);
         accountPermissions[permissionsGroup] = uniquePermissionsForShop;
       });
