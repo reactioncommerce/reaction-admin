@@ -1,11 +1,12 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { useApolloClient } from "@apollo/react-hooks";
 import i18next from "i18next";
 import DataTable, { useDataTable } from "@reactioncommerce/catalyst/DataTable";
 import { useSnackbar } from "notistack";
+import { useDropzone } from "react-dropzone";
 import decodeOpaqueId from "/imports/utils/decodeOpaqueId.js";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
-import { Card, CardHeader, CardContent, Checkbox, makeStyles } from "@material-ui/core";
+import { Card, CardHeader, CardContent, Grid, makeStyles } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import productsQuery from "../graphql/queries/products";
 import publishProductsToCatalog from "../graphql/mutations/publishProductsToCatalog";
@@ -14,6 +15,7 @@ import updateProduct from "../graphql/mutations/updateProduct";
 import cloneProducts from "../graphql/mutations/cloneProducts";
 import StatusIconCell from "./DataTable/StatusIconCell";
 import PublishedStatusCell from "./DataTable/PublishedStatusCell";
+import FilterByFileCard from "./FilterByFileCard";
 
 const useStyles = makeStyles({
   card: {
@@ -22,38 +24,86 @@ const useStyles = makeStyles({
 });
 
 /**
+ * @summary Main products view
  * @name ProductsTable
  * @returns {React.Component} A React component
  */
 function ProductsTable() {
   const apolloClient = useApolloClient();
-  const [shopId] = useCurrentShopId();
-  const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
+  const history = useHistory();
+  const [files, setFiles] = useState([]);
+  const [filterByProductIds, setFilterByProductIds] = useState(null);
+  const [isFilterByFileVisible, setFilterByFileVisible] = useState(false);
+  const [isFiltered, setFiltered] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [pageCount, setPageCount] = useState(1);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [shopId] = useCurrentShopId();
+  const [tableData, setTableData] = useState([]);
+
+  const onDrop = (accepted) => {
+    if (accepted.length === 0) return;
+    setFiles(accepted);
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    multiple: true,
+    disablePreview: true,
+    disableClick: true
+  });
+
+
+  const importFiles = (newFiles) => {
+    let productIds = [];
+
+    newFiles.map((file) => {
+      const output = [];
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onloadend = () => {
+        const parse = require("csv-parse");
+
+        parse(reader.result, {
+          trim: true,
+          // eslint-disable-next-line camelcase
+          skip_empty_lines: true
+        })
+          .on("readable", function () {
+            let record;
+            // eslint-disable-next-line no-cond-assign
+            while (record = this.read()) {
+              output.push(record);
+            }
+          })
+          .on("end", () => {
+            output.map((outputarray) => {
+              productIds = productIds.concat(outputarray);
+              return;
+            });
+            setFilterByProductIds(productIds);
+            setFilterByFileVisible(false);
+            setFiltered(true);
+          });
+      };
+      return;
+    });
+  };
+
+  const handleDelete = (deletedFilename) => {
+    const newFiles = files.filter((file) => file.name !== deletedFilename);
+    setFiles(newFiles);
+    if (newFiles.length === 0) {
+      setFiltered(false);
+      setFilterByProductIds(null);
+    } else if (isFiltered) {
+      importFiles(newFiles);
+    }
+  };
 
   // Create and memoize the column data
   const columns = useMemo(() => [
-    {
-      id: "selection",
-      headerProps: {},
-      cellProps: {
-        isClickDisabled: true,
-        padding: "checkbox"
-      },
-      // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
-      Header: ({ getToggleAllRowsSelectedProps }) => (
-        <Checkbox {...getToggleAllRowsSelectedProps()} />
-      ),
-      // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
-      Cell: ({ row }) => (
-        <Checkbox
-          // eslint-disable-next-line react/prop-types
-          {...row.getToggleRowSelectedProps()}
-          // eslint-disable-next-line react/prop-types
-          title={`Toggle row selection for ${row.values.fullName}`}
-        />
-      )
-    },
     {
       Header: "Title",
       accessor: "title"
@@ -63,7 +113,8 @@ function ProductsTable() {
       accessor: (row) => {
         const { id: productId } = decodeOpaqueId(row._id);
         return productId;
-      }
+      },
+      id: "_id"
     },
     {
       Header: "Price",
@@ -82,64 +133,97 @@ function ProductsTable() {
     }
   ], []);
 
-  const onFetchData = useCallback(async ({ globalFilter, pageIndex, pageSize }) => {
+
+  const onFetchData = useCallback(async ({ globalFilter, pageIndex, pageSize, filters }) => {
     // Wait for shop id to be available before fetching products.
+    setIsLoading(true);
     if (!shopId) {
-      return {
-        data: [],
-        pageCount: 0
-      };
+      return;
     }
 
-    // TODO: Add loading and error handling
     const { data } = await apolloClient.query({
       query: productsQuery,
       variables: {
         shopIds: [shopId],
+        productIds: filterByProductIds,
         query: globalFilter,
         first: pageSize,
+        limit: (pageIndex + 1) * pageSize,
         offset: pageIndex * pageSize
-      }
+      },
+      fetchPolicy: "network-only"
     });
 
-    // Return the fetched data as an array of objects and the calculated page count
-    return {
-      data: data.products.nodes,
-      pageCount: Math.ceil(data.products.totalCount / pageSize)
-    };
-  }, [apolloClient, shopId]);
+    // Update the state with the fetched data as an array of objects and the calculated page count
+    setTableData(data.products.nodes);
+    setPageCount(Math.ceil(data.products.totalCount / pageSize));
+
+    setIsLoading(false);
+  }, [apolloClient, filterByProductIds, shopId]);
 
   // Row click callback
   const onRowClick = useCallback(async ({ row }) => {
     let variantId = "";
     const { id: productId } = decodeOpaqueId(row.original._id);
     // check for variant existence
-    if (row.original.variants.length) {
+    if (row.original.variants && row.original.variants.length) {
       ({ id: variantId } = decodeOpaqueId(row.original.variants[0]._id));
     }
 
     history.push(`/products/${productId}/${variantId}`);
   }, [history]);
 
-  const onSelectRows = useCallback(async ({ selectedRows }) => {
-    console.log("Selected rows", selectedRows);
+  const onRowSelect = useCallback(async ({ selectedRows: rows }) => {
+    setSelectedRows(rows || []);
   }, []);
+
+  const labels = useMemo(() => ({
+    globalFilterPlaceholder: "Filter products"
+  }), []);
 
   const dataTableProps = useDataTable({
     columns,
-    getRowID: (row) => row._id,
+    data: tableData,
+    labels,
+    pageCount,
     onFetchData,
     onRowClick,
-    onSelectRows
+    onRowSelect,
+    getRowId: (row) => row._id
   });
 
-  const [{ selectedRows }] = dataTableProps.state;
+  const { toggleAllRowsSelected, state: { pageIndex, pageSize, filters, globalFilter, sortBy } } = dataTableProps;
+
+  const refetch = useCallback(
+    async () => {
+      setIsLoading(true);
+
+      const { data } = await apolloClient.query({
+        query: productsQuery,
+        variables: {
+          shopIds: [shopId],
+          productIds: filterByProductIds,
+          query: globalFilter,
+          first: pageSize,
+          limit: (pageIndex + 1) * pageSize,
+          offset: pageIndex * pageSize
+        },
+        fetchPolicy: "network-only"
+      });
+
+      // Update the state with the fetched data as an array of objects and the calculated page count
+      setTableData(data.products.nodes);
+      setPageCount(Math.ceil(data.products.totalCount / pageSize));
+      setIsLoading(false);
+    },
+    [apolloClient, filterByProductIds, globalFilter, pageIndex, pageSize, shopId],
+  );
 
   // Create options for the built-in ActionMenu in the DataTable
   const options = useMemo(() => [{
     label: "Filter by file",
     onClick: () => {
-      console.log("Filter by file");
+      setFilterByFileVisible(true);
     }
   }, {
     label: "Publish",
@@ -161,6 +245,7 @@ function ProductsTable() {
         return;
       }
 
+      refetch();
       enqueueSnackbar(
         i18next.t("admin.productTable.bulkActions.published", { count: data.publishProductsToCatalog.length }),
         { variant: "success" }
@@ -201,6 +286,7 @@ function ProductsTable() {
         return;
       }
 
+      refetch();
       enqueueSnackbar(
         i18next.t("admin.productTable.bulkActions.makeVisibleSuccess", { count: successes.length }),
         { variant: "success" }
@@ -241,6 +327,7 @@ function ProductsTable() {
         return;
       }
 
+      refetch();
       enqueueSnackbar(
         i18next.t("admin.productTable.bulkActions.makeHiddenSuccess", { count: successes.length }),
         { variant: "success" }
@@ -269,6 +356,7 @@ function ProductsTable() {
         return;
       }
 
+      refetch();
       enqueueSnackbar(
         i18next.t("admin.productTable.bulkActions.duplicateSuccess", { count: data.cloneProducts.products.length }),
         { variant: "success" }
@@ -297,27 +385,41 @@ function ProductsTable() {
         return;
       }
 
+
+      refetch();
       enqueueSnackbar(
         i18next.t("admin.productTable.bulkActions.archiveSuccess", { count: data.archiveProducts.products.length }),
         { variant: "success" }
       );
     }
-  }], [apolloClient, enqueueSnackbar, selectedRows, shopId]);
+  }], [apolloClient, enqueueSnackbar, refetch, selectedRows, shopId]);
 
   const classes = useStyles();
 
   return (
-    <Card className={classes.card}>
-      <CardHeader title={i18next.t("admin.products")} />
-      <CardContent>
-        <DataTable
-          {...dataTableProps}
-          actionMenuProps={{ options }}
-          placeholder={"Filter products"}
-          isFilterable
-        />
-      </CardContent>
-    </Card>
+    <Grid container spacing={3}>
+      <FilterByFileCard
+        isFilterByFileVisible={isFilterByFileVisible}
+        files={files}
+        getInputProps={getInputProps}
+        getRootProps={getRootProps}
+        importFiles={importFiles}
+        handleDelete={handleDelete}
+        setFilterByFileVisible={setFilterByFileVisible}
+      />
+      <Grid item sm={12}>
+        <Card className={classes.card}>
+          <CardHeader title={i18next.t("admin.products")} />
+          <CardContent>
+            <DataTable
+              {...dataTableProps}
+              actionMenuProps={{ options }}
+              isLoading={isLoading}
+            />
+          </CardContent>
+        </Card>
+      </Grid >
+    </Grid >
   );
 }
 
