@@ -34,7 +34,7 @@ Meteor.publish("ProductGridMedia", function productGridMediaPublish(productIds) 
   // Product editors can see both published and unpublished images
   // There is an implied shopId in Reaction.hasPermission that defaults to
   // the active shopId via Reaction.getShopId
-  if (!Reaction.hasPermission(["createProduct", "product/admin", "product/publish"], this.userId)) {
+  if (!Reaction.hasPermission(["reaction:legacy:products/publish"], this.userId)) {
     selector["metadata.workflow"].$in = [null, "published"];
   }
 
@@ -62,7 +62,7 @@ Meteor.publish("ProductMedia", function productMediaPublish(id) {
   // Product editors can see both published and unpublished images
   // There is an implied shopId in Reaction.hasPermission that defaults to
   // the active shopId via Reaction.getShopId
-  if (!Reaction.hasPermission(["createProduct", "product/admin", "product/publish"], this.userId)) {
+  if (!Reaction.hasPermission(["reaction:legacy:products/publish"], this.userId)) {
     selector["metadata.workflow"].$in = [null, "published"];
   }
 

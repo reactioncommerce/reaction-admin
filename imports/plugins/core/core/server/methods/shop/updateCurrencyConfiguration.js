@@ -17,7 +17,7 @@ export default function updateCurrencyConfiguration(currency, enabled) {
   check(enabled, Boolean);
 
   // must have core permissions
-  if (!Reaction.hasPermission("core")) {
+  if (!Reaction.hasPermission("reaction:legacy:shops/update")) {
     throw new ReactionError("access-denied", "Access Denied");
   }
   this.unblock();

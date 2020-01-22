@@ -15,7 +15,7 @@ import ReactionError from "@reactioncommerce/reaction-error";
  * @returns {Boolean} success/failure
  */
 export default function addUserPermissions(userId, permissions, group) {
-  if (!Reaction.hasPermission("reaction-accounts", Reaction.getUserId(), group)) {
+  if (!Reaction.hasPermission("reaction:legacy:accounts/invite:group", Reaction.getUserId(), group)) {
     throw new ReactionError("access-denied", "Access denied");
   }
   check(userId, Match.OneOf(String, Array));

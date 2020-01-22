@@ -134,7 +134,7 @@ Meteor.methods({
       throw new ReactionError("not-found", "Product not found");
     }
 
-    if (!Reaction.hasPermission(["createProduct", "product/admin", "product/update"], this.userId, doc.shopId)) {
+    if (!Reaction.hasPermission(["reaction:legacy:products/update"], this.userId, doc.shopId)) {
       throw new ReactionError("access-denied", "Access Denied");
     }
 
@@ -214,7 +214,7 @@ Meteor.methods({
       throw new ReactionError("not-found", "Product not found");
     }
 
-    if (!Reaction.hasPermission(["createProduct", "product/admin", "product/update"], this.userId, product.shopId)) {
+    if (!Reaction.hasPermission(["reaction:legacy:products/update"], this.userId, product.shopId)) {
       throw new ReactionError("access-denied", "Access Denied");
     }
 
@@ -295,7 +295,7 @@ Meteor.methods({
     const product = Products.findOne(productId);
     if (!product) {
       throw new ReactionError("not-found", "Product not found");
-    } else if (!Reaction.hasPermission(["createProduct", "product/admin", "product/update"], this.userId, product.shopId)) {
+    } else if (!Reaction.hasPermission(["reaction:legacy:products/update"], this.userId, product.shopId)) {
       throw new ReactionError("access-denied", "Access Denied");
     }
 
@@ -330,7 +330,7 @@ Meteor.methods({
     const product = Products.findOne(productId);
     if (!product) {
       throw new ReactionError("not-found", "Product not found");
-    } else if (!Reaction.hasPermission(["createProduct", "product/admin", "product/update"], this.userId, product.shopId)) {
+    } else if (!Reaction.hasPermission(["reaction:legacy:products/update"], this.userId, product.shopId)) {
       throw new ReactionError("access-denied", "Access Denied");
     }
 
@@ -365,7 +365,7 @@ Meteor.methods({
     const product = Products.findOne(productId);
     if (!product) {
       throw new ReactionError("not-found", "Product not found");
-    } else if (!Reaction.hasPermission(["createProduct", "product/admin", "product/update"], this.userId, product.shopId)) {
+    } else if (!Reaction.hasPermission(["reaction:legacy:products/update"], this.userId, product.shopId)) {
       throw new ReactionError("access-denied", "Access Denied");
     }
 
@@ -433,7 +433,7 @@ Meteor.methods({
     // This checks to make sure the user has createProduct permissions for the active shop.
     // TODO: We should determine if that is the correct role that a user should have
     // to be permitted to re-arrange products on the grid
-    if (!Reaction.hasPermission(["createProduct", "product/admin", "product/update"], this.userId, shopId)) {
+    if (!Reaction.hasPermission(["reaction:legacy:products/update"], this.userId, shopId)) {
       throw new ReactionError("access-denied", "Access Denied");
     }
 
@@ -477,7 +477,7 @@ Meteor.methods({
     const product = Products.findOne(productId);
     if (!product) {
       throw new ReactionError("not-found", "Product not found");
-    } else if (!Reaction.hasPermission(["createProduct", "product/admin", "product/update"], this.userId, product.shopId)) {
+    } else if (!Reaction.hasPermission(["reaction:legacy:products/update"], this.userId, product.shopId)) {
       throw new ReactionError("access-denied", "Access Denied");
     }
 
@@ -551,7 +551,7 @@ Meteor.methods({
     const product = Products.findOne(productId);
     if (!product) {
       throw new ReactionError("not-found", "Product not found");
-    } else if (!Reaction.hasPermission(["createProduct", "product/admin", "product/update"], this.userId, product.shopId)) {
+    } else if (!Reaction.hasPermission(["reaction:legacy:products/update"], this.userId, product.shopId)) {
       throw new ReactionError("access-denied", "Access Denied");
     }
 
@@ -585,7 +585,7 @@ Meteor.methods({
       throw new ReactionError("not-found", "Product not found");
     }
 
-    if (!Reaction.hasPermission(["createProduct", "product/admin", "product/update"], this.userId, product.shopId)) {
+    if (!Reaction.hasPermission(["reaction:legacy:products/update"], this.userId, product.shopId)) {
       throw new ReactionError("access-denied", "Access Denied");
     }
 
