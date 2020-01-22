@@ -1,15 +1,8 @@
-import React, { Fragment } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { i18next } from "/client/api";
-import { withRouter } from "react-router";
 import Chip from "@reactioncommerce/catalyst/Chip";
-import { Link, makeStyles } from "@material-ui/core";
-
-const useStyles = makeStyles((theme) => ({
-  chip: {
-    marginLeft: theme.spacing(2)
-  }
-}));
+import { Box } from "@material-ui/core";
 
 /**
  * @name OrderIdCell
@@ -17,13 +10,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {Object} history Router history API
  * @return {React.Component} A date component
  */
-function OrderIdCell({ row, history }) {
-  const classes = useStyles();
-
-  const handleClick = () => {
-    history.push(`/orders/${row.values.referenceId}`);
-  };
-
+function OrderIdCell({ cell, row }) {
   let chipColor;
   switch (row.original.status) {
     case "new":
@@ -41,25 +28,29 @@ function OrderIdCell({ row, history }) {
   }
 
   return (
-    <Fragment>
-      <Link onClick={handleClick}>
-        {row.values.referenceId}
-      </Link>
-      <Chip
-        className={classes.chip}
-        color={chipColor}
-        size="small"
-        label={i18next.t(`admin.table.orderStatus.${row.original.status}`)}
-      />
-    </Fragment>
+    <Box style={{ whiteSpace: "nowrap" }}>
+      <Box
+        component="span"
+        paddingRight={2}
+      >
+        {cell.value}
+      </Box>
+      {status !== "completed" ?
+        <Chip
+          color={chipColor}
+          variant="default"
+          label={i18next.t(`admin.table.orderStatus.${row.values.status}`)}
+        />
+        :
+        <span>{row.values.status}</span>
+      }
+    </Box>
   );
 }
 
 OrderIdCell.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired
-  }),
+  cell: PropTypes.object.isRequired,
   row: PropTypes.object.isRequired
 };
 
-export default withRouter(OrderIdCell);
+export default OrderIdCell;
