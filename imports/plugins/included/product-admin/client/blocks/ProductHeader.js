@@ -1,19 +1,18 @@
 import React from "react";
-import PropTypes from "prop-types";
 import ProductHeaderComponent from "../components/ProductHeader";
+import useProduct from "../hooks/useProduct";
 
 /**
  * Product header block component
- * @param {Object} props Component props
  * @returns {Node} React node
  */
-function ProductHeader(props) {
+function ProductHeader() {
   const {
     onArchiveProduct,
     onCloneProduct,
     onToggleProductVisibility,
     product
-  } = props;
+  } = useProduct();
 
   return (
     <ProductHeaderComponent
@@ -24,13 +23,5 @@ function ProductHeader(props) {
     />
   );
 }
-
-ProductHeader.propTypes = {
-  onArchiveProduct: PropTypes.func,
-  onCloneProduct: PropTypes.func,
-  onToggleProductVisibility: PropTypes.func,
-  product: PropTypes.object,
-  restoreProduct: PropTypes.func
-};
 
 export default ProductHeader;
