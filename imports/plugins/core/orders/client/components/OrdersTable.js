@@ -8,6 +8,7 @@ import { useApolloClient } from "@apollo/react-hooks";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import { Box, Card, CardHeader, CardContent, makeStyles } from "@material-ui/core";
 import ordersQuery from "../graphql/queries/orders";
+import { formatDateRangeFilter } from "../../client/helpers";
 import OrderDateCell from "./OrderDateCell";
 import OrderIdCell from "./OrderIdCell";
 
@@ -92,11 +93,24 @@ function OrdersTable() {
       accessor: "payments[0].billingAddress.fullName"
     },
     {
+      accessor: "payments[0].amount.displayAmount",
       // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
       Header: () => <Box textAlign="right">{i18next.t("admin.table.headers.total")}</Box>,
       // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
-      Cell: ({ cell }) => <Box textAlign="right">{cell.value}</Box>,
-      accessor: "payments[0].amount.displayAmount"
+      Cell: ({ cell }) => <Box textAlign="right">{cell.value}</Box>
+    },
+    {
+      // Hide this column, it's only for filtering
+      Header: "Order date",
+      Filter: makeDataTableColumnFilter({
+        options: [
+          { label: "Today", value: "today" },
+          { label: "Last 7 days", value: "last7" },
+          { label: "Last 30", value: "last30" }
+        ]
+      }),
+      accessor: "createdAt",
+      show: false
     }
   ], []);
 
@@ -116,6 +130,9 @@ function OrdersTable() {
 
         case "fulfillmentGroups[0].status":
           queryFilters.fulfillmentStatus = filter.value;
+          break;
+        case "createdAt":
+          queryFilters[filter.id] = formatDateRangeFilter(filter.value);
           break;
         default:
           queryFilters[filter.id] = filter.value;
