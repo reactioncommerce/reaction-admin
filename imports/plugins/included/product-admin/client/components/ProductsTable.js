@@ -134,7 +134,7 @@ function ProductsTable() {
   ], []);
 
 
-  const onFetchData = useCallback(async ({ globalFilter, pageIndex, pageSize, filters }) => {
+  const onFetchData = useCallback(async ({ globalFilter, pageIndex, pageSize }) => {
     // Wait for shop id to be available before fetching products.
     setIsLoading(true);
     if (!shopId) {
@@ -192,7 +192,7 @@ function ProductsTable() {
     getRowId: (row) => row._id
   });
 
-  const { toggleAllRowsSelected, state: { pageIndex, pageSize, filters, globalFilter, sortBy } } = dataTableProps;
+  const { state: { pageIndex, pageSize, globalFilter } } = dataTableProps;
 
   const refetch = useCallback(
     async () => {
