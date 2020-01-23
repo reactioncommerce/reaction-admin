@@ -7,7 +7,6 @@ import CubeIcon from "mdi-material-ui/Cube";
 import { registerOperatorRoute } from "/imports/client/ui";
 
 import ProductsTable from "./components/ProductsTable";
-import ProductTable from "./components/ProductTable";
 import ProductDetailLayout from "./layouts/ProductDetail";
 import VariantDetail from "./layouts/VariantDetail";
 import ContentViewExtraWideLayout from "/imports/client/ui/layouts/ContentViewExtraWideLayout";
