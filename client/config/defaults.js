@@ -2,7 +2,7 @@
  * @namespace Constants
  *
  * @description Application global variables and constants to set to configure default layout, workflows and more.
- * Learn how to override layout and workflow constants in the [docs](https://docs.reactioncommerce.com/reaction-docs/master/layout).
+ * Learn how to override layout and workflow constants in the [docs](https://docs.reactioncommerce.com/reaction-docs/trunk/layout).
  */
 
 /**
@@ -11,7 +11,7 @@
  * @default
  * @name DEFAULT_LAYOUT
  * @memberof Constants
- * @summary Use this to override a default layout. Learn [what layouts are](https://docs.reactioncommerce.com/reaction-docs/master/layout) and how to [create a custom layout](https://docs.reactioncommerce.com/reaction-docs/master/plugin-layouts-3) in the docs.
+ * @summary Use this to override a default layout. Learn [what layouts are](https://docs.reactioncommerce.com/reaction-docs/trunk/layout) and how to [create a custom layout](https://docs.reactioncommerce.com/reaction-docs/trunk/plugin-layouts-3) in the docs.
  * @example import { Session } from "meteor/session";
  * Session.set("DEFAULT_LAYOUT", "customCoreLayout");
  */

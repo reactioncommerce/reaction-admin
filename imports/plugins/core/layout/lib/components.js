@@ -10,7 +10,7 @@ import {
  * @returns {undefined}
  */
 export function registerComponent(componentInfo) {
-  console.warn("DEPRECATED registerComponent(). Use new implementation. see: https://docs.reactioncommerce.com/reaction-docs/master/components-api");
+  console.warn("DEPRECATED registerComponent(). Use new implementation. see: https://docs.reactioncommerce.com/reaction-docs/trunk/components-api");
 
   newRegisterComponent(componentInfo.name, componentInfo.component);
 }
@@ -20,7 +20,7 @@ export function registerComponent(componentInfo) {
  * @returns {Component} component to get
  */
 export function getComponent(name) {
-  console.warn("DEPRECATED getComponent(). Use new implementation. see: https://docs.reactioncommerce.com/reaction-docs/master/components-api");
+  console.warn("DEPRECATED getComponent(). Use new implementation. see: https://docs.reactioncommerce.com/reaction-docs/trunk/components-api");
 
   let component = null;
 
@@ -37,7 +37,7 @@ export function getComponent(name) {
  * @returns {Component[]} all components
  */
 export function getAllComponents() {
-  console.warn("DEPRECATED getAllComponents(). Use new implementation. see: https://docs.reactioncommerce.com/reaction-docs/master/components-api");
+  console.warn("DEPRECATED getAllComponents(). Use new implementation. see: https://docs.reactioncommerce.com/reaction-docs/trunk/components-api");
 
   return Components;
 }
