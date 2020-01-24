@@ -175,7 +175,7 @@ export default {
 
       // if accountPermissions includes any of checkPermissions, then we return true
       // (this replaces `Roles.userIsInRole`)
-      return accountPermissions[permissionsGroup].some((permission) => checkPermissions.includes(permission));
+      return accountPermissions[permissionsGroup].some((permission) => permissions.includes(permission));
     }
 
     /**
