@@ -13,7 +13,9 @@ import publishProductsToCatalog from "../graphql/mutations/publishProductsToCata
 import archiveProducts from "../graphql/mutations/archiveProducts";
 import updateProduct from "../graphql/mutations/updateProduct";
 import cloneProducts from "../graphql/mutations/cloneProducts";
+import getPDPUrl from "../utils/getPDPUrl";
 import StatusIconCell from "./DataTable/StatusIconCell";
+import MediaCell from "./DataTable/MediaCell";
 import PublishedStatusCell from "./DataTable/PublishedStatusCell";
 import FilterByFileCard from "./FilterByFileCard";
 
@@ -105,7 +107,19 @@ function ProductsTable() {
   // Create and memoize the column data
   const columns = useMemo(() => [
     {
-      Header: "Title",
+      Header: "",
+      accessor: "original.media[0].URLs.thumbnail",
+      cellProps: () => ({
+        style: {
+          paddingLeft: 0,
+          paddingRight: 0
+        }
+      }),
+      // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
+      Cell: ({ row }) => <MediaCell row={row} />
+    },
+    {
+      Header: "Product",
       accessor: "title"
     },
     {
@@ -163,14 +177,8 @@ function ProductsTable() {
 
   // Row click callback
   const onRowClick = useCallback(async ({ row }) => {
-    let variantId = "";
-    const { id: productId } = decodeOpaqueId(row.original._id);
-    // check for variant existence
-    if (row.original.variants && row.original.variants.length) {
-      ({ id: variantId } = decodeOpaqueId(row.original.variants[0]._id));
-    }
-
-    history.push(`/products/${productId}/${variantId}`);
+    const href = getPDPUrl(row.original);
+    history.push(href);
   }, [history]);
 
   const onRowSelect = useCallback(async ({ selectedRows: rows }) => {
