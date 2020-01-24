@@ -173,7 +173,7 @@ export default {
       permissions.push("owner");
       permissions = _.uniq(permissions);
 
-      // if accountPermissions includes any of checkPermissions, then we return true
+      // if accountPermissions includes any of permissions, then we return true
       // (this replaces `Roles.userIsInRole`)
       return accountPermissions[permissionsGroup].some((permission) => permissions.includes(permission));
     }
