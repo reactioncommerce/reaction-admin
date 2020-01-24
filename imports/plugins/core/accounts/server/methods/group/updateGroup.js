@@ -26,7 +26,7 @@ export default function updateGroup(groupId, newGroupData, shopId) {
 
   // we are limiting group method actions to only users with admin roles
   // this also include shop owners, since they have the `admin` role in their Roles.GLOBAL_GROUP
-  if (!Reaction.hasPermission("admin", Reaction.getUserId(), shopId)) {
+  if (!Reaction.hasPermission("reaction:legacy:groups/update", Reaction.getUserId(), shopId)) {
     throw new ReactionError("access-denied", "Access Denied");
   }
 

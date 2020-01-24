@@ -21,7 +21,7 @@ export default function createTag(tagName, isTopLevel) {
   check(isTopLevel, Boolean);
 
   // must have 'core' permissions
-  if (!Reaction.hasPermission("core")) {
+  if (!Reaction.hasPermission("reaction:legacy:tags/create")) {
     throw new ReactionError("access-denied", "Access Denied");
   }
 
