@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useCallback } from "react";
-import { useApolloClient } from "@apollo/react-hooks";
+import { useApolloClient, useMutation } from "@apollo/react-hooks";
 import i18next from "i18next";
 import DataTable, { useDataTable } from "@reactioncommerce/catalyst/DataTable";
+import Button from "@reactioncommerce/catalyst/Button";
+import decodeOpaqueId from "@reactioncommerce/api-utils/decodeOpaqueId.js";
 import { useSnackbar } from "notistack";
 import { useDropzone } from "react-dropzone";
-import decodeOpaqueId from "/imports/utils/decodeOpaqueId.js";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import { Card, CardHeader, CardContent, Grid, makeStyles } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
@@ -13,6 +14,7 @@ import publishProductsToCatalog from "../graphql/mutations/publishProductsToCata
 import archiveProducts from "../graphql/mutations/archiveProducts";
 import updateProduct from "../graphql/mutations/updateProduct";
 import cloneProducts from "../graphql/mutations/cloneProducts";
+import createProductMutation from "../graphql/mutations/createProduct";
 import getPDPUrl from "../utils/getPDPUrl";
 import StatusIconCell from "./DataTable/StatusIconCell";
 import MediaCell from "./DataTable/MediaCell";
@@ -34,6 +36,7 @@ function ProductsTable() {
   const apolloClient = useApolloClient();
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
+  const [createProduct, { error: createProductError }] = useMutation(createProductMutation);
   const [files, setFiles] = useState([]);
   const [filterByProductIds, setFilterByProductIds] = useState(null);
   const [isFilterByFileVisible, setFilterByFileVisible] = useState(false);
@@ -47,6 +50,20 @@ function ProductsTable() {
   const onDrop = (accepted) => {
     if (accepted.length === 0) return;
     setFiles(accepted);
+  };
+
+  const handleCreateProduct = async () => {
+    const { data } = await createProduct({ variables: { input: { shopId } } });
+
+    if (data) {
+      const { createProduct: { product } } = data;
+      const { id: decodedProductId } = decodeOpaqueId(product._id);
+      history.push(`/products/${decodedProductId}`);
+    }
+
+    if (createProductError) {
+      enqueueSnackbar(i18next.t("admin.productTable.bulkActions.error", { variant: "error" }));
+    }
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -125,7 +142,7 @@ function ProductsTable() {
     {
       Header: "Product ID",
       accessor: (row) => {
-        const { id: productId } = decodeOpaqueId(row._id);
+        const { id: productId } = decodeOpaqueId("reaction/product", row._id);
         return productId;
       },
       id: "_id"
@@ -415,6 +432,11 @@ function ProductsTable() {
         handleDelete={handleDelete}
         setFilterByFileVisible={setFilterByFileVisible}
       />
+      <Grid item sm={12}>
+        <Button color="primary" variant="contained" onClick={handleCreateProduct}>
+          {i18next.t("admin.createProduct") || "Create product"}
+        </Button>
+      </Grid>
       <Grid item sm={12}>
         <Card className={classes.card}>
           <CardHeader title={i18next.t("admin.products")} />
