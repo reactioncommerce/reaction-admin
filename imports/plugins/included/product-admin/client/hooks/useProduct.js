@@ -252,15 +252,24 @@ function useProduct(args = {}) {
     updateProduct
   ]);
 
+  /**
+   * @method onUpdateProduct
+   * @param {Object} args
+   * @param {Object} args.product Product fields to update
+   * @param {Object} [args.productId] Product ID to update. Leave blank for current product.
+   * @param {Object} [args.shopId] Shop ID of the product to update. Leave blank for current shop.
+   */
   const onUpdateProduct = useCallback(async ({
-    product: productLocal
+    product: productLocal,
+    productId: productIdLocal = product._id,
+    shopId: shopIdLocal = shopId
   }) => {
     try {
       await updateProduct({
         variables: {
           input: {
-            productId: product._id,
-            shopId,
+            productId: productIdLocal,
+            shopId: shopIdLocal,
             product: productLocal
           }
         }
