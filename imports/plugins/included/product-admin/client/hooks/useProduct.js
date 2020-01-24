@@ -12,6 +12,7 @@ import { Tags, Templates } from "/lib/collections";
 import getOpaqueIds from "/imports/plugins/core/core/client/util/getOpaqueIds";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import encodeOpaqueId from "@reactioncommerce/api-utils/encodeOpaqueId.js";
+import { useSnackbar } from "notistack";
 
 import PRODUCT_QUERY from "./ProductQuery";
 
@@ -134,6 +135,8 @@ function handleToggleProductVisibility(product) {
  * @returns {Object} Result containing the product and other helpers for managing that product
  */
 function useProduct(args = {}) {
+  const { enqueueSnackbar } = useSnackbar();
+
   const {
     productId: productIdProp,
     variantId: variantIdProp,
@@ -264,11 +267,12 @@ function useProduct(args = {}) {
         }
       });
 
-      Alerts.toast(i18next.t("productDetailEdit.updateProductFieldSuccess"), "success");
+      enqueueSnackbar(i18next.t("productDetailEdit.updateProductFieldSuccess"), { variant: "success" });
     } catch (error) {
-      Alerts.toast(i18next.t("productDetailEdit.updateProductFieldFail", { err: error }), "error");
+      enqueueSnackbar(i18next.t("productDetailEdit.updateProductFieldFail"), { variant: "error" });
     }
   }, [
+    enqueueSnackbar,
     product,
     shopId,
     updateProduct
