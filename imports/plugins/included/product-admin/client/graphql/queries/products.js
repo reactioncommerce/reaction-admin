@@ -6,12 +6,17 @@ export default gql`
       nodes {
           _id
         title
+        currentProductHash
+        isVisible
+        media {
+          URLs {
+            thumbnail
+          }
+        }
         price {
           range
         }
         publishedProductHash
-        currentProductHash
-        isVisible
         variants {
           _id
         }
