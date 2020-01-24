@@ -3,7 +3,6 @@ import gql from "graphql-tag";
 import _ from "lodash";
 import { useHistory, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/react-hooks";
-import CountryOptions from "@reactioncommerce/api-utils/CountryOptions.js";
 import { Media } from "/imports/plugins/core/files/client";
 import { Meteor } from "meteor/meteor";
 import { Reaction, formatPriceString, i18next } from "/client/api";
