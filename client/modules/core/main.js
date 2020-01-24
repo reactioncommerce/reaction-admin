@@ -175,13 +175,7 @@ export default {
 
       // if accountPermissions includes any of checkPermissions, then we return true
       // (this replaces `Roles.userIsInRole`)
-      const hasPermission = accountPermissions[permissionsGroup].some((permission) => checkPermissions.includes(permission));
-      if (hasPermission) {
-        return true;
-      }
-
-      // no specific permissions found returning false
-      return false;
+      return accountPermissions[permissionsGroup].some((permission) => checkPermissions.includes(permission));
     }
 
     /**
