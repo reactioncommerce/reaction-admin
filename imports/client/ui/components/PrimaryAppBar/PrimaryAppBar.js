@@ -79,7 +79,7 @@ PrimaryAppBar.propTypes = {
   children: PropTypes.node,
   classes: PropTypes.object,
   onToggleDrawerOpen: PropTypes.func,
-  title: PropTypes.string
+  title: PropTypes.node
 };
 
 export default withStyles(styles, { name: "RuiPrimaryAppBar" })(PrimaryAppBar);
