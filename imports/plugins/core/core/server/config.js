@@ -18,12 +18,12 @@ export default envalid.cleanEnv(process.env, {
   }),
   PUBLIC_GRAPHQL_API_URL_HTTP: str({
     desc: "A URL that is accessible from browsers and accepts GraphQL POST requests over HTTP",
-    example: "http://localhost:3000/graphql-beta"
+    example: "http://localhost:3000/graphql"
   }),
   PUBLIC_GRAPHQL_API_URL_WS: str({
     default: "",
     desc: "A URL that is accessible from browsers and accepts GraphQL WebSocket connections",
-    example: "ws://localhost:3000/graphql-beta"
+    example: "ws://localhost:3000/graphql"
   }),
   PUBLIC_FILES_BASE_URL: str({
     desc: "A URL that has /assets/files and /assets/uploads endpoints for uploading and downloading files",
