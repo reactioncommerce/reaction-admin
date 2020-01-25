@@ -14,6 +14,7 @@ import encodeOpaqueId from "@reactioncommerce/api-utils/encodeOpaqueId.js";
 import { useSnackbar } from "notistack";
 
 import PRODUCT_QUERY from "./ProductQuery";
+import UPDATE_PRODUCT from "./UpdateProductMutation";
 
 const encodeProductOpaqueId = encodeOpaqueId("reaction/product");
 
@@ -48,19 +49,6 @@ mutation createProductVariant($input: CreateProductVariantInput!) {
   }
 }
 `;
-
-const UPDATE_PRODUCT = gql`
-mutation updateProduct($input: UpdateProductInput!) {
-  updateProduct(input: $input) {
-    product {
-      _id
-      title
-      isVisible
-    }
-  }
-}
-`;
-
 
 /**
  * Metafield to remove
