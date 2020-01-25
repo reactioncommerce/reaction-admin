@@ -50,13 +50,12 @@ registerBlock({
 //   priority: 20
 // });
 
-// registerBlock({
-//   region: "ProductDetailMain",
-//   name: "ProductSocialForm",
-//   component: ProductSocialForm,
-//   hocs: [withProductForm],
-//   priority: 30
-// });
+registerBlock({
+  region: "ProductDetailMain",
+  name: "ProductSocialForm",
+  component: ProductSocialForm,
+  priority: 30
+});
 
 // registerBlock({
 //   region: "ProductDetailMain",
