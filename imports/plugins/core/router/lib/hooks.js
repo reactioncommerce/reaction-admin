@@ -1,5 +1,5 @@
 /**
- * @file Route Hook Methods - The Router.Hooks namespace provides a router-agnostic API for registering functions to be called either on specific routes or on every route. Read more about [Routing in Reaction](https://docs.reactioncommerce.com/reaction-docs/master/routing).
+ * @file Route Hook Methods - The Router.Hooks namespace provides a router-agnostic API for registering functions to be called either on specific routes or on every route. Read more about [Routing in Reaction](https://docs.reactioncommerce.com/reaction-docs/trunk/routing).
  *
  * @namespace Router.Hooks
  */
