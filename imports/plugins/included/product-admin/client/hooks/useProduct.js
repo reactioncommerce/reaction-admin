@@ -308,6 +308,12 @@ function useProduct(args = {}) {
   //   updateProduct
   // ]);
 
+  // Convert the social metadata to a format better suited for forms
+  if (product && Array.isArray(product.socialMetadata)) {
+    product.socialMetadata.forEach(({ service, message }) => {
+      product[`${service}Msg`] = message;
+    });
+  }
 
   return {
     newMetaField,
