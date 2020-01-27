@@ -1,4 +1,4 @@
-FROM reactioncommerce/meteor:1.8.1-v1
+FROM reactioncommerce/meteor:1.9.0-v1
 
 # hadolint ignore=DL3002
 USER root
