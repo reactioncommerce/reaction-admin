@@ -11,8 +11,6 @@ import setUserPermissions from "../../util/setUserPermissions";
  * @memberof Group/Methods
  * @summary Updates a permission group for a shop.
  * Change the details of a group (name, desc, permissions etc) to the values passed in.
- * It also goes into affected user data to modify both the groupName (using Accounts schema)
- * and group permissions (using "accounts/removeUserPermissions")
  * @param {Object} groupId - group to be updated
  * @param {Object} newGroupData - updated group info (similar to current group data)
  * slug remains untouched; used as key in querying

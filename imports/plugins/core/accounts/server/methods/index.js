@@ -1,7 +1,6 @@
 import addUserPermissions from "./addUserPermissions";
 import getUserId from "./getUserId";
 import groupMethods from "./group";
-import removeUserPermissions from "./removeUserPermissions";
 import setActiveShopId from "./setActiveShopId";
 import setUserPermissions from "./setUserPermissions";
 import updateEmailAddress from "./updateEmailAddress";
@@ -23,7 +22,6 @@ import verifyAccount from "./verifyAccount";
 
 export default {
   "accounts/addUserPermissions": addUserPermissions,
-  "accounts/removeUserPermissions": removeUserPermissions,
   "accounts/setActiveShopId": setActiveShopId,
   "accounts/setUserPermissions": setUserPermissions,
   "accounts/updateEmailAddress": updateEmailAddress,
