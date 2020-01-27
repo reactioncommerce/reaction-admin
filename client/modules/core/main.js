@@ -105,12 +105,14 @@ export default {
    * @returns {Boolean} Boolean - true if has permission
    */
   hasPermission(checkPermissions, checkUserId, checkGroup) {
+    const GLOBAL_GROUP = "__global_roles__";
     let permissionsGroup;
+
     // default permissionsGroup to the shop or global if shop isn't defined for some reason.
     if (checkGroup !== undefined && typeof checkGroup === "string") {
       permissionsGroup = checkGroup;
     } else {
-      permissionsGroup = this.getShopId() || Roles.GLOBAL_GROUP;
+      permissionsGroup = this.getShopId() || GLOBAL_GROUP;
     }
 
     let permissions = ["owner"];
@@ -166,7 +168,7 @@ export default {
         permissions = checkPermissions;
       }
 
-      // if the user has owner permissions we'll always check if those roles are enough
+      // if the user has owner permissions we'll always check if those permissions are enough
       // By adding the "owner" role to the permissions list, we are making hasPermission always return
       // true for "owners". This gives owners global access.
       // TODO: Review this way of granting global access for owners
@@ -513,6 +515,7 @@ export default {
    * @returns {Boolean} -
    */
   canInviteToGroup(options) {
+    return true;
     const { group } = options;
     let { user } = options;
     if (!user) {
