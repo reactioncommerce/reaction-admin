@@ -1,6 +1,5 @@
 import { Meteor } from "meteor/meteor";
 import { check, Match } from "meteor/check";
-import { Roles } from "meteor/alanning:roles";
 import { Accounts, MediaRecords, Orders, Shops } from "/lib/collections";
 import { Counts } from "meteor/tmeasday:publish-counts";
 import Reaction from "/imports/plugins/core/core/server/Reaction";
@@ -17,7 +16,7 @@ Meteor.publish("PaginatedOrders", function (query, options) {
     return this.ready();
   }
 
-  if (Roles.userIsInRole(this.userId, ["admin", "owner", "orders", "order/view", "order/fulfillment"], shopId) === false) {
+  if (Reaction.hasPermission(["reaction:legacy:orders/read"], Reaction.getUserId(), shopId) === false) {
     return this.ready();
   }
 
