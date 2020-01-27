@@ -16,7 +16,7 @@ import { getUserId } from "./accountUtils";
  */
 
 // Unpack the named Collections we use.
-const { Shops, Accounts: AccountsCollection } = Collections;
+const { Groups, Shops, Accounts: AccountsCollection } = Collections;
 
 export default {
   /**
@@ -117,8 +117,38 @@ export default {
     permissions.push("owner");
     permissions = _.uniq(permissions);
 
-    // return if user has permissions in the group
-    return Roles.userIsInRole(userId, permissions, group);
+    // Groups that a user belongs to are saved on the `account` object, not the `user` object
+    const account = AccountsCollection.findOne({
+      userId
+    });
+
+    let accountPermissions;
+    if (account && Array.isArray(account.groups)) {
+      const user = Meteor.user();
+      // set __global_roles__ from the user
+      accountPermissions = { __global_permissions__: (user && user.roles && user.roles.__global_roles__) || [] }; // eslint-disable-line camelcase
+
+      // get all groups that this user belongs to
+      const groups = Groups.find({ _id: { $in: account.groups } }).fetch();
+      // get unique shops from groups (there may be multiple groups from one shop)
+      const allShopIds = groups.map((grp) => grp.shopId);
+      const uniqueShopIds = _.uniq(allShopIds);
+
+      // get all groups for shop
+      // flatten all group arrays into a single array
+      // remove duplicate permissions
+      // set permissions array with shopId as key on accountPermissions object
+      uniqueShopIds.forEach((shopId) => {
+        const groupPermissionsForShop = groups.filter((grp) => grp.shopId === shopId).map((grp) => grp.permissions);
+        const flattenedGroupPermissionsForShop = _.flattenDeep(groupPermissionsForShop);
+        const uniquePermissionsForShop = _.uniq(flattenedGroupPermissionsForShop);
+        accountPermissions[group] = uniquePermissionsForShop;
+      });
+    }
+
+    // if accountPermissions includes any of checkPermissions, then we return true
+    // (this replaces `Roles.userIsInRole`)
+    return accountPermissions[group].some((permission) => checkPermissions.includes(permission));
   },
 
   /**

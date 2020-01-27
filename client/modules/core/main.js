@@ -6,7 +6,7 @@ import { Tracker } from "meteor/tracker";
 import { ReactiveVar } from "meteor/reactive-var";
 import { ReactiveDict } from "meteor/reactive-dict";
 import { Roles } from "meteor/alanning:roles";
-import { Shops } from "/lib/collections";
+import { Accounts, Groups, Shops } from "/lib/collections";
 import { Router } from "/client/modules/router";
 import { getUserId } from "./helpers/utils";
 
@@ -105,17 +105,47 @@ export default {
    * @returns {Boolean} Boolean - true if has permission
    */
   hasPermission(checkPermissions, checkUserId, checkGroup) {
-    let group;
-    // default group to the shop or global if shop isn't defined for some reason.
+    let permissionsGroup;
+    // default permissionsGroup to the shop or global if shop isn't defined for some reason.
     if (checkGroup !== undefined && typeof checkGroup === "string") {
-      group = checkGroup;
+      permissionsGroup = checkGroup;
     } else {
-      group = this.getShopId() || Roles.GLOBAL_GROUP;
+      permissionsGroup = this.getShopId() || Roles.GLOBAL_GROUP;
     }
 
     let permissions = ["owner"];
     let id = "";
     const userId = checkUserId || getUserId();
+
+    // Groups that a user belongs to are saved on the `account` object, not the `user` object
+    const account = Accounts.findOne({
+      userId
+    });
+
+    let accountPermissions;
+    if (account && Array.isArray(account.groups)) {
+      const user = Meteor.user();
+      // set __global_roles__ from the user
+      accountPermissions = { __global_permissions__: (user && user.roles && user.roles.__global_roles__) || [] }; // eslint-disable-line camelcase
+
+      // get all groups that this user belongs to
+      const groups = Groups.find({ _id: { $in: account.groups } }).fetch();
+      // get unique shops from groups (there may be multiple groups from one shop)
+      const allShopIds = groups.map((group) => group.shopId);
+      const uniqueShopIds = _.uniq(allShopIds);
+
+      // get all groups for shop
+      // flatten all group arrays into a single array
+      // remove duplicate permissions
+      // set permissions array with shopId as key on accountPermissions object
+      uniqueShopIds.forEach((shopId) => {
+        const groupPermissionsForShop = groups.filter((group) => group.shopId === shopId).map((group) => group.permissions);
+        const flattenedGroupPermissionsForShop = _.flattenDeep(groupPermissionsForShop);
+        const uniquePermissionsForShop = _.uniq(flattenedGroupPermissionsForShop);
+        accountPermissions[permissionsGroup] = uniquePermissionsForShop;
+      });
+    }
+
     //
     // local roleCheck function
     // is the bulk of the logic
@@ -135,6 +165,7 @@ export default {
       } else {
         permissions = checkPermissions;
       }
+
       // if the user has owner permissions we'll always check if those roles are enough
       // By adding the "owner" role to the permissions list, we are making hasPermission always return
       // true for "owners". This gives owners global access.
@@ -142,15 +173,9 @@ export default {
       permissions.push("owner");
       permissions = _.uniq(permissions);
 
-      //
-      // return if user has permissions in the group
-      //
-      if (Roles.userIsInRole(userId, permissions, group)) {
-        return true;
-      }
-
-      // no specific permissions found returning false
-      return false;
+      // if accountPermissions includes any of permissions, then we return true
+      // (this replaces `Roles.userIsInRole`)
+      return accountPermissions[permissionsGroup].some((permission) => permissions.includes(permission));
     }
 
     /**

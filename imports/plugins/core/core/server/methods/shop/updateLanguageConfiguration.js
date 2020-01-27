@@ -16,8 +16,8 @@ export default function updateLanguageConfiguration(language, enabled) {
   check(language, String);
   check(enabled, Boolean);
 
-  // must have core permissions
-  if (!Reaction.hasPermission("core")) {
+  // must have reaction:legacy:shops/update permissions
+  if (!Reaction.hasPermission("reaction:legacy:shops/update")) {
     throw new ReactionError("access-denied", "Access Denied");
   }
   this.unblock();

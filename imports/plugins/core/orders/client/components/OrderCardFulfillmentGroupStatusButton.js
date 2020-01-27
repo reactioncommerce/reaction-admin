@@ -12,7 +12,7 @@ import updateOrderFulfillmentGroupMutation from "../graphql/mutations/updateOrde
  * @returns {React.Component} returns a React component
  */
 function OrderCardFulfillmentGroupStatusButton({ fulfillmentGroup, order }) {
-  const hasPermission = Reaction.hasPermission(["reaction-orders", "order/fulfillment"], Reaction.getUserId(), Reaction.getShopId());
+  const hasPermission = Reaction.hasPermission(["reaction:legacy:orders/update"], Reaction.getUserId(), Reaction.getShopId());
   const [updateOrderFulfillmentGroup, { loading: updateOrderFulfillmentGroupLoading }] = useMutation(updateOrderFulfillmentGroupMutation);
   const canUpdateFulfillmentStatus = (fulfillmentGroup.status !== "coreOrderWorkflow/canceled");
   const options = [

@@ -66,8 +66,8 @@ function ProductHeader(props) {
 
   const currentProduct = variant || product;
 
-  const hasCloneProductPermission = Reaction.hasPermission(["createProduct", "product/admin", "product/clone"], Reaction.getUserId(), Reaction.getShopId());
-  const hasArchiveProductPermission = Reaction.hasPermission(["createProduct", "product/admin", "product/archive"], Reaction.getUserId(), Reaction.getShopId());
+  const hasCloneProductPermission = Reaction.hasPermission(["reaction:legacy:products/clone"], Reaction.getUserId(), Reaction.getShopId());
+  const hasArchiveProductPermission = Reaction.hasPermission(["reaction:legacy:products/archive"], Reaction.getUserId(), Reaction.getShopId());
 
   // Archive menu item
   let archiveMenuItem = (

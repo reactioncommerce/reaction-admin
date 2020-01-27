@@ -1,4 +1,4 @@
-FROM reactioncommerce/meteor:1.8.1-v1 as builder
+FROM reactioncommerce/meteor:1.9.0-v1 as builder
 
 ENV APP_SOURCE_DIR /usr/local/src/appsrc
 ENV APP_BUNDLE_DIR /usr/local/src/build
@@ -25,7 +25,7 @@ RUN printf "\\n[-] Building Meteor application...\\n" \
 ##############################################################################
 # final build stage - create the final production image
 ##############################################################################
-FROM node:8.15.1-slim
+FROM node:12.14.0-slim
 
 LABEL maintainer="Reaction Commerce <engineering@reactioncommerce.com>"
 

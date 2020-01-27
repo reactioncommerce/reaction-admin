@@ -51,7 +51,7 @@ function ProductList({ items, title, onCreate, selectedVariantId }) {
     return null;
   }
 
-  const hasCreateProductPermission = Reaction.hasPermission(["createProduct", "product/admin", "product/create"], Reaction.getUserId(), Reaction.getShopId());
+  const hasCreateProductPermission = Reaction.hasPermission(["reaction:legacy:products/create"], Reaction.getUserId(), Reaction.getShopId());
 
   return (
     <Card>

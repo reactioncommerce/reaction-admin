@@ -22,7 +22,7 @@ function updateShopBrandAssets(asset, shopId = Reaction.getShopId(), userId = Re
   check(shopId, String);
 
   // must have core permissions
-  if (!Reaction.hasPermission("core", userId, shopId)) {
+  if (!Reaction.hasPermission("reaction:legacy:shops/update", userId, shopId)) {
     throw new ReactionError("access-denied", "Access Denied");
   }
 

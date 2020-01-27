@@ -51,7 +51,7 @@ Meteor.publish("AccountOrders", function (accountId) {
 
   const account = this.userId ? Accounts.findOne({ userId: this.userId }) : null;
   const contextAccountId = account && account._id;
-  if (accountId !== contextAccountId && !Reaction.hasPermission("orders", Reaction.getUserId(), shopId)) {
+  if (accountId !== contextAccountId && !Reaction.hasPermission("reaction:legacy:orders/read", Reaction.getUserId(), shopId)) {
     return this.ready();
   }
 
@@ -99,7 +99,7 @@ Meteor.publish("OrderById", (orderId) => {
     return this.ready();
   }
 
-  if (Reaction.hasPermission("orders", Reaction.getUserId(), shopId)) {
+  if (Reaction.hasPermission("reaction:legacy:orders/read", Reaction.getUserId(), shopId)) {
     return Orders.find({
       $or: [
         { _id: orderId },
