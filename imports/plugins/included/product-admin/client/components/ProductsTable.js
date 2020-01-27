@@ -217,32 +217,7 @@ function ProductsTable() {
     getRowId: (row) => row._id
   });
 
-  const { state: { pageIndex, pageSize, globalFilter } } = dataTableProps;
-
-  const refetch = useCallback(
-    async () => {
-      setIsLoading(true);
-
-      const { data } = await apolloClient.query({
-        query: productsQuery,
-        variables: {
-          shopIds: [shopId],
-          productIds: filterByProductIds,
-          query: globalFilter,
-          first: pageSize,
-          limit: (pageIndex + 1) * pageSize,
-          offset: pageIndex * pageSize
-        },
-        fetchPolicy: "network-only"
-      });
-
-      // Update the state with the fetched data as an array of objects and the calculated page count
-      setTableData(data.products.nodes);
-      setPageCount(Math.ceil(data.products.totalCount / pageSize));
-      setIsLoading(false);
-    },
-    [apolloClient, filterByProductIds, globalFilter, pageIndex, pageSize, shopId],
-  );
+  const { refetch } = dataTableProps;
 
   // Create options for the built-in ActionMenu in the DataTable
   const options = useMemo(() => [{
