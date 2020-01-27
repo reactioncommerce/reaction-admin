@@ -4,6 +4,7 @@ import i18next from "i18next";
 import DataTable, { useDataTable } from "@reactioncommerce/catalyst/DataTable";
 import Button from "@reactioncommerce/catalyst/Button";
 import decodeOpaqueId from "@reactioncommerce/api-utils/decodeOpaqueId.js";
+import encodeOpaqueId from "@reactioncommerce/api-utils/encodeOpaqueId.js";
 import { useSnackbar } from "notistack";
 import { useDropzone } from "react-dropzone";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
@@ -73,7 +74,6 @@ function ProductsTable() {
     disableClick: true
   });
 
-
   const importFiles = (newFiles) => {
     let productIds = [];
 
@@ -101,6 +101,7 @@ function ProductsTable() {
               productIds = productIds.concat(outputarray);
               return;
             });
+
             setFilterByProductIds(productIds);
             setFilterByFileVisible(false);
             setFiltered(true);
@@ -176,7 +177,7 @@ function ProductsTable() {
       query: productsQuery,
       variables: {
         shopIds: [shopId],
-        productIds: filterByProductIds,
+        productIds: filterByProductIds && filterByProductIds.map((id) => encodeOpaqueId("reaction/product", id)),
         query: globalFilter,
         first: pageSize,
         limit: (pageIndex + 1) * pageSize,
