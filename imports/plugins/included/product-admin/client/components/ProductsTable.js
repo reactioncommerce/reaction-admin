@@ -48,80 +48,6 @@ function ProductsTable() {
   const [shopId] = useCurrentShopId();
   const [tableData, setTableData] = useState([]);
 
-  const onDrop = (accepted) => {
-    if (accepted.length === 0) return;
-    setFiles(accepted);
-  };
-
-  const handleCreateProduct = async () => {
-    const { data } = await createProduct({ variables: { input: { shopId } } });
-
-    if (data) {
-      const { createProduct: { product } } = data;
-      const { id: decodedProductId } = decodeOpaqueId(product._id);
-      history.push(`/products/${decodedProductId}`);
-    }
-
-    if (createProductError) {
-      enqueueSnackbar(i18next.t("admin.productTable.bulkActions.error", { variant: "error" }));
-    }
-  };
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    multiple: true,
-    disablePreview: true,
-    disableClick: true
-  });
-
-  const importFiles = (newFiles) => {
-    let productIds = [];
-
-    newFiles.map((file) => {
-      const output = [];
-      const reader = new FileReader();
-      reader.readAsText(file);
-      reader.onloadend = () => {
-        const parse = require("csv-parse");
-
-        parse(reader.result, {
-          trim: true,
-          // eslint-disable-next-line camelcase
-          skip_empty_lines: true
-        })
-          .on("readable", function () {
-            let record;
-            // eslint-disable-next-line no-cond-assign
-            while (record = this.read()) {
-              output.push(record);
-            }
-          })
-          .on("end", () => {
-            output.map((outputarray) => {
-              productIds = productIds.concat(outputarray);
-              return;
-            });
-
-            setFilterByProductIds(productIds);
-            setFilterByFileVisible(false);
-            setFiltered(true);
-          });
-      };
-      return;
-    });
-  };
-
-  const handleDelete = (deletedFilename) => {
-    const newFiles = files.filter((file) => file.name !== deletedFilename);
-    setFiles(newFiles);
-    if (newFiles.length === 0) {
-      setFiltered(false);
-      setFilterByProductIds(null);
-    } else if (isFiltered) {
-      importFiles(newFiles);
-    }
-  };
-
   // Create and memoize the column data
   const columns = useMemo(() => [
     {
@@ -218,7 +144,81 @@ function ProductsTable() {
     getRowId: (row) => row._id
   });
 
-  const { refetch } = dataTableProps;
+  const { refetch, setFilter } = dataTableProps;
+
+  const onDrop = (accepted) => {
+    if (accepted.length === 0) return;
+    setFiles(accepted);
+  };
+
+  const handleCreateProduct = async () => {
+    const { data } = await createProduct({ variables: { input: { shopId } } });
+
+    if (data) {
+      const { createProduct: { product } } = data;
+      const { id: decodedProductId } = decodeOpaqueId(product._id);
+      history.push(`/products/${decodedProductId}`);
+    }
+
+    if (createProductError) {
+      enqueueSnackbar(i18next.t("admin.productTable.bulkActions.error", { variant: "error" }));
+    }
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    multiple: false,
+    disablePreview: true,
+    disableClick: true
+  });
+  const importFiles = (newFiles) => {
+    let productIds = [];
+
+    newFiles.map((file) => {
+      const output = [];
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onloadend = () => {
+        const parse = require("csv-parse");
+
+        parse(reader.result, {
+          trim: true,
+          // eslint-disable-next-line camelcase
+          skip_empty_lines: true
+        })
+          .on("readable", function () {
+            let record;
+            // eslint-disable-next-line no-cond-assign
+            while (record = this.read()) {
+              output.push(record);
+            }
+          })
+          .on("end", () => {
+            output.map((outputarray) => {
+              productIds = productIds.concat(outputarray);
+              return;
+            });
+
+            setFilterByProductIds(productIds);
+            // setFilter("filterByFile", file.name);
+            setFilterByFileVisible(false);
+            setFiltered(true);
+          });
+      };
+      return;
+    });
+  };
+
+  const handleDelete = (deletedFilename) => {
+    const newFiles = files.filter((file) => file.name !== deletedFilename);
+    setFiles(newFiles);
+    if (newFiles.length === 0) {
+      setFiltered(false);
+      setFilterByProductIds(null);
+    } else if (isFiltered) {
+      importFiles(newFiles);
+    }
+  };
 
   // Create options for the built-in ActionMenu in the DataTable
   const options = useMemo(() => [{
