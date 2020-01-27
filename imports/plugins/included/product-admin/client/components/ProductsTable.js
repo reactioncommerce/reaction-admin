@@ -141,9 +141,9 @@ function ProductsTable() {
       accessor: "title"
     },
     {
-      Header: "Product ID",
+      Header: "ID",
       accessor: (row) => {
-        const { id: productId } = decodeOpaqueId("reaction/product", row._id);
+        const { id: productId } = decodeOpaqueId(row._id);
         return productId;
       },
       id: "_id"
