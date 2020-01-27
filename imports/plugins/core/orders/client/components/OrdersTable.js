@@ -63,9 +63,10 @@ function OrdersTable() {
     },
     {
       Header: "Payment",
-      accessor: "payments[0].status",
+      accessor: (row) => row.payments[0].status,
+      id: "paymentStatus",
       // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
-      Cell: ({ row }) => <Fragment>{i18next.t(`admin.table.paymentStatus.${row.values["payments[0].status"]}`)}</Fragment>,
+      Cell: ({ row }) => <Fragment>{i18next.t(`admin.table.paymentStatus.${row.values.paymentStatus}`)}</Fragment>,
       Filter: makeDataTableColumnFilter({
         isMulti: true,
         options: [
@@ -76,9 +77,10 @@ function OrdersTable() {
     },
     {
       Header: "Fulfillment",
-      accessor: "fulfillmentGroups[0].status",
+      accessor: (row) => row.fulfillmentGroups[0].status,
+      id: "fulfillmentStatus",
       // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
-      Cell: ({ row }) => <Fragment>{i18next.t(`admin.table.fulfillmentStatus.${row.values["fulfillmentGroups[0].status"]}`)}</Fragment>,
+      Cell: ({ row }) => <Fragment>{i18next.t(`admin.table.fulfillmentStatus.${row.values.fulfillmentStatus}`)}</Fragment>,
       Filter: makeDataTableColumnFilter({
         isMulti: true,
         options: [
@@ -114,30 +116,15 @@ function OrdersTable() {
     }
   ], []);
 
-  const onFetchData = useCallback(async ({ globalFilter, pageIndex, pageSize, filters }) => {
+  const onFetchData = useCallback(async ({ globalFilter, pageIndex, pageSize, filtersByKey }) => {
     // Wait for shop id to be available before fetching orders.
     setIsLoading(true);
     if (!shopId) {
       return;
     }
 
-    const queryFilters = {};
-    for (const filter of filters) {
-      switch (filter.id) {
-        case "payments[0].status":
-          queryFilters.paymentStatus = filter.value;
-          break;
-
-        case "fulfillmentGroups[0].status":
-          queryFilters.fulfillmentStatus = filter.value;
-          break;
-        case "createdAt":
-          queryFilters[filter.id] = formatDateRangeFilter(filter.value);
-          break;
-        default:
-          queryFilters[filter.id] = filter.value;
-          break;
-      }
+    if (filtersByKey.createdAt) {
+      filtersByKey.createdAt = formatDateRangeFilter(filtersByKey.createdAt);
     }
 
     const { data, error } = await apolloClient.query({
@@ -148,7 +135,7 @@ function OrdersTable() {
         offset: pageIndex * pageSize,
         filters: {
           searchField: globalFilter,
-          ...queryFilters
+          ...filtersByKey
         }
       },
       fetchPolicy: "network-only"
