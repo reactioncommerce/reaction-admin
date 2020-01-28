@@ -248,18 +248,6 @@ export default {
   },
 
   /**
-   * @name hasDashboardAccessForMultipleShops
-   * @method
-   * @memberof Core/Client
-   * @summary - client permission check for any "owner", "admin", or "dashboard" permissions for more than one shop.
-   * @returns {Boolean} Boolean - true if has dashboard access for more than one shop
-   */
-  hasDashboardAccessForMultipleShops() {
-    const adminShopIds = this.getShopsForUser(["owner", "admin", "dashboard"]);
-    return Array.isArray(adminShopIds) && adminShopIds.length > 1;
-  },
-
-  /**
    * @name hasOwnerAccess
    * @method
    * @memberof Core/Client
@@ -296,39 +284,6 @@ export default {
   hasDashboardAccess() {
     const dashboardPermissions = ["owner", "admin", "dashboard"];
     return this.hasPermission(dashboardPermissions);
-  },
-
-  /**
-   * @name hasShopSwitcherAccess
-   * @method
-   * @memberof Core/Client
-   * @returns {Boolean} true if user has access to dashboard for multiple shops
-   */
-  hasShopSwitcherAccess() {
-    return this.hasDashboardAccessForMultipleShops();
-  },
-
-  /**
-   * @name getSellerShopId
-   * @method
-   * @memberof Core/Client
-   * @param {String} userId user id of user to check seller shop ID for
-   * @param {Boolean} noFallback should we allow function to continue if there is no userID
-   * @returns {Boolean|String} the shop ID of a seller
-   */
-  getSellerShopId(userId = getUserId(), noFallback = false) {
-    if (userId) {
-      const group = Roles.getGroupsForUser(userId, "admin")[0];
-      if (group) {
-        return group;
-      }
-    }
-
-    if (noFallback) {
-      return false;
-    }
-
-    return this.getShopId();
   },
 
   /**
