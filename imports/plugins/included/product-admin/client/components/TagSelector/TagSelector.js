@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {Object} props Component props
  * @returns {React.Component} A React component
  */
-function TagSelector({ isVisible, selectedProductIds, setVisibility }) {
+function TagSelector({ isVisible, selectedProductIds, setVisibility, shopId }) {
   const apolloClient = useApolloClient();
   const [selectedTags, setSelectedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -62,6 +62,7 @@ function TagSelector({ isVisible, selectedProductIds, setVisibility }) {
   // eslint-disable-next-line consistent-return
   const handleTagsAction = async (option) => {
     const tagIds = selectedTags && selectedTags.map(({ value }) => (value));
+    const tags = selectedTags && selectedTags.map(({ label }) => (label)).join(", ");
 
     // Prevent user from executing action if he/she has not // yet selected at least one tag
     if (!tagIds.length) {
@@ -79,6 +80,7 @@ function TagSelector({ isVisible, selectedProductIds, setVisibility }) {
           variables: {
             input: {
               productIds: selectedProductIds,
+              shopId,
               tagIds
             }
           }
@@ -93,6 +95,7 @@ function TagSelector({ isVisible, selectedProductIds, setVisibility }) {
           variables: {
             input: {
               productIds: selectedProductIds,
+              shopId,
               tagIds
             }
           }
@@ -108,9 +111,9 @@ function TagSelector({ isVisible, selectedProductIds, setVisibility }) {
     if (data && data[mutationName]) {
       // Notify user of performed action
       if (mutationName.startsWith("add")) {
-        enqueueSnackbar(i18next.t("admin.addRemoveTags.addConfirmation"));
+        enqueueSnackbar(i18next.t("admin.addRemoveTags.addConfirmation", { count: selectedTags.length, tags }));
       } else {
-        enqueueSnackbar(i18next.t("admin.addRemoveTags.removeConfirmation"));
+        enqueueSnackbar(i18next.t("admin.addRemoveTags.removeConfirmation", { count: selectedTags.length, tags }));
       }
     }
 
@@ -168,7 +171,8 @@ function TagSelector({ isVisible, selectedProductIds, setVisibility }) {
 TagSelector.propTypes = {
   isVisible: PropTypes.bool,
   selectedProductIds: PropTypes.array,
-  setVisibility: PropTypes.func
+  setVisibility: PropTypes.func,
+  shopId: PropTypes.string
 };
 
 export default TagSelector;
