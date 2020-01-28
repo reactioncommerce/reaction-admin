@@ -17,6 +17,7 @@ import updateProduct from "../graphql/mutations/updateProduct";
 import cloneProducts from "../graphql/mutations/cloneProducts";
 import createProductMutation from "../graphql/mutations/createProduct";
 import getPDPUrl from "../utils/getPDPUrl";
+import getTranslation from "../utils/getTranslation";
 import StatusIconCell from "./DataTable/StatusIconCell";
 import MediaCell from "./DataTable/MediaCell";
 import PublishedStatusCell from "./DataTable/PublishedStatusCell";
@@ -72,11 +73,11 @@ function ProductsTable() {
       Cell: ({ row }) => <MediaCell row={row} />
     },
     {
-      Header: "Product",
+      Header: i18next.t("admin.productTable.header.product"),
       accessor: "title"
     },
     {
-      Header: "ID",
+      Header: i18next.t("admin.productTable.header.id"),
       accessor: (row) => {
         const { id: productId } = decodeOpaqueId(row._id);
         return productId;
@@ -84,16 +85,16 @@ function ProductsTable() {
       id: "_id"
     },
     {
-      Header: "Price",
+      Header: i18next.t("admin.productTable.header.price"),
       accessor: "price.range"
     },
     {
-      Header: "Published",
+      Header: i18next.t("admin.productTable.header.published"),
       // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
       Cell: ({ row }) => <PublishedStatusCell row={row} />
     },
     {
-      Header: "Status",
+      Header: i18next.t("admin.productTable.header.visible"),
       // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
       Cell: ({ row }) => <StatusIconCell row={row} />,
       id: "isVisible"
@@ -139,7 +140,7 @@ function ProductsTable() {
   }, []);
 
   const labels = useMemo(() => ({
-    globalFilterPlaceholder: "Filter products"
+    globalFilterPlaceholder: i18next.t("admin.productTable.filters.placeholder")
   }), []);
 
   const dataTableProps = useDataTable({
@@ -232,13 +233,13 @@ function ProductsTable() {
 
   // Create options for the built-in ActionMenu in the DataTable
   const options = useMemo(() => [{
-    label: "Filter by file",
+    label: i18next.t("admin.productTable.bulkActions.filterByFile"),
     onClick: () => {
       if (isTagSelectorVisible) setTagSelectorVisibility(false);
       setFilterByFileVisible(true);
     }
   }, {
-    label: "Add/Remove Tags",
+    label: i18next.t("admin.productTable.bulkActions.addRemoveTags"),
     isDisabled: selectedRows.length === 0,
     onClick: () => {
       if (isFilterByFileVisible) setFilterByFileVisible(false);
@@ -246,13 +247,11 @@ function ProductsTable() {
     }
   },
   {
-    label: "Publish",
-    confirmTitle: `Publish ${selectedRows.length} products`,
-    confirmMessage: `Are you sure you want to publish ${selectedRows.length} products to your storefront?`,
+    label: i18next.t("admin.productTable.bulkActions.publish"),
+    confirmTitle: getTranslation("admin.productTable.bulkActions.publishTitle", { count: selectedRows.length }),
+    confirmMessage: getTranslation("admin.productTable.bulkActions.publishMessage", { count: selectedRows.length }),
     isDisabled: selectedRows.length === 0,
     onClick: async () => {
-      if (selectedRows.length === 0) return;
-
       const { data, error } = await apolloClient.mutate({
         mutation: publishProductsToCatalog,
         variables: {
@@ -266,19 +265,17 @@ function ProductsTable() {
       }
 
       refetch();
-      enqueueSnackbar(
-        i18next.t("admin.productTable.bulkActions.published", { count: data.publishProductsToCatalog.length }),
-        { variant: "success" }
-      );
+      enqueueSnackbar(getTranslation(
+        "admin.productTable.bulkActions.published",
+        { count: data.publishProductsToCatalog.length }
+      ));
     }
   }, {
-    label: "Make Visible",
-    confirmTitle: `Make ${selectedRows.length} products visible`,
-    confirmMessage: `Are you sure you want to make ${selectedRows.length} products visible to customers?`,
+    label: i18next.t("admin.productTable.bulkActions.makeVisible"),
+    confirmTitle: getTranslation("admin.productTable.bulkActions.makeVisibleTitle", { count: selectedRows.length }),
+    confirmMessage: getTranslation("admin.productTable.bulkActions.makeVisibleMessage", { count: selectedRows.length }),
     isDisabled: selectedRows.length === 0,
     onClick: async () => {
-      if (selectedRows.length === 0) return;
-
       const errors = [];
       const successes = [];
       // TODO: refactor this loop to use a bulk update mutation that needs to be implemented.
@@ -307,19 +304,17 @@ function ProductsTable() {
       }
 
       refetch();
-      enqueueSnackbar(
-        i18next.t("admin.productTable.bulkActions.makeVisibleSuccess", { count: successes.length }),
-        { variant: "success" }
-      );
+      enqueueSnackbar(getTranslation(
+        "admin.productTable.bulkActions.makeVisibleSuccess",
+        { count: successes.length }
+      ));
     }
   }, {
-    label: "Make Hidden",
-    confirmTitle: `Make ${selectedRows.length} products hidden`,
-    confirmMessage: `Are you sure you want to make ${selectedRows.length} products hidden from customers?`,
+    label: i18next.t("admin.productTable.bulkActions.makeHidden"),
+    confirmTitle: getTranslation("admin.productTable.bulkActions.makeHiddenTitle", { count: selectedRows.length }),
+    confirmMessage: getTranslation("admin.productTable.bulkActions.makeHiddenMessage", { count: selectedRows.length }),
     isDisabled: selectedRows.length === 0,
     onClick: async () => {
-      if (selectedRows.length === 0) return;
-
       const errors = [];
       const successes = [];
       // TODO: refactor this loop to use a bulk update mutation that needs to be implemented.
@@ -348,19 +343,17 @@ function ProductsTable() {
       }
 
       refetch();
-      enqueueSnackbar(
-        i18next.t("admin.productTable.bulkActions.makeHiddenSuccess", { count: successes.length }),
-        { variant: "success" }
-      );
+      enqueueSnackbar(getTranslation(
+        "admin.productTable.bulkActions.makeHiddenSuccess",
+        { count: successes.length }
+      ));
     }
   }, {
-    label: "Duplicate",
-    confirmTitle: `Duplicate ${selectedRows.length} products`,
-    confirmMessage: `Are you sure you want to duplicate ${selectedRows.length} products?`,
+    label: i18next.t("admin.productTable.bulkActions.duplicate"),
+    confirmTitle: getTranslation("admin.productTable.bulkActions.duplicateTitle", { count: selectedRows.length }),
+    confirmMessage: getTranslation("admin.productTable.bulkActions.duplicateMessage", { count: selectedRows.length }),
     isDisabled: selectedRows.length === 0,
     onClick: async () => {
-      if (selectedRows.length === 0) return;
-
       const { data, error } = await apolloClient.mutate({
         mutation: cloneProducts,
         variables: {
@@ -377,19 +370,17 @@ function ProductsTable() {
       }
 
       refetch();
-      enqueueSnackbar(
-        i18next.t("admin.productTable.bulkActions.duplicateSuccess", { count: data.cloneProducts.products.length }),
-        { variant: "success" }
-      );
+      enqueueSnackbar(getTranslation(
+        "admin.productTable.bulkActions.duplicateSuccess",
+        { count: data.cloneProducts.products.length }
+      ));
     }
   }, {
-    label: "Archive",
-    confirmTitle: `Archive ${selectedRows.length} products`,
-    confirmMessage: `Are you sure you want to archive ${selectedRows.length} products? This will hide them from both admins and customers.`,
+    label: i18next.t("admin.productTable.bulkActions.archive"),
+    confirmTitle: getTranslation("admin.productTable.bulkActions.archiveTitle", { count: selectedRows.length }),
+    confirmMessage: getTranslation("admin.productTable.bulkActions.archiveMessage", { count: selectedRows.length }),
     isDisabled: selectedRows.length === 0,
     onClick: async () => {
-      if (selectedRows.length === 0) return;
-
       const { data, error } = await apolloClient.mutate({
         mutation: archiveProducts,
         variables: {
@@ -406,10 +397,10 @@ function ProductsTable() {
       }
 
       refetch();
-      enqueueSnackbar(
-        i18next.t("admin.productTable.bulkActions.archiveSuccess", { count: data.archiveProducts.products.length }),
-        { variant: "success" }
-      );
+      enqueueSnackbar(getTranslation(
+        "admin.productTable.bulkActions.archiveSuccess",
+        { count: data.archiveProducts.products.length }
+      ));
     }
   }], [apolloClient, enqueueSnackbar, isFilterByFileVisible, isTagSelectorVisible, refetch, selectedRows, shopId]);
 
