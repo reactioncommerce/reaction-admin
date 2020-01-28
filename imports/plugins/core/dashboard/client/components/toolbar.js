@@ -32,22 +32,6 @@ class PublishControls extends Component {
     isEnabled: true
   }
 
-  componentDidMount() {
-    // Tracker is used to determine if a user has `hasShopSwitcherAccess` permission
-    // If they do not, set the shop one time, and then not again
-    // If the user does have hasShopSwitcherAccess` permission, shop is set by this.renderShopSelect()
-    this.tracker = Tracker.autorun(() => {
-      if (!Reaction.hasShopSwitcherAccess()) {
-        this.onShopSelectChange(null, Reaction.getSellerShopId());
-      }
-    });
-  }
-
-  componentWillUnmount() {
-    // Unmount the tracker that is checking for `hasShopSwitcherAccess` permission
-    this.tracker.stop();
-  }
-
   // Passthrough to shopSelectChange handler in container above
   onShopSelectChange = (event, shopId) => {
     if (typeof this.props.onShopSelectChange === "function") {
@@ -73,22 +57,6 @@ class PublishControls extends Component {
     );
   }
 
-  renderShopSelect() {
-    // If a user has owner, admin, or marketplace permissions for more than one (1) shops
-    // show the shop switcher to allow for easy switching between the shops
-    if (Reaction.hasShopSwitcherAccess()) {
-      return (
-        <ShopSelect
-          onShopSelectChange={this.onShopSelectChange}
-          shopId={this.props.shopId}
-          shops={this.props.shops}
-        />
-      );
-    }
-
-    return null;
-  }
-
   renderCustomControls() {
     if (this.props.dashboardHeaderTemplate && this.props.hasCreateProductAccess) {
       if (this.props.isEnabled) {
@@ -108,9 +76,6 @@ class PublishControls extends Component {
   render() {
     return (
       <Components.Toolbar>
-        <Components.ToolbarGroup firstChild={true}>
-          {this.renderShopSelect()}
-        </Components.ToolbarGroup>
         <Components.ToolbarGroup lastChild={true}>
           {this.renderCustomControls()}
         </Components.ToolbarGroup>
