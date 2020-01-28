@@ -37,7 +37,6 @@ standard-minifier-js@2.4.1
 accounts-base@1.4.3
 
 # Community Packages
-alanning:roles
 aldeed:autoform@6.2.0
 aldeed:collection2@3.0.1
 aldeed:template-extension
