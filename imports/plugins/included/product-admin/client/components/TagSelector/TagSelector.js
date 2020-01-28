@@ -12,9 +12,11 @@ import {
   CardActions,
   CardHeader,
   CardContent,
+  Grow,
   IconButton,
   makeStyles
 } from "@material-ui/core";
+import getTranslation from "../../utils/getTranslation";
 import { getTags } from "./helpers";
 import { ADD_TAGS_TO_PRODUCTS, REMOVE_TAGS_FROM_PRODUCTS } from "./mutations";
 
@@ -111,9 +113,15 @@ function TagSelector({ isVisible, selectedProductIds, setVisibility, shopId }) {
     if (data && data[mutationName]) {
       // Notify user of performed action
       if (mutationName.startsWith("add")) {
-        enqueueSnackbar(i18next.t("admin.addRemoveTags.addConfirmation", { count: selectedTags.length, tags }));
+        enqueueSnackbar(getTranslation(
+          "admin.addRemoveTags.addConfirmation",
+          { count: selectedProductIds.length, tags }
+        ));
       } else {
-        enqueueSnackbar(i18next.t("admin.addRemoveTags.removeConfirmation", { count: selectedTags.length, tags }));
+        enqueueSnackbar(getTranslation(
+          "admin.addRemoveTags.removeConfirmation",
+          { count: selectedProductIds.length, tags }
+        ));
       }
     }
 
@@ -129,39 +137,48 @@ function TagSelector({ isVisible, selectedProductIds, setVisibility, shopId }) {
     <Fragment>
       {isVisible &&
         <Grid item sm={12} >
-          <MuiCard classes={{ root: classes.cardRoot }}>
-            <CardHeader
-              action={
-                <IconButton aria-label="close" onClick={() => setVisibility(false)}>
-                  <CloseIcon />
-                </IconButton>
-              }
-              title={i18next.t("admin.addRemoveTags.title")}
-            />
-            <CardContent>
-              <Grid container spacing={1} className={classes.cardContainer}>
-                <Grid item sm={12}>
-                  <Select
-                    cacheOptions
-                    defaultOptions
-                    isAsync
-                    isMulti
-                    loadOptions={(query) => getTags(apolloClient, query)}
-                    onSelection={(tags) => setSelectedTags(tags)}
-                    placeholder={i18next.t("admin.addRemoveTags.inputPlaceholder")}
-                  />
-                </Grid>
-              </Grid>
-            </CardContent>
-            <CardActions className={classes.cardActions}>
-              <SplitButton
-                color="primary"
-                options={ACTION_OPTIONS}
-                onClick={handleTagsAction}
-                isWaiting={isLoading}
+
+          <Grow
+            in={isVisible}
+            mountOnEnter
+            style={{ transformOrigin: "center top" }}
+            timeout={180}
+            unmountOnExit
+          >
+            <MuiCard classes={{ root: classes.cardRoot }}>
+              <CardHeader
+                action={
+                  <IconButton aria-label="close" onClick={() => setVisibility(false)}>
+                    <CloseIcon />
+                  </IconButton>
+                }
+                title={i18next.t("admin.productTable.bulkActions.addRemoveTags")}
               />
-            </CardActions>
-          </MuiCard>
+              <CardContent>
+                <Grid container spacing={1} className={classes.cardContainer}>
+                  <Grid item sm={12}>
+                    <Select
+                      cacheOptions
+                      defaultOptions
+                      isAsync
+                      isMulti
+                      loadOptions={(query) => getTags(apolloClient, query)}
+                      onSelection={(tags) => setSelectedTags(tags)}
+                      placeholder={i18next.t("admin.addRemoveTags.inputPlaceholder")}
+                    />
+                  </Grid>
+                </Grid>
+              </CardContent>
+              <CardActions className={classes.cardActions}>
+                <SplitButton
+                  color="primary"
+                  options={ACTION_OPTIONS}
+                  onClick={handleTagsAction}
+                  isWaiting={isLoading}
+                />
+              </CardActions>
+            </MuiCard>
+          </Grow>
         </Grid>
       }
     </Fragment>
