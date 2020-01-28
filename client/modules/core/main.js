@@ -5,7 +5,6 @@ import { Session } from "meteor/session";
 import { Tracker } from "meteor/tracker";
 import { ReactiveVar } from "meteor/reactive-var";
 import { ReactiveDict } from "meteor/reactive-dict";
-import { Roles } from "meteor/alanning:roles";
 import { Accounts, Groups, Shops } from "/lib/collections";
 import { Router } from "/client/modules/router";
 import { getUserId } from "./helpers/utils";
