@@ -247,17 +247,6 @@ export default {
   },
 
   /**
-   * @name hasOwnerAccess
-   * @method
-   * @memberof Core/Client
-   * @returns {Boolean} Boolean - true if user has owner permissions
-   */
-  hasOwnerAccess() {
-    const ownerPermissions = ["owner"];
-    return this.hasPermission(ownerPermissions);
-  },
-
-  /**
    * Checks to see if the user has admin permissions. If a shopId is optionally
    * passed in, we check for that shopId, otherwise we check against the default
    * @name hasAdminAccess
@@ -468,7 +457,6 @@ export default {
    * @returns {Boolean} -
    */
   canInviteToGroup(options) {
-    return true;
     const { group } = options;
     let { user } = options;
     if (!user) {

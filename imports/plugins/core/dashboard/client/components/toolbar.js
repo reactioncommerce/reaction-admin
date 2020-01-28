@@ -1,15 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Blaze from "meteor/gadicc:blaze-react-component";
-import { Tracker } from "meteor/tracker";
 import { Components } from "@reactioncommerce/reaction-components";
 import {
   FlatButton,
   VerticalDivider
 } from "/imports/plugins/core/ui/client/components";
 import { Translatable } from "/imports/plugins/core/ui/client/providers";
-import { Reaction } from "/client/api";
-import ShopSelect from "../components/shopSelect";
 
 class PublishControls extends Component {
   static propTypes = {
