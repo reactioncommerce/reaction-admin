@@ -1,15 +1,15 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { useApolloClient, useMutation } from "@apollo/react-hooks";
 import i18next from "i18next";
+import { useHistory } from "react-router-dom";
 import DataTable, { useDataTable } from "@reactioncommerce/catalyst/DataTable";
 import Button from "@reactioncommerce/catalyst/Button";
 import decodeOpaqueId from "@reactioncommerce/api-utils/decodeOpaqueId.js";
 import encodeOpaqueId from "@reactioncommerce/api-utils/encodeOpaqueId.js";
 import { useSnackbar } from "notistack";
 import { useDropzone } from "react-dropzone";
-import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import { Card, CardHeader, CardContent, Grid, makeStyles } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import productsQuery from "../graphql/queries/products";
 import publishProductsToCatalog from "../graphql/mutations/publishProductsToCatalog";
 import archiveProducts from "../graphql/mutations/archiveProducts";
@@ -21,6 +21,7 @@ import StatusIconCell from "./DataTable/StatusIconCell";
 import MediaCell from "./DataTable/MediaCell";
 import PublishedStatusCell from "./DataTable/PublishedStatusCell";
 import FilterByFileCard from "./FilterByFileCard";
+import TagSelector from "./TagSelector";
 
 const useStyles = makeStyles({
   card: {
@@ -37,16 +38,24 @@ function ProductsTable() {
   const apolloClient = useApolloClient();
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
+  const [shopId] = useCurrentShopId();
   const [createProduct, { error: createProductError }] = useMutation(createProductMutation);
+
+  // React-Table state
+  const [isLoading, setIsLoading] = useState(false);
+  const [pageCount, setPageCount] = useState(1);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [tableData, setTableData] = useState([]);
+
+  // Filter by file state
   const [files, setFiles] = useState([]);
   const [filterByProductIds, setFilterByProductIds] = useState(null);
   const [isFilterByFileVisible, setFilterByFileVisible] = useState(false);
   const [isFiltered, setFiltered] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [pageCount, setPageCount] = useState(1);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [shopId] = useCurrentShopId();
-  const [tableData, setTableData] = useState([]);
+
+  // Tag selector state
+  const [isTagSelectorVisible, setTagSelectorVisibility] = useState(false);
+
 
   // Create and memoize the column data
   const columns = useMemo(() => [
@@ -165,6 +174,7 @@ function ProductsTable() {
     }
   };
 
+  // Filter by file event handlers
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     multiple: false,
@@ -209,7 +219,7 @@ function ProductsTable() {
     });
   };
 
-  const handleDelete = (deletedFilename) => {
+  const handleDeleteUploadedFile = (deletedFilename) => {
     const newFiles = files.filter((file) => file.name !== deletedFilename);
     setFiles(newFiles);
     if (newFiles.length === 0) {
@@ -224,9 +234,18 @@ function ProductsTable() {
   const options = useMemo(() => [{
     label: "Filter by file",
     onClick: () => {
+      if (isTagSelectorVisible) setTagSelectorVisibility(false);
       setFilterByFileVisible(true);
     }
   }, {
+    label: "Add/Remove Tags",
+    isDisabled: selectedRows.length === 0,
+    onClick: () => {
+      if (isFilterByFileVisible) setFilterByFileVisible(false);
+      setTagSelectorVisibility(true);
+    }
+  },
+  {
     label: "Publish",
     confirmTitle: `Publish ${selectedRows.length} products`,
     confirmMessage: `Are you sure you want to publish ${selectedRows.length} products to your storefront?`,
@@ -386,14 +405,13 @@ function ProductsTable() {
         return;
       }
 
-
       refetch();
       enqueueSnackbar(
         i18next.t("admin.productTable.bulkActions.archiveSuccess", { count: data.archiveProducts.products.length }),
         { variant: "success" }
       );
     }
-  }], [apolloClient, enqueueSnackbar, refetch, selectedRows, shopId]);
+  }], [apolloClient, enqueueSnackbar, isFilterByFileVisible, isTagSelectorVisible, refetch, selectedRows, shopId]);
 
   const classes = useStyles();
 
@@ -405,8 +423,14 @@ function ProductsTable() {
         getInputProps={getInputProps}
         getRootProps={getRootProps}
         importFiles={importFiles}
-        handleDelete={handleDelete}
+        handleDelete={handleDeleteUploadedFile}
         setFilterByFileVisible={setFilterByFileVisible}
+      />
+      <TagSelector
+        isVisible={isTagSelectorVisible}
+        setVisibility={setTagSelectorVisibility}
+        selectedProductIds={selectedRows}
+        shopId={shopId}
       />
       <Grid item sm={12}>
         <Button color="primary" variant="contained" onClick={handleCreateProduct}>
