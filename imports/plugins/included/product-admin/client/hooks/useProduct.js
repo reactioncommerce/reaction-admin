@@ -195,14 +195,19 @@ function useProduct(args = {}) {
     shopId
   ]);
 
-  const onCreateVariant = useCallback(async (product) => {
-    const [opaqueProductId] = await getOpaqueIds([
-      { namespace: "Product", id: product._id },
-      { namespace: "Shop", id: product.shopId }
-    ]);
-
+  const onCreateVariant = useCallback(async ({
+    parentId: parentIdLocal = product._id,
+    shopId: shopIdLocal = shopId
+  }) => {
     try {
-      await createProductVariant({ variables: { input: { productId: opaqueProductId, shopId } } });
+      await createProductVariant({
+        variables: {
+          input: {
+            productId: parentIdLocal,
+            shopId: shopIdLocal
+          }
+        }
+      });
       // Because of the way GraphQL and meteor interact when creating a new variant,
       // we can't immediately redirect a user to the new variant as GraphQL is too quick
       // and the meteor subscription isn't yet updated. Once this page has been updated
@@ -213,6 +218,7 @@ function useProduct(args = {}) {
     }
   }, [
     createProductVariant,
+    product,
     shopId
   ]);
 
