@@ -143,7 +143,7 @@ function useProduct(args = {}) {
   const optionId = encodeProductOpaqueId(routeParams.optionId) || optionIdProp;
   const shopId = routeParams.shopId || currentShopId;
 
-  const { data: productQueryResult, isLoading } = useQuery(PRODUCT_QUERY, {
+  const { data: productQueryResult, isLoading, refetch: refetchProduct } = useQuery(PRODUCT_QUERY, {
     variables: {
       productId,
       shopId
@@ -274,6 +274,42 @@ function useProduct(args = {}) {
     updateProduct
   ]);
 
+  const handleDeleteProductTag = useCallback(async ({
+    tag: tagLocal,
+    product: productLocal = product,
+    productId: productIdLocal = product._id,
+    shopId: shopIdLocal = shopId
+  }) => {
+    const filteredTagIds = productLocal.tags.nodes
+      .filter(({ _id }) => _id !== tagLocal._id)
+      .map(({ _id }) => _id);
+
+    try {
+      await updateProduct({
+        variables: {
+          input: {
+            productId: productIdLocal,
+            shopId: shopIdLocal,
+            product: {
+              tagIds: filteredTagIds
+            }
+          }
+        }
+      });
+
+      enqueueSnackbar(i18next.t("productDetailEdit.removeProductTagSuccess"), { variant: "success" });
+    } catch (error) {
+      console.log(error)
+      enqueueSnackbar(i18next.t("productDetailEdit.removeProductTagFail"), { variant: "error" });
+    }
+  }, [
+    enqueueSnackbar,
+    product,
+    shopId,
+    updateProduct
+  ]);
+
+
   // const onUpdateProductVariant = useCallback(async (productLocal) => {
   //   try {
   //     await updateProductVariant({
@@ -306,6 +342,7 @@ function useProduct(args = {}) {
   return {
     newMetaField,
     isLoading,
+    handleDeleteProductTag,
     onArchiveProduct,
     onCloneProduct,
     onCreateVariant,
@@ -315,6 +352,7 @@ function useProduct(args = {}) {
     onRestoreProduct: handleProductRestore,
     onToggleProductVisibility,
     product: productQueryResult && productQueryResult.product,
+    refetchProduct,
     setNewMetaField,
     shopId,
     variant
