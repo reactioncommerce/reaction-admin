@@ -9,8 +9,8 @@ import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import { Box, Card, CardHeader, CardContent, makeStyles } from "@material-ui/core";
 import ordersQuery from "../graphql/queries/orders";
 import { formatDateRangeFilter } from "../../client/helpers";
-import OrderDateCell from "./OrderDateCell";
-import OrderIdCell from "./OrderIdCell";
+import OrderDateCell from "./DataTable/OrderDateCell";
+import OrderIdCell from "./DataTable/OrderIdCell";
 
 const useStyles = makeStyles({
   card: {
@@ -34,35 +34,35 @@ function OrdersTable() {
   // Create and memoize the column data
   const columns = useMemo(() => [
     {
-      Header: "Order ID",
+      Header: i18next.t("admin.table.headers.id"),
       accessor: "referenceId",
       // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
       Cell: ({ row, cell }) => <OrderIdCell row={row} cell={cell} />
     },
     {
-      Header: "Date",
+      Header: i18next.t("admin.table.headers.date"),
       accessor: "createdAt",
       // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
       Cell: ({ row }) => <OrderDateCell row={row} />
     },
     {
-      Header: "Order Status",
+      Header: i18next.t("admin.table.headers.status"),
       accessor: "status",
       Filter: makeDataTableColumnFilter({
         // `title` can be omitted if the Header is a string
         // title: "Order Status",
         options: [
           // { label: "All", value: "" },
-          { label: "Canceled", value: "canceled" },
-          { label: "Completed", value: "completed" },
-          { label: "New", value: "new" },
-          { label: "Processing", value: "processing" }
+          { label: i18next.t("admin.table.orderStatus.coreOrderWorkflow/canceled"), value: "canceled" },
+          { label: i18next.t("admin.table.orderStatus.coreOrderWorkflow/completed"), value: "completed" },
+          { label: i18next.t("admin.table.orderStatus.new"), value: "new" },
+          { label: i18next.t("admin.table.orderStatus.coreOrderWorkflow/processing"), value: "processing" }
         ]
       }),
       show: false
     },
     {
-      Header: "Payment",
+      Header: i18next.t("admin.table.headers.payment"),
       accessor: (row) => row.payments[0].status,
       id: "paymentStatus",
       // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
@@ -70,13 +70,13 @@ function OrdersTable() {
       Filter: makeDataTableColumnFilter({
         isMulti: true,
         options: [
-          { label: "Completed", value: "completed" },
-          { label: "Created", value: "created" }
+          { label: i18next.t("admin.table.paymentStatus.completed"), value: "completed" },
+          { label: i18next.t("admin.table.paymentStatus.created"), value: "created" }
         ]
       })
     },
     {
-      Header: "Fulfillment",
+      Header: i18next.t("admin.table.headers.fulfillment"),
       accessor: (row) => row.fulfillmentGroups[0].status,
       id: "fulfillmentStatus",
       // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
@@ -84,14 +84,14 @@ function OrdersTable() {
       Filter: makeDataTableColumnFilter({
         isMulti: true,
         options: [
-          { label: "Completed", value: "completed" },
-          { label: "New", value: "new" },
-          { label: "Processing", value: "processing" }
+          { label: i18next.t("admin.table.fulfillmentStatus.coreOrderWorkflow/completed"), value: "completed" },
+          { label: i18next.t("admin.table.fulfillmentStatus.new"), value: "new" },
+          { label: i18next.t("admin.table.fulfillmentStatus.coreOrderWorkflow/processing"), value: "processing" }
         ]
       })
     },
     {
-      Header: "Customer",
+      Header: i18next.t("admin.table.headers.customer"),
       accessor: "payments[0].billingAddress.fullName"
     },
     {
@@ -103,12 +103,11 @@ function OrdersTable() {
     },
     {
       // Hide this column, it's only for filtering
-      Header: "Order date",
       Filter: makeDataTableColumnFilter({
         options: [
-          { label: "Today", value: "today" },
-          { label: "Last 7 days", value: "last7" },
-          { label: "Last 30", value: "last30" }
+          { label: i18next.t("admin.table.filter.today"), value: "today" },
+          { label: i18next.t("admin.table.filter.last7"), value: "last7" },
+          { label: i18next.t("admin.table.filter.last30"), value: "last30" }
         ]
       }),
       accessor: "createdAt",
@@ -159,17 +158,15 @@ function OrdersTable() {
   }, [history]);
 
   const labels = useMemo(() => ({
-    "globalFilterPlaceholder": "Filter orders",
-    "filterChipValue.created": "Created",
-    "filterChipValue.processing": "Processing",
-    "filterChipValue.refunded": "Refunded",
-    "filterChipValue.unpaid": "Unpaid",
-    "filterChipValue.new": "New",
-    "filterChipValue.completed": "Completed",
-    "filterChipValue.canceled": "Canceled",
-    "filterChipValue.today": "Today",
-    "filterChipValue.last7": "Last 7 days",
-    "filterChipValue.last30": "Last 30"
+    "globalFilterPlaceholder": i18next.t("admin.table.filter.globalFilter"),
+    "filterChipValue.created": i18next.t("admin.table.fulfillmentStatus.coreOrderWorkflow/created"),
+    "filterChipValue.processing": i18next.t("admin.table.fulfillmentStatus.coreOrderWorkflow/processing"),
+    "filterChipValue.new": i18next.t("admin.table.fulfillmentStatus.new"),
+    "filterChipValue.completed": i18next.t("admin.table.fulfillmentStatus.coreOrderWorkflow/completed"),
+    "filterChipValue.canceled": i18next.t("admin.table.fulfillmentStatus.coreOrderWorkflow/canceled"),
+    "filterChipValue.today": i18next.t("admin.table.filter.today"),
+    "filterChipValue.last7": i18next.t("admin.table.filter.last7"),
+    "filterChipValue.last30": i18next.t("admin.table.filter.last30")
   }), []);
 
   const dataTableProps = useDataTable({
