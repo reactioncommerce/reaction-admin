@@ -7,7 +7,6 @@ import {
   CardHeader,
   Checkbox,
   FormControlLabel,
-  TextField,
   Button,
   Box,
   MenuItem,
@@ -17,8 +16,8 @@ import useReactoForm from "reacto-form/cjs/useReactoForm";
 import SimpleSchema from "simpl-schema";
 import muiOptions from "reacto-form/cjs/muiOptions";
 import CountryOptions from "@reactioncommerce/api-utils/CountryOptions.js";
+import TextField from "@reactioncommerce/catalyst/TextField";
 import useGenerateSitemaps from "/imports/plugins/included/sitemap-generator/client/hooks/useGenerateSitemaps";
-
 import useProduct from "../hooks/useProduct";
 
 
@@ -83,6 +82,7 @@ const ProductDetailForm = React.forwardRef((props, ref) => {
     getFirstErrorMessage,
     getInputProps,
     hasErrors,
+    isDirty,
     submitForm
   } = useReactoForm({
     async onSubmit(formData) {
@@ -213,7 +213,7 @@ const ProductDetailForm = React.forwardRef((props, ref) => {
         <Box textAlign="right">
           <Button
             color="primary"
-            isDisabled={isSubmitting}
+            disabled={!isDirty || isSubmitting}
             variant="contained"
             type="submit"
           >
