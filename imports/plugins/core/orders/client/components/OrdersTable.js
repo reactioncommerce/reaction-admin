@@ -102,7 +102,7 @@ function OrdersTable() {
       Cell: ({ cell }) => <Box textAlign="right">{cell.value}</Box>
     },
     {
-      // Hide this column, it's only for filtering
+      Header: i18next.t("admin.table.headers.date"),
       Filter: makeDataTableColumnFilter({
         options: [
           { label: i18next.t("admin.table.filter.today"), value: "today" },
