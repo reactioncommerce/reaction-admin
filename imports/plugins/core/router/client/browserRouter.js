@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import { ThemeProvider } from "styled-components";
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import { matchPath } from "react-router";
 import { Router as ReactRouter } from "react-router-dom";
 import { ApolloProvider } from "react-apollo";
