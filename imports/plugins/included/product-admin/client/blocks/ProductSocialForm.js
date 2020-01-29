@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  TextField,
   Button,
   Box,
   makeStyles
@@ -12,7 +11,7 @@ import {
 import useReactoForm from "reacto-form/cjs/useReactoForm";
 import SimpleSchema from "simpl-schema";
 import muiOptions from "reacto-form/cjs/muiOptions";
-
+import TextField from "@reactioncommerce/catalyst/TextField";
 import useProduct from "../hooks/useProduct";
 
 const useStyles = makeStyles((theme) => ({
