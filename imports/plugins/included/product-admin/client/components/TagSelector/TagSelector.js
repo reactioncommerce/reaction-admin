@@ -12,9 +12,11 @@ import {
   CardActions,
   CardHeader,
   CardContent,
+  Grow,
   IconButton,
   makeStyles
 } from "@material-ui/core";
+import getTranslation from "../../utils/getTranslation";
 import { getTags } from "./helpers";
 import { ADD_TAGS_TO_PRODUCTS, REMOVE_TAGS_FROM_PRODUCTS } from "./mutations";
 
@@ -52,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {Object} props Component props
  * @returns {React.Component} A React component
  */
-function TagSelector({ isVisible, selectedProductIds, setVisibility }) {
+function TagSelector({ isVisible, selectedProductIds, setVisibility, shopId }) {
   const apolloClient = useApolloClient();
   const [selectedTags, setSelectedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -62,6 +64,7 @@ function TagSelector({ isVisible, selectedProductIds, setVisibility }) {
   // eslint-disable-next-line consistent-return
   const handleTagsAction = async (option) => {
     const tagIds = selectedTags && selectedTags.map(({ value }) => (value));
+    const tags = selectedTags && selectedTags.map(({ label }) => (label)).join(", ");
 
     // Prevent user from executing action if he/she has not // yet selected at least one tag
     if (!tagIds.length) {
@@ -79,6 +82,7 @@ function TagSelector({ isVisible, selectedProductIds, setVisibility }) {
           variables: {
             input: {
               productIds: selectedProductIds,
+              shopId,
               tagIds
             }
           }
@@ -93,6 +97,7 @@ function TagSelector({ isVisible, selectedProductIds, setVisibility }) {
           variables: {
             input: {
               productIds: selectedProductIds,
+              shopId,
               tagIds
             }
           }
@@ -108,9 +113,15 @@ function TagSelector({ isVisible, selectedProductIds, setVisibility }) {
     if (data && data[mutationName]) {
       // Notify user of performed action
       if (mutationName.startsWith("add")) {
-        enqueueSnackbar(i18next.t("admin.addRemoveTags.addConfirmation"));
+        enqueueSnackbar(getTranslation(
+          "admin.addRemoveTags.addConfirmation",
+          { count: selectedProductIds.length, tags }
+        ));
       } else {
-        enqueueSnackbar(i18next.t("admin.addRemoveTags.removeConfirmation"));
+        enqueueSnackbar(getTranslation(
+          "admin.addRemoveTags.removeConfirmation",
+          { count: selectedProductIds.length, tags }
+        ));
       }
     }
 
@@ -126,39 +137,48 @@ function TagSelector({ isVisible, selectedProductIds, setVisibility }) {
     <Fragment>
       {isVisible &&
         <Grid item sm={12} >
-          <MuiCard classes={{ root: classes.cardRoot }}>
-            <CardHeader
-              action={
-                <IconButton aria-label="close" onClick={() => setVisibility(false)}>
-                  <CloseIcon />
-                </IconButton>
-              }
-              title={i18next.t("admin.addRemoveTags.title")}
-            />
-            <CardContent>
-              <Grid container spacing={1} className={classes.cardContainer}>
-                <Grid item sm={12}>
-                  <Select
-                    cacheOptions
-                    defaultOptions
-                    isAsync
-                    isMulti
-                    loadOptions={(query) => getTags(apolloClient, query)}
-                    onSelection={(tags) => setSelectedTags(tags)}
-                    placeholder={i18next.t("admin.addRemoveTags.inputPlaceholder")}
-                  />
-                </Grid>
-              </Grid>
-            </CardContent>
-            <CardActions className={classes.cardActions}>
-              <SplitButton
-                color="primary"
-                options={ACTION_OPTIONS}
-                onClick={handleTagsAction}
-                isWaiting={isLoading}
+
+          <Grow
+            in={isVisible}
+            mountOnEnter
+            style={{ transformOrigin: "center top" }}
+            timeout={180}
+            unmountOnExit
+          >
+            <MuiCard classes={{ root: classes.cardRoot }}>
+              <CardHeader
+                action={
+                  <IconButton aria-label="close" onClick={() => setVisibility(false)}>
+                    <CloseIcon />
+                  </IconButton>
+                }
+                title={i18next.t("admin.productTable.bulkActions.addRemoveTags")}
               />
-            </CardActions>
-          </MuiCard>
+              <CardContent>
+                <Grid container spacing={1} className={classes.cardContainer}>
+                  <Grid item sm={12}>
+                    <Select
+                      cacheOptions
+                      defaultOptions
+                      isAsync
+                      isMulti
+                      loadOptions={(query) => getTags(apolloClient, query)}
+                      onSelection={(tags) => setSelectedTags(tags)}
+                      placeholder={i18next.t("admin.addRemoveTags.inputPlaceholder")}
+                    />
+                  </Grid>
+                </Grid>
+              </CardContent>
+              <CardActions className={classes.cardActions}>
+                <SplitButton
+                  color="primary"
+                  options={ACTION_OPTIONS}
+                  onClick={handleTagsAction}
+                  isWaiting={isLoading}
+                />
+              </CardActions>
+            </MuiCard>
+          </Grow>
         </Grid>
       }
     </Fragment>
@@ -168,7 +188,8 @@ function TagSelector({ isVisible, selectedProductIds, setVisibility }) {
 TagSelector.propTypes = {
   isVisible: PropTypes.bool,
   selectedProductIds: PropTypes.array,
-  setVisibility: PropTypes.func
+  setVisibility: PropTypes.func,
+  shopId: PropTypes.string
 };
 
 export default TagSelector;
