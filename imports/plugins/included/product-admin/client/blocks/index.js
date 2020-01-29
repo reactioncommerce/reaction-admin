@@ -57,12 +57,12 @@ registerBlock({
   priority: 30
 });
 
-// registerBlock({
-//   region: "ProductDetailMain",
-//   name: "ProductTagForm",
-//   component: ProductTagForm,
-//   priority: 40
-// });
+registerBlock({
+  region: "ProductDetailMain",
+  name: "ProductTagForm",
+  component: ProductTagForm,
+  priority: 40
+});
 
 // registerBlock({
 //   region: "ProductDetailMain",
