@@ -28,6 +28,12 @@ export default gql`
       }
       supportedFulfillmentTypes
       tagIds
+      tags {
+        nodes {
+          _id
+          name
+        }
+      }
       title
       updatedAt
       vendor
