@@ -50,13 +50,11 @@ function ProductsTable() {
 
   // Filter by file state
   const [files, setFiles] = useState([]);
-  const [filterByProductIds, setFilterByProductIds] = useState(null);
   const [isFilterByFileVisible, setFilterByFileVisible] = useState(false);
   const [isFiltered, setFiltered] = useState(false);
 
   // Tag selector state
   const [isTagSelectorVisible, setTagSelectorVisibility] = useState(false);
-
 
   // Create and memoize the column data
   const columns = useMemo(() => [
@@ -102,18 +100,25 @@ function ProductsTable() {
   ], []);
 
 
-  const onFetchData = useCallback(async ({ globalFilter, pageIndex, pageSize }) => {
+  const onFetchData = useCallback(async ({ globalFilter, manualFilters, pageIndex, pageSize }) => {
     // Wait for shop id to be available before fetching products.
     setIsLoading(true);
     if (!shopId) {
       return;
     }
 
+    const filterByProductIds = {};
+    if (manualFilters.length) {
+      filterByProductIds.productIds = manualFilters[0].value.map((id) => encodeOpaqueId("reaction/product", id));
+      // Reset uploaded files
+      setFiles([]);
+    }
+
     const { data } = await apolloClient.query({
       query: productsQuery,
       variables: {
         shopIds: [shopId],
-        productIds: filterByProductIds && filterByProductIds.map((id) => encodeOpaqueId("reaction/product", id)),
+        ...filterByProductIds,
         query: globalFilter,
         first: pageSize,
         limit: (pageIndex + 1) * pageSize,
@@ -127,7 +132,7 @@ function ProductsTable() {
     setPageCount(Math.ceil(data.products.totalCount / pageSize));
 
     setIsLoading(false);
-  }, [apolloClient, filterByProductIds, shopId]);
+  }, [apolloClient, shopId]);
 
   // Row click callback
   const onRowClick = useCallback(async ({ row }) => {
@@ -154,7 +159,7 @@ function ProductsTable() {
     getRowId: (row) => row._id
   });
 
-  const { refetch, setFilter } = dataTableProps;
+  const { refetch, setManualFilters } = dataTableProps;
 
   const onDrop = (accepted) => {
     if (accepted.length === 0) return;
@@ -210,8 +215,7 @@ function ProductsTable() {
               return;
             });
 
-            setFilterByProductIds(productIds);
-            // setFilter("filterByFile", file.name);
+            setManualFilters(file.name, productIds);
             setFilterByFileVisible(false);
             setFiltered(true);
           });
@@ -225,7 +229,6 @@ function ProductsTable() {
     setFiles(newFiles);
     if (newFiles.length === 0) {
       setFiltered(false);
-      setFilterByProductIds(null);
     } else if (isFiltered) {
       importFiles(newFiles);
     }
