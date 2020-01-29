@@ -1,36 +1,35 @@
 import React from "react";
-import PropTypes from "prop-types";
 import VariantTableComponent from "../components/VariantTable";
+import useProduct from "../hooks/useProduct";
 
 /**
  * Variant table block component
  * @param {Object} props Component props
  * @returns {Node} React node
  */
-function VariantTable(props) {
+function VariantTable() {
   const {
-    onProductVariantFieldSave,
     onCreateVariant,
+    onUpdateProduct,
     product
-  } = props;
+  } = useProduct();
+
+  if (!product) return null;
 
   return (
     <VariantTableComponent
       title="Variants"
-      items={props.variants}
-      onCreate={() => { onCreateVariant(product); }}
+      items={product.variants}
+      onCreate={() => { onCreateVariant(); }}
       onChangeField={(item, field, value) => {
-        onProductVariantFieldSave(item._id, field, value);
+        onUpdateProduct({
+          product: {
+            [field]: value
+          }
+        });
       }}
     />
   );
 }
-
-VariantTable.propTypes = {
-  onCreateVariant: PropTypes.func,
-  onProductVariantFieldSave: PropTypes.func,
-  product: PropTypes.object,
-  variants: PropTypes.arrayOf(PropTypes.object)
-};
 
 export default VariantTable;
