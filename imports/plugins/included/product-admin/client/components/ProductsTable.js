@@ -426,11 +426,13 @@ function ProductsTable() {
         selectedProductIds={selectedRows}
         shopId={shopId}
       />
-      <Grid item sm={12}>
-        <Button color="primary" variant="contained" onClick={handleCreateProduct}>
-          {i18next.t("admin.createProduct") || "Create product"}
-        </Button>
-      </Grid>
+      { (!isTagSelectorVisible && !isFilterByFileVisible) &&
+        <Grid item sm={12}>
+          <Button color="primary" variant="contained" onClick={handleCreateProduct}>
+            {i18next.t("admin.createProduct") || "Create product"}
+          </Button>
+        </Grid>
+      }
       <Grid item sm={12}>
         <Card className={classes.card}>
           <CardHeader title={i18next.t("admin.products")} />
