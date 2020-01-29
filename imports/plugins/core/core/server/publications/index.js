@@ -1,5 +1,4 @@
 import "./collections/accounts";
-import "./collections/cart";
 import "./collections/groups";
 import "./collections/media";
 import "./collections/product";
