@@ -72,12 +72,12 @@ registerBlock({
 //   priority: 50
 // });
 
-// registerBlock({
-//   region: "ProductDetailMain",
-//   name: "VariantTable",
-//   component: VariantTable,
-//   priority: 60
-// });
+registerBlock({
+  region: "ProductDetailMain",
+  name: "VariantTable",
+  component: VariantTable,
+  priority: 60
+});
 
 // registerBlock({
 //   region: "VariantDetailSidebar",
