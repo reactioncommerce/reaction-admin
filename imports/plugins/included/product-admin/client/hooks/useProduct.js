@@ -299,7 +299,6 @@ function useProduct(args = {}) {
 
       enqueueSnackbar(i18next.t("productDetailEdit.removeProductTagSuccess"), { variant: "success" });
     } catch (error) {
-      console.log(error)
       enqueueSnackbar(i18next.t("productDetailEdit.removeProductTagFail"), { variant: "error" });
     }
   }, [
