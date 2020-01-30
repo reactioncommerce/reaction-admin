@@ -5,7 +5,7 @@ const { num, str } = envalid;
 export default envalid.cleanEnv(process.env, {
   OAUTH2_ADMIN_URL: str({
     desc: "An OAuth2 OpenID Connect compliant URL",
-    example: "http://hydra.auth.reaction.localhost:4445"
+    example: "http://hydra.reaction.localhost:4445"
   }),
   OAUTH2_CLIENT_ID: str({
     default: "reaction-admin",
