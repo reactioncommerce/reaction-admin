@@ -63,7 +63,7 @@ function CreateFirstShopForm(props) {
       <Button
         color="primary"
         fullWidth
-        isDisabled={isSubmitting}
+        disabled={isSubmitting}
         onClick={submitForm}
         variant="contained"
       >

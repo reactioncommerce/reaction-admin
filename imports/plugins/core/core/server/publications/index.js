@@ -1,8 +1,6 @@
 import "./collections/accounts";
-import "./collections/cart";
 import "./collections/groups";
 import "./collections/media";
-import "./collections/orders";
 import "./collections/product";
 import "./collections/reactiveAggregate";
 import "./collections/shipping";

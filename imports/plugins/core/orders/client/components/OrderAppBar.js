@@ -2,10 +2,23 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Mutation } from "react-apollo";
 import { i18next, Reaction } from "/client/api";
+import { useHistory } from "react-router-dom";
+import { makeStyles } from "@material-ui/core";
 import Logger from "/client/modules/logger";
 import ConfirmButton from "/imports/client/ui/components/ConfirmButton";
 import PrimaryAppBar from "/imports/client/ui/components/PrimaryAppBar/PrimaryAppBar";
+import ArrowLeft from "mdi-material-ui/ArrowLeft";
 import cancelOrderItemMutation from "../graphql/mutations/cancelOrderItem";
+
+const useStyles = makeStyles({
+  goBackTitleLink: {
+    display: "flex",
+    alignItems: "center"
+  },
+  title: {
+    marginLeft: 10
+  }
+});
 
 /**
  * @name OrderAppBar
@@ -13,9 +26,11 @@ import cancelOrderItemMutation from "../graphql/mutations/cancelOrderItem";
  * @returns {React.Component} returns a React component
  */
 function OrderAppBar(props) {
+  const history = useHistory();
   const hasPermission = Reaction.hasPermission(["reaction:legacy:orders/update"], Reaction.getUserId(), Reaction.getShopId());
   const { order } = props;
   const canCancelOrder = (order.status !== "coreOrderWorkflow/canceled");
+  const classes = useStyles();
 
   const handleCancelOrder = (mutation) => {
     if (hasPermission && canCancelOrder) {
@@ -62,8 +77,22 @@ function OrderAppBar(props) {
     ;
   }
 
+  const backIconTitle = (
+    // eslint-disable-next-line jsx-a11y/anchor-is-valid
+    <a href="#" className={classes.goBackTitleLink} onClick={(event) => {
+      event.preventDefault();
+      history.goBack();
+    }}
+    >
+      <ArrowLeft />
+      <span className={classes.title}>
+        {i18next.t("orderDetails", "Order details")}
+      </span>
+    </a>
+  );
+
   return (
-    <PrimaryAppBar title={i18next.t("orderDetails", "Order details")}>
+    <PrimaryAppBar title={backIconTitle}>
       {cancelOrderButton}
     </PrimaryAppBar>
   );

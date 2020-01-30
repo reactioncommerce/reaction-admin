@@ -1,4 +1,38 @@
+import moment from "moment";
 import { Reaction } from "/client/api";
+
+/**
+ * @method formatDateRangeFilter
+ * @private
+ * @summary Determine a date range given a keyword such at `today`, `last7`.
+ * @param {String} dateRangeKeyword - a date range keyword
+ * @returns {Object} a object representing a date range filter
+ * */
+export function formatDateRangeFilter(dateRangeKeyword) {
+  const dateRange = {};
+
+  switch (dateRangeKeyword) {
+    case "today":
+      dateRange.gte = moment().startOf("day").toISOString();
+      dateRange.lte = moment().endOf("day").toISOString();
+      break;
+    case "last7":
+      dateRange.gte = moment().subtract(7, "days").toISOString();
+      dateRange.lte = moment().toISOString();
+      break;
+    case "last30":
+      dateRange.gte = moment().subtract(30, "days").toISOString();
+      dateRange.lte = moment().toISOString();
+      break;
+    default:
+      // Default to today's date range
+      dateRange.gte = moment().startOf("day").toISOString();
+      dateRange.lte = moment().endOf("day").toISOString();
+      break;
+  }
+
+  return dateRange;
+}
 
 /**
  * @method isPaymentRiskElevated
@@ -14,7 +48,6 @@ export function isPaymentRiskElevated(order, paymentIds) {
 
   return !isPaymentNormalRisk;
 }
-
 
 // Below here are deprecated Meteor helpers.
 // Keep them for now, but they can be removed once
