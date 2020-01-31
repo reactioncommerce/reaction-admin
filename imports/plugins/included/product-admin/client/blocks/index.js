@@ -79,35 +79,32 @@ registerBlock({
   priority: 60
 });
 
-// registerBlock({
-//   region: "VariantDetailSidebar",
-//   name: "VariantList",
-//   component: VariantList,
-//   priority: 10
-// });
+registerBlock({
+  region: "VariantDetailSidebar",
+  name: "VariantList",
+  component: VariantList,
+  priority: 10
+});
 
-// // Header
-// registerBlock({
-//   region: "VariantDetailHeader",
-//   name: "VariantHeader",
-//   component: VariantHeader,
-//   hocs: [withVariantForm],
-//   priority: 10
-// });
+// Header
+registerBlock({
+  region: "VariantDetailHeader",
+  name: "ProductHeader",
+  component: ProductHeader,
+  priority: 10
+});
 
-// registerBlock({
-//   region: "VariantDetailMain",
-//   name: "VariantDetailForm",
-//   component: VariantDetailForm,
-//   hocs: [withVariantForm],
-//   priority: 10
-// });
+registerBlock({
+  region: "VariantDetailMain",
+  name: "VariantDetailForm",
+  component: VariantDetailForm,
+  priority: 10
+});
 
 // registerBlock({
 //   region: "VariantDetailMain",
 //   name: "VariantMediaForm",
 //   component: VariantMediaForm,
-//   hocs: [withVariantForm],
 //   priority: 20
 // });
 
