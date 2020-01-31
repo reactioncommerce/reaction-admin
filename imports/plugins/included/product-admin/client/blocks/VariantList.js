@@ -117,7 +117,7 @@ export default function VariantList() {
     }
 
     return null;
-  }, [classes.nested, expandedIds, product._id, history]);
+  }, [classes.nested, expandedIds, product, history]);
 
   return (
     <Card>
