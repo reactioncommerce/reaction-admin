@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { i18next } from "/client/api";
 import {
   Grid,
-  Grow,
+  Zoom,
   Button,
   Card as MuiCard,
   CardHeader,
@@ -62,11 +62,9 @@ export default function FilterByFileCard(props) {
 
   return (
     <Grid item sm={12} className={cardClasses}>
-      <Grow
+      <Zoom
         in={isFilterByFileVisible}
         mountOnEnter
-        style={{ transformOrigin: "center top" }}
-        timeout={180}
         unmountOnExit
       >
         <MuiCard>
@@ -124,7 +122,7 @@ export default function FilterByFileCard(props) {
             )}
           </CardContent>
         </MuiCard>
-      </Grow>
+      </Zoom>
     </Grid>
   );
 }

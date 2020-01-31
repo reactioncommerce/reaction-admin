@@ -12,7 +12,7 @@ import {
   CardActions,
   CardHeader,
   CardContent,
-  Grow,
+  Zoom,
   IconButton,
   makeStyles
 } from "@material-ui/core";
@@ -137,12 +137,9 @@ function TagSelector({ isVisible, selectedProductIds, setVisibility, shopId }) {
     <Fragment>
       {isVisible &&
         <Grid item sm={12} >
-
-          <Grow
+          <Zoom
             in={isVisible}
             mountOnEnter
-            style={{ transformOrigin: "center top" }}
-            timeout={180}
             unmountOnExit
           >
             <MuiCard classes={{ root: classes.cardRoot }}>
@@ -178,7 +175,7 @@ function TagSelector({ isVisible, selectedProductIds, setVisibility, shopId }) {
                 />
               </CardActions>
             </MuiCard>
-          </Grow>
+          </Zoom>
         </Grid>
       }
     </Fragment>
