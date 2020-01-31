@@ -73,13 +73,6 @@ registerBlock({
 // });
 
 registerBlock({
-  region: "ProductDetailMain",
-  name: "VariantTable",
-  component: VariantTable,
-  priority: 60
-});
-
-registerBlock({
   region: "VariantDetailSidebar",
   name: "VariantList",
   component: VariantList,
@@ -114,11 +107,4 @@ registerBlock({
 //   component: VariantTaxForm,
 //   hocs: [withVariantForm],
 //   priority: 30
-// });
-
-// registerBlock({
-//   region: "VariantDetailMain",
-//   name: "OptionTable",
-//   component: OptionTable,
-//   priority: 40
 // });
