@@ -138,9 +138,9 @@ function useProduct(args = {}) {
   const [createProductVariant] = useMutation(CREATE_VARIANT);
   const [currentShopId] = useCurrentShopId();
 
-  const productId = encodeProductOpaqueId(routeParams.handle) || productIdProp;
-  const variantId = encodeProductOpaqueId(routeParams.variantId) || variantIdProp;
-  const optionId = encodeProductOpaqueId(routeParams.optionId) || optionIdProp;
+  const productId = routeParams.handle || productIdProp;
+  const variantId = routeParams.variantId || variantIdProp;
+  const optionId = routeParams.optionId || optionIdProp;
   const shopId = routeParams.shopId || currentShopId;
 
   const { data: productQueryResult, isLoading, refetch: refetchProduct } = useQuery(PRODUCT_QUERY, {
