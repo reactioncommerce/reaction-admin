@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { Fragment, useState, useMemo, useCallback } from "react";
 import { useApolloClient, useMutation } from "@apollo/react-hooks";
 import i18next from "i18next";
 import { useHistory } from "react-router-dom";
@@ -24,11 +24,18 @@ import PublishedStatusCell from "./DataTable/PublishedStatusCell";
 import FilterByFileCard from "./FilterByFileCard";
 import TagSelector from "./TagSelector";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   card: {
     overflow: "visible"
+  },
+  cardHeader: {
+    paddingBottom: 0
+  },
+  selectedProducts: {
+    fontWeight: 400,
+    marginLeft: theme.spacing(1)
   }
-});
+}));
 
 /**
  * @summary Main products view
@@ -408,6 +415,12 @@ function ProductsTable() {
   }], [apolloClient, enqueueSnackbar, isFilterByFileVisible, isTagSelectorVisible, refetch, selectedRows, shopId]);
 
   const classes = useStyles();
+  const selectedProducts = selectedRows.length ? `${selectedRows.length} selected` : "";
+  const cardTitle = (
+    <Fragment>
+      {i18next.t("admin.products")}<span className={classes.selectedProducts}>{selectedProducts}</span>
+    </Fragment>
+  );
 
   return (
     <Grid container spacing={3}>
@@ -435,7 +448,7 @@ function ProductsTable() {
       }
       <Grid item sm={12}>
         <Card className={classes.card}>
-          <CardHeader title={i18next.t("admin.products")} />
+          <CardHeader classes={{ root: classes.cardHeader }} title={cardTitle} />
           <CardContent>
             <DataTable
               {...dataTableProps}
