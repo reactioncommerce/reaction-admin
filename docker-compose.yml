@@ -7,18 +7,9 @@
 version: '3.4'
 
 networks:
-  api:
-    external:
-      name: api.reaction.localhost
-  auth:
-    external:
-      name: auth.reaction.localhost
   reaction:
     external:
       name: reaction.localhost
-  streams:
-    external:
-      name: streams.reaction.localhost
 
 services:
   reaction-admin:
@@ -26,10 +17,8 @@ services:
     env_file:
       - ./.env
     networks:
-      api:
-      auth:
+      default:
       reaction:
-      streams:
     ports:
       - "4080:4080"
       - "9231:9229"
