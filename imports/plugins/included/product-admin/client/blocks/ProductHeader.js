@@ -1,26 +1,198 @@
-import React from "react";
-import ProductHeaderComponent from "../components/ProductHeader";
+import React, { useState } from "react";
+import Helmet from "react-helmet";
+import { Link } from "react-router-dom";
+import { i18next, Reaction } from "/client/api";
+import IconButton from "@material-ui/core/IconButton";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import Typography from "@material-ui/core/Typography";
+import ChevronRight from "mdi-material-ui/ChevronRight";
+import DotsHorizontalCircleIcon from "mdi-material-ui/DotsHorizontalCircle";
+import ConfirmDialog from "@reactioncommerce/catalyst/ConfirmDialog";
+import { makeStyles } from "@material-ui/core";
 import useProduct from "../hooks/useProduct";
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(4)
+  },
+  breadcrumbs: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: theme.spacing(2)
+  },
+  breadcrumbIcon: {
+    fontSize: 14,
+    marginRight: 7
+  },
+  breadcrumbLink: {
+    fontSize: "14px",
+    fontFamily: theme.typography.fontFamily,
+    color: "#3c3c3c",
+    border: 0,
+    textDecoration: "underline",
+    marginRight: 7
+  },
+  statusbar: {
+    display: "flex",
+    alignItems: "center"
+  }
+}));
+
 /**
- * Product header block component
- * @returns {Node} React node
+ * Header component for various product admin forms
+ * @param {Object} props Component props
+ * @returns {Node} React component
  */
 function ProductHeader() {
+  const classes = useStyles();
+  const [menuAnchorEl, setMenuAnchorEl] = useState();
   const {
     onArchiveProduct,
+    onRestoreProduct,
     onCloneProduct,
     onToggleProductVisibility,
-    product
+    product,
+    variant,
+    option
   } = useProduct();
 
+  if (!product) {
+    return null;
+  }
+
+  const hasCloneProductPermission = Reaction.hasPermission(["reaction:legacy:products/clone"], Reaction.getUserId(), Reaction.getShopId());
+  const hasArchiveProductPermission = Reaction.hasPermission(["reaction:legacy:products/archive"], Reaction.getUserId(), Reaction.getShopId());
+
+  // Archive menu item
+  let archiveMenuItem = (
+    <ConfirmDialog
+      title={i18next.t("admin.productTable.bulkActions.archiveTitle")}
+      message={i18next.t("productDetailEdit.archiveThisProduct")}
+      onConfirm={() => {
+        let redirectUrl;
+
+        if (option) {
+          redirectUrl = `/products/${product._id}/${variant._id}`;
+        } else if (variant) {
+          redirectUrl = `/products/${product._id}`;
+        } else {
+          redirectUrl = "/products";
+        }
+
+        onArchiveProduct(product, redirectUrl);
+      }}
+    >
+      {({ openDialog }) => (
+        <MenuItem onClick={openDialog}>{i18next.t("admin.productTable.bulkActions.archive")}</MenuItem>
+      )}
+    </ConfirmDialog>
+  );
+
+  if (product.isDeleted) {
+    archiveMenuItem = (
+      <ConfirmDialog
+        title={i18next.t("admin.productTable.bulkActions.restoreTitle")}
+        message={i18next.t("productDetailEdit.restoreThisProduct")}
+        onConfirm={() => {
+          onRestoreProduct(product);
+          setMenuAnchorEl(null);
+        }}
+      >
+        {({ openDialog }) => (
+          <MenuItem onClick={openDialog}>{i18next.t("admin.productTable.bulkActions.restore")}</MenuItem>
+        )}
+      </ConfirmDialog>
+    );
+  }
+
   return (
-    <ProductHeaderComponent
-      product={product}
-      onArchiveProduct={onArchiveProduct}
-      onCloneProduct={onCloneProduct}
-      onVisibilityChange={onToggleProductVisibility}
-    />
+    <div className={classes.root}>
+      <div className={classes.breadcrumbs}>
+        <Link className={classes.breadcrumbLink} to="/products">{"Products"}</Link>
+        <ChevronRight className={classes.breadcrumbIcon} />
+        <Link className={classes.breadcrumbLink} to={`/products/${product._id}`}>
+          <Helmet title={product.title} />
+          {product.title || "Untitled Product"}
+        </Link>
+
+        {variant && (
+          <>
+            <ChevronRight className={classes.breadcrumbIcon} />
+            <Link
+              className={classes.breadcrumbLink}
+              to={`/products/${product._id}/${variant._id}`}
+            >
+              {variant.optionTitle || variant.title || "Untitled Variant"}
+            </Link>
+          </>
+        )}
+
+        {option && (
+          <>
+            <ChevronRight className={classes.breadcrumbIcon} />
+            <Link
+              className={classes.breadcrumbLink}
+              to={`/products/${product._id}/${variant._id}/${option._id}`}
+            >
+              {option.optionTitle || option.title || "Untitled Variant"}
+            </Link>
+          </>
+        )}
+      </div>
+      <Typography variant="h2">
+        {product.title || "Untitled Product"}
+        {(product.isDeleted) && `(${i18next.t("app.archived")})`}
+      </Typography>
+      <div className={classes.statusbar}>
+
+        <Typography>
+          {product.isVisible ? "Visible" : "Hidden"}
+          {product.isDeleted ? i18next.t("app.archived") : null}
+        </Typography>
+
+        <IconButton
+          onClick={(event) => {
+            setMenuAnchorEl(event.currentTarget);
+          }}
+        >
+          <DotsHorizontalCircleIcon />
+        </IconButton>
+
+        <Menu
+          id="bulk-actions-menu"
+          anchorEl={menuAnchorEl}
+          open={Boolean(menuAnchorEl)}
+          onClose={() => setMenuAnchorEl(null)}
+        >
+          <MenuItem
+            onClick={() => {
+              onToggleProductVisibility(product);
+              setMenuAnchorEl(null);
+            }}
+          >
+            {product.isVisible ?
+              i18next.t("admin.productTable.bulkActions.makeHidden") :
+              i18next.t("admin.productTable.bulkActions.makeVisible")
+            }
+          </MenuItem>
+          {hasCloneProductPermission &&
+            <MenuItem
+              onClick={() => {
+                onCloneProduct(product._id);
+                setMenuAnchorEl(null);
+              }}
+            >
+              {i18next.t("admin.productTable.bulkActions.duplicate")}
+            </MenuItem>
+          }
+          {hasArchiveProductPermission &&
+            archiveMenuItem
+          }
+        </Menu>
+      </div>
+    </div>
   );
 }
 
