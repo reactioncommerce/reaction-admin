@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Blocks, Components } from "@reactioncommerce/reaction-components";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Grid from "@material-ui/core/Grid";
+import { Switch, Route } from "react-router-dom";
 
 const styles = (theme) => ({
   block: {
@@ -20,7 +21,7 @@ function ProductDetail(props) {
 
   return (
     <Fragment>
-      <Components.ProductPublish />
+      {/* <Components.ProductPublish /> */}
       <Grid container spacing={3}>
         <Grid item sm={12}>
           <Blocks region="ProductDetailHeader" blockProps={blockProps} />
@@ -29,15 +30,37 @@ function ProductDetail(props) {
           <Blocks region="ProductDetailSidebar" blockProps={blockProps} />
         </Grid>
         <Grid item sm={8}>
-          <Blocks region="ProductDetailMain" blockProps={blockProps}>
-            {(blocks) =>
-              blocks.map((block, index) => (
-                <div className={classes.block} key={index}>
-                  {block}
-                </div>
-              ))
-            }
-          </Blocks>
+          <Switch>
+            <Route
+              path="/products/:handle/:variantId/:optionId?"
+              render={() => (
+                <Blocks region="VariantDetailMain" blockProps={blockProps}>
+                  {(blocks) =>
+                    blocks.map((block, index) => (
+                      <div className={classes.block} key={index}>
+                        {block}
+                      </div>
+                    ))
+                  }
+                </Blocks>
+              )}
+            />
+            <Route
+              path="/products/:handle/"
+              render={() => (
+                <Blocks region="ProductDetailMain" blockProps={blockProps}>
+                  {(blocks) =>
+                    blocks.map((block, index) => (
+                      <div className={classes.block} key={index}>
+                        {block}
+                      </div>
+                    ))
+                  }
+                </Blocks>
+              )}
+            />
+          </Switch>
+
         </Grid>
       </Grid>
     </Fragment>
