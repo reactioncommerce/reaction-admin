@@ -1,3 +1,30 @@
+# v3.0.0-beta.2
+
+This is the second beta release of the Reaction Admin project that is designed to work with our new Reaction API.
+
+*Reaction releases will no longer be coordinated across all projects - we'll release each project, independently, as needed. This means version numbers will no longer be in sync. The newest versions of each project will work together. This change has two exceptions: we will release all projects in coordination for a `beta` release, and all projects in coordination for the official `v3.0.0` release.*
+
+### Features
+
+feat: use new Catalyst data table in products view an#182d update orders view([](https://github.com/reactioncommerce/reaction-182admin/pull/))
+feat: point to /graphql instead of /graphql-beta([#190](https://github.com/reactioncommerce/reaction-admin/pull/190))
+
+### Chores
+
+chore: reconfigure docker-compose networks ([#194](https://github.com/reactioncommerce/reaction-admin/pull/194))
+
+### Fixes
+
+fix: show product not found in products table([#167](https://github.com/reactioncommerce/reaction-admin/pull/167))
+
+### Refactors
+
+refactor: get `permissions` from groups, not user object([#187](https://github.com/reactioncommerce/reaction-admin/pull/187))
+
+### Docs
+
+docs: update links to use trunk branch of docs([#189](https://github.com/reactioncommerce/reaction-admin/pull/189))
+
 # v3.0.0-beta
 
 This is the beta release of the Reaction Admin project that is designed to work with our new Reaction API.
