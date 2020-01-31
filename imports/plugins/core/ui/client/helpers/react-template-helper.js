@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { ApolloProvider } from "react-apollo";
 import { ComponentsProvider } from "@reactioncommerce/components-context";
 import { ThemeProvider } from "styled-components";
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import _ from "lodash";
 import { Template } from "meteor/templating";
 import { Blaze } from "meteor/blaze";
