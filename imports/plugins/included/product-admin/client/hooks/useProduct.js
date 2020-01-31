@@ -15,6 +15,7 @@ import { useSnackbar } from "notistack";
 
 import PRODUCT_QUERY from "./ProductQuery";
 import UPDATE_PRODUCT from "./UpdateProductMutation";
+import UpdateProductVariantMutation from "./UpdateProductVariantMutation";
 
 const encodeProductOpaqueId = encodeOpaqueId("reaction/product");
 
@@ -136,6 +137,8 @@ function useProduct(args = {}) {
   const [archiveProducts] = useMutation(ARCHIVE_PRODUCTS);
   const [cloneProducts] = useMutation(CLONE_PRODUCTS);
   const [createProductVariant] = useMutation(CREATE_VARIANT);
+  const [updateProductVariant] = useMutation(UpdateProductVariantMutation);
+
   const [currentShopId] = useCurrentShopId();
 
   const productId = routeParams.handle || productIdProp;
@@ -315,27 +318,32 @@ function useProduct(args = {}) {
   ]);
 
 
-  // const onUpdateProductVariant = useCallback(async (productLocal) => {
-  //   try {
-  //     await updateProductVariant({
-  //       variables: {
-  //         input: {
-  //           productVariantId: product._id,
-  //           shopId,
-  //           product: productLocal
-  //         }
-  //       }
-  //     });
+  const onUpdateProductVariant = useCallback(async ({
+    variant: variantLocal,
+    variantId: variantIdLocal,
+    shopId: shopIdLocal = shopId
+  }) => {
+    try {
+      await updateProductVariant({
+        variables: {
+          input: {
+            shopId: shopIdLocal,
+            variant: variantLocal,
+            variantId: variantIdLocal
+          }
+        }
+      });
 
-  //     Alerts.toast(i18next.t("productDetailEdit.updateProductFieldSuccess"), "success");
-  //   } catch (error) {
-  //     Alerts.toast(i18next.t("productDetailEdit.updateProductFieldFail", { err: error }), "error");
-  //   }
-  // }, [
-  //   product,
-  //   shopId,
-  //   updateProduct
-  // ]);
+      Alerts.toast(i18next.t("productDetailEdit.updateProductFieldSuccess"), "success");
+    } catch (error) {
+      Alerts.toast(i18next.t("productDetailEdit.updateProductFieldFail", { err: error }), "error");
+    }
+  }, [
+    product,
+    shopId,
+    updateProductVariant,
+    variant
+  ]);
 
   // Convert the social metadata to a format better suited for forms
   if (product && Array.isArray(product.socialMetadata)) {
@@ -356,6 +364,7 @@ function useProduct(args = {}) {
     option,
     onRestoreProduct: handleProductRestore,
     onToggleProductVisibility,
+    onUpdateProductVariant,
     product: productQueryResult && productQueryResult.product,
     refetchProduct,
     setNewMetaField,
