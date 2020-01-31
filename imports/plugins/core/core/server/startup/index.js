@@ -4,7 +4,6 @@ import Logger from "@reactioncommerce/logger";
 import Reaction from "../Reaction";
 import config from "../config";
 import "./browser-policy";
-import CollectionSecurity from "./collection-security";
 import RateLimiters from "./rate-limits";
 import { ensureHydraClient, expandAuthToken } from "./oauth";
 
@@ -34,7 +33,6 @@ export default function startup() {
     Logger.info(`Meteor startup finished: ${elapsedMs}ms (This is incorrect if this is a restart.)`);
   }
 
-  CollectionSecurity();
   RateLimiters();
 
   // Ensure there is a client defined on the Hydra service with ID OAUTH2_CLIENT_ID and expected configuration
