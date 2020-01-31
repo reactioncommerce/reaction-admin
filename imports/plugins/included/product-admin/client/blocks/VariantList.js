@@ -1,6 +1,36 @@
-import React from "react";
-import PropTypes from "prop-types";
-import ProductList from "../components/ProductList";
+import React, { useCallback, useState, useEffect } from "react";
+import {
+  Card,
+  CardHeader,
+  Collapse,
+  List,
+  ListItemText,
+  ListItemSecondaryAction,
+  makeStyles,
+  ListItem,
+  IconButton
+} from "@material-ui/core";
+import { useHistory, useLocation } from "react-router-dom";
+import DotsHorizontalCircleIcon from "mdi-material-ui/DotsHorizontalCircle";
+import useProduct from "../hooks/useProduct";
+import getPDPUrl from "../utils/getPDPUrl";
+
+const useStyles = makeStyles((theme) => ({
+  nested: {
+    paddingLeft: theme.spacing(6)
+  }
+}));
+
+/**
+ * Get the secondary label for the product item
+ * @param {Object} item A product, variant or option
+ * @returns {String} A text label with status and price
+ */
+function getItemSecondaryLabel({ isVisible, displayPrice }) {
+  const visibility = isVisible ? "Visible" : "Hidden";
+
+  return `${visibility} - ${displayPrice}`;
+}
 
 /**
  * Variant and Option list component
@@ -8,36 +38,93 @@ import ProductList from "../components/ProductList";
  * @param {Object} props Component props
  * @returns {Node} React node
  */
-function VariantList(props) {
+export default function VariantList() {
   const {
-    parentVariant,
     product,
-    variant,
-    variants,
-    onCreateOption,
-    onCreateVariant
+    variant: currentVariant,
+    option: currentOption,
+    shopId
+  } = useProduct();
+  const classes = useStyles();
+  const history = useHistory();
+  const location = useLocation();
+  const [expandedIds, setExpandedIds] = useState([]);
 
-  } = props;
+
+  useEffect(() => {
+    if (currentVariant) {
+      setExpandedIds((prevState) => [...prevState, currentVariant._id]);
+    }
+  }, [
+    currentVariant
+  ]);
+
+  const renderVariantTree = useCallback((variants, parent) => {
+    if (Array.isArray(variants)) {
+      return variants.map((variant) => (
+        <>
+          <ListItem
+            dense
+            component="nav"
+            className={parent ? classes.nested : undefined}
+            button
+            onClick={() => {
+              const url = getPDPUrl(product._id, variant._id, parent && parent._id);
+              history.push(url);
+
+              if (!parent) {
+                setExpandedIds((prevState) => {
+                  const isOpen = expandedIds.includes(variant._id);
+
+                  if (isOpen) {
+                    return prevState.filter((id) => id !== variant._id);
+                  }
+
+                  return [...prevState, variant._id];
+                });
+              }
+            }}
+          >
+            <ListItemText
+              primary={variant.optionTitle || variant.title || "Untitled"}
+              secondary={getItemSecondaryLabel(variant)}
+            />
+            <ListItemSecondaryAction>
+              <IconButton
+                onClick={() => {
+                  // show menu
+                }}
+              >
+                <DotsHorizontalCircleIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
+          {Array.isArray(variant.options) &&
+            <Collapse
+              in={expandedIds.includes(variant._id)}
+            >
+              <List
+                component="div"
+                marginDense
+                disablePadding
+              >
+                {renderVariantTree(variant.options, variant)}
+              </List>
+            </Collapse>
+          }
+        </>
+      ));
+    }
+
+    return null;
+  }, [classes.nested, expandedIds, product._id, history]);
 
   return (
-    <ProductList
-      items={variants}
-      onCreate={() => { parentVariant ? onCreateOption(parentVariant) : onCreateVariant(product); }}
-      selectedVariantId={variant && variant._id}
-      title={parentVariant ? "Options" : "Variants"}
-    />
+    <Card>
+      <CardHeader title={"Variants"} />
+      <List>
+        {product && Array.isArray(product.variants) && renderVariantTree(product.variants)}
+      </List>
+    </Card>
   );
 }
-
-VariantList.propTypes = {
-  onCreateOption: PropTypes.func,
-  onCreateVariant: PropTypes.func,
-  option: PropTypes.object,
-  options: PropTypes.arrayOf(PropTypes.object),
-  parentVariant: PropTypes.object,
-  product: PropTypes.object,
-  variant: PropTypes.object,
-  variants: PropTypes.arrayOf(PropTypes.object)
-};
-
-export default VariantList;
