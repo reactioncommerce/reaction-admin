@@ -8,42 +8,13 @@ import { registerOperatorRoute } from "/imports/client/ui";
 
 import ProductsTable from "./components/ProductsTable";
 import ProductDetailLayout from "./layouts/ProductDetail";
-import VariantDetail from "./layouts/VariantDetail";
 import ContentViewExtraWideLayout from "/imports/client/ui/layouts/ContentViewExtraWideLayout";
 
-// HOCs
-import withProduct from "./hocs/withProduct";
-import withVariant from "./hocs/withVariant";
-
-// Register routes
 registerOperatorRoute({
   isNavigationLink: false,
   isSetting: false,
-  path: "/products/:handle/:parentVariantId/:variantId",
-  mainComponent: VariantDetail,
-  hocs: [
-    withProduct,
-    withVariant
-  ]
-});
-
-registerOperatorRoute({
-  isNavigationLink: false,
-  isSetting: false,
-  path: "/products/:handle/:variantId",
-  mainComponent: VariantDetail,
-  hocs: [
-    withProduct,
-    withVariant
-  ]
-});
-
-registerOperatorRoute({
-  isNavigationLink: false,
-  isSetting: false,
-  path: "/products/:handle",
-  mainComponent: ProductDetailLayout,
-  hocs: [withProduct]
+  path: "/products/:handle/:variantId?/:optionId?",
+  mainComponent: ProductDetailLayout
 });
 
 registerOperatorRoute({
