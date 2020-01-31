@@ -136,7 +136,7 @@ function ProductsTable() {
 
   // Row click callback
   const onRowClick = useCallback(async ({ row }) => {
-    const href = getPDPUrl(row.original);
+    const href = getPDPUrl(row.original._id);
     history.push(href);
   }, [history]);
 
