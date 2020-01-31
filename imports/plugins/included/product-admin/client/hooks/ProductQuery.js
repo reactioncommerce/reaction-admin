@@ -46,6 +46,15 @@ export default gql`
         isDeleted
         isVisible
         length
+        media {
+          URLs {
+            small
+            medium
+            large
+            original
+            thumbnail
+          }
+        }
         metafields {
           key
           value
@@ -70,6 +79,15 @@ export default gql`
           isDeleted
           isVisible
           length
+          media {
+            URLs {
+              small
+              medium
+              large
+              original
+              thumbnail
+            }
+          }
           metafields {
             key
             value
