@@ -37,12 +37,10 @@ standard-minifier-js@2.6.0
 accounts-base@1.5.0
 
 # Community Packages
-alanning:roles
 aldeed:autoform@6.2.0
 aldeed:collection2@3.0.1
 aldeed:template-extension
 meteorhacks:subs-manager
-ongoworks:security
 tmeasday:publish-counts
 gadicc:blaze-react-component
 orionsoft:graphql-compiler

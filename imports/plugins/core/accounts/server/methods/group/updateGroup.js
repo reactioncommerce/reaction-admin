@@ -1,9 +1,7 @@
-import Logger from "@reactioncommerce/logger";
 import { check } from "meteor/check";
 import Reaction from "/imports/plugins/core/core/server/Reaction";
 import ReactionError from "@reactioncommerce/reaction-error";
-import { Accounts, Groups } from "/lib/collections";
-import setUserPermissions from "../../util/setUserPermissions";
+import { Groups } from "/lib/collections";
 
 /**
  * @name group/updateGroup
@@ -11,8 +9,6 @@ import setUserPermissions from "../../util/setUserPermissions";
  * @memberof Group/Methods
  * @summary Updates a permission group for a shop.
  * Change the details of a group (name, desc, permissions etc) to the values passed in.
- * It also goes into affected user data to modify both the groupName (using Accounts schema)
- * and group permissions (using "accounts/removeUserPermissions")
  * @param {Object} groupId - group to be updated
  * @param {Object} newGroupData - updated group info (similar to current group data)
  * slug remains untouched; used as key in querying
@@ -24,8 +20,7 @@ export default function updateGroup(groupId, newGroupData, shopId) {
   check(newGroupData, Object);
   check(shopId, String);
 
-  // we are limiting group method actions to only users with admin roles
-  // this also include shop owners, since they have the `admin` role in their Roles.GLOBAL_GROUP
+  // we are limiting group method actions to only users with `reaction:legacy:groups/update` permissions
   if (!Reaction.hasPermission("reaction:legacy:groups/update", Reaction.getUserId(), shopId)) {
     throw new ReactionError("access-denied", "Access Denied");
   }
@@ -41,20 +36,11 @@ export default function updateGroup(groupId, newGroupData, shopId) {
     throw new ReactionError("invalid-parameter", "Bad request");
   }
 
-  Groups.update({ _id: groupId, shopId }, { $set: update });
+  const updatedGroup = Groups.update({ _id: groupId, shopId }, { $set: update });
 
-  // 2. Check & Modify users in the group that changed
-  const users = Accounts.find({ groups: { $in: [groupId] } }).fetch();
-  let error;
-
-  if (newGroupData.permissions && newGroupData.permissions.length) {
-    error = setUserPermissions(users, newGroupData.permissions, shopId);
-  }
-
-  // 3. Return response
-  if (!error) {
+  if (updatedGroup === 1) {
     return { status: 200, group: Groups.findOne({ _id: groupId }) };
   }
-  Logger.error(error);
+
   throw new ReactionError("server-error", "Update not successful");
 }
