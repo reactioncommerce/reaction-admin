@@ -30,6 +30,18 @@ const useStyles = makeStyles({
   }
 });
 
+const CSV_FILE_TYPES = [
+  "text/csv",
+  "text/plain",
+  "text/x-csv",
+  "application/vnd.ms-excel",
+  "application/csv",
+  "application/x-csv",
+  "text/comma-separated-values",
+  "text/x-comma-separated-values",
+  "text/tab-separated-values"
+];
+
 /**
  * @summary Main products view
  * @name ProductsTable
@@ -182,11 +194,13 @@ function ProductsTable() {
 
   // Filter by file event handlers
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    multiple: false,
+    accept: CSV_FILE_TYPES,
+    disableClick: true,
     disablePreview: true,
-    disableClick: true
+    multiple: false,
+    onDrop
   });
+
   const importFiles = (newFiles) => {
     let productIds = [];
 
