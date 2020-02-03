@@ -169,7 +169,7 @@ class MediaItem extends Component {
     const classes = {
       "gallery-image": true,
       "no-fade-on-hover": zoomable && !editable,
-      "admin-gallery-image": Reaction.hasPermission("reaction:legacy:mediaRecords/update", Reaction.getUserId(), Reaction.getShopId())
+      "admin-gallery-image": Reaction.hasAdminAccess()
     };
 
     const mediaElement = (

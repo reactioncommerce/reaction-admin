@@ -93,6 +93,21 @@ export function withIsAdmin(component) {
 }
 
 /**
+ * @name withIsOwner
+ * @method
+ * @summary A wrapper to reactively inject the current user's owner status.
+ * Sets a boolean 'isOwner' prop on the wrapped component.
+ * @param {Function|React.Component} component - the component to wrap
+ * @returns {Function} the new wrapped component with an "isOwner" prop
+ * @memberof Components/Helpers
+ */
+export function withIsOwner(component) {
+  return composeWithTracker((props, onData) => {
+    onData(null, { isOwner: Reaction.hasOwnerAccess() });
+  })(component);
+}
+
+/**
  * @name withCSSTransition
  * @method
  * @summary A wrapper to dynamically import & inject react-transition-group's <CSSTransition /> into a component
