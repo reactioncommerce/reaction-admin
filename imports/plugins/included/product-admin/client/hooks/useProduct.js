@@ -345,6 +345,32 @@ function useProduct(args = {}) {
     variant
   ]);
 
+  const onToggleVariantVisibility = useCallback(async ({
+    variant: variantLocal,
+    shopId: shopIdLocal = shopId._id
+  }) => {
+    try {
+      await updateProductVariant({
+        variables: {
+          input: {
+            variantId: variantLocal._id,
+            shopId: shopIdLocal,
+            variant: {
+              isVisible: !variantLocal.isVisible
+            }
+          }
+        }
+      });
+
+      Alerts.toast(i18next.t("productDetailEdit.updateProductFieldSuccess"), "success");
+    } catch (error) {
+      Alerts.toast(i18next.t("productDetailEdit.updateProductFieldFail", { err: error }), "error");
+    }
+  }, [
+    shopId,
+    updateProductVariant
+  ]);
+
   // Convert the social metadata to a format better suited for forms
   if (product && Array.isArray(product.socialMetadata)) {
     product.socialMetadata.forEach(({ service, message }) => {
@@ -364,6 +390,7 @@ function useProduct(args = {}) {
     option,
     onRestoreProduct: handleProductRestore,
     onToggleProductVisibility,
+    onToggleVariantVisibility,
     onUpdateProductVariant,
     product: productQueryResult && productQueryResult.product,
     refetchProduct,
