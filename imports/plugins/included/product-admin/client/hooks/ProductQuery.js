@@ -8,6 +8,16 @@ export default gql`
       description
       isDeleted
       isVisible
+      media {
+        _id
+        URLs {
+          small
+          medium
+          large
+          original
+          thumbnail
+        }
+      }
       metaDescription
       metafields {
         key
@@ -47,6 +57,7 @@ export default gql`
         isVisible
         length
         media {
+          _id
           URLs {
             small
             medium
@@ -80,6 +91,7 @@ export default gql`
           isVisible
           length
           media {
+            _id
             URLs {
               small
               medium
