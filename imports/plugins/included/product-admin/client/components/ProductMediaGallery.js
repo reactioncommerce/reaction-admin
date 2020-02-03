@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import gql from "graphql-tag";
 import PropTypes from "prop-types";
 import Logger from "/client/modules/logger";
@@ -10,8 +10,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
-import getOpaqueIds from "/imports/plugins/core/core/client/util/getOpaqueIds";
-import withProductMedia from "../hocs/withProductMedia";
 import ProductMediaItem from "./ProductMediaItem";
 
 const archiveMediaRecordMutation = gql`
@@ -43,22 +41,16 @@ function ProductMediaGallery(props) {
   const {
     editable,
     media,
-    productId, // internal (for now)
-    shopId, // internal (for now)
-    variantId // internal (for now)
+    productId,
+    shopId,
+    variantId
   } = props;
-
-  const [opaqueProductId, setOpaqueProductId] = useState(null);
-  const [opaqueShopId, setOpaqueShopId] = useState(null);
-  const [opaqueVariantId, setOpaqueVariantId] = useState(null);
 
   const [archiveMediaRecord] = useMutation(archiveMediaRecordMutation, { ignoreResults: true });
   const [updateMediaRecordPriority] = useMutation(updateMediaRecordPriorityMutation, { ignoreResults: true });
 
   const handleRemoveMedia = (mediaToRemove) => {
-    const imageUrl = mediaToRemove.url({ absolute: true, store: "medium" });
-    const mediaRecordId = mediaToRemove._id;
-
+    const imageUrl = mediaToRemove.URLs.medium;
     Alerts.alert({
       title: "Remove Media?",
       type: "warning",
@@ -67,17 +59,11 @@ function ProductMediaGallery(props) {
       imageHeight: 150
     }, async (isConfirm) => {
       if (isConfirm) {
-        const [
-          opaqueMediaRecordId
-        ] = await getOpaqueIds([
-          { namespace: "MediaRecord", id: mediaRecordId }
-        ]);
-
         archiveMediaRecord({
           variables: {
             input: {
-              mediaRecordId: opaqueMediaRecordId,
-              shopId: opaqueShopId
+              mediaRecordId: mediaToRemove._id,
+              shopId
             }
           },
           onError(error) {
@@ -92,18 +78,12 @@ function ProductMediaGallery(props) {
   };
 
   const handleSetMediaPriority = async (mediaRecord, priority) => {
-    const [
-      opaqueMediaRecordId
-    ] = await getOpaqueIds([
-      { namespace: "MediaRecord", id: mediaRecord._id }
-    ]);
-
     updateMediaRecordPriority({
       variables: {
         input: {
-          mediaRecordId: opaqueMediaRecordId,
+          mediaRecordId: mediaRecord._id,
           priority,
-          shopId: opaqueShopId
+          shopId
         }
       },
       onError(error) {
@@ -115,94 +95,61 @@ function ProductMediaGallery(props) {
     });
   };
 
-  useEffect(() => {
-    const getIDs = async () => {
-      const [
-        opaqueProductIdResult,
-        opaqueShopIdResult,
-        opaqueVariantIdResult
-      ] = await getOpaqueIds([
-        { namespace: "Product", id: productId },
-        { namespace: "Shop", id: shopId },
-        { namespace: "Product", id: variantId }
-      ]);
 
-      setOpaqueProductId(opaqueProductIdResult);
-      setOpaqueShopId(opaqueShopIdResult);
-      setOpaqueVariantId(opaqueVariantIdResult);
+  let count = (Array.isArray(media) && media.length) || 0;
+  const hasMedia = count > 0;
+
+  const getFileMetadata = () => {
+    count += 1;
+    return {
+      productId,
+      variantId,
+      priority: count
     };
-    getIDs();
-  }, [productId, shopId, variantId]);
+  };
 
-  if (editable) {
-    let count = (Array.isArray(media) && media.length) || 0;
-    const hasMedia = count > 0;
+  const onUploadError = (error) => {
+    Alerts.toast(error.reason || error.message, "error");
+  };
 
-    const getFileMetadata = () => {
-      count += 1;
-      return {
-        productId: opaqueProductId,
-        variantId: opaqueVariantId,
-        priority: count
-      };
-    };
-
-    const onUploadError = (error) => {
-      Alerts.toast(error.reason || error.message, "error");
-    };
-
-    return (
-      <div className="rui media-gallery">
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>{i18next.t("admin.productTable.header.order")}</TableCell>
-              <TableCell>{"Media"}</TableCell>
-              <TableCell />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {!!hasMedia && (
-              (media || []).map((mediaItem) => (
-                <ProductMediaItem
-                  editable={editable}
-                  key={mediaItem._id}
-                  onRemoveMedia={handleRemoveMedia}
-                  onSetMediaPriority={handleSetMediaPriority}
-                  size="small"
-                  source={mediaItem}
-                />
-              ))
-            )}
+  return (
+    <div className="rui media-gallery">
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>{i18next.t("admin.productTable.header.order")}</TableCell>
+            <TableCell>{"Media"}</TableCell>
+            <TableCell />
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {!!hasMedia && (
+            (media || []).map((mediaItem) => (
+              <ProductMediaItem
+                editable={editable}
+                key={mediaItem._id}
+                onRemoveMedia={handleRemoveMedia}
+                onSetMediaPriority={handleSetMediaPriority}
+                size="small"
+                source={mediaItem}
+              />
+            ))
+          )}
+          {editable &&
             <TableRow>
               <TableCell colSpan={3}>
                 <Components.MediaUploader
                   canUploadMultiple
                   metadata={getFileMetadata}
                   onError={onUploadError}
-                  shopId={opaqueShopId}
+                  shopId={shopId}
                 />
               </TableCell>
             </TableRow>
-          </TableBody>
-        </Table>
-      </div>
-    );
-  }
-
-  return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>{i18next.t("admin.productTable.header.order")}</TableCell>
-          <TableCell>{"Media"}</TableCell>
-          <TableCell />
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {this.renderRows()}
-      </TableBody>
-    </Table>
+          }
+        </TableBody>
+      </Table>
+    </div>
   );
 }
 
@@ -215,4 +162,4 @@ ProductMediaGallery.propTypes = {
   variantId: PropTypes.string
 };
 
-export default withProductMedia(ProductMediaGallery);
+export default ProductMediaGallery;
