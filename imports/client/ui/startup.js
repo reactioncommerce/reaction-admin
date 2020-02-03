@@ -5,7 +5,7 @@ import { AuthenticationProvider, oidcLog } from "@axa-fr/react-oidc-context";
 import { Meteor } from "meteor/meteor";
 import { Tracker } from "meteor/tracker";
 import { ThemeProvider } from "styled-components";
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import { ApolloProvider } from "react-apollo";
 import { ComponentsProvider } from "@reactioncommerce/components-context";
 import { TranslationProvider } from "/imports/plugins/core/ui/client/providers";
