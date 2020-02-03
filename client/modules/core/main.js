@@ -5,7 +5,6 @@ import { Session } from "meteor/session";
 import { Tracker } from "meteor/tracker";
 import { ReactiveVar } from "meteor/reactive-var";
 import { ReactiveDict } from "meteor/reactive-dict";
-import { Roles } from "meteor/alanning:roles";
 import { Accounts, Groups, Shops } from "/lib/collections";
 import { Router } from "/client/modules/router";
 import { getUserId } from "./helpers/utils";
@@ -105,12 +104,14 @@ export default {
    * @returns {Boolean} Boolean - true if has permission
    */
   hasPermission(checkPermissions, checkUserId, checkGroup) {
+    const GLOBAL_GROUP = "__global_roles__";
     let permissionsGroup;
+
     // default permissionsGroup to the shop or global if shop isn't defined for some reason.
     if (checkGroup !== undefined && typeof checkGroup === "string") {
       permissionsGroup = checkGroup;
     } else {
-      permissionsGroup = this.getShopId() || Roles.GLOBAL_GROUP;
+      permissionsGroup = this.getShopId() || GLOBAL_GROUP;
     }
 
     let permissions = ["owner"];
@@ -166,7 +167,7 @@ export default {
         permissions = checkPermissions;
       }
 
-      // if the user has owner permissions we'll always check if those roles are enough
+      // if the user has owner permissions we'll always check if those permissions are enough
       // By adding the "owner" role to the permissions list, we are making hasPermission always return
       // true for "owners". This gives owners global access.
       // TODO: Review this way of granting global access for owners
@@ -174,7 +175,6 @@ export default {
       permissions = _.uniq(permissions);
 
       // if accountPermissions includes any of permissions, then we return true
-      // (this replaces `Roles.userIsInRole`)
       return accountPermissions[permissionsGroup].some((permission) => permissions.includes(permission));
     }
 
@@ -247,29 +247,6 @@ export default {
   },
 
   /**
-   * @name hasDashboardAccessForMultipleShops
-   * @method
-   * @memberof Core/Client
-   * @summary - client permission check for any "owner", "admin", or "dashboard" permissions for more than one shop.
-   * @returns {Boolean} Boolean - true if has dashboard access for more than one shop
-   */
-  hasDashboardAccessForMultipleShops() {
-    const adminShopIds = this.getShopsForUser(["owner", "admin", "dashboard"]);
-    return Array.isArray(adminShopIds) && adminShopIds.length > 1;
-  },
-
-  /**
-   * @name hasOwnerAccess
-   * @method
-   * @memberof Core/Client
-   * @returns {Boolean} Boolean - true if user has owner permissions
-   */
-  hasOwnerAccess() {
-    const ownerPermissions = ["owner"];
-    return this.hasPermission(ownerPermissions);
-  },
-
-  /**
    * Checks to see if the user has admin permissions. If a shopId is optionally
    * passed in, we check for that shopId, otherwise we check against the default
    * @name hasAdminAccess
@@ -295,39 +272,6 @@ export default {
   hasDashboardAccess() {
     const dashboardPermissions = ["owner", "admin", "dashboard"];
     return this.hasPermission(dashboardPermissions);
-  },
-
-  /**
-   * @name hasShopSwitcherAccess
-   * @method
-   * @memberof Core/Client
-   * @returns {Boolean} true if user has access to dashboard for multiple shops
-   */
-  hasShopSwitcherAccess() {
-    return this.hasDashboardAccessForMultipleShops();
-  },
-
-  /**
-   * @name getSellerShopId
-   * @method
-   * @memberof Core/Client
-   * @param {String} userId user id of user to check seller shop ID for
-   * @param {Boolean} noFallback should we allow function to continue if there is no userID
-   * @returns {Boolean|String} the shop ID of a seller
-   */
-  getSellerShopId(userId = getUserId(), noFallback = false) {
-    if (userId) {
-      const group = Roles.getGroupsForUser(userId, "admin")[0];
-      if (group) {
-        return group;
-      }
-    }
-
-    if (noFallback) {
-      return false;
-    }
-
-    return this.getShopId();
   },
 
   /**

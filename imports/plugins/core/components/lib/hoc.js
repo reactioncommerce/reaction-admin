@@ -1,8 +1,6 @@
 /* eslint-disable node/no-missing-require, node/no-unpublished-require */
 import Logger from "@reactioncommerce/logger";
 import { Meteor } from "meteor/meteor";
-import { Roles } from "meteor/alanning:roles";
-import { Accounts } from "/lib/collections";
 import { lifecycle } from "recompose";
 import { composeWithTracker } from "./composer";
 
@@ -78,39 +76,6 @@ export function withMomentTimezone(component) {
     }
   })(component);
 }
-
-
-/**
- * @name withCurrentAccount
- * @method
- * @summary A wrapper to reactively inject the current account into a component.
- * This assumes you have signed up and are not an anonymous user.
- * @param {Function|React.Component} component - the component to wrap
- * @returns {Function} the new wrapped component with a "currentAccount" prop
- * @memberof Components/Helpers
- */
-export function withCurrentAccount(component) {
-  return composeWithTracker((props, onData) => {
-    const shopId = Reaction.getShopId();
-    const user = Meteor.user();
-
-    if (!shopId || !user) return;
-
-    const account = Accounts.findOne({ userId: user._id });
-    if (!account) return;
-
-    // shoppers should always be guests
-    const isGuest = Reaction.hasPermission("guest");
-    // but if a user has never logged in then they are anonymous
-    const isAnonymous = Roles.userIsInRole(user, "anonymous", shopId);
-    // this check for "anonymous" uses userIsInRole instead of hasPermission because hasPermission
-    // always return `true` when logged in as the owner.
-    // But in this case, the anonymous check should be false when a user is logged in
-
-    onData(null, { currentAccount: isGuest && !isAnonymous && account });
-  }, false)(component);
-}
-
 
 /**
  * @name withIsAdmin

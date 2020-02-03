@@ -4,7 +4,7 @@ import { Reaction } from "/client/api";
 /**
  * @method hasPermission
  * @memberof BlazeTemplateHelpers
- * @summary check current user hasPermission, uses [alanning:meteor-roles](http://alanning.github.io/meteor-roles/classes/Roles.html)
+ * @summary check current user hasPermission
  * @example {{hasPermission admin userId}}
  * @param  {String|Array} "permissions"
  * @param  {String} options - object
@@ -24,14 +24,6 @@ Template.registerHelper("hasPermission", (permissions, options) => {
   }
   return Reaction.hasPermission(permissions, loggedInUser, shopId);
 });
-
-/**
- * @method hasOwnerAccess
- * @memberof BlazeTemplateHelpers
- * @summary check if user has owner access, uses [alanning:meteor-roles](http://alanning.github.io/meteor-roles/classes/Roles.html)
- * @returns {Boolean} return true if owner
- */
-Template.registerHelper("hasOwnerAccess", () => Reaction.hasOwnerAccess());
 
 /**
  * @method hasAdminAccess

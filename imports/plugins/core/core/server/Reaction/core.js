@@ -3,7 +3,6 @@ import Logger from "@reactioncommerce/logger";
 import _ from "lodash";
 import { Meteor } from "meteor/meteor";
 import { check } from "meteor/check";
-import { Roles } from "meteor/alanning:roles";
 import * as Collections from "/lib/collections";
 import ConnectionDataStore from "/imports/plugins/core/core/server/util/connectionDataStore";
 import config from "../config.js";
@@ -95,13 +94,14 @@ export default {
   hasPermission(checkPermissions, userId = getUserId(), checkGroup = this.getShopId()) {
     // check(checkPermissions, Match.OneOf(String, Array)); check(userId, String); check(checkGroup,
     // Match.Optional(String));
+    const GLOBAL_GROUP = "__global_roles__";
     let permissions;
     // default group to the shop or global if shop isn't defined for some reason.
     let group;
     if (checkGroup !== undefined && typeof checkGroup === "string") {
       group = checkGroup;
     } else {
-      group = this.getShopId() || Roles.GLOBAL_GROUP;
+      group = this.getShopId() || GLOBAL_GROUP;
     }
 
     // permissions can be either a string or an array we'll force it into an array and use that
@@ -147,7 +147,6 @@ export default {
     }
 
     // if accountPermissions includes any of checkPermissions, then we return true
-    // (this replaces `Roles.userIsInRole`)
     return accountPermissions[group].some((permission) => checkPermissions.includes(permission));
   },
 
@@ -179,36 +178,6 @@ export default {
    */
   hasDashboardAccess() {
     return this.hasPermission(["owner", "admin", "dashboard"]);
-  },
-
-  /**
-   * @summary Finds all shops that a user has a given set of roles for
-   * @name getShopsWithRoles
-   * @method
-   * @memberof Core
-   * @param  {array} roles an array of roles to check. Will return a shopId if the user has _any_ of the roles
-   * @param  {string} userId Optional userId, defaults to logged in userId
-   *                                           Must pass this.userId from publications to avoid error!
-   * @returns {Array} Array of shopIds that the user has at least one of the given set of roles for
-   */
-  getShopsWithRoles(roles, userId = getUserId()) {
-    // Owner permission for a shop supersedes grantable permissions, so we always check for owner permissions as well
-    roles.push("owner");
-
-    // Reducer that returns a unique list of shopIds that results from calling getGroupsForUser for each role
-    return roles.reduce((shopIds, role) => {
-      // getGroupsForUser will return a list of shops for which this user has the supplied role for
-      const shopIdsUserHasRoleFor = Roles.getGroupsForUser(userId, role);
-
-      // If we have new shopIds found, add them to the list
-      if (Array.isArray(shopIdsUserHasRoleFor) && shopIdsUserHasRoleFor.length > 0) {
-        // Create unique array from existing shopIds array and the shops
-        return [...new Set([...shopIds, ...shopIdsUserHasRoleFor])];
-      }
-
-      // IF we don't have any shopIds returned, keep our existing list
-      return shopIds;
-    }, []);
   },
 
   /**
