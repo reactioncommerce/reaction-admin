@@ -233,7 +233,7 @@ function getTopVariants() {
  */
 function composer(props, onData) {
   const { handle: productId, variantId } = props.match.params;
-  const editable = Reaction.hasAdminAccess();
+  const editable = Reaction.hasPermission("reaction:legacy:products/update", Reaction.getUserId(), Reaction.getShopId());
 
   let product;
   let productSub;
