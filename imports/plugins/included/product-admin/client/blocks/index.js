@@ -43,12 +43,12 @@ registerBlock({
 });
 
 // Media gallery card and form
-// registerBlock({
-//   region: "ProductDetailMain",
-//   name: "ProductMediaForm",
-//   component: ProductMediaForm,
-//   priority: 20
-// });
+registerBlock({
+  region: "ProductDetailMain",
+  name: "ProductMediaForm",
+  component: ProductMediaForm,
+  priority: 20
+});
 
 registerBlock({
   region: "ProductDetailMain",
@@ -94,12 +94,12 @@ registerBlock({
   priority: 10
 });
 
-// registerBlock({
-//   region: "VariantDetailMain",
-//   name: "VariantMediaForm",
-//   component: VariantMediaForm,
-//   priority: 20
-// });
+registerBlock({
+  region: "VariantDetailMain",
+  name: "VariantMediaForm",
+  component: VariantMediaForm,
+  priority: 20
+});
 
 // registerBlock({
 //   region: "VariantDetailMain",
