@@ -151,23 +151,13 @@ export default {
   },
 
   /**
-   * @name hasOwnerAccess
-   * @method
-   * @memberof Core
-   * @returns {Boolean} Boolean - true if has permission
-   */
-  hasOwnerAccess() {
-    return this.hasPermission(["owner"]);
-  },
-
-  /**
    * @name hasAdminAccess
    * @method
    * @memberof Core
    * @returns {Boolean} Boolean - true if has permission
    */
   hasAdminAccess() {
-    return this.hasPermission(["owner", "admin"]);
+    return true; // permission checks will be done on the server
   },
 
   /**
@@ -177,7 +167,7 @@ export default {
    * @returns {Boolean} Boolean - true if has permission
    */
   hasDashboardAccess() {
-    return this.hasPermission(["owner", "admin", "dashboard"]);
+    return true; // permission checks will be done on the server
   },
 
   /**
