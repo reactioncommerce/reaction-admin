@@ -1,34 +1,43 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { i18next } from "/client/api";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import ProductMediaGallery from "../components/ProductMediaGallery";
+import useProduct from "../hooks/useProduct";
 
 /**
  * Variant media form block component
- * @param {Object} props Component props
  * @returns {Node} React component
  */
-function VariantMediaForm(props) {
-  const { variant } = props;
+function VariantMediaForm() {
+  const {
+    option,
+    product,
+    shopId,
+    variant
+  } = useProduct();
+
+  if (!product) {
+    return null;
+  }
+
+  const { _id: variantId, media } = option || variant;
 
   return (
     <Card>
       <CardHeader title={i18next.t("admin.productAdmin.mediaGallery")} />
       <CardContent>
         <ProductMediaGallery
-          {...props}
-          variantId={variant._id}
+          editable={true}
+          media={media}
+          productId={product._id}
+          variantId={variantId}
+          shopId={shopId}
         />
       </CardContent>
     </Card>
   );
 }
-
-VariantMediaForm.propTypes = {
-  variant: PropTypes.object
-};
 
 export default VariantMediaForm;
