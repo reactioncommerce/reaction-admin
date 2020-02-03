@@ -1,15 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import withStyles from "@material-ui/core/styles/withStyles";
-import TextField from "@material-ui/core/TextField";
-import { compose, withStateHandlers } from "recompose";
+import {
+  IconButton,
+  TableCell,
+  TableRow,
+  TextField,
+  makeStyles
+} from "@material-ui/core";
 import { isInteger } from "lodash";
-import IconButton from "@material-ui/core/IconButton";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
 import CloseIcon from "mdi-material-ui/Close";
+import { Meteor } from "meteor/meteor";
 
-const styles = () => ({
+const { filesBaseUrl } = Meteor.settings.public;
+
+const useStyles = makeStyles(() => ({
   root: {
     position: "relative"
   },
@@ -19,7 +23,7 @@ const styles = () => ({
   priorityField: {
     width: 120
   }
-});
+}));
 
 /**
  * ProductMediaItem
@@ -28,17 +32,23 @@ const styles = () => ({
  */
 function ProductMediaItem(props) {
   const {
-    classes,
     defaultSource,
     onRemoveMedia,
     onSetMediaPriority,
-    priority,
-    setPriority,
     size,
     source
   } = props;
+  const classes = useStyles();
+  const [priority, setPriority] = useState(source.priority);
 
-  const imageSrc = (props && source.url({ absolute: true, store: size })) || defaultSource;
+
+  let imageSrc = source.URLs[size];
+
+  if (imageSrc) {
+    imageSrc = `${filesBaseUrl}${imageSrc}`;
+  } else {
+    imageSrc = defaultSource;
+  }
 
   return (
     <TableRow>
@@ -58,7 +68,12 @@ function ProductMediaItem(props) {
             onSetMediaPriority(source, priority);
           }}
           onChange={(event) => {
-            setPriority(event.target.value);
+            setPriority(() => {
+              const intValue = parseInt(event.target.value, 10);
+              return {
+                priority: isInteger(intValue) ? intValue : null
+              };
+            });
           }}
         />
       </TableCell>
@@ -84,13 +99,10 @@ function ProductMediaItem(props) {
 }
 
 ProductMediaItem.propTypes = {
-  classes: PropTypes.object,
   defaultSource: PropTypes.string,
   editable: PropTypes.bool, // eslint-disable-line react/boolean-prop-naming
   onRemoveMedia: PropTypes.func,
   onSetMediaPriority: PropTypes.func,
-  priority: PropTypes.number,
-  setPriority: PropTypes.func,
   size: PropTypes.string,
   source: PropTypes.object
 };
@@ -102,18 +114,4 @@ ProductMediaItem.defaultProps = {
   size: "large"
 };
 
-const stateHandler = withStateHandlers(({ source }) => ({
-  priority: source.metadata.priority
-}), {
-  setPriority: () => (value) => {
-    const intValue = parseInt(value, 10);
-    return {
-      priority: isInteger(intValue) ? intValue : null
-    };
-  }
-});
-
-export default compose(
-  withStyles(styles, { name: "RuiProductMediaItem" }),
-  stateHandler
-)(ProductMediaItem);
+export default ProductMediaItem;
