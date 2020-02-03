@@ -11,13 +11,26 @@ import {
   IconButton
 } from "@material-ui/core";
 import { useHistory, useLocation } from "react-router-dom";
-import DotsHorizontalCircleIcon from "mdi-material-ui/DotsHorizontalCircle";
+import clsx from "classnames";
+import ChevronDown from "mdi-material-ui/ChevronDown";
+import ChevronRight from "mdi-material-ui/ChevronRight";
 import useProduct from "../hooks/useProduct";
 import getPDPUrl from "../utils/getPDPUrl";
+import VariantItemAction from "../components/VariantItemAction";
 
 const useStyles = makeStyles((theme) => ({
-  nested: {
+  expandButton: {
+    position: "absolute",
+    left: 0,
+    top: "50%",
+    transform: "translateY(-50%)",
+    zIndex: 1
+  },
+  listItem: {
     paddingLeft: theme.spacing(6)
+  },
+  nested: {
+    paddingLeft: theme.spacing(8)
   }
 }));
 
@@ -40,6 +53,10 @@ function getItemSecondaryLabel({ isVisible, displayPrice }) {
  */
 export default function VariantList() {
   const {
+    onArchiveProduct,
+    onToggleVariantVisibility,
+    onCloneProduct,
+    onRestoreProduct,
     product,
     variant: currentVariant,
     option: currentOption,
@@ -59,61 +76,82 @@ export default function VariantList() {
     currentVariant
   ]);
 
+  const toggleExpand = (itemId) => {
+    setExpandedIds((prevState) => {
+      const isOpen = expandedIds.includes(itemId);
+
+      if (isOpen) {
+        return prevState.filter((id) => id !== itemId);
+      }
+
+      return [...prevState, itemId];
+    });
+  };
+
   const renderVariantTree = useCallback((variants, parent) => {
     if (Array.isArray(variants)) {
-      return variants.map((variant) => (
-        <>
-          <ListItem
-            dense
-            component="nav"
-            className={parent ? classes.nested : undefined}
-            button
-            onClick={() => {
-              const url = getPDPUrl(product._id, variant._id, parent && parent._id);
-              history.push(url);
+      return variants.map((variant) => {
+        const isExpanded = expandedIds.includes(variant._id);
 
-              if (!parent) {
-                setExpandedIds((prevState) => {
-                  const isOpen = expandedIds.includes(variant._id);
+        return (
+          <>
+            <ListItem
+              dense
+              component="nav"
+              className={clsx({
+                [classes.listItem]: true,
+                [classes.nested]: Boolean(parent)
+              })}
+              button
+              onClick={() => {
+                const url = getPDPUrl(product._id, variant._id, parent && parent._id);
+                history.push(url);
 
-                  if (isOpen) {
-                    return prevState.filter((id) => id !== variant._id);
-                  }
-
-                  return [...prevState, variant._id];
-                });
-              }
-            }}
-          >
-            <ListItemText
-              primary={variant.optionTitle || variant.title || "Untitled"}
-              secondary={getItemSecondaryLabel(variant)}
-            />
-            <ListItemSecondaryAction>
-              <IconButton
-                onClick={() => {
-                  // show menu
-                }}
-              >
-                <DotsHorizontalCircleIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-          {Array.isArray(variant.options) &&
-            <Collapse
-              in={expandedIds.includes(variant._id)}
+                if (!parent) {
+                  toggleExpand(variant._id);
+                }
+              }}
             >
-              <List
-                component="div"
-                marginDense
-                disablePadding
+              {!parent &&
+                <IconButton
+                  className={classes.expandButton}
+                  onClick={() => toggleExpand(variant._id)}
+                >
+                  {isExpanded ? <ChevronDown /> : <ChevronRight />}
+                </IconButton>
+              }
+              <ListItemText
+                primary={variant.optionTitle || variant.title || "Untitled"}
+                secondary={getItemSecondaryLabel(variant)}
+              />
+              <ListItemSecondaryAction>
+                <VariantItemAction
+                  product={product}
+                  variant={currentVariant}
+                  option={currentOption}
+                  onArchiveProduct={onArchiveProduct}
+                  onToggleVariantVisibility={onToggleVariantVisibility}
+                  onCloneProduct={onCloneProduct}
+                  onRestoreProduct={onRestoreProduct}
+                />
+              </ListItemSecondaryAction>
+            </ListItem>
+            {Array.isArray(variant.options) &&
+              <Collapse
+                in={isExpanded}
               >
-                {renderVariantTree(variant.options, variant)}
-              </List>
-            </Collapse>
-          }
-        </>
-      ));
+                <List
+                  component="div"
+                  marginDense
+                  disablePadding
+                >
+                  {renderVariantTree(variant.options, variant)}
+                </List>
+              </Collapse>
+            }
+          </>
+        );
+      });
     }
 
     return null;
