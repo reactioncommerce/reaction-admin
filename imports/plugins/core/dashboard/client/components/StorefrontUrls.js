@@ -20,6 +20,11 @@ import { i18next } from "/client/api";
 import withPrimaryShopId from "/imports/plugins/core/graphql/lib/hocs/withPrimaryShopId";
 import withShop from "/imports/plugins/core/graphql/lib/hocs/withShop";
 
+const CardContainer = styled(Card)`
+  margin-bottom: 24px 
+  margin-top: 24px 
+`;
+
 const PaddedField = styled(Field)`
   margin-bottom: 30px;
 `;
@@ -107,7 +112,7 @@ class StorefrontUrls extends Component {
     const { storefrontHomeUrl, storefrontLoginUrl, storefrontOrderUrl, storefrontOrdersUrl, storefrontAccountProfileUrl } = storefrontUrls || {};
 
     return (
-      <Card>
+      <CardContainer>
         <CardHeader
           subheader={i18next.t(
             "shopSettings.storefrontUrls.description",
@@ -222,7 +227,7 @@ class StorefrontUrls extends Component {
             </Fragment>
           )}
         </Mutation>
-      </Card>
+      </CardContainer>
     );
   }
 }

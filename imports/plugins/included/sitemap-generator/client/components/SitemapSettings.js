@@ -17,10 +17,12 @@ import generateSitemapsMutation from "../mutations/generateSitemaps";
 import updateShopSettingsMutation from "../mutations/updateShopSettings";
 import shopSettingsQuery from "../queries/shopSettings";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   card: {
     // Without this, the Select dropdown menu gets cut off at the bottom of the card
-    overflow: "visible"
+    overflow: "visible",
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3)
   }
 }));
 

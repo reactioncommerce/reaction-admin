@@ -17,6 +17,11 @@ import { Components } from "@reactioncommerce/reaction-components";
 import { i18next } from "/client/api";
 import withShop from "/imports/plugins/core/graphql/lib/hocs/withShop";
 
+const CardContainer = styled(Card)`
+  margin-bottom: 24px 
+  margin-top: 24px 
+`;
+
 const PaddedField = styled(Field)`
   margin-bottom: 30px;
 `;
@@ -85,7 +90,7 @@ class ShopLogoUrls extends Component {
     const { primaryShopLogoUrl } = shopLogoUrls || {};
 
     return (
-      <Card>
+      <CardContainer>
         <CardHeader
           subheader={i18next.t("shopSettings.shopLogo.description")}
           title={i18next.t("shopSettings.shopLogo.title")}
@@ -132,7 +137,7 @@ class ShopLogoUrls extends Component {
         <CardContent>
           <Components.ShopBrandMediaManager afterSetBrandImage={refetchShop} shop={shop} />
         </CardContent>
-      </Card>
+      </CardContainer>
     );
   }
 }
