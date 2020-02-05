@@ -8,6 +8,7 @@ import OperatorLanding from "/imports/plugins/core/dashboard/client/components/O
 
 import SystemInformation from "./components/SystemInformation";
 import ShopLogoUrls from "./components/ShopLogoUrls";
+import ShopSettings from "./components/ShopSettings";
 import StorefrontUrls from "./components/StorefrontUrls";
 
 import "./components/shopBrandImageOption";
@@ -17,6 +18,7 @@ import "./containers/CreateFirstShopForm.js";
 import "./templates/shop/settings/settings.html";
 import "./templates/shop/settings/settings.less";
 import "./templates/shop/settings/settings.js";
+
 
 // Default landing page
 registerOperatorRoute({
@@ -31,7 +33,7 @@ registerOperatorRoute({
   isSetting: true,
   priority: 10,
   path: "/shop-settings",
-  mainComponent: "shopSettings",
+  mainComponent: ShopSettings,
   // eslint-disable-next-line react/display-name
   SidebarIconComponent: (props) => <FontAwesomeIcon icon={faStore} {...props} />,
   sidebarI18nLabel: "admin.settings.shopSettingsLabel"
