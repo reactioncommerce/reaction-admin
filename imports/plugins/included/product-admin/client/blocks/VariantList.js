@@ -76,19 +76,19 @@ export default function VariantList() {
     currentVariant
   ]);
 
-  const toggleExpand = (itemId) => {
-    setExpandedIds((prevState) => {
-      const isOpen = expandedIds.includes(itemId);
-
-      if (isOpen) {
-        return prevState.filter((id) => id !== itemId);
-      }
-
-      return [...prevState, itemId];
-    });
-  };
-
   const renderVariantTree = useCallback((variants, parent) => {
+    const toggleExpand = (itemId) => {
+      setExpandedIds((prevState) => {
+        const isOpen = expandedIds.includes(itemId);
+
+        if (isOpen) {
+          return prevState.filter((id) => id !== itemId);
+        }
+
+        return [...prevState, itemId];
+      });
+    };
+
     if (Array.isArray(variants)) {
       return variants.map((variant) => {
         const isExpanded = expandedIds.includes(variant._id);
@@ -155,7 +155,20 @@ export default function VariantList() {
     }
 
     return null;
-  }, [classes.nested, expandedIds, product, history]);
+  }, [
+    expandedIds,
+    classes.listItem,
+    classes.nested,
+    classes.expandButton,
+    product,
+    currentVariant,
+    currentOption,
+    onArchiveProduct,
+    onToggleVariantVisibility,
+    onCloneProduct,
+    onRestoreProduct,
+    history
+  ]);
 
   return (
     <Card>
