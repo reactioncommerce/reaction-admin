@@ -96,6 +96,7 @@ export default function VariantList() {
         return (
           <>
             <ListItem
+              key={`listItem-${variant._id}`}
               dense
               component="nav"
               className={clsx({
@@ -139,6 +140,7 @@ export default function VariantList() {
             {Array.isArray(variant.options) &&
               <Collapse
                 in={isExpanded}
+                key={`collapse-${variant._id}`}
               >
                 <List
                   component="div"
