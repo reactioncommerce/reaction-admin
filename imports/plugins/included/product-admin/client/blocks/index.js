@@ -64,13 +64,12 @@ registerBlock({
   priority: 40
 });
 
-// registerBlock({
-//   region: "ProductDetailMain",
-//   name: "ProductMetadataForm",
-//   component: ProductMetadataForm,
-//   hocs: [withProductForm],
-//   priority: 50
-// });
+registerBlock({
+  region: "ProductDetailMain",
+  name: "ProductMetadataForm",
+  component: ProductMetadataForm,
+  priority: 50
+});
 
 registerBlock({
   region: "VariantDetailSidebar",
