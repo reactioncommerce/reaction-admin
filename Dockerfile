@@ -32,6 +32,9 @@ LABEL maintainer="Reaction Commerce <engineering@reactioncommerce.com>"
 # grab the dependencies and built app from the previous temporary builder image
 COPY --chown=node --from=builder /usr/local/src/build/bundle /usr/local/src/app
 
+# copy the waitForMongo script, too
+COPY --chown=node --from=builder /usr/local/src/appsrc/.reaction/waitForMongo.js /usr/local/src/app/programs/server/waitForMongo.js
+
 # Install the latest version of NPM (as of when this
 # base image is built)
 RUN npm i -g npm@latest
@@ -40,8 +43,11 @@ WORKDIR /usr/local/src/app/programs/server/
 
 RUN npm install --production --no-audit
 
+# Also install mongodb pkg needed by the waitForMongo script
+RUN npm install -E --no-save mongodb@3.3.5
+
 WORKDIR /usr/local/src/app
 
 ENV PATH $PATH:/usr/local/src/app/programs/server/node_modules/.bin
 
-CMD ["node", "main.js"]
+CMD ["sh", "-c", "cd programs/server && node waitForMongo.js && cd ../.. && node main.js"]
