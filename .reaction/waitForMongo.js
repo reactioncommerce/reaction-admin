@@ -1,7 +1,7 @@
 /**
  * Meteor hard fails right away if it can't connect to MongoDB.
  * Since we have no way of changing that, we run this script
- * first, which tries for 60 seconds to connect before failing.
+ * first, which tries for 120 seconds to connect before failing.
  *
  * Usage:
  *   node waitForMongo.js && some command that need mongo
@@ -10,7 +10,7 @@
 const url = require("url");
 const { MongoClient } = require("mongodb");
 
-const WAIT_FOR_SECONDS = 60;
+const WAIT_FOR_SECONDS = 120;
 
 /**
  * Print a message to the console (no trailing newline)
@@ -93,7 +93,20 @@ async function connect(mongoUrl) {
     useNewUrlParser: true,
     useUnifiedTopology: true
   });
-  await client.close();
+  return client;
+}
+
+/**
+ * Check if replication is ready
+ *
+ * @param {Object} db connected mongo db instance
+ * @returns {Promise} indication of success/failure
+ */
+async function checkReplicaSetStatus(db) {
+  const status = await db.admin().replSetGetStatus();
+  if (status.ok !== 1) {
+    throw new Error("Replica set not yet initialized");
+  }
 }
 
 /**
@@ -105,12 +118,22 @@ async function main() {
   if (!MONGO_URL) {
     throw new Error("You must set MONGO_URL environment variable.");
   }
+
   defaultOut("Waiting for MongoDB...\n");
-  await checkWaitRetry({
+  const client = await checkWaitRetry({
     timeoutMessage: "ERROR: MongoDB not reachable in time.",
     check: connect.bind(null, MONGO_URL)
   });
   defaultOut("MongoDB ready.\n");
+
+  defaultOut("Waiting for MongoDB replica set...\n");
+  await checkWaitRetry({
+    timeoutMessage: "ERROR: MongoDB replica set not ready in time.",
+    check: checkReplicaSetStatus.bind(null, client.db())
+  });
+  defaultOut("MongoDB replica set ready.\n");
+
+  await client.close();
   process.exit();
 }
 
