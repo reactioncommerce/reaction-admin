@@ -23,9 +23,6 @@ const useStyles = makeStyles((theme) => ({
   card: {
     marginBottom: theme.spacing(2)
   },
-  textField: {
-    // marginBottom: theme.spacing(1)
-  },
   grid: {
     paddingBottom: theme.spacing(2)
   }
@@ -193,7 +190,6 @@ function ProductMetadataForm() {
                 sm={3}
               >
                 <TextField
-                  className={classes.textField}
                   error={metafieldErrors[index] && metafieldErrors[index].key}
                   fullWidth
                   helperText={metafieldErrors[index] && metafieldErrors[index].key}
@@ -214,7 +210,6 @@ function ProductMetadataForm() {
                 sm={8}
               >
                 <TextField
-                  className={classes.textField}
                   error={metafieldErrors[index] && metafieldErrors[index].value}
                   fullWidth
                   helperText={metafieldErrors[index] && metafieldErrors[index].value}
@@ -243,7 +238,6 @@ function ProductMetadataForm() {
 
           <Grid item sm={3}>
             <TextField
-              className={classes.textField}
               error={newMetafieldErrors.key}
               fullWidth
               helperText={newMetafieldErrors.key}
@@ -261,7 +255,6 @@ function ProductMetadataForm() {
 
           <Grid item sm={8}>
             <TextField
-              className={classes.textField}
               error={newMetafieldErrors.value}
               fullWidth
               helperText={newMetafieldErrors.value}
