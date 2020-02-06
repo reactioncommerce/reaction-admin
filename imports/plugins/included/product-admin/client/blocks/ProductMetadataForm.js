@@ -15,9 +15,9 @@ import CloseIcon from "mdi-material-ui/Close";
 import PlusIcon from "mdi-material-ui/Plus";
 import TextField from "@reactioncommerce/catalyst/TextField";
 import SimpleSchema from "simpl-schema";
+import clone from "clone";
 import equal from "deep-equal";
 import useProduct from "../hooks/useProduct";
-import clone from "clone";
 
 const useStyles = makeStyles((theme) => ({
   card: {
