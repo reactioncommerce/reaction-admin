@@ -196,7 +196,7 @@ const ProductDetailForm = React.forwardRef((props, ref) => {
           select
           {...originCountryInputProps}
           // Avoid "value must be an array" error
-          value={originCountryInputProps.value || []}
+          value={originCountryInputProps.value || ""}
         >
           {CountryOptions.map((option) => (
             <MenuItem key={option.value} value={option.value}>
