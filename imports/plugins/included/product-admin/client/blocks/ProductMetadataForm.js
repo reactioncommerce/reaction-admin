@@ -167,8 +167,6 @@ function ProductMetadataForm() {
   ]);
 
   useEffect(() => {
-    console.log("PPP", product, metafields);
-
     setDirty((product && !equal(product.metafields, metafields)));
   }, [
     product,
