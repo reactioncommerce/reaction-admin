@@ -4,12 +4,12 @@ import {
   IconButton,
   TableCell,
   TableRow,
-  TextField,
   makeStyles
 } from "@material-ui/core";
 import { isInteger } from "lodash";
 import CloseIcon from "mdi-material-ui/Close";
 import { Meteor } from "meteor/meteor";
+import TextField from "@reactioncommerce/catalyst/TextField";
 
 const { filesBaseUrl } = Meteor.settings.public;
 
@@ -55,7 +55,6 @@ function ProductMediaItem(props) {
       <TableCell className={classes.priorityField}>
         <TextField
           id="time"
-          margin="dense"
           variant="outlined"
           type="numeric"
           value={priority === null ? "" : priority}
