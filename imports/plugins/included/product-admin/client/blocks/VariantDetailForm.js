@@ -74,10 +74,12 @@ const formSchema = new SimpleSchema({
 const validator = formSchema.getFormValidator();
 
 /**
- *
- * @param {*} props
+ * @name VariantDetailForm
+ * @param {Object} props Component props
+ * @param {Object} ref Forwarded ref
+ * @returns {React.Component} Variant form React component
  */
-const ProductDetailForm = React.forwardRef((props, ref) => {
+const VariantDetailForm = React.forwardRef((props, ref) => {
   const classes = useStyles();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -274,4 +276,4 @@ const ProductDetailForm = React.forwardRef((props, ref) => {
   );
 });
 
-export default ProductDetailForm;
+export default VariantDetailForm;
