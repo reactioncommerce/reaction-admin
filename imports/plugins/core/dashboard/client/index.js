@@ -8,7 +8,10 @@ import OperatorLanding from "/imports/plugins/core/dashboard/client/components/O
 
 import SystemInformation from "./components/SystemInformation";
 import ShopLogoUrls from "./components/ShopLogoUrls";
-import ShopSettings from "./components/ShopSettings";
+import Settings from "./components/Settings";
+import GeneralSettings from "./components/GeneralSettings";
+import AddressSettings from "./components/AddressSettings";
+
 import StorefrontUrls from "./components/StorefrontUrls";
 
 import "./components/shopBrandImageOption";
@@ -33,7 +36,7 @@ registerOperatorRoute({
   isSetting: true,
   priority: 10,
   path: "/shop-settings",
-  mainComponent: ShopSettings,
+  mainComponent: Settings,
   // eslint-disable-next-line react/display-name
   SidebarIconComponent: (props) => <FontAwesomeIcon icon={faStore} {...props} />,
   sidebarI18nLabel: "admin.settings.shopSettingsLabel"
@@ -50,14 +53,28 @@ registerOperatorRoute({
 
 registerBlock({
   region: "ShopSettings",
+  name: "GeneralSettings",
+  component: GeneralSettings,
+  priority: 1
+});
+
+registerBlock({
+  region: "ShopSettings",
+  name: "AddressSettings",
+  component: AddressSettings,
+  priority: 2
+});
+
+registerBlock({
+  region: "ShopSettings",
   name: "ShopLogoUrls",
   component: ShopLogoUrls,
-  priority: 2
+  priority: 3
 });
 
 registerBlock({
   region: "ShopSettings",
   name: "StorefrontUrls",
   component: StorefrontUrls,
-  priority: 3
+  priority: 4
 });
