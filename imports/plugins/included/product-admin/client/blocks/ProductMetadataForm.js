@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import i18next from "i18next";
 import {
@@ -15,7 +15,9 @@ import CloseIcon from "mdi-material-ui/Close";
 import PlusIcon from "mdi-material-ui/Plus";
 import TextField from "@reactioncommerce/catalyst/TextField";
 import SimpleSchema from "simpl-schema";
+import equal from "deep-equal";
 import useProduct from "../hooks/useProduct";
+import clone from "clone";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -64,29 +66,42 @@ const formSchema = new SimpleSchema({
   "metafields.$": metafieldSchema
 });
 
-const validator = formSchema.getFormValidator();
+const metafieldValidator = metafieldSchema.getFormValidator();
 
 /**
  * Product metadata form block component
- * @param {Object} props Component props
  * @returns {Node} React component
  */
-function ProductMetadataForm(props) {
+function ProductMetadataForm() {
   const classes = useStyles();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDirty, setDirty] = useState(false);
   const [metafields, setMetafields] = useState([]);
   const [newMetafield, setNewMetafield] = useState({ key: "", value: "" });
+  const [metafieldErrors, setMetafieldErrors] = useState([]);
+  const [newMetafieldErrors, setNewMetafieldErrors] = useState({});
+
   const {
     onUpdateProduct,
-    product,
-    shopId
+    product
   } = useProduct();
 
   const submitNewMetaForm = async () => {
+    const errors = await metafieldValidator(metafieldSchema.clean(newMetafield));
 
+    if (errors.length) {
+      const errorObj = {};
 
-    const error = await validator(formSchema.clean(newMetafield));
-    console.error(error)
+      errors.forEach(({ name, message }) => {
+        errorObj[name] = message;
+      });
+
+      setNewMetafieldErrors(errorObj);
+
+      return;
+    }
+
+    setMetafieldErrors({});
 
     setMetafields((prevState) => [
       ...prevState,
@@ -102,25 +117,33 @@ function ProductMetadataForm(props) {
     ]);
   };
 
-  const hasError = (value) => {
-    if (typeof value !== "string" || (typeof value === "string" && value.length === 0)) {
-      return true;
+  const submitForm = async () => {
+    setIsSubmitting(true);
+
+    const fieldErrors = [];
+    let hasErrors = false;
+
+    // Get all errors for fields
+    for (const metafield of metafields) {
+      // eslint-disable-next-line no-await-in-loop
+      const groupErrors = await metafieldValidator(metafieldSchema.clean(metafield));
+      const errorObj = {};
+
+      if (groupErrors.length) {
+        hasErrors = true;
+      }
+
+      for (const { name, message } of groupErrors) {
+        errorObj[name] = message;
+      }
+
+      fieldErrors.push(errorObj);
     }
 
-    return false;
-  };
-
-  const submitForm = async () => {
-
-
-    const errors = metafields.map(async (metafield) => {
-      return validator(formSchema.clean(metafield));
-    });
-    console.log("ERRORS", errors);
-
-    return;
-
-    setIsSubmitting(true);
+    if (hasErrors) {
+      setMetafieldErrors(fieldErrors);
+      return;
+    }
 
     // Cleanup input, and remove any extra fields that may linger from GQL
     const cleanedInput = formSchema.clean({
@@ -131,15 +154,25 @@ function ProductMetadataForm(props) {
       product: cleanedInput
     });
 
+    setMetafieldErrors([]);
     setIsSubmitting(false);
   };
 
   useEffect(() => {
     if (product) {
-      setMetafields(product.metafields || []);
+      setMetafields(clone(product.metafields) || []);
     }
   }, [
     product
+  ]);
+
+  useEffect(() => {
+    console.log("PPP", product, metafields);
+
+    setDirty((product && !equal(product.metafields, metafields)));
+  }, [
+    product,
+    metafields
   ]);
 
   if (!product) {
@@ -156,13 +189,17 @@ function ProductMetadataForm(props) {
           spacing={2}
         >
           {Array.isArray(metafields) && metafields.map((metafield, index) => (
-            <>
-              <Grid item sm={3}>
+            <Fragment key={`metafield-${index}`}>
+              <Grid
+                item
+                sm={3}
+              >
                 <TextField
                   className={classes.textField}
-                  error={hasError(metafield.key)}
+                  error={metafieldErrors[index] && metafieldErrors[index].key}
                   fullWidth
-                  placeholder={i18next.t("productDetailEdit.title")}
+                  helperText={metafieldErrors[index] && metafieldErrors[index].key}
+                  placeholder={i18next.t("productDetailEdit.metafieldKey")}
                   onChange={(event) => {
                     setMetafields((prevState) => {
                       const nextState = [...prevState];
@@ -174,10 +211,15 @@ function ProductMetadataForm(props) {
                 />
               </Grid>
 
-              <Grid item sm={8}>
+              <Grid
+                item
+                sm={8}
+              >
                 <TextField
                   className={classes.textField}
+                  error={metafieldErrors[index] && metafieldErrors[index].value}
                   fullWidth
+                  helperText={metafieldErrors[index] && metafieldErrors[index].value}
                   onChange={(event) => {
                     setMetafields((prevState) => {
                       const nextState = [...prevState];
@@ -185,23 +227,28 @@ function ProductMetadataForm(props) {
                       return nextState;
                     });
                   }}
-                  placeholder={i18next.t("productDetailEdit.title")}
+                  placeholder={i18next.t("productDetailEdit.metafieldValue")}
                   value={metafield.value}
                 />
               </Grid>
 
-              <Grid item sm={1}>
+              <Grid
+                item
+                sm={1}
+              >
                 <IconButton onClick={() => removeMetafield(index)}>
                   <CloseIcon />
                 </IconButton>
               </Grid>
-            </>
+            </Fragment>
           ))}
 
           <Grid item sm={3}>
             <TextField
               className={classes.textField}
+              error={newMetafieldErrors.key}
               fullWidth
+              helperText={newMetafieldErrors.key}
               placeholder={i18next.t("productDetailEdit.metafieldKey")}
               onChange={(event) => {
                 setNewMetafield((prevState) => {
@@ -217,7 +264,9 @@ function ProductMetadataForm(props) {
           <Grid item sm={8}>
             <TextField
               className={classes.textField}
+              error={newMetafieldErrors.value}
               fullWidth
+              helperText={newMetafieldErrors.value}
               onChange={(event) => {
                 setNewMetafield((prevState) => {
                   const nextState = { ...prevState };
@@ -238,7 +287,7 @@ function ProductMetadataForm(props) {
         <Box textAlign="right">
           <Button
             color="primary"
-            // disabled={!isDirty || isSubmitting}
+            disabled={!isDirty || isSubmitting}
             variant="contained"
             onClick={() => submitForm()}
 
