@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { Fragment, useCallback, useState, useEffect } from "react";
 import {
   Card,
   CardHeader,
@@ -94,10 +94,8 @@ export default function VariantList() {
         const isExpanded = expandedIds.includes(variant._id);
 
         return (
-          <>
+          <Fragment key={`listItem-${variant._id}`}>
             <ListItem
-              key={`listItem-${variant._id}`}
-              dense
               component="nav"
               className={clsx({
                 [classes.listItem]: true,
@@ -140,18 +138,16 @@ export default function VariantList() {
             {Array.isArray(variant.options) &&
               <Collapse
                 in={isExpanded}
-                key={`collapse-${variant._id}`}
               >
                 <List
                   component="div"
-                  marginDense
                   disablePadding
                 >
                   {renderVariantTree(variant.options, variant)}
                 </List>
               </Collapse>
             }
-          </>
+          </Fragment>
         );
       });
     }
