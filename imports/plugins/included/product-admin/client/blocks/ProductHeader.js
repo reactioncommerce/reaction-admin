@@ -6,7 +6,6 @@ import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Typography from "@material-ui/core/Typography";
-import ChevronRight from "mdi-material-ui/ChevronRight";
 import DotsHorizontalIcon from "mdi-material-ui/DotsHorizontal";
 import ConfirmDialog from "@reactioncommerce/catalyst/ConfirmDialog";
 import { makeStyles, Box } from "@material-ui/core";
@@ -111,10 +110,13 @@ function ProductHeader() {
     <div className={classes.root}>
       <Box display="flex" alignItems="center">
         <Box flex="1">
-          <Typography variant="h2">
-            {product.title || "Untitled Product"}
-            {(product.isDeleted) && `(${i18next.t("app.archived")})`}
-          </Typography>
+          <Link className={classes.breadcrumbLink} to={`/products/${product._id}`}>
+            <Typography variant="h2">
+              <Helmet title={product.title} />
+              {product.title || "Untitled Product"}
+              {(product.isDeleted) && `(${i18next.t("app.archived")})`}
+            </Typography>
+          </Link>
         </Box>
         <IconButton
           onClick={(event) => {
