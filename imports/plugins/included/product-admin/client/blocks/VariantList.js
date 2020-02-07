@@ -1,7 +1,5 @@
 import React, { Fragment, useCallback, useState, useEffect } from "react";
 import {
-  Card,
-  CardHeader,
   Collapse,
   List,
   ListItemText,
@@ -10,7 +8,7 @@ import {
   ListItem,
   IconButton
 } from "@material-ui/core";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import clsx from "classnames";
 import ChevronDown from "mdi-material-ui/ChevronDown";
 import ChevronRight from "mdi-material-ui/ChevronRight";
@@ -59,12 +57,10 @@ export default function VariantList() {
     onRestoreProduct,
     product,
     variant: currentVariant,
-    option: currentOption,
-    shopId
+    option: currentOption
   } = useProduct();
   const classes = useStyles();
   const history = useHistory();
-  const location = useLocation();
   const [expandedIds, setExpandedIds] = useState([]);
 
 
@@ -169,11 +165,8 @@ export default function VariantList() {
   ]);
 
   return (
-    <Card>
-      <CardHeader title={"Variants"} />
-      <List>
-        {product && Array.isArray(product.variants) && renderVariantTree(product.variants)}
-      </List>
-    </Card>
+    <List>
+      {product && Array.isArray(product.variants) && renderVariantTree(product.variants)}
+    </List>
   );
 }
