@@ -167,8 +167,7 @@ const VariantDetailForm = React.forwardRef((props, ref) => {
           }}
           select
           {...originCountryInputProps}
-          // Avoid "value must be an array" error
-          value={originCountryInputProps.value || []}
+          value={originCountryInputProps.value || ""}
         >
           {CountryOptions.map((countryOption) => (
             <MenuItem key={countryOption.value} value={countryOption.value}>
