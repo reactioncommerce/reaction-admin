@@ -7,15 +7,15 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Typography from "@material-ui/core/Typography";
 import ChevronRight from "mdi-material-ui/ChevronRight";
-import DotsHorizontalCircleIcon from "mdi-material-ui/DotsHorizontalCircle";
+import DotsHorizontalIcon from "mdi-material-ui/DotsHorizontal";
 import ConfirmDialog from "@reactioncommerce/catalyst/ConfirmDialog";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, Box } from "@material-ui/core";
 import useProduct from "../hooks/useProduct";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(4)
+    paddingBottom: theme.spacing(2)
   },
   breadcrumbs: {
     display: "flex",
@@ -109,56 +109,27 @@ function ProductHeader() {
 
   return (
     <div className={classes.root}>
-      <div className={classes.breadcrumbs}>
-        <Link className={classes.breadcrumbLink} to="/products">{"Products"}</Link>
-        <ChevronRight className={classes.breadcrumbIcon} />
-        <Link className={classes.breadcrumbLink} to={`/products/${product._id}`}>
-          <Helmet title={product.title} />
-          {product.title || "Untitled Product"}
-        </Link>
-
-        {variant && (
-          <>
-            <ChevronRight className={classes.breadcrumbIcon} />
-            <Link
-              className={classes.breadcrumbLink}
-              to={`/products/${product._id}/${variant._id}`}
-            >
-              {variant.optionTitle || variant.title || "Untitled Variant"}
-            </Link>
-          </>
-        )}
-
-        {option && (
-          <>
-            <ChevronRight className={classes.breadcrumbIcon} />
-            <Link
-              className={classes.breadcrumbLink}
-              to={`/products/${product._id}/${variant._id}/${option._id}`}
-            >
-              {option.optionTitle || option.title || "Untitled Variant"}
-            </Link>
-          </>
-        )}
-      </div>
-      <Typography variant="h2">
-        {product.title || "Untitled Product"}
-        {(product.isDeleted) && `(${i18next.t("app.archived")})`}
-      </Typography>
-      <div className={classes.statusbar}>
-
-        <Typography>
-          {product.isVisible ? "Visible" : "Hidden"}
-          {product.isDeleted ? i18next.t("app.archived") : null}
-        </Typography>
-
+      <Box display="flex" alignItems="center">
+        <Box flex="1">
+          <Typography variant="h2">
+            {product.title || "Untitled Product"}
+            {(product.isDeleted) && `(${i18next.t("app.archived")})`}
+          </Typography>
+        </Box>
         <IconButton
           onClick={(event) => {
             setMenuAnchorEl(event.currentTarget);
           }}
         >
-          <DotsHorizontalCircleIcon />
+          <DotsHorizontalIcon />
         </IconButton>
+      </Box>
+
+      <div className={classes.statusbar}>
+        <Typography>
+          {product.isVisible ? "Visible" : "Hidden"}
+          {product.isDeleted ? i18next.t("app.archived") : null}
+        </Typography>
 
         <Menu
           id="bulk-actions-menu"
