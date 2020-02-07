@@ -100,10 +100,9 @@ registerBlock({
   priority: 20
 });
 
-// registerBlock({
-//   region: "VariantDetailMain",
-//   name: "VariantTaxForm",
-//   component: VariantTaxForm,
-//   hocs: [withVariantForm],
-//   priority: 30
-// });
+registerBlock({
+  region: "VariantDetailMain",
+  name: "VariantTaxForm",
+  component: VariantTaxForm,
+  priority: 30
+});
