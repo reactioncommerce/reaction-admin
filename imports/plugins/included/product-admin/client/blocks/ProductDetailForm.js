@@ -20,7 +20,6 @@ import TextField from "@reactioncommerce/catalyst/TextField";
 import useGenerateSitemaps from "/imports/plugins/included/sitemap-generator/client/hooks/useGenerateSitemaps";
 import useProduct from "../hooks/useProduct";
 
-
 const useStyles = makeStyles((theme) => ({
   card: {
     marginBottom: theme.spacing(2)
@@ -61,8 +60,9 @@ const formSchema = new SimpleSchema({
 const validator = formSchema.getFormValidator();
 
 /**
- *
- * @param {*} props
+ * @name ProductDetailForm
+ * @param {Object} props Component props
+ * @returns {React.Component} Product detail form react component
  */
 const ProductDetailForm = React.forwardRef((props, ref) => {
   const classes = useStyles();
@@ -107,7 +107,7 @@ const ProductDetailForm = React.forwardRef((props, ref) => {
           })
             .then(({ value }) => {
               if (value) {
-                this.props.generateSitemaps();
+                generateSitemaps();
                 Alerts.toast(i18next.t("shopSettings.sitemapRefreshInitiated", {
                   defaultValue: "Refreshing the sitemap can take up to 5 minutes. You will be notified when it is completed."
                 }), "success");
@@ -195,7 +195,6 @@ const ProductDetailForm = React.forwardRef((props, ref) => {
           }}
           select
           {...originCountryInputProps}
-          // Avoid "value must be an array" error
           value={originCountryInputProps.value || ""}
         >
           {CountryOptions.map((option) => (
