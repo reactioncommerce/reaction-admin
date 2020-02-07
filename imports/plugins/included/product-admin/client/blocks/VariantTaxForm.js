@@ -1,103 +1,168 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Components } from "@reactioncommerce/reaction-components";
-import { i18next } from "/client/api";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
+import i18next from "i18next";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Checkbox,
+  FormControlLabel,
+  MenuItem
+} from "@material-ui/core";
+import TextField from "@reactioncommerce/catalyst/TextField";
+import useReactoForm from "reacto-form/cjs/useReactoForm";
+import SimpleSchema from "simpl-schema";
+import muiOptions from "reacto-form/cjs/muiOptions";
+import useProduct from "../hooks/useProduct";
+import useTaxCodes from "../../../../core/taxes/client/hooks/useTaxCodes";
+
+
+const formSchema = new SimpleSchema({
+  taxCode: {
+    type: String,
+    optional: true
+  },
+  isTaxable: {
+    type: Boolean,
+    optional: true
+  },
+  taxDescription: {
+    type: String,
+    optional: true
+  }
+});
+
+const validator = formSchema.getFormValidator();
 
 /**
  * Variant tax block component
- * @param {Object} props Component props
  * @returns {React.Component} A React component
  */
-function VariantTaxForm(props) {
+function VariantTaxForm() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
-    onVariantCheckboxChange,
-    onVariantFieldBlur,
-    onVariantFieldChange,
-    onVariantSelectChange,
-    taxCodes,
-    validation,
-    variant
-  } = props;
+    onUpdateProductVariant,
+    product,
+    variant,
+    shopId
+  } = useProduct();
 
-  let taxCodeField = (
-    <Components.TextField
-      i18nKeyLabel="productVariant.taxCode"
-      label="Tax Code"
-      name="taxCode"
-      value={variant.taxCode}
-      onBlur={onVariantFieldBlur}
-      onChange={onVariantFieldChange}
-      onReturnKeyDown={onVariantFieldBlur}
-      validation={validation}
-    />
-  );
+  const taxCodes = useTaxCodes({ shopId });
+
+  const {
+    getFirstErrorMessage,
+    getInputProps,
+    hasErrors,
+    isDirty,
+    submitForm
+  } = useReactoForm({
+    async onSubmit(formData) {
+      setIsSubmitting(true);
+
+      await onUpdateProductVariant({
+        variant: formSchema.clean(formData)
+      });
+
+      setIsSubmitting(false);
+    },
+    validator(formData) {
+      return validator(formSchema.clean(formData));
+    },
+    value: variant
+  });
+
+  if (!product) {
+    return null;
+  }
+
+  let taxCodeField;
 
   if (Array.isArray(taxCodes) && taxCodes.length) {
     const options = taxCodes.map(({ code, label }) => ({ label, value: code }));
     options.unshift({ label: "None", value: "" });
+
+    const taxCodeInputProps = getInputProps("taxCode", muiOptions);
+
     taxCodeField = (
-      <Components.Select
-        clearable={false}
-        i18nKeyLabel="productVariant.taxCode"
-        i18nKeyPlaceholder="productVariant.selectTaxCode"
-        label="Tax Code"
-        name="taxCode"
-        options={options}
-        onChange={onVariantSelectChange}
-        value={variant.taxCode}
+      <TextField
+        error={hasErrors(["taxCode"])}
+        fullWidth
+        helperText={getFirstErrorMessage(["taxCode"])}
+        label={i18next.t("productVariant.selectTaxCode")}
+        onKeyPress={(event) => {
+          if (event.key === "Enter") submitForm();
+        }}
+        select
+        {...taxCodeInputProps}
+        value={taxCodeInputProps.value || ""}
+      >
+        {options.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </TextField>
+    );
+  } else {
+    taxCodeField = (
+      <TextField
+        error={hasErrors(["taxCode"])}
+        fullWidth
+        helperText={getFirstErrorMessage(["taxCode"])}
+        label={i18next.t("productVariant.taxCode")}
+        {...getInputProps("taxCode", muiOptions)}
       />
     );
   }
+
+  const isTaxableInputProps = getInputProps("isTaxable", muiOptions);
 
   return (
     <Card>
       <CardHeader title={i18next.t("productVariant.taxable")} />
       <CardContent>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={variant.isTaxable}
-              onChange={(event, checked) => {
-                onVariantCheckboxChange(event, checked, "isTaxable");
-              }}
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            submitForm();
+          }}
+        >
+          <Box marginBottom={4}>
+            <FormControlLabel
+              label={i18next.t("productVariant.isTaxable")}
+              {...isTaxableInputProps}
+              checked={isTaxableInputProps.value || false}
+              control={<Checkbox />}
             />
-          }
-          label="Item is taxable"
-        />
-        {taxCodeField}
-        <Components.TextField
-          i18nKeyLabel="productVariant.taxDescription"
-          i18nKeyPlaceholder="productVariant.taxDescription"
-          placeholder="Tax Description"
-          label="Tax Description"
-          name="taxDescription"
-          value={variant.taxDescription}
-          onBlur={onVariantFieldBlur}
-          onChange={onVariantFieldChange}
-          onReturnKeyDown={onVariantFieldBlur}
-          validation={validation}
-        />
+          </Box>
+          <Box marginBottom={4}>
+            {taxCodeField}
+          </Box>
+          <Box marginBottom={4}>
+            <TextField
+              error={hasErrors(["taxDescription"])}
+              fullWidth
+              helperText={getFirstErrorMessage(["taxDescription"])}
+              label={i18next.t("productVariant.taxDescription")}
+              {...getInputProps("taxDescription", muiOptions)}
+            />
+          </Box>
+          <Box textAlign="right">
+            <Button
+              color="primary"
+              disabled={!isDirty || isSubmitting}
+              variant="contained"
+              type="submit"
+            >
+              {i18next.t("app.save")}
+            </Button>
+          </Box>
+        </form>
       </CardContent>
     </Card>
   );
 }
-
-VariantTaxForm.propTypes = {
-  onVariantCheckboxChange: PropTypes.func,
-  onVariantFieldBlur: PropTypes.func,
-  onVariantFieldChange: PropTypes.func,
-  onVariantSelectChange: PropTypes.func,
-  taxCodes: PropTypes.arrayOf(PropTypes.shape({
-    code: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired
-  })),
-  validation: PropTypes.object,
-  variant: PropTypes.object
-};
 
 export default VariantTaxForm;
