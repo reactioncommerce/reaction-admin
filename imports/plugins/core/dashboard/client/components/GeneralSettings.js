@@ -4,12 +4,13 @@ import SimpleSchema from "simpl-schema";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
-import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import { makeStyles } from "@material-ui/styles";
+import { Box } from "@material-ui/core";
 import Button from "@reactioncommerce/catalyst/Button";
 import TextField from "@reactioncommerce/catalyst/TextField";
 import useReactoForm from "reacto-form/cjs/useReactoForm";
 import muiOptions from "reacto-form/cjs/muiOptions";
+import useShopSettings from "../hooks/useShopSettings";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -26,8 +27,17 @@ const formSchema = new SimpleSchema({
   name: {
     type: String,
     min: 1
+  },
+  emails: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Email
+  },
+  slug: {
+    type: String,
+    min: 1
   }
 });
+
 const validator = formSchema.getFormValidator();
 
 /**
@@ -36,12 +46,8 @@ const validator = formSchema.getFormValidator();
  */
 function ShopSettings() {
   const classes = useStyles();
-  const [currentShopId] = useCurrentShopId();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const onSubmit = (args) => {
-
-  };
+  const { onUpdateShop } = useShopSettings();
 
   const {
     getFirstErrorMessage,
@@ -49,35 +55,64 @@ function ShopSettings() {
     hasErrors,
     submitForm
   } = useReactoForm({
-    async onSubmit(...args) {
+    async onSubmit(formData) {
       setIsSubmitting(true);
-      await onSubmit(...args);
+      await onUpdateShop(formSchema.clean(formData));
       setIsSubmitting(false);
     },
-    validator
+    validator(formData) {
+      return validator(formSchema.clean(formData));
+    }
   });
 
   return (
     <Card className={classes.card}>
       <CardHeader title={i18next.t("admin.settings.general.label")} />
       <CardContent>
-        <TextField
-          className={classes.textField}
-          error={hasErrors(["attributeLabel"])}
-          fullWidth
-          label="Name"
-          placeholder="Enter a name for the shop"
-          {...getInputProps("attributeLabel", muiOptions)}
-        />
-        <Button
-          color="primary"
-          fullWidth
-          disabled={isSubmitting}
-          onClick={submitForm}
-          variant="contained"
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            submitForm();
+          }}
         >
-          {isSubmitting ? "Saving settings..." : "Save"}
-        </Button>
+          <TextField
+            className={classes.textField}
+            error={hasErrors(["name"])}
+            fullWidth
+            helperText={getFirstErrorMessage(["name"])}
+            label={i18next.t("admin.settings.address.nameLabel")}
+            placeholder={i18next.t("admin.settings.address.namePlaceholder")}
+            {...getInputProps("name", muiOptions)}
+          />
+          <TextField
+            className={classes.textField}
+            error={hasErrors(["emails"])}
+            fullWidth
+            helperText={getFirstErrorMessage(["emails"])}
+            label={i18next.t("admin.settings.address.emailLabel")}
+            placeholder={i18next.t("admin.settings.address.emailPlaceholder")}
+            {...getInputProps("emails", muiOptions)}
+          />
+          <TextField
+            className={classes.textField}
+            error={hasErrors(["slug"])}
+            fullWidth
+            helperText={getFirstErrorMessage(["slug"])}
+            label={i18next.t("admin.settings.address.slugLabel")}
+            placeholder={i18next.t("admin.settings.address.slugPlaceholder")}
+            {...getInputProps("slug", muiOptions)}
+          />
+          <Box textAlign="right">
+            <Button
+              color="primary"
+              disabled={isSubmitting}
+              variant="contained"
+              type="submit"
+            >
+              {isSubmitting ? i18next.t("admin.settings.saveProcessing") : i18next.t("app.save")}
+            </Button>
+          </Box>
+        </form>
       </CardContent>
     </Card>
   );
