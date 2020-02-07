@@ -1,25 +1,15 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback } from "react";
 import gql from "graphql-tag";
-import _ from "lodash";
 import { useHistory, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/react-hooks";
-import { Media } from "/imports/plugins/core/files/client";
 import { Meteor } from "meteor/meteor";
-import { Reaction, formatPriceString, i18next } from "/client/api";
-import { getPrimaryMediaForItem, ReactionProduct, Catalog } from "/lib/api";
-import { Tags, Templates } from "/lib/collections";
+import i18next from "i18next";
 import getOpaqueIds from "/imports/plugins/core/core/client/util/getOpaqueIds";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
-import encodeOpaqueId from "@reactioncommerce/api-utils/encodeOpaqueId.js";
 import { useSnackbar } from "notistack";
-
 import PRODUCT_QUERY from "./ProductQuery";
 import UPDATE_PRODUCT from "./UpdateProductMutation";
 import UpdateProductVariantMutation from "./UpdateProductVariantMutation";
-
-const encodeProductOpaqueId = encodeOpaqueId("reaction/product");
-
-const getVariantIds = (variants) => Array.isArray(variants) && variants.map((variant) => variant._id);
 
 const ARCHIVE_PRODUCTS = gql`
   mutation archiveProducts($input: ArchiveProductsInput!) {
@@ -52,65 +42,12 @@ mutation createProductVariant($input: CreateProductVariantInput!) {
 `;
 
 /**
- * Metafield to remove
- * @param {String} productId Product ID
- * @param {Object} metafield Metafield object
- * @param {String} metafield.key Key
- * @param {String} metafield.value Value
- * @returns {undefined} No return
- */
-export function handleMetaRemove(productId, metafield) {
-  Meteor.call("products/removeMetaFields", productId, metafield);
-}
-
-/**
  * Restore an archived product
  * @param {Object} product Product object
  * @returns {undefined} No return
  */
 export function handleProductRestore(product) {
   Meteor.call("products/updateProductField", product._id, "isDeleted", false);
-}
-
-/**
- * Save a product field
- * @param {String} productId Product ID
- * @param {String} fieldName Field name to save
- * @param {Any} value Value for that field
- * @returns {undefined} No return
- */
-export function handleProductFieldSave(productId, fieldName, value) {
-  Meteor.call("products/updateProductField", productId, fieldName, value, (error) => {
-    if (error) {
-      Alerts.toast(error.message, "error");
-      this.forceUpdate();
-    }
-  });
-}
-
-/**
- * Handle save of a product variant field
- * @param {String} variantId Variant id
- * @param {String} fieldName Field name
- * @param {Any} value Any value supported by the variant schema
- * @returns {undefined} No return
- */
-export function handleProductVariantFieldSave(variantId, fieldName, value) {
-  Meteor.call("products/updateProductField", variantId, fieldName, value, (error) => {
-    if (error) {
-      Alerts.toast(error.message, "error");
-    }
-  });
-}
-
-
-/**
- * Toggle product visibility
- * @param {String} product Product
- * @returns {undefined} No return
- */
-function handleToggleProductVisibility(product) {
-  Meteor.call("products/updateProductField", product._id, "isVisible", !product.isVisible);
 }
 
 /**
@@ -167,8 +104,8 @@ function useProduct(args = {}) {
     option = variant.options.find(({ _id }) => _id === optionId);
   }
 
-  const onArchiveProduct = useCallback(async (product, redirectUrl) => {
-    const opaqueProductIds = await getOpaqueIds([{ namespace: "Product", id: product._id }]);
+  const onArchiveProduct = useCallback(async (productLocal, redirectUrl) => {
+    const opaqueProductIds = await getOpaqueIds([{ namespace: "Product", id: productLocal._id }]);
 
     try {
       await archiveProducts({ variables: { input: { shopId, productIds: opaqueProductIds } } });
@@ -184,8 +121,8 @@ function useProduct(args = {}) {
   ]);
 
 
-  const onCloneProduct = useCallback(async (product) => {
-    const opaqueProductIds = await getOpaqueIds([{ namespace: "Product", id: product }]);
+  const onCloneProduct = useCallback(async (productLocal) => {
+    const opaqueProductIds = await getOpaqueIds([{ namespace: "Product", id: productLocal }]);
 
     try {
       await cloneProducts({ variables: { input: { shopId, productIds: opaqueProductIds } } });
@@ -193,10 +130,7 @@ function useProduct(args = {}) {
     } catch (error) {
       Alerts.toast(i18next.t("productDetailEdit.cloneProductFail", { err: error }), "error");
     }
-  }, [
-    cloneProducts,
-    shopId
-  ]);
+  }, [cloneProducts, shopId]);
 
   const onCreateVariant = useCallback(async ({
     parentId: parentIdLocal = product._id,
@@ -338,12 +272,7 @@ function useProduct(args = {}) {
     } catch (error) {
       Alerts.toast(i18next.t("productDetailEdit.updateProductFieldFail", { err: error }), "error");
     }
-  }, [
-    product,
-    shopId,
-    updateProductVariant,
-    variant
-  ]);
+  }, [shopId, updateProductVariant]);
 
   const onToggleVariantVisibility = useCallback(async ({
     variant: variantLocal,
@@ -386,7 +315,6 @@ function useProduct(args = {}) {
     onCloneProduct,
     onCreateVariant,
     onUpdateProduct,
-    onProductVariantFieldSave: handleProductVariantFieldSave,
     option,
     onRestoreProduct: handleProductRestore,
     onToggleProductVisibility,
