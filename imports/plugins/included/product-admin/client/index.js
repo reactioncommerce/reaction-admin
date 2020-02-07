@@ -9,10 +9,12 @@ import { registerOperatorRoute } from "/imports/client/ui";
 import ProductsTable from "./components/ProductsTable";
 import ProductDetailLayout from "./layouts/ProductDetail";
 import ContentViewExtraWideLayout from "/imports/client/ui/layouts/ContentViewExtraWideLayout";
+import ContentViewFullLayout from "/imports/client/ui/layouts/ContentViewFullLayout";
 
 registerOperatorRoute({
   isNavigationLink: false,
   isSetting: false,
+  layoutComponent: ContentViewFullLayout,
   path: "/products/:handle/:variantId?/:optionId?",
   mainComponent: ProductDetailLayout
 });
