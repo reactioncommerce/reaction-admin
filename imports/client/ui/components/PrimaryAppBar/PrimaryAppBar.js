@@ -1,16 +1,20 @@
 import React, { Children } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import AppBar from "@material-ui/core/AppBar";
-import Hidden from "@material-ui/core/Hidden";
-import IconButton from "@material-ui/core/IconButton";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import withStyles from "@material-ui/core/styles/withStyles";
+import {
+  AppBar,
+  Box,
+  Hidden,
+  IconButton,
+  Toolbar,
+  Typography,
+  makeStyles
+} from "@material-ui/core";
 import MenuIcon from "mdi-material-ui/Menu";
+import ArrowLeftIcon from "mdi-material-ui/ArrowLeft";
 import { UIContext } from "../../context/UIContext";
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   action: {
     marginLeft: theme.spacing()
   },
@@ -23,7 +27,7 @@ const styles = (theme) => ({
   title: {
     flex: 1
   }
-});
+}));
 
 /**
  * An AppBar for the main content area that provides a place for a title,
@@ -31,7 +35,9 @@ const styles = (theme) => ({
  * @param {Object} props Component props
  * @returns {React.Component} A react component
  */
-function PrimaryAppBar({ children, classes, title }) {
+function PrimaryAppBar({ children, title, onBackButtonClick, shouldShowBackButton = true }) {
+  const classes = useStyles();
+
   return (
     <UIContext.Consumer>
       {({ isMobile, isDetailDrawerOpen, isPrimarySidebarOpen, onTogglePrimarySidebar }) => {
@@ -55,6 +61,13 @@ function PrimaryAppBar({ children, classes, title }) {
                   <MenuIcon />
                 </IconButton>
               </Hidden>
+              {(shouldShowBackButton && onBackButtonClick) && (
+                <Box paddingRight={1}>
+                  <IconButton onClick={onBackButtonClick}>
+                    <ArrowLeftIcon />
+                  </IconButton>
+                </Box>
+              )}
               <Typography
                 className={classes.title}
                 component="h1"
@@ -78,8 +91,10 @@ function PrimaryAppBar({ children, classes, title }) {
 PrimaryAppBar.propTypes = {
   children: PropTypes.node,
   classes: PropTypes.object,
+  onBackButtonClick: PropTypes.func,
   onToggleDrawerOpen: PropTypes.func,
+  shouldShowBackButton: PropTypes.bool,
   title: PropTypes.node
 };
 
-export default withStyles(styles, { name: "RuiPrimaryAppBar" })(PrimaryAppBar);
+export default PrimaryAppBar;
