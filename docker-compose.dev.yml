@@ -23,7 +23,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-dev
-    command: bash -c "export PATH=$PATH:/home/node/.meteor && time meteor npm install --no-audit && node --experimental-modules ./.reaction/scripts/run.mjs"
+    command: bash -c "export PATH=$PATH:/home/node/.meteor && npm install --no-audit && node ./.reaction/waitForMongo.js && node --experimental-modules ./.reaction/scripts/run.mjs"
     volumes:
       - .:/usr/local/src/app:cached
       - reaction_meteor_local:/usr/local/src/app/.meteor/local

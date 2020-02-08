@@ -1,3 +1,15 @@
+# v3.0.0-beta.4
+
+This is the fourth beta release of the Reaction Admin project that is designed to work with our new Reaction API.
+
+*Reaction releases will no longer be coordinated across all projects - we'll release each project, independently, as needed. This means version numbers will no longer be in sync. The newest versions of each project will work together. This change has two exceptions: we will release all projects in coordination for a `beta` release, and all projects in coordination for the official `v3.0.0` release.*
+
+### Fixes
+
+- fix: wait for Hydra before trying to create client [208](https://github.com/reactioncommerce/reaction-admin/pull/208)
+- fix: wait for mongo replica set [205](https://github.com/reactioncommerce/reaction-admin/pull/205)
+- fix: startup delay to make sure api is running [204](https://github.com/reactioncommerce/reaction-admin/pull/204)
+
 # v3.0.0-beta.3
 
 This is the third beta release of the Reaction Admin project that is designed to work with our new Reaction API.

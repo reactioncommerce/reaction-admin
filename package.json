@@ -1,7 +1,7 @@
 {
-  "name": "reaction",
+  "name": "reaction-admin",
   "description": "Reaction is a modern reactive, real-time event driven ecommerce platform.",
-  "version": "3.0.0-beta.3",
+  "version": "3.0.0-beta.4",
   "main": "main.js",
   "directories": {
     "test": "tests"
@@ -71,6 +71,7 @@
     "meteor-node-stubs": "^0.4.1",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.23",
+    "mongodb": "^3.5.2",
     "node-fetch": "^2.3.0",
     "nodemailer-wellknown": "^0.2.3",
     "notistack": "~0.9.5",
@@ -122,7 +123,8 @@
     "sweetalert2": "^7.33.1",
     "tether-tooltip": "^1.2.0",
     "transliteration": "^2.1.2",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "wait-on": "^4.0.0"
   },
   "devDependencies": {
     "@apollo/react-testing": "^3.1.3",

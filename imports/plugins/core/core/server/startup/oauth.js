@@ -1,5 +1,6 @@
 import { URL } from "url";
 import fetch from "node-fetch";
+import waitOn from "wait-on";
 import Logger from "@reactioncommerce/logger";
 import { Meteor } from "meteor/meteor";
 import config from "../config.js";
@@ -37,6 +38,18 @@ const hydraClient = {
  * @returns {Promise<undefined>} Nothing
  */
 export async function ensureHydraClient() {
+  try {
+    Logger.info("Waiting for Hydra service to be available...");
+    const parsedUrl = new URL(OAUTH2_ADMIN_URL);
+    await waitOn({
+      resources: [`tcp:${parsedUrl.host}`],
+      timeout: 120000 // 2 minutes
+    });
+    Logger.info("Hydra service is available.");
+  } catch (error) {
+    throw new Error(`Could not connect to Hydra service at ${OAUTH2_ADMIN_URL}`);
+  }
+
   const getClientResponse = await fetch(makeAbsolute(`/clients/${OAUTH2_CLIENT_ID}`, OAUTH2_ADMIN_URL), {
     method: "GET",
     headers: { "Content-Type": "application/json" }
