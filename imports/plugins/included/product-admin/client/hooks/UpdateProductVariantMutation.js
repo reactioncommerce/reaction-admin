@@ -27,6 +27,9 @@ export default gql`
         updatedAt
         weight
         width
+        isTaxable
+        taxCode
+        taxDescription
       }
     }
   }
