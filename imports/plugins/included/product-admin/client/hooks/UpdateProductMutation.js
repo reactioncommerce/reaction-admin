@@ -62,6 +62,9 @@ export default gql`
           updatedAt
           weight
           width
+          isTaxable
+          taxCode
+          taxDescription
           options {
             _id
             attributeLabel
@@ -86,6 +89,9 @@ export default gql`
             updatedAt
             weight
             width
+            isTaxable
+            taxCode
+            taxDescription
           }
         }
       }
