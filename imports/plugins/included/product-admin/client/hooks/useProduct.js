@@ -308,6 +308,7 @@ function useProduct(args = {}) {
   }
 
   return {
+    currentVariant: option || variant,
     newMetaField,
     isLoading,
     handleDeleteProductTag,
