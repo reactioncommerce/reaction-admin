@@ -53,35 +53,6 @@ export default {
   defaultVisitorRoles: ["anonymous", "guest", "product", "tag", "index", "cart/completed"],
 
   /**
-   * @name canInviteToGroup
-   * @method
-   * @memberof Core
-   * @summary checks if the user making the request is allowed to make invitation to that group
-   * @param {Object} options -
-   * @param {Object} options.group - group to invite to
-   * @param {Object} options.user - user object  making the invite (Meteor.user())
-   * @returns {Boolean} -
-   */
-  canInviteToGroup(options) {
-    const { group } = options;
-    let { user } = options;
-    if (!user) {
-      user = Meteor.user();
-    }
-    const userPermissions = user.roles[group.shopId];
-    const groupPermissions = group.permissions;
-
-    // granting invitation right for user with `owner` role in a shop
-    if (this.hasPermission(["owner"], getUserId(), group.shopId)) {
-      return true;
-    }
-
-    // checks that userPermissions includes all elements from groupPermissions
-    // we are not using Reaction.hasPermission here because it returns true if the user has at least one
-    return _.difference(groupPermissions, userPermissions).length === 0;
-  },
-
-  /**
    * @name hasPermission
    * @method
    * @memberof Core
