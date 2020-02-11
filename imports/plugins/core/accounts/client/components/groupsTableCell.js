@@ -2,7 +2,6 @@ import React from "react";
 import _ from "lodash";
 import PropTypes from "prop-types";
 import { Components, registerComponent, withMoment } from "@reactioncommerce/reaction-components";
-import { Reaction } from "/client/api";
 import { getUserAvatar } from "/imports/plugins/core/accounts/client/helpers/helpers";
 
 const GroupsTableCell = (props) => {
