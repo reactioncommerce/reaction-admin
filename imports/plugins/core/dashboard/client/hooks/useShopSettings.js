@@ -86,9 +86,9 @@ function useShopSettings(args = {}) {
           }
         }
       });
-      enqueueSnackbar(i18next.t("admin.settings.saveSuccess"), { variant: "success" });
+      enqueueSnackbar(i18next.t("admin.settings.saveSuccess"));
     } catch (error) {
-      enqueueSnackbar(i18next.t("admin.settings.saveFailed"), { variant: "error" });
+      enqueueSnackbar(i18next.t("admin.settings.saveFailed"));
     }
   };
 
