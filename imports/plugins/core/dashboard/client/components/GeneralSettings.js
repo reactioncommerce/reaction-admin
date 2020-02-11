@@ -6,13 +6,13 @@ import TextField from "@reactioncommerce/catalyst/TextField";
 import useReactoForm from "reacto-form/cjs/useReactoForm";
 import muiOptions from "reacto-form/cjs/muiOptions";
 import {
-  Box,
   Card,
   CardContent,
   CardHeader,
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
+  Grid,
   makeStyles
 } from "@material-ui/core";
 import ChevronUp from "mdi-material-ui/ChevronUp";
@@ -24,8 +24,10 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(3)
   },
   textField: {
-    marginBottom: theme.spacing(4),
     minWidth: 350
+  },
+  saveButton: {
+    textAlign: "right"
   }
 }));
 
@@ -103,34 +105,40 @@ function ShopSettings() {
           Manage the shop's general settings, such as its name and contact email.
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <div>
-              <TextField
-                className={classes.textField}
-                error={hasErrors(["name"])}
-                fullWidth
-                helperText={getFirstErrorMessage(["name"])}
-                label={i18next.t("admin.settings.general.nameLabel")}
-                placeholder={i18next.t("admin.settings.general.namePlaceholder")}
-                {...getInputProps("name", muiOptions)}
-              />
-              <TextField
-                className={classes.textField}
-                error={hasErrors(["emails[0].address"])}
-                fullWidth
-                helperText={getFirstErrorMessage(["emails[0].address"])}
-                label={i18next.t("admin.settings.general.emailLabel")}
-                placeholder={i18next.t("admin.settings.general.emailPlaceholder")}
-                {...getInputProps("emails[0].address", muiOptions)}
-              />
-              <TextField
-                className={classes.textField}
-                error={hasErrors(["slug"])}
-                fullWidth
-                helperText={getFirstErrorMessage(["slug"])}
-                label={i18next.t("admin.settings.general.slugLabel")}
-                placeholder={i18next.t("admin.settings.general.slugPlaceholder")}
-                {...getInputProps("slug", muiOptions)}
-              />
+            <Grid container spacing={1}>
+              <Grid item sm={12}>
+                <TextField
+                  className={classes.textField}
+                  error={hasErrors(["name"])}
+                  fullWidth
+                  helperText={getFirstErrorMessage(["name"])}
+                  label={i18next.t("admin.settings.general.nameLabel")}
+                  placeholder={i18next.t("admin.settings.general.namePlaceholder")}
+                  {...getInputProps("name", muiOptions)}
+                />
+              </Grid>
+              <Grid item sm={12}>
+                <TextField
+                  className={classes.textField}
+                  error={hasErrors(["emails[0].address"])}
+                  fullWidth
+                  helperText={getFirstErrorMessage(["emails[0].address"])}
+                  label={i18next.t("admin.settings.general.emailLabel")}
+                  placeholder={i18next.t("admin.settings.general.emailPlaceholder")}
+                  {...getInputProps("emails[0].address", muiOptions)}
+                />
+              </Grid>
+              <Grid item sm={12}>
+                <TextField
+                  className={classes.textField}
+                  error={hasErrors(["slug"])}
+                  fullWidth
+                  helperText={getFirstErrorMessage(["slug"])}
+                  label={i18next.t("admin.settings.general.slugLabel")}
+                  placeholder={i18next.t("admin.settings.general.slugPlaceholder")}
+                  {...getInputProps("slug", muiOptions)}
+                />
+              </Grid>
               <TextField
                 className={classes.textField}
                 error={hasErrors(["description"])}
@@ -140,16 +148,18 @@ function ShopSettings() {
                 placeholder={i18next.t("admin.settings.general.descriptionPlaceholder")}
                 {...getInputProps("description", muiOptions)}
               />
-              <TextField
-                className={classes.textField}
-                error={hasErrors(["keywords"])}
-                fullWidth
-                helperText={getFirstErrorMessage(["keywords"])}
-                label={i18next.t("admin.settings.general.keywordsLabel")}
-                placeholder={i18next.t("admin.settings.general.keywordsPlaceholder")}
-                {...getInputProps("keywords", muiOptions)}
-              />
-              <Box textAlign="right">
+              <Grid item sm={12}>
+                <TextField
+                  className={classes.textField}
+                  error={hasErrors(["keywords"])}
+                  fullWidth
+                  helperText={getFirstErrorMessage(["keywords"])}
+                  label={i18next.t("admin.settings.general.keywordsLabel")}
+                  placeholder={i18next.t("admin.settings.general.keywordsPlaceholder")}
+                  {...getInputProps("keywords", muiOptions)}
+                />
+              </Grid>
+              <Grid classes={{ root: classes.saveButton }} item sm={12}>
                 <Button
                   color="primary"
                   disabled={isSubmitting}
@@ -159,8 +169,8 @@ function ShopSettings() {
                 >
                   {isSubmitting ? i18next.t("admin.settings.saveProcessing") : i18next.t("app.save")}
                 </Button>
-              </Box>
-            </div>
+              </Grid>
+            </Grid>
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </CardContent>

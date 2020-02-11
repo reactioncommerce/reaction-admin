@@ -129,7 +129,7 @@ function AddressSettings() {
             Manage the shop's physical mailing address.
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Grid container spacing={3}>
+            <Grid container spacing={1}>
               <Grid item xs={12}>
                 <TextField
                   className={classes.textField}
