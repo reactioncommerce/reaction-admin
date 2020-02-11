@@ -30,24 +30,28 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const generalSettings = new SimpleSchema({
-  name: {
+  "name": {
     type: String,
     min: 1
   },
-  emails: {
-    type: String,
-    regEx: SimpleSchema.RegEx.Email,
-    optional: true
+  "emails": {
+    type: Array
   },
-  slug: {
+  "emails.$": new SimpleSchema({
+    address: {
+      type: String,
+      regEx: SimpleSchema.RegEx.Email
+    }
+  }),
+  "slug": {
     type: String,
     min: 1
   },
-  description: {
+  "description": {
     type: String,
     optional: true
   },
-  keywords: {
+  "keywords": {
     type: String,
     optional: true
   }
@@ -63,7 +67,6 @@ function ShopSettings() {
   const classes = useStyles();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { onUpdateShop, refetch, shop } = useShopSettings();
-
   const {
     getFirstErrorMessage,
     getInputProps,
@@ -73,14 +76,19 @@ function ShopSettings() {
     async onSubmit(formData) {
       setIsSubmitting(true);
       await onUpdateShop(generalSettings.clean(formData));
-      setIsSubmitting(false);
       refetch();
+      setIsSubmitting(false);
     },
     validator(formData) {
       return validator(generalSettings.clean(formData));
     },
     value: shop
   });
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    submitForm();
+  };
 
   return (
     <Card className={classes.card}>
@@ -92,40 +100,35 @@ function ShopSettings() {
             aria-controls="panel1a-content"
             id="panel1a-header"
           >
-          Settings
+          Manage the shop's general settings, such as its name and contact email.
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <form
-              onSubmit={(event) => {
-                event.preventDefault();
-                submitForm();
-              }}
-            >
+            <div>
               <TextField
                 className={classes.textField}
                 error={hasErrors(["name"])}
                 fullWidth
                 helperText={getFirstErrorMessage(["name"])}
-                label={i18next.t("admin.settings.address.nameLabel")}
-                placeholder={i18next.t("admin.settings.address.namePlaceholder")}
+                label={i18next.t("admin.settings.general.nameLabel")}
+                placeholder={i18next.t("admin.settings.general.namePlaceholder")}
                 {...getInputProps("name", muiOptions)}
               />
               <TextField
                 className={classes.textField}
-                error={hasErrors(["emails"])}
+                error={hasErrors(["emails[0].address"])}
                 fullWidth
-                helperText={getFirstErrorMessage(["emails"])}
-                label={i18next.t("admin.settings.address.emailLabel")}
-                placeholder={i18next.t("admin.settings.address.emailPlaceholder")}
-                {...getInputProps("emails", muiOptions)}
+                helperText={getFirstErrorMessage(["emails[0].address"])}
+                label={i18next.t("admin.settings.general.emailLabel")}
+                placeholder={i18next.t("admin.settings.general.emailPlaceholder")}
+                {...getInputProps("emails[0].address", muiOptions)}
               />
               <TextField
                 className={classes.textField}
                 error={hasErrors(["slug"])}
                 fullWidth
                 helperText={getFirstErrorMessage(["slug"])}
-                label={i18next.t("admin.settings.address.slugLabel")}
-                placeholder={i18next.t("admin.settings.address.slugPlaceholder")}
+                label={i18next.t("admin.settings.general.slugLabel")}
+                placeholder={i18next.t("admin.settings.general.slugPlaceholder")}
                 {...getInputProps("slug", muiOptions)}
               />
               <TextField
@@ -133,8 +136,8 @@ function ShopSettings() {
                 error={hasErrors(["description"])}
                 fullWidth
                 helperText={getFirstErrorMessage(["description"])}
-                label={i18next.t("admin.settings.address.descriptionLabel")}
-                placeholder={i18next.t("admin.settings.address.descriptionPlaceholder")}
+                label={i18next.t("admin.settings.general.descriptionLabel")}
+                placeholder={i18next.t("admin.settings.general.descriptionPlaceholder")}
                 {...getInputProps("description", muiOptions)}
               />
               <TextField
@@ -142,8 +145,8 @@ function ShopSettings() {
                 error={hasErrors(["keywords"])}
                 fullWidth
                 helperText={getFirstErrorMessage(["keywords"])}
-                label={i18next.t("admin.settings.address.keywordsLabel")}
-                placeholder={i18next.t("admin.settings.address.keywordsPlaceholder")}
+                label={i18next.t("admin.settings.general.keywordsLabel")}
+                placeholder={i18next.t("admin.settings.general.keywordsPlaceholder")}
                 {...getInputProps("keywords", muiOptions)}
               />
               <Box textAlign="right">
@@ -152,11 +155,12 @@ function ShopSettings() {
                   disabled={isSubmitting}
                   variant="contained"
                   type="submit"
+                  onClick={handleSubmit}
                 >
                   {isSubmitting ? i18next.t("admin.settings.saveProcessing") : i18next.t("app.save")}
                 </Button>
               </Box>
-            </form>
+            </div>
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </CardContent>

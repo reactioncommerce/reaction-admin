@@ -10,6 +10,15 @@ const SHOP_QUERY = gql`
       _id
       addressBook {
         company
+        fullName
+        address1
+        address2
+        city
+        region
+        postal
+        country
+        phone
+        isCommercial
       }
       description
       emails {
@@ -58,11 +67,6 @@ function useShopSettings(args = {}) {
     });
   }
 
-  // apply transformation to emails field
-  if (shopQueryResult && shopQueryResult.shop && shopQueryResult.shop.emails) {
-    shopQueryResult.shop.emails = shopQueryResult.shop.emails[0].address;
-  }
-
   /**
    * @method onUpdateShop
    * @param {Object} fields Fields in `UpdateShopInput` that can be updated.
@@ -73,11 +77,6 @@ function useShopSettings(args = {}) {
     shopId: shopIdLocal = shopId,
     ...fields
   }) => {
-    // certain fields need a transformation
-    if (fields.emails) {
-      fields.emails = [{ address: fields.emails }];
-    }
-
     try {
       await updateShop({
         variables: {
@@ -87,7 +86,6 @@ function useShopSettings(args = {}) {
           }
         }
       });
-
       enqueueSnackbar(i18next.t("admin.settings.saveSuccess"), { variant: "success" });
     } catch (error) {
       enqueueSnackbar(i18next.t("admin.settings.saveFailed"), { variant: "error" });
