@@ -1,45 +1,9 @@
 import i18next from "i18next";
-import gql from "graphql-tag";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
-import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import { useSnackbar } from "notistack";
-
-const SHOP_QUERY = gql`
-  query shopSettings($id: ID!) {
-    shop(id: $id) {
-      _id
-      addressBook {
-        company
-        fullName
-        address1
-        address2
-        city
-        region
-        postal
-        country
-        phone
-        isCommercial
-      }
-      description
-      emails {
-        address
-      }
-      keywords
-      name
-      slug
-    }
-  }
-`;
-
-const UPDATE_SHOP = gql`
-  mutation updateShop($input: UpdateShopInput!) {
-    updateShop(input: $input) {
-      shop {
-        name
-      }
-    }
-  }
-`;
+import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
+import shopQuery from "../graphql/queries/shop";
+import updateShopMutation from "../graphql/mutations/updateShop";
 
 /**
  * @method useShopSettings
@@ -54,10 +18,10 @@ function useShopSettings(args = {}) {
     shopId: providedShopId
   } = args;
   const [currentShopId] = useCurrentShopId();
-  const [updateShop] = useMutation(UPDATE_SHOP);
+  const [updateShop] = useMutation(updateShopMutation);
   const shopId = providedShopId || currentShopId;
   const { enqueueSnackbar } = useSnackbar();
-  const [fetchShop, { called, data: shopQueryResult, refetch }] = useLazyQuery(SHOP_QUERY);
+  const [fetchShop, { called, data: shopQueryResult, refetch: refetchShopQuery }] = useLazyQuery(shopQuery);
 
   if (shopId && !called) {
     fetchShop({
@@ -86,15 +50,15 @@ function useShopSettings(args = {}) {
           }
         }
       });
-      enqueueSnackbar(i18next.t("admin.settings.saveSuccess"));
+      enqueueSnackbar(i18next.t("admin.settings.saveSuccess"), { variant: "success" });
     } catch (error) {
-      enqueueSnackbar(i18next.t("admin.settings.saveFailed"));
+      enqueueSnackbar(i18next.t("admin.settings.saveFailed"), { variant: "success" });
     }
   };
 
   return {
     onUpdateShop,
-    refetch,
+    refetchShopQuery,
     shop: (shopQueryResult && shopQueryResult.shop) || {},
     shopId
   };

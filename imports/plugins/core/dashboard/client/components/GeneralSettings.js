@@ -68,7 +68,7 @@ const validator = generalSettings.getFormValidator();
 function ShopSettings() {
   const classes = useStyles();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { onUpdateShop, refetch, shop } = useShopSettings();
+  const { onUpdateShop, shop } = useShopSettings();
   const {
     getFirstErrorMessage,
     getInputProps,
@@ -78,7 +78,6 @@ function ShopSettings() {
     async onSubmit(formData) {
       setIsSubmitting(true);
       await onUpdateShop(generalSettings.clean(formData));
-      refetch();
       setIsSubmitting(false);
     },
     validator(formData) {
