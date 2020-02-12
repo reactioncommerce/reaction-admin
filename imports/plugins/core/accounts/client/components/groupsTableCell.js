@@ -2,7 +2,6 @@ import React from "react";
 import _ from "lodash";
 import PropTypes from "prop-types";
 import { Components, registerComponent, withMoment } from "@reactioncommerce/reaction-components";
-import { Reaction } from "/client/api";
 import { getUserAvatar } from "/imports/plugins/core/accounts/client/helpers/helpers";
 
 const GroupsTableCell = (props) => {
@@ -54,13 +53,10 @@ const GroupsTableCell = (props) => {
     const groupName = group.name && _.startCase(group.name);
     const groupNameSpan = <span className="group-dropdown">{groupName}</span>;
     const ownerGroup = groups.find((grp) => grp.slug === "owner") || {};
-    const hasOwnerAccess = Reaction.hasPermission("reaction:legacy:groups/read", Reaction.getUserId(), Reaction.getShopId());
 
     // Permission check. Remove owner option, if user is not current owner.
     // Also remove groups user does not have roles to manage. This is also checked on the server
-    const dropOptions = groups
-      .filter((grp) => !((grp.slug === "owner" && !hasOwnerAccess)))
-      .filter((grp) => Reaction.canInviteToGroup({ group: grp })) || [];
+    const dropOptions = groups || [];
 
     if (dropOptions.length < 2) {
       return groupNameSpan;

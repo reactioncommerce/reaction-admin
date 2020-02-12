@@ -52,9 +52,7 @@ export function sortGroups(groups) {
  * @returns {Array} - array of groups or empty object
  */
 export function getInvitableGroups(groups) {
-  return groups
-    .filter((grp) => grp.slug !== "owner")
-    .filter((grp) => Reaction.canInviteToGroup({ group: grp }));
+  return groups || [];
 }
 
 /**
