@@ -1,3 +1,11 @@
+# v3.0.0-beta.5
+
+This is the fifth beta release of the Reaction Admin project that is designed to work with our new Reaction API.
+
+### Fixes
+
+- fix: remove `canInviteToGroup` helper on the client [214](https://github.com/reactioncommerce/reaction-admin/pull/214)
+
 # v3.0.0-beta.4
 
 This is the fourth beta release of the Reaction Admin project that is designed to work with our new Reaction API.
