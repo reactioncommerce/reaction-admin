@@ -11,6 +11,7 @@ import ordersQuery from "../graphql/queries/orders";
 import { formatDateRangeFilter } from "../../client/helpers";
 import OrderDateCell from "./DataTable/OrderDateCell";
 import OrderIdCell from "./DataTable/OrderIdCell";
+import OrderTotalCell from "./DataTable/OrderTotalCell";
 
 const useStyles = makeStyles({
   card: {
@@ -99,7 +100,7 @@ function OrdersTable() {
       // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
       Header: () => <Box textAlign="right">{i18next.t("admin.table.headers.total")}</Box>,
       // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
-      Cell: ({ cell }) => <Box textAlign="right">{cell.value}</Box>
+      Cell: ({ row }) => <OrderTotalCell row={row} />
     },
     {
       Header: i18next.t("admin.table.headers.date"),
