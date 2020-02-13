@@ -30,7 +30,6 @@ const inviteShopMember = gql`
 
 class AdminInviteForm extends Component {
   static propTypes = {
-    canInviteToGroup: PropTypes.func,
     groups: PropTypes.array
   };
 
