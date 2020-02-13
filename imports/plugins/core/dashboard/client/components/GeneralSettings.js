@@ -101,7 +101,7 @@ function ShopSettings() {
             aria-controls="panel1a-content"
             id="panel1a-header"
           >
-          Manage the shop's general settings, such as its name and contact email.
+            {i18next.t("admin.settings.general.header")}
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <Grid container spacing={1}>
@@ -165,8 +165,9 @@ function ShopSettings() {
                   variant="contained"
                   type="submit"
                   onClick={handleSubmit}
+                  isWaiting={isSubmitting}
                 >
-                  {isSubmitting ? i18next.t("admin.settings.saveProcessing") : i18next.t("app.save")}
+                  {i18next.t("app.save")}
                 </Button>
               </Grid>
             </Grid>

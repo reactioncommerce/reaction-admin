@@ -86,7 +86,7 @@ const validator = addressSettings.getFormValidator();
 function AddressSettings() {
   const classes = useStyles();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { onUpdateShop, refetch, shop } = useShopSettings();
+  const { onUpdateShop, shop } = useShopSettings();
 
   let initialValues = {};
   if (shop.addressBook) {
@@ -102,7 +102,6 @@ function AddressSettings() {
     async onSubmit(formData) {
       setIsSubmitting(true);
       await onUpdateShop({ addressBook: [addressSettings.clean(formData)] });
-      refetch();
       setIsSubmitting(false);
     },
     validator(formData) {
@@ -126,7 +125,7 @@ function AddressSettings() {
             aria-controls="panel1a-content"
             id="panel1a-header"
           >
-            Manage the shop's physical mailing address.
+            {i18next.t("admin.settings.address.header")}
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <Grid container spacing={1}>
