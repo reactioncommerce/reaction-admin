@@ -26,6 +26,7 @@ const useStyles = makeStyles({
  * @returns {React.Component} returns a React component
  */
 function OrderAppBar(props) {
+  const history = useHistory();
   const hasPermission = Reaction.hasPermission(["reaction:legacy:orders/update"], Reaction.getUserId(), Reaction.getShopId());
   const { order } = props;
   const canCancelOrder = (order.status !== "coreOrderWorkflow/canceled");
