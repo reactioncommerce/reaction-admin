@@ -96,7 +96,7 @@ function OrdersTable() {
       accessor: "payments[0].billingAddress.fullName"
     },
     {
-      accessor: "payments[0].amount.displayAmount",
+      accessor: "summary.total.displayAmount",
       // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
       Header: () => <Box textAlign="right">{i18next.t("admin.table.headers.total")}</Box>,
       // eslint-disable-next-line react/no-multi-comp,react/display-name,react/prop-types
