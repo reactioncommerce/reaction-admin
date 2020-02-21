@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
 import { Components } from "@reactioncommerce/reaction-components";
 import Button from "@reactioncommerce/catalyst/Button";
@@ -9,6 +9,7 @@ import CardHeader from "@material-ui/core/CardHeader";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Grid from "@material-ui/core/Grid";
 import useReactoForm from "reacto-form/cjs/useReactoForm";
+import muiCheckboxOptions from "reacto-form/cjs/muiCheckboxOptions";
 import SimpleSchema from "simpl-schema";
 import muiOptions from "reacto-form/cjs/muiOptions";
 import TextField from "@reactioncommerce/catalyst/TextField";
@@ -37,8 +38,6 @@ const validator = formSchema.getFormValidator();
  */
 function VariantInventoryForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isEnabled, setIsEnabled] = useState();
-  const [canBackorder, setCanBackorder] = useState();
   const {
     currentVariant,
     hasChildVariants,
@@ -60,33 +59,18 @@ function VariantInventoryForm() {
       setIsSubmitting(true);
 
       await onUpdateVariantInventoryInfo({
-        inventoryInput: formSchema.clean({
-          ...formData,
-          isEnabled,
-          canBackorder
-        })
+        inventoryInput: formSchema.clean(formData)
       });
 
       setIsSubmitting(false);
     },
     validator(formData) {
-      return validator(formSchema.clean({
-        ...formData,
-        isEnabled,
-        canBackorder
-      }));
+      return validator(formSchema.clean(formData));
     },
     value: inventoryInfo
   });
 
-  useEffect(() => {
-    if (inventoryInfo) {
-      setIsEnabled(inventoryInfo.isEnabled || false);
-      setCanBackorder(inventoryInfo.canBackorder || true);
-    }
-  }, [
-    inventoryInfo
-  ]);
+  const { canBackorder, isEnabled } = currentFormData;
 
   if (!currentVariant) return null;
 
@@ -123,17 +107,13 @@ function VariantInventoryForm() {
       >
         <p>{i18next.t("productVariant.inventoryMessage")}</p>
         <FormControlLabel
-          checked={isEnabled}
-          onChange={(event) => {
-            setIsEnabled(event.target.checked);
-          }}
           control={<Checkbox />}
           label={i18next.t("productVariant.isInventoryManagementEnabled")}
+          {...getInputProps("isEnabled", muiCheckboxOptions)}
         />
         <Grid container spacing={1}>
           <Grid item sm={6}>
             <TextField
-              disabled={!isEnabled}
               error={hasErrors(["inventoryInStock"])}
               fullWidth
               helperText={getFirstErrorMessage(["inventoryInStock"]) || inventoryInStockHelperText}
@@ -141,6 +121,7 @@ function VariantInventoryForm() {
               placeholder="0"
               type="number"
               {...inventoryInStockInputProps}
+              disabled={!isEnabled}
               value={isEnabled ? inventoryInStockInputProps.value : 0}
             />
             <Button
@@ -154,7 +135,6 @@ function VariantInventoryForm() {
           </Grid>
           <Grid item sm={6}>
             <TextField
-              disabled={!isEnabled}
               error={hasErrors(["lowInventoryWarningThreshold"])}
               fullWidth
               helperText={getFirstErrorMessage(["lowInventoryWarningThreshold"]) || i18next.t("productVariant.lowInventoryWarningThresholdLabel")}
@@ -162,6 +142,7 @@ function VariantInventoryForm() {
               placeholder="0"
               type="number"
               {...lowInventoryWarningThresholdInputProps}
+              disabled={!isEnabled}
               value={isEnabled ? lowInventoryWarningThresholdInputProps.value : 0}
             />
           </Grid>
@@ -169,13 +150,11 @@ function VariantInventoryForm() {
         <Grid container spacing={1}>
           <Grid item sm={12}>
             <FormControlLabel
-              checked={isEnabled ? canBackorder : true}
-              disabled={!isEnabled}
-              onChange={(event) => {
-                setCanBackorder(event.target.checked);
-              }}
               control={<Checkbox />}
               label={i18next.t("productVariant.allowBackorder")}
+              {...getInputProps("canBackorder", muiCheckboxOptions)}
+              disabled={!isEnabled}
+              checked={isEnabled ? canBackorder : true}
             />
           </Grid>
         </Grid>
