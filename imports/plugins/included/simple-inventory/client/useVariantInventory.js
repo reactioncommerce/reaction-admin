@@ -82,6 +82,13 @@ function useVariantInventory(args = {}) {
   const optionId = routeParams.optionId || optionIdProp;
   const shopId = routeParams.shopId || currentShopId;
   const productVariantId = optionId || variantId;
+  const getInventoryInfoVariables = {
+    productConfiguration: {
+      productId,
+      productVariantId
+    },
+    shopId
+  };
 
   const [updateVariantInventoryInfo] = useMutation(updateSimpleInventoryMutation);
   const [recalculateReservedSimpleInventory] = useMutation(recalculateReservedSimpleInventoryMutation);
@@ -103,13 +110,18 @@ function useVariantInventory(args = {}) {
             },
             shopId: shopIdLocal
           }
-        }
+        },
+        refetchQueries: [{
+          query: getInventoryInfo,
+          variables: getInventoryInfoVariables
+        }],
+        awaitRefetchQueries: true
       });
       enqueueSnackbar(i18next.t("productDetailEdit.updateProductFieldSuccess"), { variant: "success" });
     } catch (error) {
       enqueueSnackbar(i18next.t("productDetailEdit.removeProductTagFail"), { variant: "error" });
     }
-  }, [enqueueSnackbar, productId, productVariantId, shopId, updateVariantInventoryInfo]);
+  }, [enqueueSnackbar, getInventoryInfoVariables, productId, productVariantId, shopId, updateVariantInventoryInfo]);
 
   const onRecalculateReservedSimpleInventory = useCallback(async ({
     productId: productIdLocal = productId,
@@ -136,13 +148,7 @@ function useVariantInventory(args = {}) {
   }, [enqueueSnackbar, productId, productVariantId, recalculateReservedSimpleInventory, shopId]);
 
   const { data: inventoryQueryResult, isLoading: isLoadingInventory, refetch: refetchInventory } = useQuery(getInventoryInfo, {
-    variables: {
-      productConfiguration: {
-        productId,
-        productVariantId
-      },
-      shopId
-    }
+    variables: getInventoryInfoVariables
   });
 
   const { data: productQueryResult, isLoading: isLoadingProduct, refetch: refetchProduct } = useQuery(productQuery, {
