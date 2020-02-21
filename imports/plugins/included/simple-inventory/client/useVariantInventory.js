@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import gql from "graphql-tag";
 import { useParams } from "react-router-dom";
 import i18next from "i18next";
@@ -49,6 +49,13 @@ const recalculateReservedSimpleInventoryMutation = gql`
   }
 `;
 
+const defaultInventoryInfo = {
+  canBackorder: false,
+  inventoryInStock: 0,
+  inventoryReserved: 0,
+  isEnabled: false,
+  lowInventoryWarningThreshold: 0
+};
 
 /**
  * @method useVariantInventory
@@ -161,11 +168,16 @@ function useVariantInventory(args = {}) {
   const currentVariant = option || variant;
   const hasChildVariants = currentVariant && Array.isArray(currentVariant.options) && currentVariant.options.length;
 
+  const inventoryInfo = useMemo(() => ({
+    ...defaultInventoryInfo,
+    ...(inventoryQueryResult && inventoryQueryResult.simpleInventory)
+  }), [inventoryQueryResult]);
+
   return {
     currentVariant,
     hasChildVariants,
     isLoading: isLoadingInventory || isLoadingProduct,
-    inventoryInfo: inventoryQueryResult && inventoryQueryResult.simpleInventory,
+    inventoryInfo,
     onRecalculateReservedSimpleInventory,
     onUpdateVariantInventoryInfo,
     option,
