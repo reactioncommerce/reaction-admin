@@ -1,28 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { IconButton, Menu, MenuItem } from "@material-ui/core";
-import { useState } from "react";
+import { Divider, IconButton, Menu, MenuItem } from "@material-ui/core";
 import { Reaction } from "/client/api";
 import ConfirmDialog from "@reactioncommerce/catalyst/ConfirmDialog";
 import i18next from "i18next";
 import DotsHorizontalIcon from "mdi-material-ui/DotsHorizontal";
 
 /**
- *
- * @param {*} props
+ * Variant actions
+ * @param {Object} props Component props
+ * @returns {React.Element} A dropdown menu for variants an options
  */
 function VariantItemAction(props) {
   const [menuAnchorEl, setMenuAnchorEl] = useState();
   const isOpen = Boolean(menuAnchorEl);
 
   const {
-    onArchiveProduct,
-    onToggleVariantVisibility,
-    onCloneProduct,
+    onArchiveProductVariants,
+    onCloneProductVariants,
+    onCreateVariant,
     onRestoreProduct,
+    onToggleVariantVisibility,
+    option,
     product,
-    variant,
-    option
+    variant
   } = props;
 
   const currentVariant = option || variant;
@@ -40,17 +41,10 @@ function VariantItemAction(props) {
       title={i18next.t("admin.productTable.bulkActions.archiveTitle")}
       message={i18next.t("productDetailEdit.archiveThisProduct")}
       onConfirm={() => {
-        let redirectUrl;
-
-        if (option) {
-          redirectUrl = `/products/${product._id}/${variant._id}`;
-        } else if (variant) {
-          redirectUrl = `/products/${product._id}`;
-        } else {
-          redirectUrl = "/products";
-        }
-
-        onArchiveProduct(currentVariant, redirectUrl);
+        onArchiveProductVariants({
+          variantIds: [currentVariant._id],
+          redirectOnArchive: true
+        });
       }}
     >
       {({ openDialog }) => (
@@ -92,13 +86,30 @@ function VariantItemAction(props) {
         open={isOpen}
         onClose={handleClose}
       >
+        {!option && [
+          <MenuItem
+            key="create-variant"
+            onClick={async () => {
+              await onCreateVariant({
+                parentId: variant._id,
+                redirectOnCreate: true
+              });
+              setMenuAnchorEl(null);
+            }}
+          >
+            {i18next.t("admin.variantList.createVariant")}
+          </MenuItem>,
+          <Divider key="create-variant-divider" />
+        ]}
         <MenuItem
           onClick={() => {
-            onToggleVariantVisibility(currentVariant);
+            onToggleVariantVisibility({
+              variant: currentVariant
+            });
             setMenuAnchorEl(null);
           }}
         >
-          {product.isVisible ?
+          {currentVariant.isVisible ?
             i18next.t("admin.productTable.bulkActions.makeHidden") :
             i18next.t("admin.productTable.bulkActions.makeVisible")
           }
@@ -106,7 +117,9 @@ function VariantItemAction(props) {
         {hasCloneProductPermission &&
           <MenuItem
             onClick={() => {
-              onCloneProduct(product._id);
+              onCloneProductVariants({
+                variantIds: [currentVariant._id]
+              });
               setMenuAnchorEl(null);
             }}
           >
@@ -122,7 +135,14 @@ function VariantItemAction(props) {
 }
 
 VariantItemAction.propTypes = {
-  product: PropTypes.object
+  onArchiveProductVariants: PropTypes.func,
+  onCloneProductVariants: PropTypes.func,
+  onCreateVariant: PropTypes.func,
+  onRestoreProduct: PropTypes.func,
+  onToggleVariantVisibility: PropTypes.func,
+  option: PropTypes.object,
+  product: PropTypes.object,
+  variant: PropTypes.object
 };
 
 export default VariantItemAction;
