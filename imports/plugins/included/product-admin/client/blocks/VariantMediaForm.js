@@ -12,17 +12,16 @@ import useProduct from "../hooks/useProduct";
  */
 function VariantMediaForm() {
   const {
-    option,
+    currentVariant,
     product,
-    shopId,
-    variant
+    shopId
   } = useProduct();
 
-  if (!product) {
+  if (!currentVariant) {
     return null;
   }
 
-  const { _id: variantId, media } = option || variant;
+  const { _id: variantId, media } = currentVariant;
 
   return (
     <Card>
