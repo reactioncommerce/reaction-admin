@@ -41,6 +41,27 @@ mutation createProductVariant($input: CreateProductVariantInput!) {
 }
 `;
 
+const CLONE_PRODUCT_VARIANTS = gql`
+  mutation cloneProducts($input: CloneProductVariantsInput!) {
+    cloneProductVariants(input: $input) {
+      variants {
+        _id
+      }
+    }
+  }
+`;
+
+
+const ARCHIVE_PRODUCT_VARIANTS = gql`
+  mutation cloneProducts($input: ArchiveProductVariantsInput!) {
+    archiveProductVariants(input: $input) {
+      variants {
+        _id
+      }
+    }
+  }
+`;
+
 /**
  * Restore an archived product
  * @param {Object} product Product object
@@ -75,6 +96,8 @@ function useProduct(args = {}) {
   const [cloneProducts] = useMutation(CLONE_PRODUCTS);
   const [createProductVariant] = useMutation(CREATE_VARIANT);
   const [updateProductVariant] = useMutation(UpdateProductVariantMutation);
+  const [cloneProductVariants] = useMutation(CLONE_PRODUCT_VARIANTS);
+  const [archiveProductVariants] = useMutation(ARCHIVE_PRODUCT_VARIANTS);
 
   const [currentShopId] = useCurrentShopId();
 
@@ -126,18 +149,19 @@ function useProduct(args = {}) {
 
     try {
       await cloneProducts({ variables: { input: { shopId, productIds: opaqueProductIds } } });
-      Alerts.toast(i18next.t("productDetailEdit.cloneProductSuccess"), "success");
+      enqueueSnackbar(i18next.t("productDetailEdit.cloneProductSuccess"), { variant: "success" });
     } catch (error) {
-      Alerts.toast(i18next.t("productDetailEdit.cloneProductFail", { err: error }), "error");
+      enqueueSnackbar(i18next.t("productDetailEdit.cloneProductFail"), { variant: "error" });
     }
-  }, [cloneProducts, shopId]);
+  }, [cloneProducts, enqueueSnackbar, shopId]);
 
   const onCreateVariant = useCallback(async ({
     parentId: parentIdLocal = product._id,
-    shopId: shopIdLocal = shopId
+    shopId: shopIdLocal = shopId,
+    redirectOnCreate = false
   }) => {
     try {
-      await createProductVariant({
+      const { data } = await createProductVariant({
         variables: {
           input: {
             productId: parentIdLocal,
@@ -145,19 +169,30 @@ function useProduct(args = {}) {
           }
         }
       });
+
+      // Optionally redirect to the new variant or option on create
+      if (redirectOnCreate) {
+        if (data && parentIdLocal === product._id) {
+          const newVariantId = data.createProductVariant && data.createProductVariant.variant && data.createProductVariant.variant._id;
+          history.push(`/products/${product._id}/${newVariantId}`);
+        } else {
+          const newOptionId = data.createProductVariant && data.createProductVariant.variant && data.createProductVariant.variant._id;
+          history.push(`/products/${product._id}/${parentIdLocal}/${newOptionId}`);
+        }
+      }
+
+      // Refetch product data when we adda new variant
+      refetchProduct();
+
       // Because of the way GraphQL and meteor interact when creating a new variant,
       // we can't immediately redirect a user to the new variant as GraphQL is too quick
       // and the meteor subscription isn't yet updated. Once this page has been updated
       // to use GraphQL for data fetching, add a redirect to the new variant when it's created
-      Alerts.toast(i18next.t("productDetailEdit.addVariant"), "success");
+      enqueueSnackbar(i18next.t("productDetailEdit.addVariant"), { variant: "success" });
     } catch (error) {
-      Alerts.toast(i18next.t("productDetailEdit.addVariantFail", { err: error }), "error");
+      enqueueSnackbar(i18next.t("productDetailEdit.addVariantFail"), { variant: "error" });
     }
-  }, [
-    createProductVariant,
-    product,
-    shopId
-  ]);
+  }, [createProductVariant, enqueueSnackbar, history, product, refetchProduct, shopId]);
 
   const onToggleProductVisibility = useCallback(async () => {
     try {
@@ -268,15 +303,15 @@ function useProduct(args = {}) {
         }
       });
 
-      Alerts.toast(i18next.t("productDetailEdit.updateProductFieldSuccess"), "success");
+      enqueueSnackbar(i18next.t("productDetailEdit.updateProductFieldSuccess"), { variant: "success" });
     } catch (error) {
-      Alerts.toast(i18next.t("productDetailEdit.updateProductFieldFail", { err: error }), "error");
+      enqueueSnackbar(i18next.t("productDetailEdit.updateProductFieldFail"), { variant: "error" });
     }
-  }, [shopId, updateProductVariant]);
+  }, [enqueueSnackbar, shopId, updateProductVariant]);
 
   const onToggleVariantVisibility = useCallback(async ({
     variant: variantLocal,
-    shopId: shopIdLocal = shopId._id
+    shopId: shopIdLocal = shopId
   }) => {
     try {
       await updateProductVariant({
@@ -291,14 +326,70 @@ function useProduct(args = {}) {
         }
       });
 
-      Alerts.toast(i18next.t("productDetailEdit.updateProductFieldSuccess"), "success");
+      enqueueSnackbar(i18next.t("productDetailEdit.updateProductFieldSuccess"), { variant: "success" });
     } catch (error) {
-      Alerts.toast(i18next.t("productDetailEdit.updateProductFieldFail", { err: error }), "error");
+      enqueueSnackbar(i18next.t("productDetailEdit.updateProductFieldFail"), { variant: "error" });
     }
-  }, [
-    shopId,
-    updateProductVariant
-  ]);
+  }, [enqueueSnackbar, shopId, updateProductVariant]);
+
+  const onCloneProductVariants = useCallback(async ({
+    variantIds: variantIdsLocal,
+    shopId: shopIdLocal = shopId
+  }) => {
+    try {
+      await cloneProductVariants({
+        variables: {
+          input: {
+            shopId: shopIdLocal,
+            variantIds: variantIdsLocal
+          }
+        }
+      });
+
+      // Refetch product data when we adda new variant
+      refetchProduct();
+
+      enqueueSnackbar(i18next.t("productDetailEdit.cloneProductSuccess"), { variant: "success" });
+    } catch (error) {
+      enqueueSnackbar(i18next.t("productDetailEdit.cloneProductFail"), { variant: "error" });
+    }
+  }, [cloneProductVariants, enqueueSnackbar, refetchProduct, shopId]);
+
+  const onArchiveProductVariants = useCallback(async ({
+    variantIds: variantIdsLocal,
+    shopId: shopIdLocal = shopId,
+    redirectOnArchive = false
+  }) => {
+    try {
+      await archiveProductVariants({
+        variables: {
+          input: {
+            shopId: shopIdLocal,
+            variantIds: variantIdsLocal
+          }
+        }
+      });
+
+      if (redirectOnArchive) {
+        let redirectUrl;
+
+        if (option) {
+          redirectUrl = `/products/${product._id}/${variant._id}`;
+        } else {
+          redirectUrl = `/products/${product._id}`;
+        }
+
+        history.push(redirectUrl);
+      }
+
+      // Refetch product data when we adda new variant
+      refetchProduct();
+
+      enqueueSnackbar(i18next.t("productDetailEdit.archiveProductVariantsFail"), { variant: "success" });
+    } catch (error) {
+      enqueueSnackbar(i18next.t("productDetailEdit.archiveProductVariantsSuccess"), { variant: "error" });
+    }
+  }, [archiveProductVariants, enqueueSnackbar, history, option, product, refetchProduct, shopId, variant]);
 
   // Convert the social metadata to a format better suited for forms
   if (product && Array.isArray(product.socialMetadata)) {
@@ -313,7 +404,9 @@ function useProduct(args = {}) {
     isLoading,
     handleDeleteProductTag,
     onArchiveProduct,
+    onArchiveProductVariants,
     onCloneProduct,
+    onCloneProductVariants,
     onCreateVariant,
     onUpdateProduct,
     option,
