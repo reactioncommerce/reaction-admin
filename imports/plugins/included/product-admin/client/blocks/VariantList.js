@@ -24,11 +24,19 @@ const useStyles = makeStyles((theme) => ({
     transform: "translateY(-50%)",
     zIndex: 1
   },
+  listItemContainer: {
+    "&:hover $listItemAction": {
+      display: "block"
+    }
+  },
   listItem: {
     paddingLeft: theme.spacing(6)
   },
   nested: {
     paddingLeft: theme.spacing(8)
+  },
+  listItemAction: {
+    display: "none"
   }
 }));
 
@@ -51,13 +59,13 @@ function getItemSecondaryLabel({ isVisible, displayPrice }) {
  */
 export default function VariantList() {
   const {
-    onArchiveProduct,
+    onArchiveProductVariants,
+    onCreateVariant,
     onToggleVariantVisibility,
-    onCloneProduct,
+    onCloneProductVariants,
     onRestoreProduct,
     product,
-    variant: currentVariant,
-    option: currentOption
+    variant: currentVariant
   } = useProduct();
   const classes = useStyles();
   const history = useHistory();
@@ -72,7 +80,7 @@ export default function VariantList() {
     currentVariant
   ]);
 
-  const renderVariantTree = useCallback((variants, parent) => {
+  const renderVariantTree = useCallback((variants, parentVariant) => {
     const toggleExpand = (itemId) => {
       setExpandedIds((prevState) => {
         const isOpen = expandedIds.includes(itemId);
@@ -93,21 +101,24 @@ export default function VariantList() {
           <Fragment key={`listItem-${variant._id}`}>
             <ListItem
               component="nav"
+              ContainerProps={{
+                className: classes.listItemContainer
+              }}
               className={clsx({
                 [classes.listItem]: true,
-                [classes.nested]: Boolean(parent)
+                [classes.nested]: Boolean(parentVariant)
               })}
               button
               onClick={() => {
-                const url = getPDPUrl(product._id, variant._id, parent && parent._id);
+                const url = getPDPUrl(product._id, variant._id, parentVariant && parentVariant._id);
                 history.push(url);
 
-                if (!parent) {
+                if (!parentVariant) {
                   toggleExpand(variant._id);
                 }
               }}
             >
-              {!parent &&
+              {!parentVariant &&
                 <IconButton
                   className={classes.expandButton}
                   onClick={() => toggleExpand(variant._id)}
@@ -119,14 +130,15 @@ export default function VariantList() {
                 primary={variant.optionTitle || variant.title || "Untitled"}
                 secondary={getItemSecondaryLabel(variant)}
               />
-              <ListItemSecondaryAction>
+              <ListItemSecondaryAction className={classes.listItemAction}>
                 <VariantItemAction
                   product={product}
-                  variant={currentVariant}
-                  option={currentOption}
-                  onArchiveProduct={onArchiveProduct}
+                  variant={parentVariant || variant}
+                  option={parentVariant && variant}
+                  onArchiveProductVariants={onArchiveProductVariants}
+                  onCreateVariant={onCreateVariant}
                   onToggleVariantVisibility={onToggleVariantVisibility}
-                  onCloneProduct={onCloneProduct}
+                  onCloneProductVariants={onCloneProductVariants}
                   onRestoreProduct={onRestoreProduct}
                 />
               </ListItemSecondaryAction>
@@ -155,11 +167,10 @@ export default function VariantList() {
     classes.nested,
     classes.expandButton,
     product,
-    currentVariant,
-    currentOption,
-    onArchiveProduct,
+    onArchiveProductVariants,
+    onCreateVariant,
     onToggleVariantVisibility,
-    onCloneProduct,
+    onCloneProductVariants,
     onRestoreProduct,
     history
   ]);
