@@ -1,3 +1,4 @@
+import React from "react";
 import { registerBlock } from "../../../../core/components/lib";
 
 import ProductHeader from "./ProductHeader";
@@ -26,7 +27,8 @@ registerBlock({
 registerBlock({
   region: "ProductDetailHeader",
   name: "ProductHeader",
-  component: ProductHeader,
+  // eslint-disable-next-line react/display-name
+  component: (props) => <ProductHeader shouldDisplayStatus={true} {...props} />,
   priority: 10
 });
 
