@@ -1,45 +1,54 @@
 import React from "react";
-import PropTypes from "prop-types";
-import ProductHeader from "../components/ProductHeader";
+import Helmet from "react-helmet";
+import i18next from "i18next";
+import Typography from "@material-ui/core/Typography";
+import { Box } from "@material-ui/core";
+import useProduct from "../hooks/useProduct";
+import VariantItemAction from "../components/VariantItemAction";
 
 /**
- * Variant table block component
+ * Header component for various product admin forms
  * @param {Object} props Component props
- * @returns {Node} React node
+ * @returns {Node} React component
  */
-function VariantHeader(props) {
+function VariantHeader() {
   const {
-    parentVariant,
+    currentVariant,
+    onArchiveProductVariants,
+    onCloneProductVariants,
+    onToggleVariantVisibility,
     product,
     variant,
-    removeVariant,
-    restoreVariant,
-    cloneVariant,
-    onVisibilityButtonClick
-  } = props;
+    option
+  } = useProduct();
+
+  if (!currentVariant) {
+    return null;
+  }
+
+  const defaultTitle = option ? "Untitled Option" : "Untitled Variant";
 
   return (
-    <ProductHeader
-      product={product}
-      parentVariant={parentVariant}
-      variant={variant}
-      onCloneVariant={cloneVariant}
-      onArchiveProduct={removeVariant}
-      onRestoreProduct={restoreVariant}
-      onVisibilityChange={onVisibilityButtonClick}
-    />
+    <Box paddingTop={2} paddingBottom={2}>
+      <Box display="flex" alignItems="center">
+        <Box flex="1">
+          <Typography variant="h2">
+            <Helmet title={product.title} />
+            {currentVariant.title || defaultTitle}
+            {(currentVariant.isDeleted) && `(${i18next.t("app.archived")})`}
+          </Typography>
+        </Box>
+        <VariantItemAction
+          product={product}
+          variant={variant}
+          option={option}
+          onArchiveProductVariants={onArchiveProductVariants}
+          onToggleVariantVisibility={onToggleVariantVisibility}
+          onCloneProductVariants={onCloneProductVariants}
+        />
+      </Box>
+    </Box>
   );
 }
-
-VariantHeader.propTypes = {
-  cloneVariant: PropTypes.func,
-  onVisibilityButtonClick: PropTypes.func,
-  option: PropTypes.object,
-  parentVariant: PropTypes.object,
-  product: PropTypes.object,
-  removeVariant: PropTypes.func,
-  restoreVariant: PropTypes.func,
-  variant: PropTypes.object
-};
 
 export default VariantHeader;
