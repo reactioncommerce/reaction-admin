@@ -156,7 +156,7 @@ function ProductHeader({ shouldDisplayStatus }) {
             setMenuAnchorEl(null);
           }}
         >
-          {i18next.t("admin.variantList.createVariant")}
+          {i18next.t("variantList.createVariant")}
         </MenuItem>
         <Divider />
         <MenuItem
