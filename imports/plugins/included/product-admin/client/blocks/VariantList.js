@@ -1,5 +1,6 @@
 import React, { Fragment, useCallback, useState, useEffect } from "react";
 import {
+  Box,
   Collapse,
   List,
   ListItemText,
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   listItem: {
-    paddingLeft: theme.spacing(6)
+    paddingLeft: theme.spacing(7)
   },
   nested: {
     paddingLeft: theme.spacing(8)
@@ -96,6 +97,7 @@ export default function VariantList() {
     if (Array.isArray(variants)) {
       return variants.map((variant) => {
         const isExpanded = expandedIds.includes(variant._id);
+        const hasChildren = Array.isArray(variant.options) && variant.options.length > 0;
 
         return (
           <Fragment key={`listItem-${variant._id}`}>
@@ -104,6 +106,20 @@ export default function VariantList() {
               ContainerProps={{
                 className: classes.listItemContainer
               }}
+              ContainerComponent={({ children, ...props }) => (
+                <li {...props}>
+                  {hasChildren &&
+                    <Box className={classes.expandButton}>
+                      <IconButton
+                        onClick={() => toggleExpand(variant._id)}
+                      >
+                        {isExpanded ? <ChevronDown /> : <ChevronRight />}
+                      </IconButton>
+                    </Box>
+                  }
+                  {children}
+                </li>
+              )}
               className={clsx({
                 [classes.listItem]: true,
                 [classes.nested]: Boolean(parentVariant)
@@ -118,14 +134,6 @@ export default function VariantList() {
                 }
               }}
             >
-              {!parentVariant &&
-                <IconButton
-                  className={classes.expandButton}
-                  onClick={() => toggleExpand(variant._id)}
-                >
-                  {isExpanded ? <ChevronDown /> : <ChevronRight />}
-                </IconButton>
-              }
               <ListItemText
                 primary={variant.optionTitle || variant.title || "Untitled"}
                 secondary={getItemSecondaryLabel(variant)}
@@ -163,9 +171,7 @@ export default function VariantList() {
     return null;
   }, [
     expandedIds,
-    classes.listItem,
-    classes.nested,
-    classes.expandButton,
+    classes,
     product,
     onArchiveProductVariants,
     onCreateVariant,
