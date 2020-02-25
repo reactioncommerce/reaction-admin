@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { Link } from "react-router-dom";
 import { i18next, Reaction } from "/client/api";
@@ -8,7 +9,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Typography from "@material-ui/core/Typography";
 import DotsHorizontalIcon from "mdi-material-ui/DotsHorizontal";
 import ConfirmDialog from "@reactioncommerce/catalyst/ConfirmDialog";
-import { makeStyles, Box } from "@material-ui/core";
+import { makeStyles, Box, Divider } from "@material-ui/core";
 import useProduct from "../hooks/useProduct";
 
 const useStyles = makeStyles((theme) => ({
@@ -30,12 +31,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: theme.typography.fontFamily,
     color: "#3c3c3c",
     border: 0,
-    textDecoration: "underline",
     marginRight: 7
-  },
-  statusbar: {
-    display: "flex",
-    alignItems: "center"
   }
 }));
 
@@ -44,11 +40,12 @@ const useStyles = makeStyles((theme) => ({
  * @param {Object} props Component props
  * @returns {Node} React component
  */
-function ProductHeader() {
+function ProductHeader({ shouldDisplayStatus }) {
   const classes = useStyles();
   const [menuAnchorEl, setMenuAnchorEl] = useState();
   const {
     onArchiveProduct,
+    onCreateVariant,
     onRestoreProduct,
     onCloneProduct,
     onToggleProductVisibility,
@@ -108,16 +105,33 @@ function ProductHeader() {
 
   return (
     <div className={classes.root}>
-      <Box display="flex" alignItems="center">
-        <Box flex="1">
+      <Box
+        display="flex"
+        alignItems="center"
+        paddingRight={2}
+        paddingLeft={2}
+      >
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex="1"
+        >
           <Link className={classes.breadcrumbLink} to={`/products/${product._id}`}>
             <Typography variant="h2">
               <Helmet title={product.title} />
               {product.title || "Untitled Product"}
-              {(product.isDeleted) && `(${i18next.t("app.archived")})`}
             </Typography>
           </Link>
+          {shouldDisplayStatus &&
+            <Box>
+              <Typography variant="caption">
+                {product.isVisible ? "Visible" : "Hidden"}
+                {product.isDeleted ? i18next.t("app.archived") : null}
+              </Typography>
+            </Box>
+          }
         </Box>
+
         <IconButton
           onClick={(event) => {
             setMenuAnchorEl(event.currentTarget);
@@ -127,46 +141,55 @@ function ProductHeader() {
         </IconButton>
       </Box>
 
-      <div className={classes.statusbar}>
-        <Typography>
-          {product.isVisible ? "Visible" : "Hidden"}
-          {product.isDeleted ? i18next.t("app.archived") : null}
-        </Typography>
-
-        <Menu
-          id="bulk-actions-menu"
-          anchorEl={menuAnchorEl}
-          open={Boolean(menuAnchorEl)}
-          onClose={() => setMenuAnchorEl(null)}
+      <Menu
+        id="bulk-actions-menu"
+        anchorEl={menuAnchorEl}
+        open={Boolean(menuAnchorEl)}
+        onClose={() => setMenuAnchorEl(null)}
+      >
+        <MenuItem
+          onClick={async () => {
+            await onCreateVariant({
+              parentId: product._id,
+              redirectOnCreate: true
+            });
+            setMenuAnchorEl(null);
+          }}
         >
+          {i18next.t("admin.variantList.createVariant")}
+        </MenuItem>
+        <Divider />
+        <MenuItem
+          onClick={() => {
+            onToggleProductVisibility(product);
+            setMenuAnchorEl(null);
+          }}
+        >
+          {product.isVisible ?
+            i18next.t("admin.productTable.bulkActions.makeHidden") :
+            i18next.t("admin.productTable.bulkActions.makeVisible")
+          }
+        </MenuItem>
+        {hasCloneProductPermission &&
           <MenuItem
             onClick={() => {
-              onToggleProductVisibility(product);
+              onCloneProduct(product._id);
               setMenuAnchorEl(null);
             }}
           >
-            {product.isVisible ?
-              i18next.t("admin.productTable.bulkActions.makeHidden") :
-              i18next.t("admin.productTable.bulkActions.makeVisible")
-            }
+            {i18next.t("admin.productTable.bulkActions.duplicate")}
           </MenuItem>
-          {hasCloneProductPermission &&
-            <MenuItem
-              onClick={() => {
-                onCloneProduct(product._id);
-                setMenuAnchorEl(null);
-              }}
-            >
-              {i18next.t("admin.productTable.bulkActions.duplicate")}
-            </MenuItem>
-          }
-          {hasArchiveProductPermission &&
-            archiveMenuItem
-          }
-        </Menu>
-      </div>
+        }
+        {hasArchiveProductPermission &&
+          archiveMenuItem
+        }
+      </Menu>
     </div>
   );
 }
+
+ProductHeader.propTypes = {
+  shouldDisplayStatus: PropTypes.bool
+};
 
 export default ProductHeader;
