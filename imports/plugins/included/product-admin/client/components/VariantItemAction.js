@@ -19,10 +19,8 @@ function VariantItemAction(props) {
     onArchiveProductVariants,
     onCloneProductVariants,
     onCreateVariant,
-    onRestoreProduct,
     onToggleVariantVisibility,
     option,
-    product,
     variant
   } = props;
 
@@ -34,41 +32,6 @@ function VariantItemAction(props) {
 
   const hasCloneProductPermission = Reaction.hasPermission(["reaction:legacy:products/clone"], Reaction.getUserId(), Reaction.getShopId());
   const hasArchiveProductPermission = Reaction.hasPermission(["reaction:legacy:products/archive"], Reaction.getUserId(), Reaction.getShopId());
-
-
-  let archiveMenuItem = (
-    <ConfirmDialog
-      title={i18next.t("admin.productTable.bulkActions.archiveTitle")}
-      message={i18next.t("productDetailEdit.archiveThisProduct")}
-      onConfirm={() => {
-        onArchiveProductVariants({
-          variantIds: [currentVariant._id],
-          redirectOnArchive: true
-        });
-      }}
-    >
-      {({ openDialog }) => (
-        <MenuItem onClick={openDialog}>{i18next.t("admin.productTable.bulkActions.archive")}</MenuItem>
-      )}
-    </ConfirmDialog>
-  );
-
-  if (product.isDeleted) {
-    archiveMenuItem = (
-      <ConfirmDialog
-        title={i18next.t("admin.productTable.bulkActions.restoreTitle")}
-        message={i18next.t("productDetailEdit.restoreThisProduct")}
-        onConfirm={() => {
-          onRestoreProduct(currentVariant);
-          setMenuAnchorEl(null);
-        }}
-      >
-        {({ openDialog }) => (
-          <MenuItem onClick={openDialog}>{i18next.t("admin.productTable.bulkActions.restore")}</MenuItem>
-        )}
-      </ConfirmDialog>
-    );
-  }
 
   return (
     <>
@@ -127,7 +90,20 @@ function VariantItemAction(props) {
           </MenuItem>
         }
         {hasArchiveProductPermission &&
-          archiveMenuItem
+          <ConfirmDialog
+            title={i18next.t("admin.productTable.bulkActions.archiveTitle")}
+            message={i18next.t("productDetailEdit.archiveThisProduct")}
+            onConfirm={() => {
+              onArchiveProductVariants({
+                variantIds: [currentVariant._id],
+                redirectOnArchive: true
+              });
+            }}
+          >
+            {({ openDialog }) => (
+              <MenuItem onClick={openDialog}>{i18next.t("admin.productTable.bulkActions.archive")}</MenuItem>
+            )}
+          </ConfirmDialog>
         }
       </Menu>
     </>
