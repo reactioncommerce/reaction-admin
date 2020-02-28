@@ -60,7 +60,7 @@ function VariantItemAction(props) {
               setMenuAnchorEl(null);
             }}
           >
-            {i18next.t("admin.variantList.createVariant")}
+            {i18next.t("variantList.createVariant")}
           </MenuItem>,
           <Divider key="create-variant-divider" />
         ]}
