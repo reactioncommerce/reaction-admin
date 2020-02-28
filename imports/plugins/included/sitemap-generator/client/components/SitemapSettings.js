@@ -1,9 +1,8 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/styles";
 import { Components } from "@reactioncommerce/reaction-components";
 import Select from "@reactioncommerce/components/Select/v1";
-import { useMutation, useQuery } from "@apollo/react-hooks";
+import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import Button from "@reactioncommerce/catalyst/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
@@ -16,6 +15,7 @@ import Logger from "/client/modules/logger";
 import generateSitemapsMutation from "../mutations/generateSitemaps";
 import updateShopSettingsMutation from "../mutations/updateShopSettings";
 import shopSettingsQuery from "../queries/shopSettings";
+import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -43,29 +43,29 @@ const refreshOptions = [
 
 /**
  * Sitemap settings form block component
- * @param {Object} props Component props
  * @returns {Node} React node
  */
-function SitemapSettings(props) {
-  const {
-    shopId
-  } = props;
-
+export default function SitemapSettings() {
+  const [shopId] = useCurrentShopId();
   const classes = useStyles();
+  const [getShopSettings, { loading: loadingSettings, data, error, called }] = useLazyQuery(shopSettingsQuery);
 
-  const { loading, data, error } = useQuery(shopSettingsQuery, {
-    onError(fetchError) {
-      Logger.error(fetchError);
-    },
-    variables: {
-      shopId
-    }
-  });
+  if (error) {
+    Logger.error(error);
+  }
+
+  if (shopId && !called) {
+    getShopSettings({
+      variables: {
+        shopId
+      }
+    });
+  }
 
   const [generateSitemaps] = useMutation(generateSitemapsMutation);
   const [updateShopSettings, { loading: isUpdatingShopSettings }] = useMutation(updateShopSettingsMutation);
 
-  if (loading) return <Components.Loading />;
+  if (!called || loadingSettings) return <Components.Loading />;
   if (error) {
     return (
       <Card>
@@ -77,7 +77,7 @@ function SitemapSettings(props) {
     );
   }
 
-  const { sitemapRefreshPeriod } = data.shopSettings;
+  const { sitemapRefreshPeriod } = data && data.shopSettings;
 
   const onGenerateClick = () => {
     generateSitemaps();
@@ -123,9 +123,3 @@ function SitemapSettings(props) {
     </Card>
   );
 }
-
-SitemapSettings.propTypes = {
-  shopId: PropTypes.string.isRequired
-};
-
-export default SitemapSettings;
