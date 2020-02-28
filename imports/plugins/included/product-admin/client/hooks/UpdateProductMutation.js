@@ -22,6 +22,7 @@ export default gql`
         shop {
           _id
         }
+        shouldAppearInSitemap
         slug
         socialMetadata {
           message
