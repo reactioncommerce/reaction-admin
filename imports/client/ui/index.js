@@ -5,6 +5,10 @@ import "./appComponents";
 
 export const operatorRoutes = [];
 export const routes = [];
+export const defaultRouteGroups = {
+  main: "main",
+  settings: "settings"
+};
 
 /**
  * @name registerOperatorRoute
@@ -19,8 +23,28 @@ export const routes = [];
  * @returns {undefined}
  */
 export function registerOperatorRoute(route) {
-  const { mainComponent, hocs = [] } = route;
-  let component = mainComponent;
+  const { isNavigationLink, isSetting, layoutComponent, mainComponent, MainComponent, hocs = [] } = route;
+  const additionalProps = {};
+
+  if (isNavigationLink) {
+    // eslint-disable-next-line no-console
+    console.warn("Option `isNavigationLink` is deprecated. Set `group: \"main\"` in your route configuration");
+    additionalProps.group = defaultRouteGroups.main;
+  }
+
+  if (isSetting) {
+    // eslint-disable-next-line no-console
+    console.warn("Option `isSetting` is deprecated. Set `group: \"settings\"` in your route configuration");
+    additionalProps.group = defaultRouteGroups.settings;
+  }
+
+  if (layoutComponent) {
+    // eslint-disable-next-line no-console
+    console.warn("Option `layoutComponent` is deprecated. Use `LayoutComponent` instead");
+    additionalProps.LayoutComponent = layoutComponent;
+  }
+
+  let component = MainComponent || mainComponent;
 
   if (typeof mainComponent === "string") {
     component = () => getReactComponentOrBlazeTemplate(mainComponent);
@@ -28,7 +52,17 @@ export function registerOperatorRoute(route) {
 
   component = compose(...hocs, setDisplayName(`Reaction(${name})`))(component);
 
-  operatorRoutes.push({ ...route, mainComponent: component });
+  if (mainComponent) {
+    // eslint-disable-next-line no-console
+    console.warn("Option `mainComponent` is deprecated. Use `MainComponent` instead");
+    additionalProps.MainComponent = component;
+  }
+
+  operatorRoutes.push({
+    ...route,
+    ...additionalProps,
+    mainComponent: component
+  });
 }
 
 /**
