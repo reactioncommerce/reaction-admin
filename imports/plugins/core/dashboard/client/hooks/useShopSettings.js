@@ -57,6 +57,7 @@ function useShopSettings(args = {}) {
   };
 
   return {
+    loading,
     onUpdateShop,
     refetchShopQuery,
     shop: (shopQueryResult && shopQueryResult.shop) || {},
