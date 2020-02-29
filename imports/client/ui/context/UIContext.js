@@ -7,5 +7,7 @@ export const UIContext = createContext({
   onCloseDetailDrawer: () => { },
   onClosePrimarySidebar: () => { },
   onToggleDetailDrawer: () => { },
-  onTogglePrimarySidebar: () => { }
+  onTogglePrimarySidebar: () => { },
+  setDetailDrawerOpen: () => { },
+  setPrimarySidebarOpen: () => { }
 });
