@@ -12,7 +12,6 @@ import SortableTheme from "./SortableTheme";
 const styles = (theme) => ({
   wrapper: {
     width: "100%",
-    borderLeft: `1px solid ${theme.palette.divider}`,
     height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`
   }
 });
