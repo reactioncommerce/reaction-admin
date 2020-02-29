@@ -42,10 +42,9 @@ const enablePaymentMethodForShopMutation = gql`
 
 /**
  * @summary Renders payment settings page
- * @param {Object} props Component props
  * @return {React.Node} React node
  */
-export default function PaymentSettings(props) {
+export default function PaymentSettings() {
   const classes = useStyles();
   const [shopId] = useCurrentShopId();
   const { enqueueSnackbar } = useSnackbar();
