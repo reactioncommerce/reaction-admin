@@ -21,7 +21,7 @@ function useShopSettings(args = {}) {
   const [updateShop] = useMutation(updateShopMutation);
   const shopId = providedShopId || currentShopId;
   const { enqueueSnackbar } = useSnackbar();
-  const [fetchShop, { called, data: shopQueryResult, refetch: refetchShopQuery }] = useLazyQuery(shopQuery);
+  const [fetchShop, { called, loading, data: shopQueryResult, refetch: refetchShopQuery }] = useLazyQuery(shopQuery);
 
   if (shopId && !called) {
     fetchShop({
