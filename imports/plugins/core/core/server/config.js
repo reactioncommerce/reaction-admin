@@ -1,6 +1,6 @@
 import envalid from "envalid";
 
-const { num, str } = envalid;
+const { bool, num, str } = envalid;
 
 export default envalid.cleanEnv(process.env, {
   OAUTH2_ADMIN_URL: str({
@@ -49,5 +49,9 @@ export default envalid.cleanEnv(process.env, {
   ROOT_URL: str({
     desc: "The canonical root URL for the Reaction Admin server",
     example: "http://localhost:4080"
+  }),
+  OPTIMIZE_FOR_MULTI_SITES: bool({
+    default: false,
+    desc: "Set this to true to prevent reaction-admin from falling back onto the primary shop if none is found"
   })
 });
