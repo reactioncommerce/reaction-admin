@@ -60,25 +60,34 @@ export default {
   init() {
     // Listen for the primary shop subscription and set accordingly
     return Tracker.autorun(() => {
-      let shop;
-      if (this.Subscriptions.PrimaryShop.ready()) {
-        // There should only ever be one "primary" shop
-        shop = Shops.findOne({
+      let shops;
+      let primaryShop;
+
+      if (this.Subscriptions.UserShops.ready()) {
+        // Find the user's shops
+        shops = Shops.find({
+          shopType: {
+            $ne: "primary"
+          }
+        });
+
+        // Find the primary shop
+        primaryShop = Shops.findOne({
           shopType: "primary"
         });
 
-        if (shop) {
-          this._primaryShopId.set(shop._id);
+        if (primaryShop) {
+          this._primaryShopId.set(primaryShop._id);
+        }
 
-          // if we don't have an active shopId, try to retrieve it from the userPreferences object
-          // and set the shop from the storedShopId
-          if (!this.shopId) {
-            const currentShop = this.getCurrentShop();
+        // if we don't have an active shopId, try to retrieve it from the userPreferences object
+        // and set the shop from the storedShopId
+        if (!this.shopId) {
+          const currentShop = this.getCurrentShop();
 
-            if (currentShop) {
-              this.shopId = currentShop._id;
-              this.shopName = currentShop.name;
-            }
+          if (currentShop) {
+            this.shopId = currentShop._id;
+            this.shopName = currentShop.name;
           }
         }
       }

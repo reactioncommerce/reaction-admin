@@ -14,3 +14,4 @@ Subscriptions.BrandAssets = Subscriptions.Manager.subscribe("BrandAssets");
 Subscriptions.Groups = Subscriptions.Manager.subscribe("Groups");
 Subscriptions.MyAccount = Subscriptions.Manager.subscribe("MyAccount");
 Subscriptions.PrimaryShop = Subscriptions.Manager.subscribe("PrimaryShop");
+Subscriptions.UserShops = Subscriptions.Manager.subscribe("UserShops");
