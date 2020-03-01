@@ -337,7 +337,7 @@ export default {
     if (activeShopId) return Shops.findOne({ _id: activeShopId });
 
     // If no chosen shop, fall back to primary shop
-    if (!Meteor.settings.public.OPTIMIZE_FOR_MULTI_SITES) {
+    if (!Meteor.settings.public.optimizeForMultiSite) {
       return Shops.findOne({ shopType: "primary" });
     }
   },
