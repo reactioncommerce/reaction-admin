@@ -44,19 +44,21 @@ export function registerOperatorRoute(route) {
     additionalProps.LayoutComponent = layoutComponent;
   }
 
-  let component = MainComponent || mainComponent;
-
-  if (typeof component === "string") {
-    component = () => getReactComponentOrBlazeTemplate(component);
-  }
-
-  component = compose(...hocs, setDisplayName(`Reaction(${name})`))(component);
-
   if (mainComponent) {
     // eslint-disable-next-line no-console
     console.warn("Option `mainComponent` is deprecated. Use `MainComponent` instead");
-    additionalProps.MainComponent = component;
   }
+
+  const resolvedMainComponent = MainComponent || mainComponent;
+  let component;
+
+  if (typeof resolvedMainComponent === "string") {
+    component = () => getReactComponentOrBlazeTemplate(resolvedMainComponent);
+  } else {
+    component = resolvedMainComponent;
+  }
+
+  component = compose(...hocs, setDisplayName(`Reaction(${name})`))(component);
 
   operatorRoutes.push({
     ...route,
