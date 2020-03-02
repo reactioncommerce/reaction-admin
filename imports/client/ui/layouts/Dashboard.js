@@ -6,7 +6,6 @@ import { makeStyles } from "@material-ui/core";
 import PrimaryAppBar from "../components/PrimaryAppBar/PrimaryAppBar";
 import ProfileImageWithData from "../components/ProfileImageWithData";
 import Sidebar from "../components/Sidebar";
-import { operatorRoutes } from "../index";
 import { UIContext } from "../context/UIContext";
 import useOperatorRoutes from "../hooks/useOperatorRoutes";
 import useMediaQuery from "../hooks/useMediaQuery";
@@ -81,7 +80,6 @@ function Dashboard(props) {
             setPrimarySidebarOpen(value);
           }}
           onDrawerClose={onClosePrimarySidebar}
-          routes={operatorRoutes}
         />
         <OperatorRoutes routes={routes} />
       </div>
