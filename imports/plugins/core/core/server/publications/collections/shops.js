@@ -12,8 +12,11 @@ Meteor.publish("UserShops", () => {
     shopType: "primary"
   });
 
-  const { profile } = Meteor.user();
-  const shopId = profile.preferences && profile.preferences.reaction && profile.preferences.reaction.activeShopId;
+  const { profile } = Meteor.users.findOne(Meteor.userId(), { fields: { profile: 1 } });
+  const shopId = profile &&
+    profile.preferences &&
+    profile.preferences.reaction &&
+    profile.preferences.reaction.activeShopId;
 
   const shopIds = [primaryShop._id, shopId];
 
