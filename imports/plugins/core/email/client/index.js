@@ -6,10 +6,9 @@ import { registerOperatorRoute } from "/imports/client/ui";
 import EmailSettings from "./containers/EmailSettings";
 
 registerOperatorRoute({
-  isNavigationLink: true,
-  isSetting: true,
+  group: "settings",
   path: "/email",
-  mainComponent: EmailSettings,
+  MainComponent: EmailSettings,
   // eslint-disable-next-line react/display-name
   SidebarIconComponent: (props) => <FontAwesomeIcon icon={faEnvelope} {...props} />,
   sidebarI18nLabel: "admin.dashboard.emailLabel"
