@@ -7,8 +7,7 @@ import NavigationDashboard from "./containers/navigationDashboardContainer";
 import "./containers";
 
 registerOperatorRoute({
-  isNavigationLink: true,
-  isSetting: false,
+  group: "main",
   priority: 50,
   LayoutComponent: ContentViewFullLayout,
   MainComponent: NavigationDashboard,
