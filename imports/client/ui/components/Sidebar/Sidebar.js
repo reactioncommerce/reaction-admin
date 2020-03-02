@@ -24,9 +24,6 @@ import useOperatorRoutes from "../../hooks/useOperatorRoutes";
 
 const activeClassName = "nav-item-active";
 
-// Route sorting by priority. Items without a priority get pushed the bottom.
-const routeSort = (routeA, routeB) => (routeA.priority || Number.MAX_SAFE_INTEGER) - (routeB.priority || Number.MAX_SAFE_INTEGER);
-
 const styles = (theme) => ({
   closeButton: {
     "color": theme.palette.colors.white,
@@ -110,8 +107,8 @@ function Sidebar(props) {
 
   const [isAppLoading] = useIsAppLoading();
   const [currentShopId] = useCurrentShopId();
-  const primaryRoutes = useOperatorRoutes({ group: "main" });
-  const settingRoutes = useOperatorRoutes({ group: "settings" });
+  const primaryRoutes = useOperatorRoutes({ groups: ["main"] });
+  const settingRoutes = useOperatorRoutes({ groups: ["settings"] });
 
   let drawerProps = {
     classes: {
