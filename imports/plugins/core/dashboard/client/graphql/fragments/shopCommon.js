@@ -3,6 +3,7 @@ import gql from "graphql-tag";
 export default gql`
  fragment ShopCommon on Shop {
     _id
+    allowGuestCheckout
     addressBook {
       company
       fullName

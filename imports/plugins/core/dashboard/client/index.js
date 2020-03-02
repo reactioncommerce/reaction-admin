@@ -15,7 +15,7 @@ import ShopSettingsRegion from "./components/ShopSettingsRegion";
 import SystemInformation from "./components/SystemInformation";
 import ShopLogoUrls from "./components/ShopLogoUrls";
 import SettingsMain from "./components/SettingsMain";
-import ShopSettings from "./components/ShopSettings";
+import ShopSettingsForm from "./components/ShopSettingsForm";
 import ShopAddressSettings from "./components/ShopAddressSettings";
 
 import StorefrontUrls from "./components/StorefrontUrls";
@@ -27,7 +27,6 @@ import "./containers/CreateFirstShopForm.js";
 import "./templates/shop/settings/settings.html";
 import "./templates/shop/settings/settings.less";
 import "./templates/shop/settings/settings.js";
-
 
 // Default landing page
 registerOperatorRoute({
@@ -79,7 +78,7 @@ registerOperatorRoute({
 registerBlock({
   region: "ShopSettings",
   name: "ShopSettingsGeneral",
-  component: ShopSettings,
+  component: ShopSettingsForm,
   priority: 1
 });
 

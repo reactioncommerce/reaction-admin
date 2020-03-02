@@ -4,14 +4,17 @@ import SimpleSchema from "simpl-schema";
 import Button from "@reactioncommerce/catalyst/Button";
 import TextField from "@reactioncommerce/catalyst/TextField";
 import useReactoForm from "reacto-form/cjs/useReactoForm";
+import muiCheckboxOptions from "reacto-form/esm/muiCheckboxOptions";
 import muiOptions from "reacto-form/cjs/muiOptions";
 import {
   Card,
   CardContent,
   CardHeader,
   CircularProgress,
+  FormControlLabel,
   Grid,
-  makeStyles
+  makeStyles,
+  Checkbox
 } from "@material-ui/core";
 import useShopSettings from "../hooks/useShopSettings";
 
@@ -26,6 +29,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const shopSettings = new SimpleSchema({
+  "allowGuestCheckout": {
+    type: Boolean,
+    optional: true
+  },
   "name": {
     type: String,
     min: 1
@@ -89,7 +96,7 @@ export default function ShopSettings() {
 
   return (
     <Card className={classes.card}>
-      <CardHeader title={i18next.t("admin.settings.general.label")} />
+      <CardHeader title={i18next.t("admin.settings.shop.label")} />
       <CardContent>
         <Grid container spacing={2}>
           <Grid item sm={12}>
@@ -97,8 +104,8 @@ export default function ShopSettings() {
               error={hasErrors(["name"])}
               fullWidth
               helperText={getFirstErrorMessage(["name"])}
-              label={i18next.t("admin.settings.general.nameLabel")}
-              placeholder={i18next.t("admin.settings.general.namePlaceholder")}
+              label={i18next.t("admin.settings.shop.nameLabel")}
+              placeholder={i18next.t("admin.settings.shop.namePlaceholder")}
               {...getInputProps("name", muiOptions)}
             />
           </Grid>
@@ -107,8 +114,8 @@ export default function ShopSettings() {
               error={hasErrors(["emails[0].address"])}
               fullWidth
               helperText={getFirstErrorMessage(["emails[0].address"])}
-              label={i18next.t("admin.settings.general.emailLabel")}
-              placeholder={i18next.t("admin.settings.general.emailPlaceholder")}
+              label={i18next.t("admin.settings.shop.emailLabel")}
+              placeholder={i18next.t("admin.settings.shop.emailPlaceholder")}
               {...getInputProps("emails[0].address", muiOptions)}
             />
           </Grid>
@@ -117,8 +124,8 @@ export default function ShopSettings() {
               error={hasErrors(["slug"])}
               fullWidth
               helperText={getFirstErrorMessage(["slug"])}
-              label={i18next.t("admin.settings.general.slugLabel")}
-              placeholder={i18next.t("admin.settings.general.slugPlaceholder")}
+              label={i18next.t("admin.settings.shop.slugLabel")}
+              placeholder={i18next.t("admin.settings.shop.slugPlaceholder")}
               {...getInputProps("slug", muiOptions)}
             />
           </Grid>
@@ -129,8 +136,8 @@ export default function ShopSettings() {
               multiline
               rows={2}
               helperText={getFirstErrorMessage(["description"])}
-              label={i18next.t("admin.settings.general.descriptionLabel")}
-              placeholder={i18next.t("admin.settings.general.descriptionPlaceholder")}
+              label={i18next.t("admin.settings.shop.descriptionLabel")}
+              placeholder={i18next.t("admin.settings.shop.descriptionPlaceholder")}
               {...getInputProps("description", muiOptions)}
             />
           </Grid>
@@ -139,9 +146,18 @@ export default function ShopSettings() {
               error={hasErrors(["keywords"])}
               fullWidth
               helperText={getFirstErrorMessage(["keywords"])}
-              label={i18next.t("admin.settings.general.keywordsLabel")}
-              placeholder={i18next.t("admin.settings.general.keywordsPlaceholder")}
+              label={i18next.t("admin.settings.shop.keywordsLabel")}
+              placeholder={i18next.t("admin.settings.shop.keywordsPlaceholder")}
               {...getInputProps("keywords", muiOptions)}
+            />
+          </Grid>
+          <Grid item sm={12}>
+            <FormControlLabel
+              control={
+                <Checkbox color="primary" />
+              }
+              label={i18next.t("admin.settings.shop.allowGuestCheckout")}
+              {...getInputProps("allowGuestCheckout", muiCheckboxOptions)}
             />
           </Grid>
           <Grid classes={{ root: classes.saveButton }} item sm={12}>
