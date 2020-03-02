@@ -36,7 +36,7 @@ function Dashboard(props) {
   const { logout, viewer } = props;
   const classes = useStyles();
   const isMobile = useMediaQuery("mobile");
-  const routes = useOperatorRoutes({ group: "main" });
+  const routes = useOperatorRoutes();
   const [isDetailDrawerOpen, setDetailDrawerOpen] = useState(false);
   const [isPrimarySidebarOpen, setPrimarySidebarOpen] = useState(true);
 
