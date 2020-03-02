@@ -61,7 +61,7 @@ export function registerOperatorRoute(route) {
   operatorRoutes.push({
     ...route,
     ...additionalProps,
-    mainComponent: component
+    MainComponent: component
   });
 }
 
@@ -90,6 +90,6 @@ export function registerRoute(route) {
   routes.push({
     exact: true,
     ...route,
-    mainComponent: component
+    MainComponent: component
   });
 }
