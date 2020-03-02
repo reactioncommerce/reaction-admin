@@ -46,8 +46,8 @@ export function registerOperatorRoute(route) {
 
   let component = MainComponent || mainComponent;
 
-  if (typeof mainComponent === "string") {
-    component = () => getReactComponentOrBlazeTemplate(mainComponent);
+  if (typeof component === "string") {
+    component = () => getReactComponentOrBlazeTemplate(component);
   }
 
   component = compose(...hocs, setDisplayName(`Reaction(${name})`))(component);
