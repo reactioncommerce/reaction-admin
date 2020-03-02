@@ -7,18 +7,12 @@ Meteor.publish("PrimaryShop", () => Shops.find({
   limit: 1
 }));
 
-Meteor.publish("UserShops", () => {
-  const primaryShop = Shops.findOne({
-    shopType: "primary"
-  });
-
+Meteor.publish("UserShop", () => {
   const { profile } = Meteor.users.findOne(Meteor.userId(), { fields: { profile: 1 } });
   const shopId = profile &&
     profile.preferences &&
     profile.preferences.reaction &&
     profile.preferences.reaction.activeShopId;
 
-  const shopIds = [primaryShop._id, shopId];
-
-  return Shops.find({ _id: { $in: shopIds }});
+  return Shops.find({ _id: shopId });
 });

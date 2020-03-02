@@ -63,7 +63,7 @@ export default {
       let shops;
       let primaryShop;
 
-      if (this.Subscriptions.UserShops.ready()) {
+      if (this.Subscriptions.UserShop.ready()) {
         // Find the user's shops
         shops = Shops.find({
           shopType: {
