@@ -20,6 +20,7 @@ import { Translation } from "/imports/plugins/core/ui/client/components";
 import useIsAppLoading from "/imports/client/ui/hooks/useIsAppLoading.js";
 import useCurrentShopId from "../../hooks/useCurrentShopId";
 import ShopLogoWithData from "../ShopLogoWithData";
+import useOperatorRoutes from "../../hooks/useOperatorRoutes";
 
 const activeClassName = "nav-item-active";
 
@@ -104,15 +105,13 @@ function Sidebar(props) {
     isSidebarOpen,
     onDrawerClose,
     isSettingsOpen,
-    setIsSettingsOpen,
-    routes
+    setIsSettingsOpen
   } = props;
 
   const [isAppLoading] = useIsAppLoading();
   const [currentShopId] = useCurrentShopId();
-
-  const primaryRoutes = routes.filter(({ isNavigationLink, isSetting }) => isNavigationLink && !isSetting).sort(routeSort);
-  const settingRoutes = routes.filter(({ isNavigationLink, isSetting }) => isNavigationLink && isSetting).sort(routeSort);
+  const primaryRoutes = useOperatorRoutes({ group: "main" });
+  const settingRoutes = useOperatorRoutes({ group: "settings" });
 
   let drawerProps = {
     classes: {
