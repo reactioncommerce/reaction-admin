@@ -52,7 +52,7 @@ function useShopSettings(args = {}) {
       });
       enqueueSnackbar(i18next.t("admin.settings.saveSuccess"), { variant: "success" });
     } catch (error) {
-      enqueueSnackbar(i18next.t("admin.settings.saveFailed"), { variant: "success" });
+      enqueueSnackbar(i18next.t("admin.settings.saveFailed"), { variant: "error" });
     }
   };
 

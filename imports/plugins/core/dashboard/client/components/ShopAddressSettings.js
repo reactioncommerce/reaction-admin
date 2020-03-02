@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   makeStyles,
   Typography
 } from "@material-ui/core";
@@ -36,7 +37,7 @@ function ShopAddressSettings() {
   let readOnlyMode = false;
   let address = null;
 
-  if (loading) return <span>Loading</span>;
+  if (loading) return <CircularProgress variant="indeterminate" color="primary" />;
 
   // If an address has been set, render in read only mode
   if (addressBook && addressBook[0]) {

@@ -9,6 +9,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Grid,
   makeStyles
 } from "@material-ui/core";
@@ -18,9 +19,6 @@ const useStyles = makeStyles((theme) => ({
   card: {
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(3)
-  },
-  textField: {
-    minWidth: 350
   },
   saveButton: {
     textAlign: "right"
@@ -64,7 +62,7 @@ const validator = shopSettings.getFormValidator();
 export default function ShopSettings() {
   const classes = useStyles();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { onUpdateShop, shop } = useShopSettings();
+  const { loading, onUpdateShop, shop } = useShopSettings();
   const {
     getFirstErrorMessage,
     getInputProps,
@@ -82,6 +80,8 @@ export default function ShopSettings() {
     value: shop
   });
 
+  if (loading) return <CircularProgress variant="indeterminate" color="primary" />;
+
   const handleSubmit = (event) => {
     event.preventDefault();
     submitForm();
@@ -94,7 +94,6 @@ export default function ShopSettings() {
         <Grid container spacing={2}>
           <Grid item sm={12}>
             <TextField
-              className={classes.textField}
               error={hasErrors(["name"])}
               fullWidth
               helperText={getFirstErrorMessage(["name"])}
@@ -105,7 +104,6 @@ export default function ShopSettings() {
           </Grid>
           <Grid item sm={12}>
             <TextField
-              className={classes.textField}
               error={hasErrors(["emails[0].address"])}
               fullWidth
               helperText={getFirstErrorMessage(["emails[0].address"])}
@@ -116,7 +114,6 @@ export default function ShopSettings() {
           </Grid>
           <Grid item sm={12}>
             <TextField
-              className={classes.textField}
               error={hasErrors(["slug"])}
               fullWidth
               helperText={getFirstErrorMessage(["slug"])}
@@ -127,7 +124,6 @@ export default function ShopSettings() {
           </Grid>
           <Grid item sm={12}>
             <TextField
-              className={classes.textField}
               error={hasErrors(["description"])}
               fullWidth
               multiline
@@ -140,7 +136,6 @@ export default function ShopSettings() {
           </Grid>
           <Grid item sm={12}>
             <TextField
-              className={classes.textField}
               error={hasErrors(["keywords"])}
               fullWidth
               helperText={getFirstErrorMessage(["keywords"])}

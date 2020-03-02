@@ -14,20 +14,9 @@ import {
   DialogContent,
   DialogTitle,
   FormControlLabel,
-  Grid,
-  makeStyles
+  Grid
 } from "@material-ui/core";
 import useShopSettings from "../hooks/useShopSettings";
-
-const useStyles = makeStyles((theme) => ({
-  card: {
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3)
-  },
-  saveButton: {
-    textAlign: "right"
-  }
-}));
 
 const shopAddress = new SimpleSchema({
   company: {
@@ -80,7 +69,6 @@ const validator = shopAddress.getFormValidator();
  * @returns {Node} React node
  */
 function ShopAddressForm({ isEditMode, setIsEditMode }) {
-  const classes = useStyles();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { onUpdateShop, shop } = useShopSettings();
 
