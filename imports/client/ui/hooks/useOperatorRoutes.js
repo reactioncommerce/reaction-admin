@@ -1,6 +1,9 @@
+import { useMemo } from "react";
 import { operatorRoutes } from "../index";
 
-export const defaultRouteSort = (routeA, routeB) => (routeA.priority || Number.MAX_SAFE_INTEGER) - (routeB.priority || Number.MAX_SAFE_INTEGER);
+export const defaultRouteSort = (routeA, routeB) => (
+  (routeA.priority || Number.MAX_SAFE_INTEGER) - (routeB.priority || Number.MAX_SAFE_INTEGER)
+);
 
 /**
  * Operator routes hook
@@ -11,25 +14,29 @@ export const defaultRouteSort = (routeA, routeB) => (routeA.priority || Number.M
  * @param {Object} [options.sort] Route sort function
  * @returns {Array} An array containing filtered routes
  */
-export default function useOperatorRoutes(options) {
+export default function useOperatorRoutes(options = {}) {
   const {
-    group,
+    groups,
     filter,
     sort = defaultRouteSort
   } = options;
 
-  let routes = operatorRoutes;
+  const routes = useMemo(() => {
+    let filteredRoutes;
+    if (Array.isArray(groups)) {
+      filteredRoutes = operatorRoutes.filter(({ group: routeGroup }) => groups.includes(routeGroup));
+    } else if (filter) {
+      filteredRoutes = operatorRoutes.filter(filter);
+    } else {
+      filteredRoutes = operatorRoutes;
+    }
 
-  if (group) {
-    routes = operatorRoutes.filter(({ group: routeGroup }) => routeGroup === group);
-  } else if (filter) {
-    routes = operatorRoutes.filter(filter);
-  }
+    if (sort) {
+      filteredRoutes = filteredRoutes.sort(sort);
+    }
 
-  if (sort) {
-    routes = operatorRoutes.sort(sort);
-  }
+    return filteredRoutes;
+  }, [filter, groups, sort]);
 
   return routes;
 }
-
