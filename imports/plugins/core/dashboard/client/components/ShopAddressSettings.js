@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
  */
 function ShopAddressSettings() {
   const classes = useStyles();
-  const [editMode, setEditMode] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const { loading, shop: { addressBook } } = useShopSettings();
   let readOnlyMode = false;
   let address = null;
@@ -41,13 +41,13 @@ function ShopAddressSettings() {
   // If an address has been set, render in read only mode
   if (addressBook && addressBook[0]) {
     ([address] = addressBook);
-    if (!editMode) {
+    if (!isEditMode) {
       readOnlyMode = true;
     }
   }
 
   const handleOnEdit = () => {
-    setEditMode(true);
+    setIsEditMode(true);
   };
 
   return (
@@ -59,6 +59,7 @@ function ShopAddressSettings() {
             ?
             <Fragment>
               <Typography> {address.company}</Typography>
+              <Typography> {address.fullName}</Typography>
               <Typography> {address.address1}</Typography>
               <Typography> {address.address2}</Typography>
               <Typography> {`${address.city}, ${address.region} ${address.postal}`}</Typography>
@@ -66,9 +67,9 @@ function ShopAddressSettings() {
               <Typography> {address.phone}</Typography>
             </Fragment>
             :
-            <ShopAddressForm setEditMode={setEditMode} />
+            <ShopAddressForm isEditMode={isEditMode} setIsEditMode={setIsEditMode} />
         }
-        {!editMode &&
+        {!isEditMode &&
         <Box textAlign="right">
           <Button
             color="primary"

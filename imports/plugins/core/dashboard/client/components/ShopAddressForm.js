@@ -9,6 +9,10 @@ import muiOptions from "reacto-form/cjs/muiOptions";
 import muiCheckboxOptions from "reacto-form/esm/muiCheckboxOptions";
 import {
   Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControlLabel,
   Grid,
   makeStyles
@@ -19,9 +23,6 @@ const useStyles = makeStyles((theme) => ({
   card: {
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(3)
-  },
-  textField: {
-    minWidth: 350
   },
   saveButton: {
     textAlign: "right"
@@ -78,7 +79,7 @@ const validator = shopAddress.getFormValidator();
  * @param {Object} props component props
  * @returns {Node} React node
  */
-function ShopAddressForm({ setEditMode }) {
+function ShopAddressForm({ isEditMode, setIsEditMode }) {
   const classes = useStyles();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { onUpdateShop, shop } = useShopSettings();
@@ -98,7 +99,7 @@ function ShopAddressForm({ setEditMode }) {
       setIsSubmitting(true);
       await onUpdateShop({ addressBook: [shopAddress.clean(formData)] });
       setIsSubmitting(false);
-      setEditMode(false);
+      setIsEditMode(false);
     },
     validator(formData) {
       return validator(shopAddress.clean(formData));
@@ -111,107 +112,116 @@ function ShopAddressForm({ setEditMode }) {
     submitForm();
   };
 
+  const handleOnCloseDialog = () => {
+    setIsEditMode(false);
+  };
+
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <TextField
-          className={classes.textField}
-          error={hasErrors(["company"])}
-          fullWidth
-          helperText={getFirstErrorMessage(["company"])}
-          label={i18next.t("admin.settings.address.companyLabel")}
-          {...getInputProps("company", muiOptions)}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          className={classes.textField}
-          error={hasErrors(["fullName"])}
-          fullWidth
-          helperText={getFirstErrorMessage(["fullName"])}
-          label={i18next.t("admin.settings.address.fullNameLabel")}
-          placeholder={i18next.t("admin.settings.address.fullNamePlaceholder")}
-          {...getInputProps("fullName", muiOptions)}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          className={classes.textField}
-          error={hasErrors(["address1"])}
-          fullWidth
-          helperText={getFirstErrorMessage(["address1"])}
-          label={i18next.t("admin.settings.address.address1Label")}
-          {...getInputProps("address1", muiOptions)}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          className={classes.textField}
-          error={hasErrors(["address2"])}
-          fullWidth
-          helperText={getFirstErrorMessage(["address2"])}
-          label={i18next.t("admin.settings.address.address2Label")}
-          {...getInputProps("address2", muiOptions)}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          className={classes.textField}
-          error={hasErrors(["city"])}
-          fullWidth
-          helperText={getFirstErrorMessage(["city"])}
-          label={i18next.t("admin.settings.address.cityLabel")}
-          {...getInputProps("city", muiOptions)}
-        />
-      </Grid>
-      <Grid item xs={6}>
-        <TextField
-          className={classes.textField}
-          error={hasErrors(["region"])}
-          helperText={getFirstErrorMessage(["region"])}
-          label={i18next.t("admin.settings.address.regionLabel")}
-          {...getInputProps("region", muiOptions)}
-        />
-      </Grid>
-      <Grid item xs={6}>
-        <TextField
-          className={classes.textField}
-          error={hasErrors(["postal"])}
-          helperText={getFirstErrorMessage(["postal"])}
-          label={i18next.t("admin.settings.address.postalLabel")}
-          {...getInputProps("postal", muiOptions)}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          className={classes.textField}
-          error={hasErrors(["country"])}
-          fullWidth
-          helperText={getFirstErrorMessage(["country"])}
-          label={i18next.t("admin.settings.address.countryLabel")}
-          {...getInputProps("country", muiOptions)}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          className={classes.textField}
-          error={hasErrors(["phone"])}
-          fullWidth
-          helperText={getFirstErrorMessage(["phone"])}
-          label={i18next.t("admin.settings.address.phoneLabel")}
-          {...getInputProps("phone", muiOptions)}
-        />
-      </Grid>
-      <Grid item sm={12}>
-        <FormControlLabel
-          control={
-            <Checkbox color="primary" />
-          }
-          label={i18next.t("admin.settings.address.isCommercialLabel")}
-          {...getInputProps("isCommercial", muiCheckboxOptions)}
-        />
-      </Grid>
-      <Grid classes={{ root: classes.saveButton }} item xs={12}>
+    <Dialog
+      open={isEditMode}
+      onClose={handleOnCloseDialog}
+      aria-labelledby="shop-address-dialog-title"
+    >
+      <DialogTitle disableTypography id="shop-address-dialog-title">
+        <h4>{i18next.t("admin.settings.address.dialogHeader")}</h4>
+      </DialogTitle>
+      <DialogContent>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              error={hasErrors(["company"])}
+              fullWidth
+              helperText={getFirstErrorMessage(["company"])}
+              label={i18next.t("admin.settings.address.companyLabel")}
+              {...getInputProps("company", muiOptions)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              error={hasErrors(["fullName"])}
+              fullWidth
+              helperText={getFirstErrorMessage(["fullName"])}
+              label={i18next.t("admin.settings.address.fullNameLabel")}
+              placeholder={i18next.t("admin.settings.address.fullNamePlaceholder")}
+              {...getInputProps("fullName", muiOptions)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              error={hasErrors(["address1"])}
+              fullWidth
+              helperText={getFirstErrorMessage(["address1"])}
+              label={i18next.t("admin.settings.address.address1Label")}
+              {...getInputProps("address1", muiOptions)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              error={hasErrors(["address2"])}
+              fullWidth
+              helperText={getFirstErrorMessage(["address2"])}
+              label={i18next.t("admin.settings.address.address2Label")}
+              {...getInputProps("address2", muiOptions)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              error={hasErrors(["city"])}
+              fullWidth
+              helperText={getFirstErrorMessage(["city"])}
+              label={i18next.t("admin.settings.address.cityLabel")}
+              {...getInputProps("city", muiOptions)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              error={hasErrors(["region"])}
+              helperText={getFirstErrorMessage(["region"])}
+              label={i18next.t("admin.settings.address.regionLabel")}
+              {...getInputProps("region", muiOptions)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              error={hasErrors(["postal"])}
+              helperText={getFirstErrorMessage(["postal"])}
+              label={i18next.t("admin.settings.address.postalLabel")}
+              {...getInputProps("postal", muiOptions)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              error={hasErrors(["country"])}
+              fullWidth
+              helperText={getFirstErrorMessage(["country"])}
+              label={i18next.t("admin.settings.address.countryLabel")}
+              {...getInputProps("country", muiOptions)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              error={hasErrors(["phone"])}
+              fullWidth
+              helperText={getFirstErrorMessage(["phone"])}
+              label={i18next.t("admin.settings.address.phoneLabel")}
+              {...getInputProps("phone", muiOptions)}
+            />
+          </Grid>
+          <Grid item sm={12}>
+            <FormControlLabel
+              control={
+                <Checkbox color="primary" />
+              }
+              label={i18next.t("admin.settings.address.isCommercialLabel")}
+              {...getInputProps("isCommercial", muiCheckboxOptions)}
+            />
+          </Grid>
+        </Grid>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleOnCloseDialog} color="secondary">
+            Cancel
+        </Button>
         <Button
           color="primary"
           disabled={isSubmitting}
@@ -221,13 +231,14 @@ function ShopAddressForm({ setEditMode }) {
         >
           {isSubmitting ? i18next.t("admin.settings.saveProcessing") : i18next.t("app.save")}
         </Button>
-      </Grid>
-    </Grid>
+      </DialogActions>
+    </Dialog>
   );
 }
 
 ShopAddressForm.propTypes = {
-  setEditMode: PropTypes.func.isRequired
+  isEditMode: PropTypes.bool.isRequired,
+  setIsEditMode: PropTypes.func.isRequired
 };
 
 export default ShopAddressForm;
