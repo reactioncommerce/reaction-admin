@@ -241,7 +241,6 @@ Sidebar.propTypes = {
   isSettingsOpen: PropTypes.bool,
   isSidebarOpen: PropTypes.bool.isRequired,
   onDrawerClose: PropTypes.func.isRequired,
-  routes: PropTypes.array,
   setIsSettingsOpen: PropTypes.func.isRequired
 };
 
