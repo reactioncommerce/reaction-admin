@@ -1,5 +1,5 @@
 import { Meteor } from "meteor/meteor";
-import { Accounts, Groups, Shops } from "/lib/collections";
+import { Shops } from "/lib/collections";
 
 Meteor.publish("PrimaryShop", () => Shops.find({
   shopType: "primary"
@@ -12,18 +12,10 @@ Meteor.publish("UserShops", () => {
     shopType: "primary"
   });
 
-  const userProfile = Accounts.findOne({ userId: Meteor.userId() });
-  const groupIds = userProfile.groups;
+  const { profile } = Meteor.user();
+  const shopId = profile.preferences && profile.preferences.reaction && profile.preferences.reaction.activeShopId;
 
-  const groups = Groups.find({ _id: { $in: groupIds }});
+  const shopIds = [primaryShop._id, shopId];
 
-  const shopIds = groups.map((group) => {
-    if (group.slug === "owner" && group.shopId !== null) {
-      return group.shopId;
-    }
-  });
-
-  shopIds.push(primaryShop._id);
-  
   return Shops.find({ _id: { $in: shopIds }});
 });
