@@ -23,7 +23,7 @@ Shop.extend({
  * Single order page route
  */
 registerOperatorRoute({
-    MainComponent: Order,
+  MainComponent: Order,
   path: "/orders/:_id"
 });
 
@@ -31,7 +31,7 @@ registerOperatorRoute({
  * Single order print layout route
  */
 registerOperatorRoute({
-    MainComponent: OrderPrint,
+  MainComponent: OrderPrint,
   path: "/orders/print/:_id"
 });
 
