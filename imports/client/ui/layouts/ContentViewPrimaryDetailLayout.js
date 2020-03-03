@@ -110,6 +110,7 @@ function ContentViewPrimaryDetailLayout(props) {
         <>
           <Button
             color="default"
+            disableElevation={true}
             className={classes.drawerButton}
             fullWidth
             onClick={() => setDrawerOpen(true)}
@@ -120,7 +121,6 @@ function ContentViewPrimaryDetailLayout(props) {
 
           <Drawer
             anchor="bottom"
-            disableElevation={true}
             classes={{
               paperAnchorBottom: classes.drawerPaperAnchorBottom
             }}
