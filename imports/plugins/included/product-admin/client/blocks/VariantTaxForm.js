@@ -130,7 +130,7 @@ function VariantTaxForm() {
         >
           <Box marginBottom={4}>
             <FormControlLabel
-              label={i18next.t("productVariant.isTaxable")}
+              label={i18next.t("productVariant.taxable")}
               {...isTaxableInputProps}
               checked={isTaxableInputProps.value || false}
               control={<Checkbox />}
