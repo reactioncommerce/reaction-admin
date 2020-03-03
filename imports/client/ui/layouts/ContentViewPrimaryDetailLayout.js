@@ -83,7 +83,7 @@ function ContentViewPrimaryDetailLayout(props) {
     PrimaryComponent,
     children,
     detailBlockRegionName,
-    drawerButtonTitle = "More",
+    drawerButtonTitle,
     primaryBlockRegionName,
     ...blockProps
   } = props;
@@ -168,9 +168,13 @@ ContentViewPrimaryDetailLayout.propTypes = {
   PrimaryComponent: PropTypes.node,
   children: PropTypes.node,
   detailBlockRegionName: PropTypes.string,
-  drawerButtonTitle: PropTypes.string.isRequired,
+  drawerButtonTitle: PropTypes.string,
   isMobile: PropTypes.bool,
   primaryBlockRegionName: PropTypes.string
+};
+
+ContentViewPrimaryDetailLayout.defaultProps = {
+  drawerButtonTitle: "More"
 };
 
 export default ContentViewPrimaryDetailLayout;
