@@ -39,7 +39,7 @@ registerOperatorRoute({
  * Orders table route
  */
 registerOperatorRoute({
-  group: "main",
+  group: "navigation",
   priority: 10,
   LayoutComponent: ContentViewExtraWideLayout,
   MainComponent: Orders,
