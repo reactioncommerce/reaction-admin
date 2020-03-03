@@ -12,7 +12,7 @@ const styles = (theme) => ({
     flexGrow: 1,
     width: "100%",
     maxWidth: 380,
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("xs")]: {
       maxWidth: "100%"
     }
   },
