@@ -42,6 +42,7 @@ const validator = formSchema.getFormValidator();
 function VariantTaxForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
+    currentVariant,
     onUpdateProductVariant,
     product,
     variant,
@@ -61,6 +62,7 @@ function VariantTaxForm() {
       setIsSubmitting(true);
 
       await onUpdateProductVariant({
+        variantId: currentVariant._id,
         variant: formSchema.clean(formData)
       });
 
