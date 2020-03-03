@@ -24,7 +24,7 @@ import "./templates/profile/profile.html";
 import "./templates/profile/profile.js";
 
 registerOperatorRoute({
-  group: "main",
+  group: "navigation",
   path: "/accounts",
   priority: 40,
   MainComponent: Accounts,
