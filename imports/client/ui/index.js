@@ -5,6 +5,10 @@ import "./appComponents";
 
 export const operatorRoutes = [];
 export const routes = [];
+export const defaultRouteGroups = {
+  navigation: "navigation",
+  settings: "settings"
+};
 
 /**
  * @name registerOperatorRoute
@@ -19,16 +23,48 @@ export const routes = [];
  * @returns {undefined}
  */
 export function registerOperatorRoute(route) {
-  const { mainComponent, hocs = [] } = route;
-  let component = mainComponent;
+  const { isNavigationLink, isSetting, layoutComponent, mainComponent, MainComponent, hocs = [] } = route;
+  const additionalProps = {};
 
-  if (typeof mainComponent === "string") {
-    component = () => getReactComponentOrBlazeTemplate(mainComponent);
+  if (isNavigationLink) {
+    // eslint-disable-next-line no-console
+    console.warn("Option `isNavigationLink` is deprecated. Set `group: \"main\"` in your route configuration");
+    additionalProps.group = defaultRouteGroups.main;
+  }
+
+  if (isSetting) {
+    // eslint-disable-next-line no-console
+    console.warn("Option `isSetting` is deprecated. Set `group: \"settings\"` in your route configuration");
+    additionalProps.group = defaultRouteGroups.settings;
+  }
+
+  if (layoutComponent) {
+    // eslint-disable-next-line no-console
+    console.warn("Option `layoutComponent` is deprecated. Use `LayoutComponent` instead");
+    additionalProps.LayoutComponent = layoutComponent;
+  }
+
+  if (mainComponent) {
+    // eslint-disable-next-line no-console
+    console.warn("Option `mainComponent` is deprecated. Use `MainComponent` instead");
+  }
+
+  const resolvedMainComponent = MainComponent || mainComponent;
+  let component;
+
+  if (typeof resolvedMainComponent === "string") {
+    component = () => getReactComponentOrBlazeTemplate(resolvedMainComponent);
+  } else {
+    component = resolvedMainComponent;
   }
 
   component = compose(...hocs, setDisplayName(`Reaction(${name})`))(component);
 
-  operatorRoutes.push({ ...route, mainComponent: component });
+  operatorRoutes.push({
+    ...route,
+    ...additionalProps,
+    MainComponent: component
+  });
 }
 
 /**
@@ -56,6 +92,6 @@ export function registerRoute(route) {
   routes.push({
     exact: true,
     ...route,
-    mainComponent: component
+    MainComponent: component
   });
 }

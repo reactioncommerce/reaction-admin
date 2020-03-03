@@ -8,9 +8,8 @@ import Localization from "./containers/localizationSettings";
 export { default as LocalizationSettings } from "./containers/localizationSettings";
 
 registerOperatorRoute({
-  isNavigationLink: true,
-  isSetting: true,
-  mainComponent: Localization,
+  group: "settings",
+  MainComponent: Localization,
   path: "/localization",
   // eslint-disable-next-line react/display-name
   SidebarIconComponent: (props) => <FontAwesomeIcon icon={faGlobe} {...props} />,

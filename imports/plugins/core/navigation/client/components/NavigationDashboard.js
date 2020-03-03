@@ -1,30 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import Button from "@material-ui/core/Button";
-import { withStyles } from "@material-ui/core/styles";
+import { Dialog, DialogContent } from "@material-ui/core";
+import Button from "@reactioncommerce/catalyst/Button";
 import HTML5Backend from "react-dnd-html5-backend";
 import { DragDropContext } from "react-dnd";
 import NavigationItemForm from "./NavigationItemForm";
 import NavigationTreeContainer from "./NavigationTreeContainer";
 import NavigationItemList from "./NavigationItemList";
 import PrimaryAppBar from "/imports/client/ui/components/PrimaryAppBar";
-
-
-const styles = (theme) => ({
-  root: {
-    display: "flex",
-    height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
-    overflow: "hidden"
-  },
-  leftSidebarOpen: {
-    ...theme.mixins.leadingPaddingWhenPrimaryDrawerIsOpen
-  },
-  title: {
-    flex: 1
-  }
-});
+import ContentViewPrimaryDetailLayout from "/imports/client/ui/layouts/ContentViewPrimaryDetailLayout";
 
 class NavigationDashboard extends Component {
   static propTypes = {
@@ -36,9 +20,6 @@ class NavigationDashboard extends Component {
     onSetSortableNavigationTree: PropTypes.func,
     shopId: PropTypes.string,
     sortableNavigationTree: PropTypes.arrayOf(PropTypes.object),
-    uiState: PropTypes.shape({
-      isLeftDrawerOpen: PropTypes.bool
-    }),
     updateNavigationItem: PropTypes.func,
     updateNavigationTree: PropTypes.func
   }
@@ -93,7 +74,6 @@ class NavigationDashboard extends Component {
 
   render() {
     const {
-      classes,
       createNavigationItem,
       deleteNavigationItem,
       navigationItems,
@@ -113,20 +93,28 @@ class NavigationDashboard extends Component {
     } = this.state;
 
     return (
-      <div className={classes.root}>
-        <PrimaryAppBar title="Main Navigation">
-          <Button color="primary" onClick={onDiscardNavigationTreeChanges}>Discard</Button>
-          <Button color="primary" variant="contained" onClick={updateNavigationTree}>Save Changes</Button>
-        </PrimaryAppBar>
-        <NavigationItemList
-          onClickAddNavigationItem={this.addNavigationItem}
-          navigationItems={navigationItems}
-          onClickUpdateNavigationItem={this.updateNavigationItem}
-        />
-        <NavigationTreeContainer
-          sortableNavigationTree={sortableNavigationTree}
-          onSetSortableNavigationTree={onSetSortableNavigationTree}
-          onClickUpdateNavigationItem={this.updateNavigationItem}
+      <>
+        <ContentViewPrimaryDetailLayout
+          AppBarComponent={
+            <PrimaryAppBar title="Main Navigation">
+              <Button color="primary" onClick={onDiscardNavigationTreeChanges}>Discard</Button>
+              <Button color="primary" variant="contained" onClick={updateNavigationTree}>Save Changes</Button>
+            </PrimaryAppBar>
+          }
+          PrimaryComponent={
+            <NavigationItemList
+              onClickAddNavigationItem={this.addNavigationItem}
+              navigationItems={navigationItems}
+              onClickUpdateNavigationItem={this.updateNavigationItem}
+            />
+          }
+          DetailComponent={
+            <NavigationTreeContainer
+              sortableNavigationTree={sortableNavigationTree}
+              onSetSortableNavigationTree={onSetSortableNavigationTree}
+              onClickUpdateNavigationItem={this.updateNavigationItem}
+            />
+          }
         />
         <Dialog
           aria-labelledby="simple-modal-title"
@@ -150,9 +138,9 @@ class NavigationDashboard extends Component {
             />
           </DialogContent>
         </Dialog>
-      </div>
+      </>
     );
   }
 }
 
-export default DragDropContext(HTML5Backend)(withStyles(styles)(NavigationDashboard));
+export default DragDropContext(HTML5Backend)(NavigationDashboard);

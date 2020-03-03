@@ -5,9 +5,8 @@ import { registerOperatorRoute } from "/imports/client/ui";
 import TaxSettings from "./components/TaxSettings";
 
 registerOperatorRoute({
-  isNavigationLink: true,
-  isSetting: true,
-  mainComponent: TaxSettings,
+  group: "settings",
+  MainComponent: TaxSettings,
   priority: 30,
   path: "/tax-settings",
   // eslint-disable-next-line react/display-name
