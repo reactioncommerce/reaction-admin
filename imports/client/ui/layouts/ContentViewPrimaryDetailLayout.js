@@ -134,9 +134,7 @@ function ContentViewPrimaryDetailLayout(props) {
             >
               <Toolbar>
                 <Box display="flex" justifyContent="center" width="100%">
-                  <IconButton
-                    onClick={closeDrawer} size="large"
-                  >
+                  <IconButton onClick={closeDrawer}>
                     <ChevronDownIcon />
                   </IconButton>
                 </Box>
