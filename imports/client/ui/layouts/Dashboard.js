@@ -58,7 +58,7 @@ function Dashboard(props) {
   const contextValue = useMemo(() => ({
     isDetailDrawerOpen,
     isMobile,
-    isPrimarySidebarOpen,
+    isPrimarySidebarOpen: (isMobile && isPrimarySidebarOpen) || true,
     onClosePrimarySidebar,
     onTogglePrimarySidebar,
     onCloseDetailDrawer,
