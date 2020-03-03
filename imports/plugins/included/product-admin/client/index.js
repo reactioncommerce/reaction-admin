@@ -17,10 +17,8 @@ import withVariant from "./hocs/withVariant";
 
 // Register routes
 registerOperatorRoute({
-  isNavigationLink: false,
-  isSetting: false,
   path: "/products/:handle/:parentVariantId/:variantId",
-  mainComponent: VariantDetail,
+  MainComponent: VariantDetail,
   hocs: [
     withProduct,
     withVariant
@@ -28,10 +26,8 @@ registerOperatorRoute({
 });
 
 registerOperatorRoute({
-  isNavigationLink: false,
-  isSetting: false,
   path: "/products/:handle/:variantId",
-  mainComponent: VariantDetail,
+  MainComponent: VariantDetail,
   hocs: [
     withProduct,
     withVariant
@@ -39,20 +35,17 @@ registerOperatorRoute({
 });
 
 registerOperatorRoute({
-  isNavigationLink: false,
-  isSetting: false,
   path: "/products/:handle",
-  mainComponent: ProductDetailLayout,
+  MainComponent: ProductDetailLayout,
   hocs: [withProduct]
 });
 
 registerOperatorRoute({
-  isNavigationLink: true,
-  isSetting: false,
+  group: "navigation",
   priority: 20,
-  layoutComponent: ContentViewExtraWideLayout,
+  LayoutComponent: ContentViewExtraWideLayout,
   path: "/products",
-  mainComponent: ProductsTable,
+  MainComponent: ProductsTable,
   // eslint-disable-next-line react/display-name, react/no-multi-comp
   SidebarIconComponent: (props) => <CubeIcon {...props} />,
   sidebarI18nLabel: "admin.products"

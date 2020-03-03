@@ -1,11 +1,11 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStore } from "@fortawesome/free-solid-svg-icons";
-import ContentViewExtraWideLayout from "/imports/client/ui/layouts/ContentViewExtraWideLayout";
 
 import { registerBlock } from "@reactioncommerce/reaction-components";
 import { registerOperatorRoute } from "/imports/client/ui";
 import OperatorLanding from "/imports/plugins/core/dashboard/client/components/OperatorLanding";
+import ContentViewPirimaryDetailLayout from "/imports/client/ui/layouts/ContentViewPrimaryDetailLayout";
 
 // Settings link list
 import SettingsList from "./components/SettingsList";
@@ -14,7 +14,7 @@ import ShopSettingsRegion from "./components/ShopSettingsRegion";
 // Settings
 import SystemInformation from "./components/SystemInformation";
 import ShopLogoUrls from "./components/ShopLogoUrls";
-import SettingsMain from "./components/SettingsMain";
+import SettingsDashboard from "./components/SettingsDashboard";
 import ShopSettingsForm from "./components/ShopSettingsForm";
 import ShopAddressSettings from "./components/ShopAddressSettings";
 
@@ -30,28 +30,24 @@ import "./templates/shop/settings/settings.js";
 
 // Default landing page
 registerOperatorRoute({
-  isNavigationLink: false,
-  isSetting: false,
   path: "/",
-  mainComponent: OperatorLanding
+  MainComponent: OperatorLanding
 });
 
 registerOperatorRoute({
-  isNavigationLink: false,
-  isSetting: false,
+  group: "navigation",
   priority: 10,
-  path: "/settings/:setting?",
-  layoutComponent: ContentViewExtraWideLayout,
-  mainComponent: SettingsMain,
+  path: "/settings",
+  LayoutComponent: ContentViewPirimaryDetailLayout,
+  MainComponent: SettingsDashboard,
   // eslint-disable-next-line react/display-name
   SidebarIconComponent: (props) => <FontAwesomeIcon icon={faStore} {...props} />,
   sidebarI18nLabel: "admin.settings.generalSettingsLabel"
 });
 
 registerOperatorRoute({
-  isNavigationLink: true,
-  isSetting: true,
-  mainComponent: SystemInformation,
+  group: "settings",
+  MainComponent: SystemInformation,
   path: "/system",
   priority: 1000,
   sidebarI18nLabel: "shopSettings.systemInfo.title"

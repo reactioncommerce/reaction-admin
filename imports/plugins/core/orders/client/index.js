@@ -23,8 +23,7 @@ Shop.extend({
  * Single order page route
  */
 registerOperatorRoute({
-  isNavigationLink: false,
-  mainComponent: Order,
+  MainComponent: Order,
   path: "/orders/:_id"
 });
 
@@ -32,8 +31,7 @@ registerOperatorRoute({
  * Single order print layout route
  */
 registerOperatorRoute({
-  isNavigationLink: false,
-  mainComponent: OrderPrint,
+  MainComponent: OrderPrint,
   path: "/orders/print/:_id"
 });
 
@@ -41,11 +39,10 @@ registerOperatorRoute({
  * Orders table route
  */
 registerOperatorRoute({
-  isNavigationLink: true,
-  isSetting: false,
+  group: "navigation",
   priority: 10,
-  layoutComponent: ContentViewExtraWideLayout,
-  mainComponent: Orders,
+  LayoutComponent: ContentViewExtraWideLayout,
+  MainComponent: Orders,
   path: "/orders",
   // eslint-disable-next-line react/display-name
   SidebarIconComponent: (props) => <InboxIcon {...props} />,

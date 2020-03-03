@@ -11,7 +11,10 @@ const styles = (theme) => ({
     flexDirection: "column",
     flexGrow: 1,
     width: "100%",
-    maxWidth: 380
+    maxWidth: 380,
+    [theme.breakpoints.up("xs")]: {
+      maxWidth: "100%"
+    }
   },
   header: {
     padding: theme.spacing(2),

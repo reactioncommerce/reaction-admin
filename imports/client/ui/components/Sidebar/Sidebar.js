@@ -20,11 +20,9 @@ import { Translation } from "/imports/plugins/core/ui/client/components";
 import useIsAppLoading from "/imports/client/ui/hooks/useIsAppLoading.js";
 import useCurrentShopId from "../../hooks/useCurrentShopId";
 import ShopLogoWithData from "../ShopLogoWithData";
+import useOperatorRoutes from "../../hooks/useOperatorRoutes";
 
 const activeClassName = "nav-item-active";
-
-// Route sorting by priority. Items without a priority get pushed the bottom.
-const routeSort = (routeA, routeB) => (routeA.priority || Number.MAX_SAFE_INTEGER) - (routeB.priority || Number.MAX_SAFE_INTEGER);
 
 const styles = (theme) => ({
   closeButton: {
@@ -104,15 +102,13 @@ function Sidebar(props) {
     isSidebarOpen,
     onDrawerClose,
     isSettingsOpen,
-    setIsSettingsOpen,
-    routes
+    setIsSettingsOpen
   } = props;
 
   const [isAppLoading] = useIsAppLoading();
   const [currentShopId] = useCurrentShopId();
-
-  const primaryRoutes = routes.filter(({ isNavigationLink, isSetting }) => isNavigationLink && !isSetting).sort(routeSort);
-  const settingRoutes = routes.filter(({ isNavigationLink, isSetting }) => isNavigationLink && isSetting).sort(routeSort);
+  const primaryRoutes = useOperatorRoutes({ groups: ["navigation"] });
+  const settingRoutes = useOperatorRoutes({ groups: ["settings"] });
 
   let drawerProps = {
     classes: {
@@ -245,7 +241,6 @@ Sidebar.propTypes = {
   isSettingsOpen: PropTypes.bool,
   isSidebarOpen: PropTypes.bool.isRequired,
   onDrawerClose: PropTypes.func.isRequired,
-  routes: PropTypes.array,
   setIsSettingsOpen: PropTypes.func.isRequired
 };
 

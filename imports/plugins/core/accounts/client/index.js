@@ -24,19 +24,16 @@ import "./templates/profile/profile.html";
 import "./templates/profile/profile.js";
 
 registerOperatorRoute({
-  isNavigationLink: true,
-  isSetting: false,
+  group: "navigation",
   path: "/accounts",
   priority: 40,
-  mainComponent: Accounts,
+  MainComponent: Accounts,
   // eslint-disable-next-line react/display-name, react/no-multi-comp
   SidebarIconComponent: (props) => <AccountIcon {...props} />,
   sidebarI18nLabel: "admin.dashboard.accountsLabel"
 });
 
 registerOperatorRoute({
-  isNavigationLink: false,
-  isSetting: false,
   path: "/profile",
-  mainComponent: "accountProfile"
+  MainComponent: "accountProfile"
 });
