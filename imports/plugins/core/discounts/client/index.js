@@ -5,7 +5,7 @@ import { registerOperatorRoute } from "/imports/client/ui";
 import DiscountsPage from "./DiscountsPage.js";
 
 registerOperatorRoute({
-  group: "main",
+  group: "navigation",
   priority: 60,
   path: "/discounts",
   MainComponent: DiscountsPage,
