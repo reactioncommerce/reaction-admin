@@ -20,9 +20,6 @@ class NavigationDashboard extends Component {
     onSetSortableNavigationTree: PropTypes.func,
     shopId: PropTypes.string,
     sortableNavigationTree: PropTypes.arrayOf(PropTypes.object),
-    uiState: PropTypes.shape({
-      isLeftDrawerOpen: PropTypes.bool
-    }),
     updateNavigationItem: PropTypes.func,
     updateNavigationTree: PropTypes.func
   }
