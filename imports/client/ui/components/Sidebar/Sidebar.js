@@ -107,7 +107,7 @@ function Sidebar(props) {
 
   const [isAppLoading] = useIsAppLoading();
   const [currentShopId] = useCurrentShopId();
-  const primaryRoutes = useOperatorRoutes({ groups: ["main"] });
+  const primaryRoutes = useOperatorRoutes({ groups: ["navigation"] });
   const settingRoutes = useOperatorRoutes({ groups: ["settings"] });
 
   let drawerProps = {
