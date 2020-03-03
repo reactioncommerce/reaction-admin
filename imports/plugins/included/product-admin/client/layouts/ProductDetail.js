@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Blocks } from "@reactioncommerce/reaction-components";
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import { Switch, Route } from "react-router-dom";
 import ProductToolbar from "../components/ProductToolbar";
+import ContentViewPrimaryDetailLayout from "/imports/client/ui/layouts/ContentViewPrimaryDetailLayout";
 
 const styles = (theme) => ({
   block: {
@@ -38,10 +39,10 @@ function ProductDetail(props) {
   const { classes, ...blockProps } = props;
 
   return (
-    <Fragment>
-      <ProductToolbar />
-      <Box display="flex">
-        <div className={classes.sidebar}>
+    <ContentViewPrimaryDetailLayout
+      AppBarComponent={<ProductToolbar />}
+      PrimaryComponent={
+        <>
           <Box padding={2}>
             <Blocks region="ProductDetailHeader" blockProps={blockProps} />
           </Box>
@@ -49,44 +50,43 @@ function ProductDetail(props) {
           <Box padding={2}>
             <Blocks region="ProductDetailSidebar" blockProps={blockProps} />
           </Box>
-        </div>
-
-        <div className={classes.content}>
-          <Container maxWidth="md">
-            <Switch>
-              <Route
-                path="/products/:handle/:variantId/:optionId?"
-                render={() => (
-                  <Blocks region="VariantDetailMain" blockProps={blockProps}>
-                    {(blocks) =>
-                      blocks.map((block, index) => (
-                        <div className={classes.block} key={index}>
-                          {block}
-                        </div>
-                      ))
-                    }
-                  </Blocks>
-                )}
-              />
-              <Route
-                path="/products/:handle/"
-                render={() => (
-                  <Blocks region="ProductDetailMain" blockProps={blockProps}>
-                    {(blocks) =>
-                      blocks.map((block, index) => (
-                        <div className={classes.block} key={index}>
-                          {block}
-                        </div>
-                      ))
-                    }
-                  </Blocks>
-                )}
-              />
-            </Switch>
-          </Container>
-        </div>
-      </Box>
-    </Fragment>
+        </>
+      }
+      DetailComponent={
+        <Container maxWidth="md">
+          <Switch>
+            <Route
+              path="/products/:handle/:variantId/:optionId?"
+              render={() => (
+                <Blocks region="VariantDetailMain" blockProps={blockProps}>
+                  {(blocks) =>
+                    blocks.map((block, index) => (
+                      <div className={classes.block} key={index}>
+                        {block}
+                      </div>
+                    ))
+                  }
+                </Blocks>
+              )}
+            />
+            <Route
+              path="/products/:handle/"
+              render={() => (
+                <Blocks region="ProductDetailMain" blockProps={blockProps}>
+                  {(blocks) =>
+                    blocks.map((block, index) => (
+                      <div className={classes.block} key={index}>
+                        {block}
+                      </div>
+                    ))
+                  }
+                </Blocks>
+              )}
+            />
+          </Switch>
+        </Container>
+      }
+    />
   );
 }
 
