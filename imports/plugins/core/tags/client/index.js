@@ -19,7 +19,7 @@ registerOperatorRoute({
 });
 
 registerOperatorRoute({
-  group: "main",
+  group: "navigation",
   path: "/tags",
   priority: 30,
   MainComponent: TagSettingsPage,
