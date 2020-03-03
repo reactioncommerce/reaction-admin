@@ -12,42 +12,55 @@ import ContentViewStandardLayout from "./ContentViewStandardLayout";
  * @param {Object} props ComponentProps
  * @returns {Object} An object containing filtered routes
  */
-function OperatorRoutes({ LayoutComponent: LayoutComponentProp, routes }) {
+function OperatorRoutes({
+  DefaultLayoutComponent = ContentViewStandardLayout,
+  isExactMatch,
+  routes
+}) {
   const isMobile = useMediaQuery("mobile");
   const uiContext = useContext(UIContext);
 
   return (
     <Switch>
-      {routes.map((route) => {
-        const LayoutComponent = LayoutComponentProp || route.LayoutComponent || ContentViewStandardLayout;
+      {routes.map((route) => (
+        <Route
+          exact={isExactMatch}
+          key={route.path}
+          path={route.path}
+          render={(routeProps) => {
+            const title = i18next.t(route.sidebarI18nLabel, { defaultValue: "Reaction Admin" });
 
-        return (
-          <Route
-            key={route.path}
-            path={route.path}
-            render={(routeProps) => {
-              const title = i18next.t(route.sidebarI18nLabel, { defaultValue: "Reaction Admin" });
-
+            if (route.LayoutComponent === null) {
               return (
-                <LayoutComponent
-                  isLeadingDrawerOpen={!isMobile}
-                  isTrailingDrawerOpen={uiContext.isDetailDrawerOpen && !isMobile}
-                >
+                <>
                   <Helmet title={title} />
                   <route.MainComponent uiState={this.state} {...routeProps} />
-                </LayoutComponent>
+                </>
               );
-            }}
-            {...route.props}
-          />
-        );
-      })}
+            }
+
+            const LayoutComponent = route.LayoutComponent || DefaultLayoutComponent;
+
+            return (
+              <LayoutComponent
+                isLeadingDrawerOpen={!isMobile}
+                isTrailingDrawerOpen={uiContext.isDetailDrawerOpen && !isMobile}
+              >
+                <Helmet title={title} />
+                <route.MainComponent uiState={this.state} {...routeProps} />
+              </LayoutComponent>
+            );
+          }}
+          {...route.props}
+        />
+      ))}
     </Switch>
   );
 }
 
 OperatorRoutes.propTypes = {
-  LayoutComponent: PropTypes.element,
+  DefaultLayoutComponent: PropTypes.element,
+  isExactMatch: PropTypes.bool,
   routes: PropTypes.arrayOf(PropTypes.shape({
     path: PropTypes.string,
     props: PropTypes.object
