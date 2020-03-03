@@ -41,7 +41,7 @@ registerOperatorRoute({
 });
 
 registerOperatorRoute({
-  group: "main",
+  group: "navigation",
   priority: 20,
   LayoutComponent: ContentViewExtraWideLayout,
   path: "/products",
