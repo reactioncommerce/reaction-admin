@@ -12,8 +12,6 @@ import ContentViewExtraWideLayout from "/imports/client/ui/layouts/ContentViewEx
 import ContentViewFullLayout from "/imports/client/ui/layouts/ContentViewFullLayout";
 
 registerOperatorRoute({
-  isNavigationLink: false,
-  isSetting: false,
   layoutComponent: ContentViewFullLayout,
   path: "/products/:handle/:variantId?/:optionId?",
   mainComponent: ProductDetailLayout
