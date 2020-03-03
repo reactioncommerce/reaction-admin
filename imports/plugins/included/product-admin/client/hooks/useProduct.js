@@ -4,7 +4,6 @@ import { useHistory, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import { Meteor } from "meteor/meteor";
 import i18next from "i18next";
-import getOpaqueIds from "/imports/plugins/core/core/client/util/getOpaqueIds";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import { useSnackbar } from "notistack";
 import PRODUCT_QUERY from "./ProductQuery";
@@ -62,6 +61,27 @@ const ARCHIVE_PRODUCT_VARIANTS = gql`
   }
 `;
 
+const PUBLISH_TO_CATALOG = gql`
+  mutation ($productIds: [ID]!) {
+    publishProductsToCatalog(productIds: $productIds) {
+      product {
+        productId
+        title
+        isDeleted
+        supportedFulfillmentTypes
+        variants {
+          _id
+          title
+          options {
+            _id
+            title
+          }
+        }
+      }
+    }
+  }
+`;
+
 /**
  * Restore an archived product
  * @param {Object} product Product object
@@ -98,6 +118,7 @@ function useProduct(args = {}) {
   const [updateProductVariant] = useMutation(UpdateProductVariantMutation);
   const [cloneProductVariants] = useMutation(CLONE_PRODUCT_VARIANTS);
   const [archiveProductVariants] = useMutation(ARCHIVE_PRODUCT_VARIANTS);
+  const [publishProductsToCatalog] = useMutation(PUBLISH_TO_CATALOG);
 
   const [currentShopId] = useCurrentShopId();
 
@@ -127,11 +148,26 @@ function useProduct(args = {}) {
     option = variant.options.find(({ _id }) => _id === optionId);
   }
 
-  const onArchiveProduct = useCallback(async (productLocal, redirectUrl) => {
-    const opaqueProductIds = await getOpaqueIds([{ namespace: "Product", id: productLocal._id }]);
-
+  const onPublishProduct = useCallback(async ({ productId: productIdLocal = product._id }) => {
     try {
-      await archiveProducts({ variables: { input: { shopId, productIds: opaqueProductIds } } });
+      await publishProductsToCatalog({
+        variables: {
+          productIds: [productIdLocal]
+        }
+      });
+
+      // Refetch on success to force a cache update
+      refetchProduct();
+
+      enqueueSnackbar(i18next.t("admin.catalogProductPublishSuccess"), { variant: "success" });
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: "error" });
+    }
+  }, [product, publishProductsToCatalog, refetchProduct, enqueueSnackbar]);
+
+  const onArchiveProduct = useCallback(async (productLocal, redirectUrl) => {
+    try {
+      await archiveProducts({ variables: { input: { shopId, productIds: [productLocal] } } });
       Alerts.toast(i18next.t("productDetailEdit.archiveProductsSuccess"), "success");
       history.push(redirectUrl);
     } catch (error) {
@@ -145,10 +181,8 @@ function useProduct(args = {}) {
 
 
   const onCloneProduct = useCallback(async (productLocal) => {
-    const opaqueProductIds = await getOpaqueIds([{ namespace: "Product", id: productLocal }]);
-
     try {
-      await cloneProducts({ variables: { input: { shopId, productIds: opaqueProductIds } } });
+      await cloneProducts({ variables: { input: { shopId, productIds: [productLocal] } } });
       enqueueSnackbar(i18next.t("productDetailEdit.cloneProductSuccess"), { variant: "success" });
     } catch (error) {
       enqueueSnackbar(i18next.t("productDetailEdit.cloneProductFail"), { variant: "error" });
@@ -408,6 +442,7 @@ function useProduct(args = {}) {
     onCloneProduct,
     onCloneProductVariants,
     onCreateVariant,
+    onPublishProduct,
     onUpdateProduct,
     option,
     onRestoreProduct: handleProductRestore,
