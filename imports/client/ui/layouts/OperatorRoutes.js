@@ -34,7 +34,7 @@ function OperatorRoutes({
               return (
                 <>
                   <Helmet title={title} />
-                  <route.MainComponent uiState={this.state} {...routeProps} />
+                  <route.MainComponent {...routeProps} />
                 </>
               );
             }
@@ -47,7 +47,7 @@ function OperatorRoutes({
                 isTrailingDrawerOpen={uiContext.isDetailDrawerOpen && !isMobile}
               >
                 <Helmet title={title} />
-                <route.MainComponent uiState={this.state} {...routeProps} />
+                <route.MainComponent {...routeProps} />
               </LayoutComponent>
             );
           }}
