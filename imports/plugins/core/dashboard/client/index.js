@@ -1,14 +1,9 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStore } from "@fortawesome/free-solid-svg-icons";
-
+import SettingsIcon from "mdi-material-ui/Settings";
 import { registerBlock } from "@reactioncommerce/reaction-components";
 import { registerOperatorRoute } from "/imports/client/ui";
 import OperatorLanding from "/imports/plugins/core/dashboard/client/components/OperatorLanding";
-import ContentViewPirimaryDetailLayout from "/imports/client/ui/layouts/ContentViewPrimaryDetailLayout";
 
-// Settings link list
-import SettingsList from "./components/SettingsList";
+// Settings block region
 import ShopSettingsRegion from "./components/ShopSettingsRegion";
 
 // Settings
@@ -17,7 +12,6 @@ import ShopLogoUrls from "./components/ShopLogoUrls";
 import SettingsDashboard from "./components/SettingsDashboard";
 import ShopSettingsForm from "./components/ShopSettingsForm";
 import ShopAddressSettings from "./components/ShopAddressSettings";
-
 import StorefrontUrls from "./components/StorefrontUrls";
 
 import "./components/shopBrandImageOption";
@@ -36,13 +30,22 @@ registerOperatorRoute({
 
 registerOperatorRoute({
   group: "navigation",
-  priority: 10,
-  path: "/settings",
-  LayoutComponent: ContentViewPirimaryDetailLayout,
+  priority: 80,
+  path: "/settings/:setting?",
+  LayoutComponent: null,
   MainComponent: SettingsDashboard,
   // eslint-disable-next-line react/display-name
-  SidebarIconComponent: (props) => <FontAwesomeIcon icon={faStore} {...props} />,
-  sidebarI18nLabel: "admin.settings.generalSettingsLabel"
+  SidebarIconComponent: SettingsIcon,
+  sidebarI18nLabel: "admin.settings.settingsLabel"
+});
+
+// Shop settings region
+registerOperatorRoute({
+  group: "settings",
+  MainComponent: ShopSettingsRegion,
+  priority: 110,
+  path: "/settings/shop",
+  sidebarI18nLabel: "admin.settings.shopSettingsLabel"
 });
 
 registerOperatorRoute({
@@ -51,23 +54,6 @@ registerOperatorRoute({
   path: "/system",
   priority: 1000,
   sidebarI18nLabel: "shopSettings.systemInfo.title"
-});
-
-// Settings Sidebar blocks
-registerBlock({
-  region: "SettingsSidebar",
-  name: "GeneralSettingsList",
-  component: SettingsList
-});
-
-// Shop settings region
-registerOperatorRoute({
-  isNavigationLink: true,
-  isSetting: true,
-  mainComponent: ShopSettingsRegion,
-  priority: 10,
-  path: "/settings/shop",
-  sidebarI18nLabel: "admin.settings.shopSettingsLabel"
 });
 
 // Settings blocks

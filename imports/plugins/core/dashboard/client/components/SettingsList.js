@@ -8,10 +8,7 @@ import {
 } from "@material-ui/core";
 import clsx from "classnames";
 import { useHistory } from "react-router-dom";
-import { operatorRoutes } from "imports/client/ui/index";
-
-// Route sorting by priority. Items without a priority get pushed the bottom.
-const routeSort = (routeA, routeB) => (routeA.priority || Number.MAX_SAFE_INTEGER) - (routeB.priority || Number.MAX_SAFE_INTEGER);
+import useOperatorRoutes from "imports/client/ui/hooks/useOperatorRoutes";
 
 const useStyles = makeStyles((theme) => ({
   listItemContainer: {
@@ -20,19 +17,18 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   listItem: {
-    paddingLeft: theme.spacing(7)
+    paddingLeft: theme.spacing(4)
   }
 }));
 
 /**
  * @summary A list settings for a shop
- * @param {Object} props Component props
  * @returns {Node} React node
  */
 export default function SettingsList() {
   const classes = useStyles();
   const history = useHistory();
-  const settingsRoutes = operatorRoutes.filter(({ isNavigationLink, isSetting }) => isNavigationLink && isSetting).sort(routeSort);
+  const settingsRoutes = useOperatorRoutes({ groups: ["settings"] });
   let settingsList = [];
 
   if (Array.isArray(settingsRoutes)) {
@@ -65,7 +61,7 @@ export default function SettingsList() {
 
   return (
     <List>
-      {operatorRoutes && Array.isArray(operatorRoutes) && settingsList}
+      {settingsRoutes && Array.isArray(settingsRoutes) && settingsList}
     </List>
   );
 }

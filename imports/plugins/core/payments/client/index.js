@@ -1,18 +1,19 @@
 import { registerOperatorRoute } from "/imports/client/ui";
 import { registerBlock } from "@reactioncommerce/reaction-components";
+import PaymentSettingsRegion from "./PaymentSettingsRegion";
 import PaymentSettings from "./PaymentSettings";
 
 registerOperatorRoute({
   group: "settings",
-  MainComponent: PaymentSettings,
-  priority: 20,
+  MainComponent: PaymentSettingsRegion,
+  priority: 120,
   path: "/settings/payment",
   sidebarI18nLabel: "admin.settings.paymentSettingsLabel"
 });
 
 registerBlock({
   region: "PaymentSettings",
-  name: "PaymentSettingsDefault",
+  name: "PaymentSettings",
   component: PaymentSettings,
   priority: 1
 });
