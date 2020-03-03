@@ -5,10 +5,10 @@ import { registerOperatorRoute } from "/imports/client/ui";
 import DiscountsPage from "./DiscountsPage.js";
 
 registerOperatorRoute({
-  isNavigationLink: true,
+  group: "navigation",
   priority: 60,
   path: "/discounts",
-  mainComponent: DiscountsPage,
+  MainComponent: DiscountsPage,
   // eslint-disable-next-line react/display-name
   SidebarIconComponent: (props) => <FontAwesomeIcon icon={faPercent} {...props} />,
   sidebarI18nLabel: "admin.shortcut.discountsLabel"

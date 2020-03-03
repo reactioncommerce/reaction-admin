@@ -20,12 +20,11 @@ registerOperatorRoute({
 });
 
 registerOperatorRoute({
-  isNavigationLink: true,
-  isSetting: false,
+  group: "navigation",
   priority: 20,
-  layoutComponent: ContentViewExtraWideLayout,
+  LayoutComponent: ContentViewExtraWideLayout,
   path: "/products",
-  mainComponent: ProductsTable,
+  MainComponent: ProductsTable,
   // eslint-disable-next-line react/display-name, react/no-multi-comp
   SidebarIconComponent: (props) => <CubeIcon {...props} />,
   sidebarI18nLabel: "admin.products"

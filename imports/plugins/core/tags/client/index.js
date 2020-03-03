@@ -9,25 +9,20 @@ import TagFormPage from "./pages/TagFormPageWithData";
 import TagSettingsPage from "./pages/TagSettingsPageWithData";
 
 registerOperatorRoute({
-  isNavigationLink: false,
-  isSetting: false,
   path: "/tags/create",
-  mainComponent: TagFormPage
+  MainComponent: TagFormPage
 });
 
 registerOperatorRoute({
-  isNavigationLink: false,
-  isSetting: false,
   path: "/tags/edit/:tagId",
-  mainComponent: TagFormPage
+  MainComponent: TagFormPage
 });
 
 registerOperatorRoute({
-  isNavigationLink: true,
-  isSetting: false,
+  group: "navigation",
   path: "/tags",
   priority: 30,
-  mainComponent: TagSettingsPage,
+  MainComponent: TagSettingsPage,
   // eslint-disable-next-line react/display-name, react/no-multi-comp
   SidebarIconComponent: (props) => <TagIcon {...props} />,
   sidebarI18nLabel: "admin.tags.tags"

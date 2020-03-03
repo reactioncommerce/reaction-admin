@@ -5,9 +5,8 @@ import { registerOperatorRoute } from "/imports/client/ui";
 import PaymentSettings from "./PaymentSettings.js";
 
 registerOperatorRoute({
-  isNavigationLink: true,
-  isSetting: true,
-  mainComponent: PaymentSettings,
+  group: "settings",
+  MainComponent: PaymentSettings,
   priority: 20,
   path: "/payment",
   // eslint-disable-next-line react/display-name

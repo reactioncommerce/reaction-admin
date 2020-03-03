@@ -6,9 +6,8 @@ import { registerOperatorRoute } from "/imports/client/ui";
 import Shipping from "./components/Shipping";
 
 registerOperatorRoute({
-  isNavigationLink: true,
-  isSetting: true,
-  mainComponent: Shipping,
+  group: "settings",
+  MainComponent: Shipping,
   priority: 40,
   path: "/shipping",
   // eslint-disable-next-line react/display-name

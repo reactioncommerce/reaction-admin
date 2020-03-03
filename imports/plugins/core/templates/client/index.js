@@ -7,10 +7,9 @@ import "./templates/settings.html";
 import "./templates/settings.js";
 
 registerOperatorRoute({
-  isNavigationLink: true,
-  isSetting: true,
+  group: "settings",
   path: "/templates",
-  mainComponent: "templateSettings",
+  MainComponent: "templateSettings",
   // eslint-disable-next-line react/display-name
   SidebarIconComponent: (props) => <FontAwesomeIcon icon={faColumns} {...props} />,
   sidebarI18nLabel: "admin.settings.templateSettingsLabel"

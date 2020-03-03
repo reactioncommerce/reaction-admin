@@ -12,13 +12,15 @@ query ordersQuery($shopIds: [ID], $filters: OrderFilterInput, $first: Connection
         billingAddress {
           fullName
         }
-        amount { 
-          displayAmount
-        }
         status
       }
       fulfillmentGroups {
         status
+      }
+      summary {
+        total {
+          displayAmount
+        }
       }
       email
       status
