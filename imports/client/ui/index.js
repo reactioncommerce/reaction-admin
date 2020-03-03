@@ -6,7 +6,7 @@ import "./appComponents";
 export const operatorRoutes = [];
 export const routes = [];
 export const defaultRouteGroups = {
-  main: "main",
+  navigation: "navigation",
   settings: "settings"
 };
 
