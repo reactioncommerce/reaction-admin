@@ -81,7 +81,10 @@ function Dashboard(props) {
           }}
           onDrawerClose={onClosePrimarySidebar}
         />
-        <OperatorRoutes routes={routes} />
+        <OperatorRoutes
+          isExactMatch={true}
+          routes={routes}
+        />
       </div>
     </UIContext.Provider>
   );
