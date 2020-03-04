@@ -82,6 +82,18 @@ const PUBLISH_TO_CATALOG = gql`
   }
 `;
 
+const updateProductVariantPricesMutation = gql`
+  mutation updateProductVariantPrices($input: UpdateProductVariantPricesInput!) {
+    updateProductVariantPrices(input: $input) {
+      variant {
+        _id
+        price
+        compareAtPrice
+      }
+    }
+  }
+`;
+
 /**
  * Restore an archived product
  * @param {Object} product Product object
@@ -119,6 +131,7 @@ function useProduct(args = {}) {
   const [cloneProductVariants] = useMutation(CLONE_PRODUCT_VARIANTS);
   const [archiveProductVariants] = useMutation(ARCHIVE_PRODUCT_VARIANTS);
   const [publishProductsToCatalog] = useMutation(PUBLISH_TO_CATALOG);
+  const [updateProductVariantPrices] = useMutation(updateProductVariantPricesMutation);
 
   const [currentShopId] = useCurrentShopId();
 
@@ -337,11 +350,37 @@ function useProduct(args = {}) {
         }
       });
 
-      enqueueSnackbar(i18next.t("productDetailEdit.updateProductFieldSuccess"), { variant: "success" });
+      enqueueSnackbar(i18next.t("productVariant.updateVariantSuccess"), { variant: "success" });
     } catch (error) {
-      enqueueSnackbar(i18next.t("productDetailEdit.updateProductFieldFail"), { variant: "error" });
+      enqueueSnackbar(i18next.t("productVariant.updateVariantFail"), { variant: "error" });
     }
   }, [enqueueSnackbar, shopId, updateProductVariant]);
+
+  const onUpdateProductVariantPrices = useCallback(async ({
+    variantPrices: variantPricesLocal,
+    variantId: variantIdLocal,
+    shopId: shopIdLocal = shopId
+  }) => {
+    const { price, compareAtPrice } = variantPricesLocal;
+    try {
+      await updateProductVariantPrices({
+        variables: {
+          input: {
+            shopId: shopIdLocal,
+            prices: {
+              price,
+              compareAtPrice
+            },
+            variantId: variantIdLocal
+          }
+        }
+      });
+
+      enqueueSnackbar(i18next.t("productVariant.updateVariantPricesSuccess"), { variant: "success" });
+    } catch (error) {
+      enqueueSnackbar(i18next.t("productVariant.updateVariantPricesFail"), { variant: "error" });
+    }
+  }, [enqueueSnackbar, shopId, updateProductVariantPrices]);
 
   const onToggleVariantVisibility = useCallback(async ({
     variant: variantLocal,
@@ -419,9 +458,9 @@ function useProduct(args = {}) {
       // Refetch product data when we adda new variant
       refetchProduct();
 
-      enqueueSnackbar(i18next.t("productDetailEdit.archiveProductVariantsFail"), { variant: "success" });
+      enqueueSnackbar(i18next.t("productDetailEdit.archiveProductVariantsSuccess"), { variant: "success" });
     } catch (error) {
-      enqueueSnackbar(i18next.t("productDetailEdit.archiveProductVariantsSuccess"), { variant: "error" });
+      enqueueSnackbar(i18next.t("productDetailEdit.archiveProductVariantsFail"), { variant: "error" });
     }
   }, [archiveProductVariants, enqueueSnackbar, history, option, product, refetchProduct, shopId, variant]);
 
@@ -444,6 +483,7 @@ function useProduct(args = {}) {
     onCreateVariant,
     onPublishProduct,
     onUpdateProduct,
+    onUpdateProductVariantPrices,
     option,
     onRestoreProduct: handleProductRestore,
     onToggleProductVisibility,
