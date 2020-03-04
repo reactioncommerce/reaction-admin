@@ -35,6 +35,7 @@ function ShopAddressSettings() {
   const [isEditMode, setIsEditMode] = useState(false);
   const { loading, shop: { addressBook } } = useShopSettings();
   let readOnlyMode = false;
+  let isInitialView = false;
   let address = null;
 
   if (loading) return <CircularProgress variant="indeterminate" color="primary" />;
@@ -42,10 +43,15 @@ function ShopAddressSettings() {
   // If an address has been set, render in read only mode
   if (addressBook && addressBook[0]) {
     ([address] = addressBook);
-    if (!isEditMode) {
-      readOnlyMode = true;
-    }
+
+    if (!isEditMode) readOnlyMode = true;
+  } else {
+    isInitialView = true;
   }
+
+  const actionButtonText = isInitialView
+    ? i18next.t("admin.settings.address.addNewAddress")
+    : i18next.t("admin.settings.address.edit");
 
   const handleOnEdit = () => {
     setIsEditMode(true);
@@ -55,6 +61,11 @@ function ShopAddressSettings() {
     <Card className={classes.card}>
       <CardHeader title={i18next.t("admin.settings.address.label")} />
       <CardContent>
+        {isInitialView &&
+          <Typography>
+            {i18next.t("admin.settings.address.initialViewText")}
+          </Typography>
+        }
         {
           (readOnlyMode)
             ?
@@ -68,7 +79,11 @@ function ShopAddressSettings() {
               <Typography> {address.phone}</Typography>
             </Fragment>
             :
-            <ShopAddressForm isEditMode={isEditMode} setIsEditMode={setIsEditMode} />
+            <ShopAddressForm
+              isInitialView={isInitialView}
+              isEditMode={isEditMode}
+              setIsEditMode={setIsEditMode}
+            />
         }
         {!isEditMode &&
         <Box textAlign="right">
@@ -77,7 +92,7 @@ function ShopAddressSettings() {
             variant="contained"
             onClick={handleOnEdit}
           >
-            Edit
+            {actionButtonText}
           </Button>
         </Box>
         }

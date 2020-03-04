@@ -68,9 +68,14 @@ const validator = shopAddress.getFormValidator();
  * @param {Object} props component props
  * @returns {Node} React node
  */
-function ShopAddressForm({ isEditMode, setIsEditMode }) {
+function ShopAddressForm({ isEditMode, isInitialView, setIsEditMode }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { onUpdateShop, shop } = useShopSettings();
+
+  const dialogTitle = isInitialView ?
+    i18next.t("admin.settings.address.addNewAddress")
+    :
+    i18next.t("admin.settings.address.editAddress");
 
   let initialValues = {};
   if (shop.addressBook) {
@@ -111,7 +116,7 @@ function ShopAddressForm({ isEditMode, setIsEditMode }) {
       aria-labelledby="shop-address-dialog-title"
     >
       <DialogTitle disableTypography id="shop-address-dialog-title">
-        <h4>{i18next.t("admin.settings.address.dialogHeader")}</h4>
+        <h4>{dialogTitle}</h4>
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
@@ -226,6 +231,7 @@ function ShopAddressForm({ isEditMode, setIsEditMode }) {
 
 ShopAddressForm.propTypes = {
   isEditMode: PropTypes.bool.isRequired,
+  isInitialView: PropTypes.bool.isRequired,
   setIsEditMode: PropTypes.func.isRequired
 };
 
