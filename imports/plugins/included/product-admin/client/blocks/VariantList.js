@@ -1,31 +1,21 @@
 import React, { Fragment, useCallback, useState, useEffect } from "react";
 import {
-  Box,
   Collapse,
   List,
   ListItemText,
   ListItemSecondaryAction,
   makeStyles,
-  ListItem,
-  IconButton
+  ListItem
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import clsx from "classnames";
 import i18next from "i18next";
-import ChevronDown from "mdi-material-ui/ChevronDown";
-import ChevronRight from "mdi-material-ui/ChevronRight";
 import useProduct from "../hooks/useProduct";
 import getPDPUrl from "../utils/getPDPUrl";
 import VariantItemAction from "../components/VariantItemAction";
+import VariantListItemContainer from "../components/VariantListItemContainer";
 
 const useStyles = makeStyles((theme) => ({
-  expandButton: {
-    position: "absolute",
-    left: 0,
-    top: "50%",
-    transform: "translateY(-50%)",
-    zIndex: 1
-  },
   listItemContainer: {
     "&:hover $listItemAction": {
       display: "block"
@@ -105,22 +95,12 @@ export default function VariantList() {
             <ListItem
               component="nav"
               ContainerProps={{
-                className: classes.listItemContainer
+                className: classes.listItemContainer,
+                isExpanded,
+                hasChildren,
+                onArrowButtonClick: () => toggleExpand(variant._id)
               }}
-              ContainerComponent={({ children, ...props }) => (
-                <li {...props}>
-                  {hasChildren &&
-                    <Box className={classes.expandButton}>
-                      <IconButton
-                        onClick={() => toggleExpand(variant._id)}
-                      >
-                        {isExpanded ? <ChevronDown /> : <ChevronRight />}
-                      </IconButton>
-                    </Box>
-                  }
-                  {children}
-                </li>
-              )}
+              ContainerComponent={VariantListItemContainer}
               className={clsx({
                 [classes.listItem]: true,
                 [classes.nested]: Boolean(parentVariant)
