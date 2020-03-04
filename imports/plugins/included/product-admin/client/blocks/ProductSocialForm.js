@@ -117,7 +117,7 @@ const ProductSocialForm = React.forwardRef((props, ref) => {
             variant="contained"
             type="submit"
           >
-            {i18next.t("app.save")}
+            {i18next.t("app.saveChanges")}
           </Button>
         </Box>
       </form>
