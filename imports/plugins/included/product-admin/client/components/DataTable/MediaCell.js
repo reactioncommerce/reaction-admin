@@ -13,6 +13,16 @@ export default function MediaCell({ row }) {
   const thumbnailUrl = row.original && row.original.media && row.original.media[0]
     && row.original.media[0].URLs && row.original.media[0].URLs.thumbnail;
 
+  if (!thumbnailUrl) {
+    return (
+      <img
+        src={"/resources/placeholder.gif"}
+        alt={row.values.title}
+        width="36"
+      />
+    );
+  }
+
   return (
     <img
       src={`${filesBaseUrl}${thumbnailUrl}`}

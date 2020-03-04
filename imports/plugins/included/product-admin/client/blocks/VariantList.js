@@ -1,6 +1,47 @@
-import React from "react";
-import PropTypes from "prop-types";
-import ProductList from "../components/ProductList";
+import React, { Fragment, useCallback, useState, useEffect } from "react";
+import {
+  Collapse,
+  List,
+  ListItemText,
+  ListItemSecondaryAction,
+  makeStyles,
+  ListItem
+} from "@material-ui/core";
+import { useHistory } from "react-router-dom";
+import clsx from "classnames";
+import i18next from "i18next";
+import useProduct from "../hooks/useProduct";
+import getPDPUrl from "../utils/getPDPUrl";
+import VariantItemAction from "../components/VariantItemAction";
+import VariantListItemContainer from "../components/VariantListItemContainer";
+
+const useStyles = makeStyles((theme) => ({
+  listItemContainer: {
+    "&:hover $listItemAction": {
+      display: "block"
+    }
+  },
+  listItem: {
+    paddingLeft: theme.spacing(7)
+  },
+  nested: {
+    paddingLeft: theme.spacing(8)
+  },
+  listItemAction: {
+    display: "none"
+  }
+}));
+
+/**
+ * Get the secondary label for the product item
+ * @param {Object} item A product, variant or option
+ * @returns {String} A text label with status and price
+ */
+function getItemSecondaryLabel({ isVisible }) {
+  const visibility = i18next.t(isVisible ? "app.visible" : "app.hidden");
+
+  return `${visibility}`;
+}
 
 /**
  * Variant and Option list component
@@ -8,36 +49,122 @@ import ProductList from "../components/ProductList";
  * @param {Object} props Component props
  * @returns {Node} React node
  */
-function VariantList(props) {
+export default function VariantList() {
   const {
-    parentVariant,
+    onArchiveProductVariants,
+    onCreateVariant,
+    onToggleVariantVisibility,
+    onCloneProductVariants,
+    onRestoreProduct,
     product,
-    variant,
-    variants,
-    onCreateOption,
-    onCreateVariant
+    variant: currentVariant
+  } = useProduct();
+  const classes = useStyles();
+  const history = useHistory();
+  const [expandedIds, setExpandedIds] = useState([]);
 
-  } = props;
+
+  useEffect(() => {
+    if (currentVariant) {
+      setExpandedIds((prevState) => [...prevState, currentVariant._id]);
+    }
+  }, [
+    currentVariant
+  ]);
+
+  const renderVariantTree = useCallback((variants, parentVariant) => {
+    const toggleExpand = (itemId) => {
+      setExpandedIds((prevState) => {
+        const isOpen = expandedIds.includes(itemId);
+
+        if (isOpen) {
+          return prevState.filter((id) => id !== itemId);
+        }
+
+        return [...prevState, itemId];
+      });
+    };
+
+    if (Array.isArray(variants)) {
+      return variants.map((variant) => {
+        const isExpanded = expandedIds.includes(variant._id);
+        const hasChildren = Array.isArray(variant.options) && variant.options.length > 0;
+
+        return (
+          <Fragment key={`listItem-${variant._id}`}>
+            <ListItem
+              component="nav"
+              ContainerProps={{
+                className: classes.listItemContainer,
+                isExpanded,
+                hasChildren,
+                onArrowButtonClick: () => toggleExpand(variant._id)
+              }}
+              ContainerComponent={VariantListItemContainer}
+              className={clsx({
+                [classes.listItem]: true,
+                [classes.nested]: Boolean(parentVariant)
+              })}
+              button
+              onClick={() => {
+                const url = getPDPUrl(product._id, variant._id, parentVariant && parentVariant._id);
+                history.push(url);
+
+                if (!parentVariant) {
+                  toggleExpand(variant._id);
+                }
+              }}
+            >
+              <ListItemText
+                primary={variant.optionTitle || variant.title || "Untitled"}
+                secondary={getItemSecondaryLabel(variant)}
+              />
+              <ListItemSecondaryAction className={classes.listItemAction}>
+                <VariantItemAction
+                  product={product}
+                  variant={parentVariant || variant}
+                  option={parentVariant && variant}
+                  onArchiveProductVariants={onArchiveProductVariants}
+                  onCreateVariant={onCreateVariant}
+                  onToggleVariantVisibility={onToggleVariantVisibility}
+                  onCloneProductVariants={onCloneProductVariants}
+                  onRestoreProduct={onRestoreProduct}
+                />
+              </ListItemSecondaryAction>
+            </ListItem>
+            {Array.isArray(variant.options) &&
+              <Collapse
+                in={isExpanded}
+              >
+                <List
+                  component="div"
+                  disablePadding
+                >
+                  {renderVariantTree(variant.options, variant)}
+                </List>
+              </Collapse>
+            }
+          </Fragment>
+        );
+      });
+    }
+
+    return null;
+  }, [
+    expandedIds,
+    classes,
+    product,
+    onArchiveProductVariants,
+    onCreateVariant,
+    onToggleVariantVisibility,
+    onCloneProductVariants,
+    onRestoreProduct,
+    history
+  ]);
 
   return (
-    <ProductList
-      items={variants}
-      onCreate={() => { parentVariant ? onCreateOption(parentVariant) : onCreateVariant(product); }}
-      selectedVariantId={variant && variant._id}
-      title={parentVariant ? "Options" : "Variants"}
-    />
+    <List>
+      {product && Array.isArray(product.variants) && renderVariantTree(product.variants)}
+    </List>
   );
 }
-
-VariantList.propTypes = {
-  onCreateOption: PropTypes.func,
-  onCreateVariant: PropTypes.func,
-  option: PropTypes.object,
-  options: PropTypes.arrayOf(PropTypes.object),
-  parentVariant: PropTypes.object,
-  product: PropTypes.object,
-  variant: PropTypes.object,
-  variants: PropTypes.arrayOf(PropTypes.object)
-};
-
-export default VariantList;

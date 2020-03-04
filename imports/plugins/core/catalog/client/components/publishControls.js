@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { i18next } from "/client/api";
-import PrimaryAppBar from "/imports/client/ui/components/PrimaryAppBar/PrimaryAppBar";
+import { Box } from "@material-ui/core";
 
 const publishProductsToCatalog = gql`
   mutation ($productIds: [ID]!) {
@@ -67,7 +67,7 @@ class PublishControls extends Component {
     const { documentIds, onPublishClick } = this.props;
 
     return (
-      <PrimaryAppBar>
+      <Box display="flex" alignItems="center">
         {this.renderChangesNotification()}
         <Mutation mutation={publishProductsToCatalog} onCompleted={() => this.renderOnCompletedAlert()} onError={(error) => this.renderOnErrorAlert(error)}>
           {(mutationFunc) => (
@@ -82,7 +82,7 @@ class PublishControls extends Component {
             </Button>
           )}
         </Mutation>
-      </PrimaryAppBar>
+      </Box>
     );
   }
 }

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import SimpleSchema from "simpl-schema";
 import Button from "@reactioncommerce/catalyst/Button";
 import TextField from "@material-ui/core/TextField";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core";
 import muiOptions from "reacto-form/cjs/muiOptions";
 import useReactoForm from "reacto-form/cjs/useReactoForm";
 
