@@ -10,6 +10,7 @@ import ProductMediaForm from "./ProductMediaForm";
 import VariantHeader from "./VariantHeader";
 import VariantList from "./VariantList";
 import VariantDetailForm from "./VariantDetailForm";
+import VariantPricesForm from "./VariantPricesForm";
 import VariantTaxForm from "./VariantTaxForm";
 import VariantMediaForm from "./VariantMediaForm";
 
@@ -108,14 +109,21 @@ registerBlock({
 
 registerBlock({
   region: "VariantDetailMain",
+  name: "VariantPricesForm",
+  component: VariantPricesForm,
+  priority: 30
+});
+
+registerBlock({
+  region: "VariantDetailMain",
   name: "VariantMediaForm",
   component: VariantMediaForm,
-  priority: 30
+  priority: 40
 });
 
 registerBlock({
   region: "VariantDetailMain",
   name: "VariantTaxForm",
   component: VariantTaxForm,
-  priority: 40
+  priority: 50
 });
