@@ -1,44 +1,83 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
-import { Components } from "@reactioncommerce/reaction-components";
-import Button from "@reactioncommerce/catalyst/Button";
-import { i18next } from "/client/api";
-import { ReactionProduct } from "/lib/api";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Grid from "@material-ui/core/Grid";
-import Switch from "@material-ui/core/Switch";
+import i18next from "i18next";
+import useReactoForm from "reacto-form/cjs/useReactoForm";
+import muiCheckboxOptions from "reacto-form/cjs/muiCheckboxOptions";
+import SimpleSchema from "simpl-schema";
+import muiOptions from "reacto-form/cjs/muiOptions";
+import {
+  Box,
+  Card,
+  Checkbox,
+  CardContent,
+  CardHeader,
+  FormControlLabel,
+  Grid
+} from "@material-ui/core";
+import { Button, TextField } from "@reactioncommerce/catalyst";
+import useVariantInventory from "./useVariantInventory";
+
+const formSchema = new SimpleSchema({
+  inventoryInStock: {
+    type: Number,
+    optional: true
+  },
+  lowInventoryWarningThreshold: {
+    type: Number,
+    optional: true
+  },
+  canBackorder: Boolean,
+  isEnabled: Boolean
+});
+
+const validator = formSchema.getFormValidator();
 
 /**
  * Variant inventory form block component
  * @param {Object} props Component props
  * @returns {Node} React node
  */
-function VariantInventoryForm(props) {
+function VariantInventoryForm() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
+    currentVariant,
+    hasChildVariants,
     inventoryInfo,
-    isLoadingInventoryInfo,
-    recalculateReservedSimpleInventory,
-    updateSimpleInventory,
-    variables,
-    variant
-  } = props;
-
-  if (!variant) return null;
-
-  if (isLoadingInventoryInfo) return <Components.Loading />;
+    onRecalculateReservedSimpleInventory,
+    onUpdateVariantInventoryInfo
+  } = useVariantInventory();
 
   const {
-    canBackorder,
-    inventoryInStock,
-    inventoryReserved,
-    isEnabled,
-    lowInventoryWarningThreshold
-  } = inventoryInfo || {};
+    formData: currentFormData,
+    getFirstErrorMessage,
+    getInputProps,
+    hasErrors,
+    isDirty,
+    submitForm
+  } = useReactoForm({
+    async onSubmit(formData) {
+      setIsSubmitting(true);
 
-  const hasChildVariants = ReactionProduct.checkChildVariants(variant._id) > 0;
+      await onUpdateVariantInventoryInfo({
+        inventoryInput: formSchema.clean(formData)
+      });
+
+      setIsSubmitting(false);
+    },
+    validator(formData) {
+      return validator(formSchema.clean(formData));
+    },
+    value: inventoryInfo
+  });
+
+  const { canBackorder, isEnabled } = currentFormData;
+
+  if (!currentVariant) return null;
+
+  const {
+    inventoryInStock,
+    inventoryReserved
+  } = currentFormData;
 
   let content;
   if (hasChildVariants) {
@@ -48,120 +87,87 @@ function VariantInventoryForm(props) {
       </Fragment>
     );
   } else {
+    const inventoryInStockHelperText = isEnabled ? i18next.t("productVariant.inventoryInStockHelpText", {
+      inventoryAvailableToSell: Math.max((inventoryInStock || 0) - (inventoryReserved || 0), 0),
+      inventoryInStock: (inventoryInStock || 0),
+      inventoryReserved: (inventoryReserved || 0)
+    }) : i18next.t("productVariant.inventoryDisabled");
+
+    const inventoryInStockInputProps = getInputProps("inventoryInStock", muiOptions);
+    const lowInventoryWarningThresholdInputProps = getInputProps("lowInventoryWarningThreshold", muiOptions);
+
     content = (
-      <Fragment>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          submitForm();
+        }}
+      >
         <p>{i18next.t("productVariant.inventoryMessage")}</p>
         <FormControlLabel
-          control={
-            <Switch
-              checked={isEnabled}
-              onChange={(event, checked) => {
-                updateSimpleInventory({
-                  variables: {
-                    input: {
-                      ...variables,
-                      isEnabled: checked
-                    }
-                  }
-                });
-              }}
-            />
-          }
+          control={<Checkbox />}
           label={i18next.t("productVariant.isInventoryManagementEnabled")}
+          {...getInputProps("isEnabled", muiCheckboxOptions)}
         />
         <Grid container spacing={1}>
           <Grid item sm={6}>
-            <Components.TextField
-              disabled={!isEnabled}
-              helpText={isEnabled ? i18next.t("productVariant.inventoryInStockHelpText", {
-                inventoryAvailableToSell: Math.max((inventoryInStock || 0) - (inventoryReserved || 0), 0),
-                inventoryInStock: (inventoryInStock || 0),
-                inventoryReserved: (inventoryReserved || 0)
-              }) : i18next.t("productVariant.inventoryDisabled")}
-              i18nKeyLabel="productVariant.inventoryInStock"
-              i18nKeyPlaceholder="0"
-              label="In Stock"
-              name="inventoryInStock"
-              onChange={(event, value) => {
-                if (value < 0) return;
-                updateSimpleInventory({
-                  variables: {
-                    input: {
-                      ...variables,
-                      inventoryInStock: value
-                    }
-                  }
-                });
-              }}
+            <TextField
+              error={hasErrors(["inventoryInStock"])}
+              fullWidth
+              helperText={getFirstErrorMessage(["inventoryInStock"]) || inventoryInStockHelperText}
+              label={i18next.t("productVariant.inventoryInStock")}
               placeholder="0"
               type="number"
-              value={isEnabled ? inventoryInStock : 0}
+              {...inventoryInStockInputProps}
+              disabled={!isEnabled}
+              value={isEnabled ? inventoryInStockInputProps.value : 0}
             />
             <Button
               disabled={!isEnabled}
               variant="text"
               onClick={() => {
-                recalculateReservedSimpleInventory({
-                  variables: {
-                    input: {
-                      productConfiguration: variables.productConfiguration,
-                      shopId: variables.shopId
-                    }
-                  }
-                });
+                onRecalculateReservedSimpleInventory();
               }}
               title="Recalculate"
             >{i18next.t("productVariant.recalculateReservedInventory")}</Button>
           </Grid>
           <Grid item sm={6}>
-            <Components.TextField
-              disabled={!isEnabled}
-              helpText={i18next.t("productVariant.lowInventoryWarningThresholdLabel")}
-              i18nKeyLabel="productVariant.lowInventoryWarningThreshold"
-              i18nKeyPlaceholder="0"
-              label="Warn At"
-              name="lowInventoryWarningThreshold"
-              onChange={(event, value) => {
-                if (value < 0) return;
-                updateSimpleInventory({
-                  variables: {
-                    input: {
-                      ...variables,
-                      lowInventoryWarningThreshold: value
-                    }
-                  }
-                });
-              }}
+            <TextField
+              error={hasErrors(["lowInventoryWarningThreshold"])}
+              fullWidth
+              helperText={getFirstErrorMessage(["lowInventoryWarningThreshold"]) || i18next.t("productVariant.lowInventoryWarningThresholdLabel")}
+              label={i18next.t("productVariant.lowInventoryWarningThreshold")}
               placeholder="0"
               type="number"
-              value={isEnabled ? lowInventoryWarningThreshold : 0}
+              {...lowInventoryWarningThresholdInputProps}
+              disabled={!isEnabled}
+              value={isEnabled ? lowInventoryWarningThresholdInputProps.value : 0}
             />
           </Grid>
         </Grid>
         <Grid container spacing={1}>
           <Grid item sm={12}>
             <FormControlLabel
-              control={
-                <Switch
-                  checked={isEnabled ? canBackorder : true}
-                  disabled={!isEnabled}
-                  onChange={(event, checked) => {
-                    updateSimpleInventory({
-                      variables: {
-                        input: {
-                          ...variables,
-                          canBackorder: checked
-                        }
-                      }
-                    });
-                  }}
-                />
-              }
+              control={<Checkbox />}
               label={i18next.t("productVariant.allowBackorder")}
+              {...getInputProps("canBackorder", muiCheckboxOptions)}
+              disabled={!isEnabled}
+              checked={isEnabled ? canBackorder : true}
             />
           </Grid>
         </Grid>
-      </Fragment>
+        <Box textAlign="right">
+          <Button
+            color="primary"
+            disabled={!isDirty || isSubmitting}
+            isWaiting={isSubmitting}
+            variant="contained"
+            type="submit"
+          >
+            {i18next.t("app.saveChanges")}
+          </Button>
+        </Box>
+      </form>
     );
   }
 
@@ -176,18 +182,7 @@ function VariantInventoryForm(props) {
 VariantInventoryForm.propTypes = {
   components: PropTypes.shape({
     Button: PropTypes.any
-  }),
-  inventoryInfo: PropTypes.shape({
-    canBackorder: PropTypes.bool,
-    inventoryInStock: PropTypes.number,
-    isEnabled: PropTypes.bool,
-    lowInventoryWarningThreshold: PropTypes.number
-  }),
-  isLoadingInventoryInfo: PropTypes.bool,
-  recalculateReservedSimpleInventory: PropTypes.func,
-  updateSimpleInventory: PropTypes.func,
-  variables: PropTypes.object,
-  variant: PropTypes.object
+  })
 };
 
 export default VariantInventoryForm;

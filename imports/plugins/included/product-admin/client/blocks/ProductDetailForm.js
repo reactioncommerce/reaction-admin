@@ -1,334 +1,226 @@
-import { isEqual } from "lodash";
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import Alert from "sweetalert2";
-import { Components } from "@reactioncommerce/reaction-components";
-import { i18next } from "/client/api";
-import update from "immutability-helper";
-import { highlightInput } from "/imports/plugins/core/ui/client/helpers/animations";
-import withGenerateSitemaps from "/imports/plugins/included/sitemap-generator/client/hocs/withGenerateSitemaps";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import withStyles from "@material-ui/core/styles/withStyles";
-import { compose } from "recompose";
+import React, { useState } from "react";
+import i18next from "i18next";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Checkbox,
+  FormControlLabel,
+  Button,
+  Box,
+  MenuItem,
+  makeStyles
+} from "@material-ui/core";
+import useReactoForm from "reacto-form/cjs/useReactoForm";
+import SimpleSchema from "simpl-schema";
+import muiOptions from "reacto-form/cjs/muiOptions";
+import muiCheckboxOptions from "reacto-form/cjs/muiCheckboxOptions";
+import CountryOptions from "@reactioncommerce/api-utils/CountryOptions.js";
+import { TextField, useConfirmDialog } from "@reactioncommerce/catalyst";
+import useGenerateSitemaps from "/imports/plugins/included/sitemap-generator/client/hooks/useGenerateSitemaps";
+import useProduct from "../hooks/useProduct";
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   card: {
     marginBottom: theme.spacing(2)
+  },
+  textField: {
+    marginBottom: theme.spacing(4),
+    minWidth: 350
+  }
+}));
+
+const formSchema = new SimpleSchema({
+  title: {
+    type: String,
+    optional: true
+  },
+  permalink: {
+    type: String,
+    optional: true
+  },
+  pageTitle: {
+    type: String,
+    optional: true
+  },
+  vendor: {
+    type: String,
+    optional: true
+  },
+  description: {
+    type: String,
+    optional: true
+  },
+  originCountry: {
+    type: String,
+    optional: true
+  },
+  shouldAppearInSitemap: {
+    type: Boolean,
+    optional: true
   }
 });
 
-const fieldNames = [
-  "title",
-  "handle",
-  "subtitle",
-  "vendor",
-  "description",
-  "origincountry",
-  "facebookMsg",
-  "twitterMsg",
-  "pinterestMsg",
-  "googleplusMsg"
-];
+const validator = formSchema.getFormValidator();
 
-const fieldGroups = {
-  title: { group: "productDetails" },
-  handle: { group: "productDetails" },
-  pageTitle: { group: "productDetails" },
-  vendor: { group: "productDetails" },
-  description: { group: "productDetails" },
-  facebookMsg: { group: "social" },
-  twitterMsg: { group: "social" },
-  pinterestMsg: { group: "social" },
-  googleplusMsg: { group: "social" },
-  hashtags: { group: "hashtags" },
-  metafields: { group: "metafields" }
-};
+/**
+ * @name ProductDetailForm
+ * @param {Object} props Component props
+ * @returns {React.Component} Product detail form react component
+ */
+const ProductDetailForm = React.forwardRef((props, ref) => {
+  const classes = useStyles();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-class DetailForm extends Component {
-  constructor(props) {
-    super(props);
+  const {
+    onUpdateProduct,
+    product,
+    shopId
+  } = useProduct();
 
-    this.state = {
-      expandedCard: this.fieldGroupForFieldName(props.editFocus),
-      product: props.product,
-      viewProps: props.viewProps
-    };
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) { // eslint-disable-line camelcase
-    if (nextProps.product === undefined || this.props.product === undefined) {
-      return;
+  const { generateSitemaps } = useGenerateSitemaps(shopId);
+  const {
+    openDialog: openGenerateSitemapsConfirmDialog,
+    ConfirmDialog: GenerateSitemapsConfirmDialog
+  } = useConfirmDialog({
+    title: i18next.t("productDetailEdit.refreshSitemap", { defaultValue: "Refresh sitemap now?" }),
+    cancelActionText: i18next.t("productDetailEdit.refreshSitemapNo", { defaultValue: "No, don't refresh" }),
+    confirmActionText: i18next.t("productDetailEdit.refreshSitemapYes", { defaultValue: "Yes, refresh" }),
+    onConfirm: () => {
+      generateSitemaps();
     }
-    const nextProduct = nextProps.product;
-    const currentProduct = this.props.product;
+  });
 
-    if (!isEqual(nextProduct, currentProduct)) {
-      for (const fieldName of fieldNames) {
-        if (nextProduct[fieldName] !== currentProduct[fieldName]) {
-          this.animateFieldFlash(fieldName);
-        }
+
+  let content;
+
+  const {
+    getFirstErrorMessage,
+    getInputProps,
+    hasErrors,
+    isDirty,
+    submitForm
+  } = useReactoForm({
+    async onSubmit(formData) {
+      const shouldConformSitemapGenerate =
+        formData.shouldAppearInSitemap !== product.shouldAppearInSitemap
+        && formData.isVisible && !formData.isDeleted;
+
+      setIsSubmitting(true);
+
+      await onUpdateProduct({
+        product: formSchema.clean(formData)
+      });
+
+      if (shouldConformSitemapGenerate) {
+        openGenerateSitemapsConfirmDialog();
       }
-    }
 
-    const cardGroupName = this.fieldGroupForFieldName(nextProps.editFocus);
+      setIsSubmitting(false);
+    },
+    validator(formData) {
+      return validator(formSchema.clean(formData));
+    },
+    value: product
+  });
 
-    this.setState({
-      expandedCard: cardGroupName,
-      viewProps: nextProps.viewProps
-    });
+  const originCountryInputProps = getInputProps("originCountry", muiOptions);
 
-    this.setState({
-      product: nextProps.product
-    });
-  }
-
-  fieldGroupForFieldName(field) {
-    // Other wise, if a field was passed
-    // const fieldName = this.state.viewProps.field;
-
-    let fieldName;
-
-    // If the field is an array of field name
-    if (Array.isArray(field) && field.length) {
-      // Use the first field name
-      [fieldName] = field;
-    } else {
-      fieldName = field;
-    }
-
-    const fieldData = fieldGroups[fieldName];
-
-    if (fieldData && fieldData.group) {
-      return fieldData.group;
-    }
-
-    return fieldName;
-  }
-
-  animateFieldFlash(fieldName) {
-    const fieldRef = this.refs[`${fieldName}Input`];
-
-    if (fieldRef) {
-      const { input } = fieldRef.refs;
-      highlightInput(input);
-    }
-  }
-
-  handleDeleteProduct = () => {
-    if (this.props.onDeleteProduct) {
-      this.props.onDeleteProduct(this.props.product);
-    }
-  }
-
-  handleRestoreProduct = () => {
-    if (this.props.onRestoreProduct) {
-      this.props.onRestoreProduct(this.props.product);
-    }
-  }
-
-  handleFieldChange = (event, value, field) => {
-    const newState = update(this.state, {
-      product: {
-        $merge: {
-          [field]: value
-        }
-      }
-    });
-
-    this.setState(newState, () => {
-      if (this.props.onFieldChange) {
-        this.props.onFieldChange(field, value);
-      }
-    });
-  }
-
-  handleSelectChange = (value, field) => {
-    if (this.props.onProductFieldSave) {
-      this.props.onProductFieldSave(this.product._id, field, value);
-    }
-  }
-
-  handleSitemapCheckboxChange = (event) => {
-    const { checked: isChecked } = event.target;
-    const { shouldAppearInSitemap } = this.product;
-    if (typeof shouldAppearInSitemap === "undefined" || isChecked === shouldAppearInSitemap) {
-      // onChange for checkbox runs when field is first displayed
-      return;
-    }
-
-    if (this.props.onProductFieldSave) {
-      this.props.onProductFieldSave(this.product._id, "shouldAppearInSitemap", isChecked);
-    }
-
-    const { isVisible, isDeleted } = this.product;
-    if (isVisible && !isDeleted) {
-      // If product is published, ask whether to regenerate sitemap
-      Alert({
-        title: i18next.t("productDetailEdit.refreshSitemap", { defaultValue: "Refresh sitemap now?" }),
-        type: "warning",
-        showCancelButton: true,
-        cancelButtonText: i18next.t("productDetailEdit.refreshSitemapNo", { defaultValue: "No, don't refresh" }),
-        confirmButtonText: i18next.t("productDetailEdit.refreshSitemapYes", { defaultValue: "Yes, refresh" })
-      })
-        .then(({ value }) => {
-          if (value) {
-            this.props.generateSitemaps();
-            Alerts.toast(i18next.t("shopSettings.sitemapRefreshInitiated", {
-              defaultValue: "Refreshing the sitemap can take up to 5 minutes. You will be notified when it is completed."
-            }), "success");
-          }
-          return false;
-        })
-        .catch(() => false);
-    }
-  };
-
-  handleFieldBlur = (event, value, field) => {
-    if (this.props.onProductFieldSave) {
-      this.props.onProductFieldSave(this.product._id, field, value);
-    }
-  }
-
-  get product() {
-    return this.state.product || this.props.product || {};
-  }
-
-  render() {
-    const { classes } = this.props;
-
-    return (
-      <Card className={classes.card}>
-        <CardHeader title={i18next.t("admin.productAdmin.details")} />
-        <CardContent>
-          <Components.TextField
-            i18nKeyLabel="productDetailEdit.title"
-            i18nKeyPlaceholder="productDetailEdit.title"
-            label="Title"
-            name="title"
-            onBlur={this.handleFieldBlur}
-            onChange={this.handleFieldChange}
-            onReturnKeyDown={this.handleFieldBlur}
-            placeholder="Title"
-            ref="titleInput"
-            value={this.product.title}
-          />
-          <Components.TextField
-            i18nKeyLabel="productDetailEdit.permalink"
-            i18nKeyPlaceholder="productDetailEdit.permalink"
-            label="Permalink"
-            name="handle"
-            onBlur={this.handleFieldBlur}
-            onChange={this.handleFieldChange}
-            onReturnKeyDown={this.handleFieldBlur}
-            placeholder="Permalink"
-            ref="handleInput"
-            value={this.product.handle}
-          />
-          <Components.TextField
-            i18nKeyLabel="productDetailEdit.pageTitle"
-            i18nKeyPlaceholder="productDetailEdit.pageTitle"
-            label="Subtitle"
-            name="pageTitle"
-            onBlur={this.handleFieldBlur}
-            onChange={this.handleFieldChange}
-            onReturnKeyDown={this.handleFieldBlur}
-            placeholder="Subtitle"
-            ref="subtitleInput"
-            value={this.product.pageTitle}
-          />
-          <Components.TextField
-            i18nKeyLabel="productDetailEdit.vendor"
-            i18nKeyPlaceholder="productDetailEdit.vendor"
-            label="Vendor"
-            name="vendor"
-            onBlur={this.handleFieldBlur}
-            onChange={this.handleFieldChange}
-            onReturnKeyDown={this.handleFieldBlur}
-            placeholder="Vendor"
-            ref="vendorInput"
-            value={this.product.vendor}
-          />
-          <Components.TextField
-            i18nKeyLabel="productDetailEdit.description"
-            i18nKeyPlaceholder="productDetailEdit.description"
-            label="Description"
-            multiline={true}
-            name="description"
-            onBlur={this.handleFieldBlur}
-            onChange={this.handleFieldChange}
-            placeholder="Description"
-            ref="descriptionInput"
-            value={this.product.description}
-          />
-          <Components.Select
-            clearable={false}
-            i18nKeyLabel="productDetailEdit.originCountry"
-            i18nKeyPlaceholder="productDetailEdit.originCountry"
-            label="Origin Country"
-            name="originCountry"
-            onChange={this.handleSelectChange}
-            placeholder="Select a Country"
-            ref="countryOfOriginInput"
-            value={this.product.originCountry}
-            options={this.props.countries}
-          />
-          <Components.TextField
-            i18nKeyLabel="productDetailEdit.template"
-            i18nKeyPlaceholder="productDetailEdit.templateSelectPlaceholder"
-            label="Template"
-            name="template"
-            onBlur={this.handleFieldBlur}
-            onChange={this.handleFieldChange}
-            ref="templateInput"
-            value={this.product.template}
-          />
-          {this.product && (
-            <div className="checkbox">
-              <Components.Checkbox
-                i18nKeyLabel="productDetailEdit.shouldAppearInSitemap"
-                label="Include in sitemap?"
-                name="shouldAppearInSitemap"
-                onChange={this.handleSitemapCheckboxChange}
-                checked={this.product.shouldAppearInSitemap}
-              />
-            </div>
-          )}
-        </CardContent>
-      </Card>
+  if (product) {
+    content = (
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          submitForm();
+        }}
+      >
+        <TextField
+          className={classes.textField}
+          error={hasErrors(["title"])}
+          fullWidth
+          helperText={getFirstErrorMessage(["title"])}
+          label={i18next.t("productDetailEdit.title")}
+          {...getInputProps("title", muiOptions)}
+        />
+        <TextField
+          className={classes.textField}
+          error={hasErrors(["slug"])}
+          fullWidth
+          helperText={getFirstErrorMessage(["slug"])}
+          label={i18next.t("productDetailEdit.parmalink")}
+          {...getInputProps("slug", muiOptions)}
+        />
+        <TextField
+          className={classes.textField}
+          error={hasErrors(["pageTitle"])}
+          fullWidth
+          helperText={getFirstErrorMessage(["pageTitle"])}
+          label={i18next.t("productDetailEdit.pageTitle")}
+          {...getInputProps("pageTitle", muiOptions)}
+        />
+        <TextField
+          className={classes.textField}
+          error={hasErrors(["vendor"])}
+          fullWidth
+          helperText={getFirstErrorMessage(["vendor"])}
+          label={i18next.t("productDetailEdit.vendor")}
+          {...getInputProps("vendor", muiOptions)}
+        />
+        <TextField
+          className={classes.textField}
+          error={hasErrors(["description"])}
+          fullWidth
+          helperText={getFirstErrorMessage(["description"])}
+          label={i18next.t("productDetailEdit.description")}
+          {...getInputProps("description", muiOptions)}
+        />
+        <TextField
+          className={classes.textField}
+          error={hasErrors(["originCountry"])}
+          fullWidth
+          helperText={getFirstErrorMessage(["originCountry"])}
+          label={i18next.t("productDetailEdit.originCountry")}
+          onKeyPress={(event) => {
+            if (event.key === "Enter") submitForm();
+          }}
+          select
+          {...originCountryInputProps}
+          value={originCountryInputProps.value || ""}
+        >
+          {CountryOptions.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </TextField>
+        <FormControlLabel
+          label={i18next.t("productDetailEdit.shouldAppearInSitemap")}
+          control={<Checkbox />}
+          {...getInputProps("shouldAppearInSitemap", muiCheckboxOptions)}
+        />
+        <Box textAlign="right">
+          <Button
+            color="primary"
+            disabled={!isDirty || isSubmitting}
+            variant="contained"
+            type="submit"
+          >
+            {i18next.t("app.saveChanges")}
+          </Button>
+        </Box>
+        <GenerateSitemapsConfirmDialog />
+      </form>
     );
   }
-}
 
-DetailForm.propTypes = {
-  classes: PropTypes.object,
-  countries: PropTypes.arrayOf(PropTypes.object),
-  editFocus: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
-  editable: PropTypes.bool, // eslint-disable-line react/boolean-prop-naming
-  generateSitemaps: PropTypes.func,
-  handleFieldBlur: PropTypes.func,
-  handleFieldChange: PropTypes.func,
-  handleProductFieldChange: PropTypes.func,
-  newMetafield: PropTypes.object,
-  onCardExpand: PropTypes.func,
-  onDeleteProduct: PropTypes.func,
-  onFieldChange: PropTypes.func,
-  onMetaChange: PropTypes.func,
-  onMetaRemove: PropTypes.func,
-  onMetaSave: PropTypes.func,
-  onProductFieldSave: PropTypes.func,
-  onRestoreProduct: PropTypes.func,
-  product: PropTypes.object,
-  templates: PropTypes.arrayOf(PropTypes.shape({
-    label: PropTypes.string,
-    value: PropTypes.any
-  })),
-  viewProps: PropTypes.object
-};
+  return (
+    <Card className={classes.card} ref={ref}>
+      <CardHeader title={i18next.t("admin.productAdmin.details")} />
+      <CardContent>
+        {content}
+      </CardContent>
+    </Card>
+  );
+});
 
-
-export default compose(
-  withGenerateSitemaps,
-  withStyles(styles)
-)(DetailForm);
+export default ProductDetailForm;

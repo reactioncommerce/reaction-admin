@@ -1,39 +1,77 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Components } from "@reactioncommerce/reaction-components";
+import React, { useCallback, useState } from "react";
 import { i18next } from "/client/api";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  Box,
+  IconButton
+} from "@material-ui/core";
+import PlusIcon from "mdi-material-ui/Plus";
+import Chip from "@reactioncommerce/catalyst/Chip";
+import useProduct from "../hooks/useProduct";
+import TagSelectorDialog from "../components/TagSelector/TagSelectorDialog";
 
 /**
  * Tag form block component
  * @param {Object} props Component props
  * @returns {React.Component} React component
  */
-function ProductTagForm(props) {
-  const { editable, product } = props;
+function ProductTagForm() {
+  const {
+    handleDeleteProductTag,
+    product,
+    refetchProduct
+  } = useProduct();
+  const [isTagDialogOpen, setTagDialogOpen] = useState(false);
+
+  let content;
+
+  const onDeleteTag = useCallback((tag) => {
+    handleDeleteProductTag({ tag });
+  }, [handleDeleteProductTag]);
+
+  if (product && Array.isArray(product.tags.nodes)) {
+    content = product.tags.nodes.map((tag) => (
+      <Box
+        key={tag._id}
+      >
+        <Chip
+          color="primary"
+          label={tag.name}
+          onDelete={() => onDeleteTag(tag)}
+          style={{ marginRight: "4px" }}
+        />
+      </Box>
+    ));
+  }
 
   return (
     <Card style={{ overflow: "visible" }}>
-      <CardHeader title={i18next.t("productDetail.tags")} />
+      <CardHeader
+        action={
+          <IconButton onClick={() => setTagDialogOpen(true)} title="Add tags">
+            <PlusIcon />
+          </IconButton>
+        }
+        title={i18next.t("productDetail.tags")}
+      />
       <CardContent>
-        <Components.TagList
-          editable={editable}
-          enableNewTagForm={true}
-          product={product}
-          tagProps={{
-            fullWidth: true
-          }}
-        />
+        <Box display="flex">
+          {content}
+        </Box>
       </CardContent>
+      {product &&
+        <TagSelectorDialog
+          isOpen={isTagDialogOpen}
+          onSuccess={() => refetchProduct()}
+          onClose={() => setTagDialogOpen(false)}
+          productIds={[product._id]}
+          shopId={product.shop._id}
+        />
+      }
     </Card>
   );
 }
-
-ProductTagForm.propTypes = {
-  editable: PropTypes.bool, // eslint-disable-line react/boolean-prop-naming
-  product: PropTypes.object
-};
 
 export default ProductTagForm;
