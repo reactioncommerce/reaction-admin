@@ -77,7 +77,7 @@ function ProductHeader({ shouldDisplayStatus }) {
           redirectUrl = "/products";
         }
 
-        onArchiveProduct(product, redirectUrl);
+        onArchiveProduct(product._id, redirectUrl);
       }}
     >
       {({ openDialog }) => (
@@ -92,7 +92,7 @@ function ProductHeader({ shouldDisplayStatus }) {
         title={i18next.t("admin.productTable.bulkActions.restoreTitle")}
         message={i18next.t("productDetailEdit.restoreThisProduct")}
         onConfirm={() => {
-          onRestoreProduct(product);
+          onRestoreProduct(product._id);
           setMenuAnchorEl(null);
         }}
       >
