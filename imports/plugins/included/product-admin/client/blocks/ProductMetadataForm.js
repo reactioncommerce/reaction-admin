@@ -281,10 +281,9 @@ function ProductMetadataForm() {
             disabled={!isDirty || isSubmitting}
             variant="contained"
             onClick={() => submitForm()}
-
             type="submit"
           >
-            {i18next.t("app.save")}
+            {i18next.t("app.saveChanges")}
           </Button>
         </Box>
       </CardContent>
