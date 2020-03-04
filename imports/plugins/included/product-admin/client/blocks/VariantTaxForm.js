@@ -153,10 +153,11 @@ function VariantTaxForm() {
             <Button
               color="primary"
               disabled={!isDirty || isSubmitting}
+              isWaiting={isSubmitting}
               variant="contained"
               type="submit"
             >
-              {i18next.t("app.save")}
+              {i18next.t("app.saveChanges")}
             </Button>
           </Box>
         </form>
