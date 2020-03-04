@@ -178,8 +178,7 @@ function ProductsTable() {
 
     if (data) {
       const { createProduct: { product } } = data;
-      const { id: decodedProductId } = decodeOpaqueId(product._id);
-      history.push(`/products/${decodedProductId}`);
+      history.push(`/products/${product._id}`);
     }
 
     if (createProductError) {
