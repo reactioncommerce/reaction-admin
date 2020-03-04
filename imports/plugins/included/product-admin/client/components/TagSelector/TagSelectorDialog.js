@@ -141,7 +141,7 @@ function TagSelector({ isOpen, onClose, onSuccess, productIds, shopId }) {
             <CloseIcon />
           </IconButton>
         }
-        title={i18next.t("admin.addRemoveTags.title")}
+        title={i18next.t("admin.productTable.bulkActions.addRemoveTags")}
       />
       <CardContent>
         <Grid container spacing={1} className={classes.cardContainer}>
