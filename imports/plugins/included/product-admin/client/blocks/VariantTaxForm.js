@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import { Button, TextField } from "@reactioncommerce/catalyst";
 import useReactoForm from "reacto-form/cjs/useReactoForm";
+import muiCheckboxOptions from "reacto-form/cjs/muiCheckboxOptions";
 import SimpleSchema from "simpl-schema";
 import muiOptions from "reacto-form/cjs/muiOptions";
 import useProduct from "../hooks/useProduct";
@@ -44,7 +45,6 @@ function VariantTaxForm() {
     currentVariant,
     onUpdateProductVariant,
     product,
-    variant,
     shopId
   } = useProduct();
 
@@ -70,7 +70,7 @@ function VariantTaxForm() {
     validator(formData) {
       return validator(formSchema.clean(formData));
     },
-    value: variant
+    value: currentVariant
   });
 
   if (!product) {
@@ -117,8 +117,6 @@ function VariantTaxForm() {
     );
   }
 
-  const isTaxableInputProps = getInputProps("isTaxable", muiOptions);
-
   return (
     <Card>
       <CardHeader title={i18next.t("productVariant.taxable")} />
@@ -132,9 +130,8 @@ function VariantTaxForm() {
           <Box marginBottom={4}>
             <FormControlLabel
               label={i18next.t("productVariant.taxable")}
-              {...isTaxableInputProps}
-              checked={isTaxableInputProps.value || false}
               control={<Checkbox />}
+              {...getInputProps("isTaxable", muiCheckboxOptions)}
             />
           </Box>
           <Box marginBottom={4}>
