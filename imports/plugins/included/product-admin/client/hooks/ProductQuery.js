@@ -52,6 +52,7 @@ export default gql`
         _id
         attributeLabel
         barcode
+        compareAtPrice
         height
         index
         isDeleted
@@ -74,6 +75,7 @@ export default gql`
         minOrderQuantity
         optionTitle
         originCountry
+        price
         shop {
           _id
         }
@@ -89,6 +91,7 @@ export default gql`
           _id
           attributeLabel
           barcode
+          compareAtPrice
           height
           index
           isDeleted
@@ -111,6 +114,7 @@ export default gql`
           minOrderQuantity
           optionTitle
           originCountry
+          price
           shop {
             _id
           }
