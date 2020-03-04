@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import i18next from "i18next";
 import {
   Box,
-  Button,
   Card,
   CardContent,
   CardHeader,
@@ -10,7 +9,7 @@ import {
   FormControlLabel,
   MenuItem
 } from "@material-ui/core";
-import TextField from "@reactioncommerce/catalyst/TextField";
+import { Button, TextField } from "@reactioncommerce/catalyst";
 import useReactoForm from "reacto-form/cjs/useReactoForm";
 import SimpleSchema from "simpl-schema";
 import muiOptions from "reacto-form/cjs/muiOptions";
