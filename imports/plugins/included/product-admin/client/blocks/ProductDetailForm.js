@@ -174,15 +174,6 @@ const ProductDetailForm = React.forwardRef((props, ref) => {
           label={i18next.t("productDetailEdit.description")}
           {...getInputProps("description", muiOptions)}
         />
-        {/* <TextField
-          className={classes.textField}
-          error={hasErrors(["template"])}
-          fullWidth
-          helperText={getFirstErrorMessage(["template"])}
-          label={i18next.t("productDetailEdit.template")}
-          variant="outlined"
-          {...getInputProps("template", muiOptions)}
-        /> */}
         <TextField
           className={classes.textField}
           error={hasErrors(["originCountry"])}
