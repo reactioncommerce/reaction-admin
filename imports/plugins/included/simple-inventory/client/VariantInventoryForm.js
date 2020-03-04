@@ -43,7 +43,6 @@ function VariantInventoryForm() {
     currentVariant,
     hasChildVariants,
     inventoryInfo,
-    isLoading: isLoadingInventoryInfo,
     onRecalculateReservedSimpleInventory,
     onUpdateVariantInventoryInfo
   } = useVariantInventory();
@@ -74,8 +73,6 @@ function VariantInventoryForm() {
   const { canBackorder, isEnabled } = currentFormData;
 
   if (!currentVariant) return null;
-
-  if (isLoadingInventoryInfo) return <Components.Loading />;
 
   const {
     inventoryInStock,
