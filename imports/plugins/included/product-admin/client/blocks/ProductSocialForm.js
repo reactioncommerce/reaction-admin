@@ -36,10 +36,6 @@ const formSchema = new SimpleSchema({
   pinterestMsg: {
     type: String,
     optional: true
-  },
-  googleplusMsg: {
-    type: String,
-    optional: true
   }
 });
 
@@ -113,14 +109,6 @@ const ProductSocialForm = React.forwardRef((props, ref) => {
           helperText={getFirstErrorMessage(["pinterestMsg"])}
           label={i18next.t("productDetailEdit.pinterestMsg")}
           {...getInputProps("pinterestMsg", muiOptions)}
-        />
-        <TextField
-          className={classes.textField}
-          error={hasErrors(["googleplusMsg"])}
-          fullWidth
-          helperText={getFirstErrorMessage(["googleplusMsg"])}
-          label={i18next.t("productDetailEdit.googleplusMsg")}
-          {...getInputProps("googleplusMsg", muiOptions)}
         />
         <Box textAlign="right">
           <Button
