@@ -1,19 +1,20 @@
 import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
-import { Components } from "@reactioncommerce/reaction-components";
-import Button from "@reactioncommerce/catalyst/Button";
 import i18next from "i18next";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Grid from "@material-ui/core/Grid";
 import useReactoForm from "reacto-form/cjs/useReactoForm";
 import muiCheckboxOptions from "reacto-form/cjs/muiCheckboxOptions";
 import SimpleSchema from "simpl-schema";
 import muiOptions from "reacto-form/cjs/muiOptions";
-import TextField from "@reactioncommerce/catalyst/TextField";
-import { Box, Checkbox } from "@material-ui/core";
+import {
+  Box,
+  Card,
+  Checkbox,
+  CardContent,
+  CardHeader,
+  FormControlLabel,
+  Grid
+} from "@material-ui/core";
+import { Button, TextField } from "@reactioncommerce/catalyst";
 import useVariantInventory from "./useVariantInventory";
 
 const formSchema = new SimpleSchema({
@@ -162,10 +163,11 @@ function VariantInventoryForm() {
           <Button
             color="primary"
             disabled={!isDirty || isSubmitting}
+            isWaiting={isSubmitting}
             variant="contained"
             type="submit"
           >
-            {i18next.t("app.save")}
+            {i18next.t("app.saveChanges")}
           </Button>
         </Box>
       </form>
