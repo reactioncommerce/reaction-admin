@@ -1,4 +1,4 @@
-import { registerBlock } from "/imports/plugins/core/components/lib";
+import { registerBlock } from "@reactioncommerce/reaction-components";
 import CustomTaxRatesSettings from "./components/CustomTaxRatesSettings.js";
 
 registerBlock({
