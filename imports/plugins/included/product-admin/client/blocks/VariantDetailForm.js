@@ -40,14 +40,6 @@ const formSchema = new SimpleSchema({
     type: String,
     optional: true
   },
-  price: {
-    type: Number,
-    optional: true
-  },
-  compareAtPrice: {
-    type: Number,
-    optional: true
-  },
   originCountry: {
     type: String,
     optional: true
@@ -175,31 +167,6 @@ const VariantDetailForm = React.forwardRef((props, ref) => {
               </MenuItem>
             ))}
           </TextField>
-
-          <Grid container spacing={1}>
-            <Grid item sm={6}>
-              <TextField
-                className={classes.textField}
-                error={hasErrors(["price"])}
-                fullWidth
-                helperText={getFirstErrorMessage(["price"]) || i18next.t("admin.helpText.price")}
-                label={i18next.t("productVariant.price")}
-                placeholder="0.00"
-                {...getInputProps("price", muiOptions)}
-              />
-            </Grid>
-            <Grid item sm={6}>
-              <TextField
-                className={classes.textField}
-                error={hasErrors(["compareAtPrice"])}
-                fullWidth
-                helperText={getFirstErrorMessage(["compareAtPrice"]) || i18next.t("admin.helpText.compareAtPrice")}
-                label={i18next.t("productVariant.compareAtPrice")}
-                placeholder="0.00"
-                {...getInputProps("compareAtPrice", muiOptions)}
-              />
-            </Grid>
-          </Grid>
           <Box paddingBottom={4}>
             <Divider />
           </Box>
