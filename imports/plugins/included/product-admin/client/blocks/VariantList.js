@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import clsx from "classnames";
+import i18next from "i18next";
 import ChevronDown from "mdi-material-ui/ChevronDown";
 import ChevronRight from "mdi-material-ui/ChevronRight";
 import useProduct from "../hooks/useProduct";
@@ -46,10 +47,10 @@ const useStyles = makeStyles((theme) => ({
  * @param {Object} item A product, variant or option
  * @returns {String} A text label with status and price
  */
-function getItemSecondaryLabel({ isVisible, displayPrice }) {
-  const visibility = isVisible ? "Visible" : "Hidden";
+function getItemSecondaryLabel({ isVisible }) {
+  const visibility = i18next.t(isVisible ? "app.visible" : "app.hidden");
 
-  return `${visibility} - ${displayPrice}`;
+  return `${visibility}`;
 }
 
 /**
