@@ -159,7 +159,7 @@ export default function DefaultParcelSizeForm(props) {
       <Grid className={classes.rightAlignedGrid} item xs={12}>
         <Button
           color="primary"
-          isDisabled={isSubmitting}
+          disabled={isSubmitting}
           onClick={submitForm}
           variant="contained"
         >

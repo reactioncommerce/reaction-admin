@@ -288,7 +288,7 @@ export default function CustomTaxRateForm(props) {
           <Button
             className={classes.deleteButton}
             color="primary"
-            isDisabled={isSubmitting}
+            disabled={isSubmitting}
             onClick={() => {
               deleteTaxRate({
                 variables: {

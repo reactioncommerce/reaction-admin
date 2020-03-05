@@ -1,5 +1,16 @@
 import React from "react";
+import i18next from "i18next";
 import { Blocks } from "@reactioncommerce/reaction-components";
+import {
+  makeStyles,
+  Typography
+} from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+  header: {
+    marginBottom: theme.spacing(4)
+  }
+}));
 
 /**
  * @summary Renders payment settings page
@@ -7,7 +18,13 @@ import { Blocks } from "@reactioncommerce/reaction-components";
  * @return {React.Node} React node
  */
 export default function TaxSettingsRegion(props) {
+  const classes = useStyles();
   return (
-    <Blocks region="TaxSettings" blockProps={props} />
+    <>
+      <Typography variant="h2" className={classes.header}>
+        {i18next.t("admin.settings.taxes.header")}
+      </Typography>
+      <Blocks region="TaxSettings" blockProps={props} />
+    </>
   );
 }
