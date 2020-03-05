@@ -7,7 +7,7 @@ registerOperatorRoute({
   group: "settings",
   MainComponent: AddressValidationSettingsRegion,
   path: "/settings/address-validation-settings",
-  priority: 900,
+  priority: 150,
   sidebarI18nLabel: "addressValidation.title"
 });
 
