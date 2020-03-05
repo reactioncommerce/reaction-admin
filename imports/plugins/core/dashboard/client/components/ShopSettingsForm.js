@@ -18,11 +18,7 @@ import {
 } from "@material-ui/core";
 import useShopSettings from "../hooks/useShopSettings";
 
-const useStyles = makeStyles((theme) => ({
-  card: {
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3)
-  },
+const useStyles = makeStyles(() => ({
   saveButton: {
     textAlign: "right"
   }
@@ -95,7 +91,7 @@ export default function ShopSettings() {
   };
 
   return (
-    <Card className={classes.card}>
+    <Card>
       <CardHeader title={i18next.t("admin.settings.shop.label")} />
       <CardContent>
         <Grid container spacing={2}>

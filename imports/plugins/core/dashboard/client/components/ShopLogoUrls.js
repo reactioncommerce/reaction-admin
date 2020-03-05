@@ -4,12 +4,15 @@ import gql from "graphql-tag";
 import styled from "styled-components";
 import { Form } from "reacto-form";
 import { Mutation } from "react-apollo";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import Grid from "@material-ui/core/Grid";
+import { Button } from "@reactioncommerce/catalyst";
+import {
+  Card,
+  CardHeader,
+  CardActions,
+  CardContent,
+  Grid,
+  CircularProgress
+} from "@material-ui/core";
 import ErrorsBlock from "@reactioncommerce/components/ErrorsBlock/v1";
 import Field from "@reactioncommerce/components/Field/v1";
 import TextInput from "@reactioncommerce/components/TextInput/v1";
@@ -84,7 +87,7 @@ class ShopLogoUrls extends Component {
 
   render() {
     const { refetchShop, shop } = this.props;
-    if (!shop) return null;
+    if (!shop) return <CircularProgress variant="indeterminate" color="primary" />;
 
     const { shopLogoUrls } = shop;
     const { primaryShopLogoUrl } = shopLogoUrls || {};

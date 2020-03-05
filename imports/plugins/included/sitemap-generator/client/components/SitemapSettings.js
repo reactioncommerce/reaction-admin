@@ -17,12 +17,10 @@ import updateShopSettingsMutation from "../mutations/updateShopSettings";
 import shopSettingsQuery from "../queries/shopSettings";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   card: {
     // Without this, the Select dropdown menu gets cut off at the bottom of the card
-    overflow: "visible",
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3)
+    overflow: "visible"
   }
 }));
 

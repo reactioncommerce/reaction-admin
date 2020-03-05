@@ -7,31 +7,16 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
-  makeStyles,
   Typography
 } from "@material-ui/core";
 import useShopSettings from "../hooks/useShopSettings";
 import ShopAddressForm from "./ShopAddressForm";
-
-const useStyles = makeStyles((theme) => ({
-  card: {
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3)
-  },
-  textField: {
-    minWidth: 350
-  },
-  saveButton: {
-    textAlign: "right"
-  }
-}));
 
 /**
  * Shop address settings form block component
  * @returns {Node} React node
  */
 function ShopAddressSettings() {
-  const classes = useStyles();
   const [isEditMode, setIsEditMode] = useState(false);
   const { loading, shop: { addressBook } } = useShopSettings();
   let readOnlyMode = false;
@@ -58,7 +43,7 @@ function ShopAddressSettings() {
   };
 
   return (
-    <Card className={classes.card}>
+    <Card>
       <CardHeader title={i18next.t("admin.settings.address.label")} />
       <CardContent>
         {isInitialView &&
