@@ -3,8 +3,7 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import ChevronLeftIcon from "mdi-material-ui/ChevronLeft";
-import { Button, Divider, Grid, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core";
+import { Button, Divider, Grid, makeStyles, Typography } from "@material-ui/core";
 import Address from "@reactioncommerce/components/Address/v1";
 import { i18next } from "/client/api";
 
