@@ -3,8 +3,9 @@ import { registerBlock } from "@reactioncommerce/reaction-components";
 import { registerOperatorRoute } from "/imports/client/ui";
 import OperatorLanding from "/imports/plugins/core/dashboard/client/components/OperatorLanding";
 
-// Settings block region
+// Settings block regions
 import ShopSettingsRegion from "./components/ShopSettingsRegion";
+import SystemSettingsRegion from "./components/SystemSettingsRegion";
 
 // Settings
 import SystemInformation from "./components/SystemInformation";
@@ -50,9 +51,9 @@ registerOperatorRoute({
 
 registerOperatorRoute({
   group: "settings",
-  MainComponent: SystemInformation,
-  path: "/system",
-  priority: 1000,
+  MainComponent: SystemSettingsRegion,
+  path: "/settings/system",
+  priority: 300,
   sidebarI18nLabel: "shopSettings.systemInfo.title"
 });
 
@@ -83,4 +84,12 @@ registerBlock({
   name: "StorefrontUrls",
   component: StorefrontUrls,
   priority: 4
+});
+
+// System settings blocks
+registerBlock({
+  region: "SystemSettings",
+  name: "SystemSettingsGeneral",
+  component: SystemInformation,
+  priority: 1
 });
