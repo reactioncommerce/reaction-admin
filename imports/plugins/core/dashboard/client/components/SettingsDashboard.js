@@ -16,30 +16,28 @@ import SettingsList from "./SettingsList";
 export default function SettingsDashboard() {
   const settingsRoutes = useOperatorRoutes({ groups: ["settings"] });
   return (
-    <>
-      <ContentViewPrimaryDetailLayout
-        AppBarComponent={
-          <PrimaryAppBar title={i18next.t("admin.settings.settingsLabel")} />
-        }
-        PrimaryComponent={
-          <SettingsList />
-        }
-        DetailComponent={
-          <Container maxWidth="md">
-            <Switch>
-              {
-                settingsRoutes.map((settingRoute) => (
-                  <Route
-                    key={settingRoute.path}
-                    component={settingRoute.MainComponent}
-                    path={settingRoute.path}
-                  />
-                ))
-              }
-            </Switch>
-          </Container>
-        }
-      />
-    </>
+    <ContentViewPrimaryDetailLayout
+      AppBarComponent={
+        <PrimaryAppBar title={i18next.t("admin.settings.settingsLabel")} />
+      }
+      PrimaryComponent={
+        <SettingsList />
+      }
+      DetailComponent={
+        <Container maxWidth="md">
+          <Switch>
+            {
+              settingsRoutes.map((settingRoute) => (
+                <Route
+                  key={settingRoute.path}
+                  component={settingRoute.MainComponent}
+                  path={settingRoute.path}
+                />
+              ))
+            }
+          </Switch>
+        </Container>
+      }
+    />
   );
 }

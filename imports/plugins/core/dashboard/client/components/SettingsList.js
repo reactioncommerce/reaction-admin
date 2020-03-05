@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import i18next from "i18next";
 import {
   List,
@@ -33,29 +33,28 @@ export default function SettingsList() {
 
   if (Array.isArray(settingsRoutes)) {
     settingsList = settingsRoutes.map((setting) => (
-      <Fragment key={`listItem-${setting.path}`}>
-        <ListItem
-          component="nav"
-          ContainerProps={{
-            className: classes.listItemContainer
-          }}
-          ContainerComponent={({ children, ...props }) => (
-            <li {...props}>
-              {i18next.t(setting.sidebarI18nLabel) }
-              {children}
-            </li>
-          )}
-          className={clsx({
-            [classes.listItem]: true
-          })}
-          button
-          onClick={() => history.push(setting.path)}
-        >
-          <ListItemText
-            primary={i18next.t(setting.sidebarI18nLabel)}
-          />
-        </ListItem>
-      </Fragment>
+      <ListItem
+        key={`listItem-${setting.path}`}
+        component="nav"
+        ContainerProps={{
+          className: classes.listItemContainer
+        }}
+        ContainerComponent={({ children, ...props }) => (
+          <li {...props}>
+            {i18next.t(setting.sidebarI18nLabel) }
+            {children}
+          </li>
+        )}
+        className={clsx({
+          [classes.listItem]: true
+        })}
+        button
+        onClick={() => history.push(setting.path)}
+      >
+        <ListItemText
+          primary={i18next.t(setting.sidebarI18nLabel)}
+        />
+      </ListItem>
     ));
   }
 
