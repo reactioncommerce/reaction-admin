@@ -217,7 +217,7 @@ export default function AddressValidationSettingsForm(props) {
           <Button
             className={classes.deleteButton}
             color="primary"
-            isDisabled={isSubmitting}
+            disabled={isSubmitting}
             onClick={() => {
               deleteRule({
                 variables: {
@@ -234,7 +234,7 @@ export default function AddressValidationSettingsForm(props) {
           </Button>}
         <Button
           color="primary"
-          isDisabled={isSubmitting}
+          disabled={isSubmitting}
           onClick={submitForm}
           variant="contained"
         >
