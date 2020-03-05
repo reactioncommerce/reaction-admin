@@ -80,10 +80,10 @@ registerBlock({
 });
 
 registerBlock({
-  region: "ShopSettings",
+  region: "EmailSettings",
   name: "StorefrontUrls",
   component: StorefrontUrls,
-  priority: 4
+  priority: 2
 });
 
 // System settings blocks
