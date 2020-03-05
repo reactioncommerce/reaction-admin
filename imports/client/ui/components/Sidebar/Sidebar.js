@@ -133,7 +133,7 @@ function Sidebar(props) {
           <NavLink
             activeClassName={!isSettingsOpen ? activeClassName : null}
             className={classes.link}
-            to={route.path}
+            to={route.href || route.path}
             key={route.path}
             onClick={() => {
               setIsSettingsOpen(false);

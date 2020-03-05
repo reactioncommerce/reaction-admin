@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
   sidebar: {
     flex: "1 1 auto",
-    minWidth: 250,
+    minWidth: 330,
     maxWidth: 330,
     height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
     overflowY: "auto",
