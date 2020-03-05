@@ -33,6 +33,7 @@ registerOperatorRoute({
   group: "navigation",
   priority: 80,
   path: "/settings/:setting?",
+  href: "/settings/shop",
   LayoutComponent: null,
   MainComponent: SettingsDashboard,
   // eslint-disable-next-line react/display-name

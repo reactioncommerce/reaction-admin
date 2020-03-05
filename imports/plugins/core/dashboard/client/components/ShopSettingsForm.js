@@ -99,7 +99,7 @@ export default function ShopSettings() {
       <CardHeader title={i18next.t("admin.settings.shop.label")} />
       <CardContent>
         <Grid container spacing={2}>
-          <Grid item sm={12}>
+          <Grid item xs={12}>
             <TextField
               error={hasErrors(["name"])}
               fullWidth
@@ -109,7 +109,7 @@ export default function ShopSettings() {
               {...getInputProps("name", muiOptions)}
             />
           </Grid>
-          <Grid item sm={12}>
+          <Grid item xs={12}>
             <TextField
               error={hasErrors(["emails[0].address"])}
               fullWidth
@@ -119,7 +119,7 @@ export default function ShopSettings() {
               {...getInputProps("emails[0].address", muiOptions)}
             />
           </Grid>
-          <Grid item sm={12}>
+          <Grid item xs={12}>
             <TextField
               error={hasErrors(["slug"])}
               fullWidth
@@ -129,7 +129,7 @@ export default function ShopSettings() {
               {...getInputProps("slug", muiOptions)}
             />
           </Grid>
-          <Grid item sm={12}>
+          <Grid item xs={12}>
             <TextField
               error={hasErrors(["description"])}
               fullWidth
@@ -141,7 +141,7 @@ export default function ShopSettings() {
               {...getInputProps("description", muiOptions)}
             />
           </Grid>
-          <Grid item sm={12}>
+          <Grid item xs={12}>
             <TextField
               error={hasErrors(["keywords"])}
               fullWidth
@@ -151,7 +151,7 @@ export default function ShopSettings() {
               {...getInputProps("keywords", muiOptions)}
             />
           </Grid>
-          <Grid item sm={12}>
+          <Grid item xs={12}>
             <FormControlLabel
               control={
                 <Checkbox color="primary" />
@@ -160,7 +160,7 @@ export default function ShopSettings() {
               {...getInputProps("allowGuestCheckout", muiCheckboxOptions)}
             />
           </Grid>
-          <Grid classes={{ root: classes.saveButton }} item sm={12}>
+          <Grid classes={{ root: classes.saveButton }} item xs={12}>
             <Button
               color="primary"
               disabled={isSubmitting}
