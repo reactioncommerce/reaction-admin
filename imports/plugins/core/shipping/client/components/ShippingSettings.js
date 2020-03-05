@@ -1,14 +1,19 @@
 import React from "react";
-import { makeStyles } from "@material-ui/styles";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
-import { Blocks } from "@reactioncommerce/reaction-components";
-import { i18next } from "/client/api";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  makeStyles,
+  Typography
+} from "@material-ui/core";
+import i18next from "i18next";
 import useCurrentShop from "/imports/client/ui/hooks/useCurrentShop.js";
 import DefaultParcelSizeForm from "./DefaultParcelSizeForm.js";
 
 const useStyles = makeStyles((theme) => ({
+  header: {
+    marginBottom: theme.spacing(4)
+  },
   topCard: {
     marginBottom: theme.spacing(2)
   }
@@ -16,18 +21,19 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * @summary Renders shipping page
- * @param {Object} props Component props
  * @return {React.Node} React node
  */
-export default function Shipping(props) {
+export default function Shipping() {
   const classes = useStyles();
   const { refetchShop, shop } = useCurrentShop();
 
   if (!shop) return null;
 
   return (
-    <div>
-      <h4>Shipping</h4>
+    <>
+      <Typography variant="h2" className={classes.header}>
+        {i18next.t("admin.shippingSettings.header")}
+      </Typography>
       <Card className={classes.topCard}>
         <CardHeader
           title={i18next.t("defaultParcelSize.label")}
@@ -40,7 +46,6 @@ export default function Shipping(props) {
           />
         </CardContent>
       </Card>
-      <Blocks region="ShippingSettings" blockProps={props} />
-    </div>
+    </>
   );
 }
