@@ -1,16 +1,19 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShippingFast } from "@fortawesome/free-solid-svg-icons";
-
+import { registerBlock } from "@reactioncommerce/reaction-components";
 import { registerOperatorRoute } from "/imports/client/ui";
-import Shipping from "./components/Shipping";
+import ShippingSettingsRegion from "./components/ShippingSettingsRegion";
+import ShippingSettings from "./components/ShippingSettings";
 
 registerOperatorRoute({
   group: "settings",
-  MainComponent: Shipping,
-  priority: 40,
-  path: "/shipping",
-  // eslint-disable-next-line react/display-name
-  SidebarIconComponent: (props) => <FontAwesomeIcon icon={faShippingFast} {...props} />,
+  MainComponent: ShippingSettingsRegion,
+  priority: 140,
+  path: "/settings/shipping",
   sidebarI18nLabel: "admin.dashboard.shippingLabel"
+});
+
+registerBlock({
+  component: ShippingSettings,
+  name: "GeneralShippingSettings",
+  priority: 1,
+  region: "ShippingSettings"
 });

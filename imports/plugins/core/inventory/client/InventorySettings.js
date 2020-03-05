@@ -7,6 +7,14 @@ import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
+import { makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+  card: {
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3)
+  }
+}));
 
 /**
  * Inventory settings form block component
@@ -20,6 +28,7 @@ function InventorySettings(props) {
     updateInventoryShopSettings,
     shopId
   } = props;
+  const classes = useStyles();
 
   if (isLoadingInventoryShopSettings) return <Components.Loading />;
 
@@ -28,7 +37,7 @@ function InventorySettings(props) {
   } = inventoryShopSettings || {};
 
   return (
-    <Card>
+    <Card className={classes.card}>
       <CardHeader title={i18next.t("inventorySettings.cardTitle")} />
       <CardContent>
         <FormControlLabel

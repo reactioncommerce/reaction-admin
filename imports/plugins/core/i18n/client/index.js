@@ -1,17 +1,21 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGlobe } from "@fortawesome/free-solid-svg-icons";
-
 import { registerOperatorRoute } from "/imports/client/ui";
+import { registerBlock } from "@reactioncommerce/reaction-components";
+import LocalizationSettingsRegion from "./components/LocalizationSettingsRegion";
 import Localization from "./containers/localizationSettings";
 
 export { default as LocalizationSettings } from "./containers/localizationSettings";
 
 registerOperatorRoute({
   group: "settings",
-  MainComponent: Localization,
-  path: "/localization",
-  // eslint-disable-next-line react/display-name
-  SidebarIconComponent: (props) => <FontAwesomeIcon icon={faGlobe} {...props} />,
-  sidebarI18nLabel: "admin.i18nSettings.shopLocalization"
+  MainComponent: LocalizationSettingsRegion,
+  path: "/settings/localization",
+  sidebarI18nLabel: "admin.i18nSettings.shopLocalization",
+  priority: 160
+});
+
+registerBlock({
+  component: Localization,
+  name: "LocalizationSettingsGeneral",
+  priority: 1,
+  region: "LocalizationSettings"
 });

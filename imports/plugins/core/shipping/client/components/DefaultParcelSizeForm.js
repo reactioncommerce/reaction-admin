@@ -8,7 +8,7 @@ import SimpleSchema from "simpl-schema";
 import Button from "@reactioncommerce/catalyst/Button";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core";
 import muiOptions from "reacto-form/cjs/muiOptions";
 import useReactoForm from "reacto-form/cjs/useReactoForm";
 
@@ -159,7 +159,7 @@ export default function DefaultParcelSizeForm(props) {
       <Grid className={classes.rightAlignedGrid} item xs={12}>
         <Button
           color="primary"
-          isDisabled={isSubmitting}
+          disabled={isSubmitting}
           onClick={submitForm}
           variant="contained"
         >

@@ -1,16 +1,22 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faColumns } from "@fortawesome/free-solid-svg-icons";
-
+import { registerBlock } from "@reactioncommerce/reaction-components";
 import { registerOperatorRoute } from "/imports/client/ui";
+import EmailTemplateSettingsRegion from "./components/EmailTemplateSettingsRegion";
+import { getReactComponentOrBlazeTemplate } from "/imports/plugins/core/components/lib/ReactComponentOrBlazeTemplate";
+
 import "./templates/settings.html";
 import "./templates/settings.js";
 
 registerOperatorRoute({
   group: "settings",
-  path: "/templates",
-  MainComponent: "templateSettings",
-  // eslint-disable-next-line react/display-name
-  SidebarIconComponent: (props) => <FontAwesomeIcon icon={faColumns} {...props} />,
-  sidebarI18nLabel: "admin.settings.templateSettingsLabel"
+  path: "/settings/templates",
+  MainComponent: EmailTemplateSettingsRegion,
+  sidebarI18nLabel: "admin.settings.templateSettingsLabel",
+  priority: 190
+});
+
+registerBlock({
+  region: "EmailTemplateSettings",
+  name: "EmailTemplateSettingsGeneral",
+  component: () => getReactComponentOrBlazeTemplate("templateSettings"),
+  priority: 1
 });

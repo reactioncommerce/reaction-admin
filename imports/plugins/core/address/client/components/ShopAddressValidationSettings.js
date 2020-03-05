@@ -6,7 +6,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core";
 import CountryOptions from "@reactioncommerce/api-utils/CountryOptions.js";
 import { i18next } from "/client/api";
 import AddressValidationSettingsForm from "./AddressValidationSettingsForm";

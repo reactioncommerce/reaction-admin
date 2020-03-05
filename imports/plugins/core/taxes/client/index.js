@@ -1,15 +1,21 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUniversity } from "@fortawesome/free-solid-svg-icons";
+import { registerBlock } from "@reactioncommerce/reaction-components";
 import { registerOperatorRoute } from "/imports/client/ui";
+import TaxSettingsRegion from "./components/TaxSettingsRegion";
 import TaxSettings from "./components/TaxSettings";
 
 registerOperatorRoute({
   group: "settings",
-  MainComponent: TaxSettings,
-  priority: 30,
-  path: "/tax-settings",
-  // eslint-disable-next-line react/display-name
-  SidebarIconComponent: (props) => <FontAwesomeIcon icon={faUniversity} {...props} />,
+  MainComponent: TaxSettingsRegion,
+  priority: 130,
+  path: "/settings/tax-settings",
   sidebarI18nLabel: "admin.dashboard.taxesLabel"
 });
+
+registerBlock({
+  component: TaxSettings,
+  name: "GeneralTaxSettings",
+  priority: 1,
+  region: "TaxSettings"
+});
+
+

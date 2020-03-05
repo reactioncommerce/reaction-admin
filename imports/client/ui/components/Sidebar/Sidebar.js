@@ -1,10 +1,8 @@
 import React from "react";
 import { compose, withState } from "recompose";
 import { NavLink, withRouter } from "react-router-dom";
-import classNames from "classnames";
 import PropTypes from "prop-types";
 import AppBar from "@material-ui/core/AppBar";
-import Collapse from "@material-ui/core/Collapse";
 import Fab from "@material-ui/core/Fab";
 import Hidden from "@material-ui/core/Hidden";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -14,7 +12,6 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Drawer from "@material-ui/core/Drawer";
 import withStyles from "@material-ui/core/styles/withStyles";
-import SettingsIcon from "mdi-material-ui/Settings";
 import CloseIcon from "mdi-material-ui/Close";
 import { Translation } from "/imports/plugins/core/ui/client/components";
 import useIsAppLoading from "/imports/client/ui/hooks/useIsAppLoading.js";
@@ -97,7 +94,6 @@ const styles = (theme) => ({
 function Sidebar(props) {
   const {
     classes,
-    history,
     isMobile,
     isSidebarOpen,
     onDrawerClose,
@@ -108,7 +104,6 @@ function Sidebar(props) {
   const [isAppLoading] = useIsAppLoading();
   const [currentShopId] = useCurrentShopId();
   const primaryRoutes = useOperatorRoutes({ groups: ["navigation"] });
-  const settingRoutes = useOperatorRoutes({ groups: ["settings"] });
 
   let drawerProps = {
     classes: {
@@ -138,7 +133,7 @@ function Sidebar(props) {
           <NavLink
             activeClassName={!isSettingsOpen ? activeClassName : null}
             className={classes.link}
-            to={route.path}
+            to={route.href || route.path}
             key={route.path}
             onClick={() => {
               setIsSettingsOpen(false);
@@ -158,53 +153,6 @@ function Sidebar(props) {
             </ListItem>
           </NavLink>
         ))}
-
-        <ListItem
-          button
-          className={classes.listItem}
-          onClick={() => {
-            // Push the first setting route when opened, but not on mobile
-            if (!isSettingsOpen && !isMobile) {
-              const [firstRoute] = settingRoutes;
-
-              if (firstRoute) {
-                history.push(firstRoute.path);
-              }
-            }
-            setIsSettingsOpen(!isSettingsOpen);
-          }}
-        >
-          <ListItemIcon className={classNames(classes.icon, { [classes.iconActive]: isSettingsOpen })}>
-            <SettingsIcon />
-          </ListItemIcon>
-          <ListItemText
-            disableTypography
-            className={classes.listItemText}
-          >
-            <Translation i18nKey={"app.settings"} />
-          </ListItemText>
-        </ListItem>
-
-        <Collapse in={isSettingsOpen}>
-          {settingRoutes.map((route) => (
-            <NavLink
-              activeClassName={activeClassName}
-              className={classes.link}
-              to={route.path}
-              key={route.path}
-              onClick={onDrawerClose}
-            >
-              <ListItem button className={classes.listItemNested}>
-                <ListItemText
-                  disableTypography
-                  className={classes.listItemText}
-                >
-                  <Translation defaultValue="" i18nKey={route.sidebarI18nLabel} />
-                </ListItemText>
-              </ListItem>
-            </NavLink>
-          ))}
-        </Collapse>
       </List>
     );
   }

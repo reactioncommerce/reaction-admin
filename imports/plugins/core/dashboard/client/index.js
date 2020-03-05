@@ -1,13 +1,18 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStore } from "@fortawesome/free-solid-svg-icons";
-
-import { registerBlock } from "/imports/plugins/core/components/lib";
+import SettingsIcon from "mdi-material-ui/Settings";
+import { registerBlock } from "@reactioncommerce/reaction-components";
 import { registerOperatorRoute } from "/imports/client/ui";
 import OperatorLanding from "/imports/plugins/core/dashboard/client/components/OperatorLanding";
 
+// Settings block regions
+import ShopSettingsRegion from "./components/ShopSettingsRegion";
+import SystemSettingsRegion from "./components/SystemSettingsRegion";
+
+// Settings
 import SystemInformation from "./components/SystemInformation";
 import ShopLogoUrls from "./components/ShopLogoUrls";
+import SettingsDashboard from "./components/SettingsDashboard";
+import ShopSettingsForm from "./components/ShopSettingsForm";
+import ShopAddressSettings from "./components/ShopAddressSettings";
 import StorefrontUrls from "./components/StorefrontUrls";
 
 import "./components/shopBrandImageOption";
@@ -25,33 +30,67 @@ registerOperatorRoute({
 });
 
 registerOperatorRoute({
-  group: "settings",
-  priority: 10,
-  path: "/shop-settings",
-  MainComponent: "shopSettings",
+  group: "navigation",
+  priority: 80,
+  path: "/settings/:setting?",
+  href: "/settings/shop",
+  LayoutComponent: null,
+  MainComponent: SettingsDashboard,
   // eslint-disable-next-line react/display-name
-  SidebarIconComponent: (props) => <FontAwesomeIcon icon={faStore} {...props} />,
+  SidebarIconComponent: SettingsIcon,
+  sidebarI18nLabel: "admin.settings.settingsLabel"
+});
+
+// Shop settings region
+registerOperatorRoute({
+  group: "settings",
+  MainComponent: ShopSettingsRegion,
+  priority: 110,
+  path: "/settings/shop",
   sidebarI18nLabel: "admin.settings.shopSettingsLabel"
 });
 
 registerOperatorRoute({
   group: "settings",
-  MainComponent: SystemInformation,
-  path: "/system",
-  priority: 1000,
+  MainComponent: SystemSettingsRegion,
+  path: "/settings/system",
+  priority: 300,
   sidebarI18nLabel: "shopSettings.systemInfo.title"
+});
+
+// Settings blocks
+registerBlock({
+  region: "ShopSettings",
+  name: "ShopSettingsGeneral",
+  component: ShopSettingsForm,
+  priority: 1
+});
+
+registerBlock({
+  region: "ShopSettings",
+  name: "ShopAddress",
+  component: ShopAddressSettings,
+  priority: 2
 });
 
 registerBlock({
   region: "ShopSettings",
   name: "ShopLogoUrls",
   component: ShopLogoUrls,
-  priority: 2
+  priority: 3
 });
 
 registerBlock({
-  region: "ShopSettings",
+  region: "EmailSettings",
   name: "StorefrontUrls",
   component: StorefrontUrls,
-  priority: 3
+  priority: 2
+});
+
+// System settings blocks
+registerBlock({
+  region: "SystemSettings",
+  name: "SystemSettingsGeneral",
+  component: SystemInformation,
+  priority: 1
 });

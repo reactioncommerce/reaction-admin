@@ -7,7 +7,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core";
 import { Components } from "@reactioncommerce/reaction-components";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import useCustomTaxRates from "../hooks/useCustomTaxRates.js";
