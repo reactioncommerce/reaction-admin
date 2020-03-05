@@ -1,15 +1,18 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
-
 import { registerOperatorRoute } from "/imports/client/ui";
+import { registerBlock } from "@reactioncommerce/reaction-components";
+import EmailSettingsRegion from "./components/EmailSettingsRegion";
 import EmailSettings from "./containers/EmailSettings";
 
 registerOperatorRoute({
   group: "settings",
-  path: "/email",
-  MainComponent: EmailSettings,
-  // eslint-disable-next-line react/display-name
-  SidebarIconComponent: (props) => <FontAwesomeIcon icon={faEnvelope} {...props} />,
+  path: "/settings/email",
+  MainComponent: EmailSettingsRegion,
   sidebarI18nLabel: "admin.dashboard.emailLabel"
+});
+
+registerBlock({
+  component: EmailSettings,
+  name: "EmailSettingsGeneral",
+  priority: 1,
+  region: "EmailSettings"
 });
