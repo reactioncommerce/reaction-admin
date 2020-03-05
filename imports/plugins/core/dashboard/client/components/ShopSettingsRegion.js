@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {Object} props Component props
  * @return {React.Node} React node
  */
-export default function PaymentSettingsRegion(props) {
+export default function ShopSettingsRegion(props) {
   const classes = useStyles();
   return (
     <>
