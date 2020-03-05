@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import gql from "graphql-tag";
 import { useSnackbar } from "notistack";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";

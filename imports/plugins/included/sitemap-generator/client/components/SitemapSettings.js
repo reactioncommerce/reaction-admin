@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core";
 import { Components } from "@reactioncommerce/reaction-components";
 import Select from "@reactioncommerce/components/Select/v1";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
