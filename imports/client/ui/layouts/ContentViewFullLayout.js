@@ -1,6 +1,6 @@
 /**
- * Component provies a fill width and height, non-scrollable container
- * for dashboard layouts that want to defin their on scroll zones.
+ * Component provides a fill width and height, non-scrollable container
+ * for dashboard layouts that want to define their on scroll zones.
  */
 import React from "react";
 import PropTypes from "prop-types";
