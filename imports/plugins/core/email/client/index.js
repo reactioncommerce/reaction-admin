@@ -7,6 +7,7 @@ registerOperatorRoute({
   group: "settings",
   path: "/settings/email",
   MainComponent: EmailSettingsRegion,
+  priority: 150,
   sidebarI18nLabel: "admin.dashboard.emailLabel"
 });
 
