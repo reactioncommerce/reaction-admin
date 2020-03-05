@@ -2,7 +2,7 @@ import React from "react";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core";
 import GeneralTaxSettings from "../containers/GeneralTaxSettings";
 
 const useStyles = makeStyles((theme) => ({

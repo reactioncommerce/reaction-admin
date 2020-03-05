@@ -12,9 +12,10 @@ registerOperatorRoute({
 });
 
 registerBlock({
-  region: "TaxSettings",
+  component: TaxSettings,
   name: "GeneralTaxSettings",
-  component: TaxSettings
+  priority: 1,
+  region: "TaxSettings"
 });
 
 
