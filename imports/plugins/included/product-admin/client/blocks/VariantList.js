@@ -22,14 +22,26 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   listItem: {
-    paddingLeft: theme.spacing(7)
+    "paddingLeft": theme.spacing(7),
+    "&$focusVisible": {
+      backgroundColor: "red"
+    },
+    "&$selected, &$selected:hover": {
+      backgroundColor: "white",
+      boxShadow: theme.shadows[2],
+      borderRadius: theme.shape.borderRadius
+    }
   },
   nested: {
-    paddingLeft: theme.spacing(8)
+    paddingLeft: theme.spacing(4)
   },
   listItemAction: {
     display: "none"
-  }
+  },
+  /* Pseudo-class applied to the `component`'s `focusVisibleClassName` prop if `button={true}`. */
+  focusVisible: {},
+  /* Pseudo-class applied to the root element if `selected={true}`. */
+  selected: {}
 }));
 
 /**
@@ -51,13 +63,14 @@ function getItemSecondaryLabel({ isVisible }) {
  */
 export default function VariantList() {
   const {
+    currentVariant,
     onArchiveProductVariants,
     onCreateVariant,
     onToggleVariantVisibility,
     onCloneProductVariants,
     onRestoreProduct,
     product,
-    variant: currentVariant
+    variant: variantProp
   } = useProduct();
   const classes = useStyles();
   const history = useHistory();
@@ -65,11 +78,11 @@ export default function VariantList() {
 
 
   useEffect(() => {
-    if (currentVariant) {
-      setExpandedIds((prevState) => [...prevState, currentVariant._id]);
+    if (variantProp) {
+      setExpandedIds((prevState) => [...prevState, variantProp._id]);
     }
   }, [
-    currentVariant
+    variantProp
   ]);
 
   const renderVariantTree = useCallback((variants, parentVariant) => {
@@ -95,17 +108,24 @@ export default function VariantList() {
             <ListItem
               component="nav"
               ContainerProps={{
-                className: classes.listItemContainer,
+                className: clsx({
+                  [classes.listItemContainer]: true,
+                  [classes.nested]: Boolean(parentVariant)
+                }),
                 isExpanded,
                 hasChildren,
                 onArrowButtonClick: () => toggleExpand(variant._id)
               }}
               ContainerComponent={VariantListItemContainer}
+              classes={{
+                root: classes.listItem,
+                selected: classes.selected
+              }}
               className={clsx({
-                [classes.listItem]: true,
-                [classes.nested]: Boolean(parentVariant)
+                // [classes.nested]: Boolean(parentVariant)
               })}
               button
+              selected={currentVariant && (currentVariant._id === variant._id)}
               onClick={() => {
                 const url = getPDPUrl(product._id, variant._id, parentVariant && parentVariant._id);
                 history.push(url);
@@ -153,6 +173,7 @@ export default function VariantList() {
   }, [
     expandedIds,
     classes,
+    currentVariant,
     product,
     onArchiveProductVariants,
     onCreateVariant,
