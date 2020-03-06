@@ -87,6 +87,8 @@ class ShopLogoUrls extends Component {
 
   render() {
     const { refetchShop, shop } = this.props;
+    console.log("shop", this.props.shop);
+
     if (!shop) return <CircularProgress variant="indeterminate" color="primary" />;
 
     const { shopLogoUrls } = shop;

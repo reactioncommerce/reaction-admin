@@ -85,6 +85,7 @@ function ShopAddressForm({ isEditMode, isInitialView, setIsEditMode }) {
   const {
     getFirstErrorMessage,
     getInputProps,
+    isDirty,
     hasErrors,
     submitForm
   } = useReactoForm({
@@ -217,12 +218,12 @@ function ShopAddressForm({ isEditMode, isInitialView, setIsEditMode }) {
         </Button>
         <Button
           color="primary"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !isDirty}
           variant="contained"
           onClick={handleSubmit}
           type="submit"
         >
-          {isSubmitting ? i18next.t("admin.settings.saveProcessing") : i18next.t("app.save")}
+          {isSubmitting ? i18next.t("app.settings.saveProcessing") : i18next.t("app.saveChanges")}
         </Button>
       </DialogActions>
     </Dialog>

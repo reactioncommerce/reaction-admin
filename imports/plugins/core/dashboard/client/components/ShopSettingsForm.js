@@ -7,22 +7,16 @@ import useReactoForm from "reacto-form/cjs/useReactoForm";
 import muiCheckboxOptions from "reacto-form/esm/muiCheckboxOptions";
 import muiOptions from "reacto-form/cjs/muiOptions";
 import {
+  Box,
   Card,
   CardContent,
   CardHeader,
   CircularProgress,
   FormControlLabel,
   Grid,
-  makeStyles,
   Checkbox
 } from "@material-ui/core";
 import useShopSettings from "../hooks/useShopSettings";
-
-const useStyles = makeStyles(() => ({
-  saveButton: {
-    textAlign: "right"
-  }
-}));
 
 const shopSettings = new SimpleSchema({
   "allowGuestCheckout": {
@@ -64,13 +58,13 @@ const validator = shopSettings.getFormValidator();
  * @returns {Node} React node
  */
 export default function ShopSettings() {
-  const classes = useStyles();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { loading, onUpdateShop, shop } = useShopSettings();
   const {
     getFirstErrorMessage,
     getInputProps,
     hasErrors,
+    isDirty,
     submitForm
   } = useReactoForm({
     async onSubmit(formData) {
@@ -157,19 +151,19 @@ export default function ShopSettings() {
               {...getInputProps("allowGuestCheckout", muiCheckboxOptions)}
             />
           </Grid>
-          <Grid classes={{ root: classes.saveButton }} item xs={12}>
-            <Button
-              color="primary"
-              disabled={isSubmitting}
-              variant="contained"
-              type="submit"
-              onClick={handleSubmit}
-              isWaiting={isSubmitting}
-            >
-              {i18next.t("app.save")}
-            </Button>
-          </Grid>
         </Grid>
+        <Box textAlign="right">
+          <Button
+            color="primary"
+            disabled={isSubmitting || !isDirty}
+            variant="contained"
+            type="submit"
+            onClick={handleSubmit}
+            isWaiting={isSubmitting}
+          >
+            {i18next.t("app.saveChanges")}
+          </Button>
+        </Box>
       </CardContent>
     </Card>
   );
