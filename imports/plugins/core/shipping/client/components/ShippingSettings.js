@@ -8,7 +8,6 @@ import i18next from "i18next";
 import useCurrentShop from "/imports/client/ui/hooks/useCurrentShop.js";
 import DefaultParcelSizeForm from "./DefaultParcelSizeForm.js";
 
-
 /**
  * @summary Renders shipping page
  * @return {React.Node} React node
