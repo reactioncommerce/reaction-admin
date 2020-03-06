@@ -34,7 +34,8 @@ const shopSettings = new SimpleSchema({
     min: 1
   },
   "emails": {
-    type: Array
+    type: Array,
+    optional: true
   },
   "emails.$": new SimpleSchema({
     address: {
