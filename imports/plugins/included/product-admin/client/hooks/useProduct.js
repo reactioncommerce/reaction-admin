@@ -181,12 +181,13 @@ function useProduct(args = {}) {
   const onArchiveProduct = useCallback(async (productLocal, redirectUrl) => {
     try {
       await archiveProducts({ variables: { input: { shopId, productIds: [productLocal] } } });
-      Alerts.toast(i18next.t("productDetailEdit.archiveProductsSuccess"), "success");
+      enqueueSnackbar(i18next.t("productDetailEdit.archiveProductsSuccess"), { variant: "success" });
       history.push(redirectUrl);
     } catch (error) {
-      Alerts.toast(i18next.t("productDetailEdit.archiveProductsFail", { err: error }), "error");
+      enqueueSnackbar(i18next.t("productDetailEdit.archiveProductsFail"), { variant: "success" });
     }
   }, [
+    enqueueSnackbar,
     history,
     archiveProducts,
     shopId
@@ -255,11 +256,12 @@ function useProduct(args = {}) {
         }
       });
 
-      Alerts.toast(i18next.t("productDetailEdit.updateProductFieldSuccess"), "success");
+      enqueueSnackbar(i18next.t("productDetailEdit.updateProductFieldSuccess"), { variant: "success" });
     } catch (error) {
-      Alerts.toast(i18next.t("productDetailEdit.updateProductFieldFail", { err: error }), "error");
+      enqueueSnackbar(i18next.t("productDetailEdit.updateProductFieldFail"), { variant: "error" });
     }
   }, [
+    enqueueSnackbar,
     product,
     shopId,
     updateProduct
