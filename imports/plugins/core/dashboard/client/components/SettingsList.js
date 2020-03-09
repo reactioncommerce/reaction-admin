@@ -13,11 +13,6 @@ import useOperatorRoutes from "imports/client/ui/hooks/useOperatorRoutes";
 const activeClassName = "settings-active-item";
 
 const useStyles = makeStyles((theme) => ({
-  listItemContainer: {
-    "&:hover $listItemAction": {
-      display: "block"
-    }
-  },
   listItemRoot: {
     paddingLeft: theme.spacing(4),
     paddingTop: "unset",

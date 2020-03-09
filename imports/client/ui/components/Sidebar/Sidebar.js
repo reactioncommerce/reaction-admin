@@ -97,7 +97,6 @@ function Sidebar(props) {
     isMobile,
     isSidebarOpen,
     onDrawerClose,
-    isSettingsOpen,
     setIsSettingsOpen
   } = props;
 
@@ -131,7 +130,7 @@ function Sidebar(props) {
       <List disablePadding>
         {primaryRoutes.map((route) => (
           <NavLink
-            activeClassName={!isSettingsOpen ? activeClassName : null}
+            activeClassName={activeClassName}
             className={classes.link}
             to={route.href || route.path}
             key={route.path}
@@ -186,7 +185,6 @@ Sidebar.propTypes = {
     push: PropTypes.func.isRequired
   }),
   isMobile: PropTypes.bool,
-  isSettingsOpen: PropTypes.bool,
   isSidebarOpen: PropTypes.bool.isRequired,
   onDrawerClose: PropTypes.func.isRequired,
   setIsSettingsOpen: PropTypes.func.isRequired
