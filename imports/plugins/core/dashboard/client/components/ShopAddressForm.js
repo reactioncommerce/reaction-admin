@@ -213,7 +213,7 @@ function ShopAddressForm({ isEditMode, isInitialView, setIsEditMode }) {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleOnCloseDialog} color="secondary">
+        <Button color="primary" onClick={handleOnCloseDialog}>
             Cancel
         </Button>
         <Button
