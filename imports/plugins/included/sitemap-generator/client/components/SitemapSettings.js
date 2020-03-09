@@ -1,16 +1,20 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core";
-import { Components } from "@reactioncommerce/reaction-components";
+import {
+  makeStyles,
+  Box,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  CircularProgress,
+  FormLabel,
+  Grid
+} from "@material-ui/core";
 import Select from "@reactioncommerce/components/Select/v1";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import Button from "@reactioncommerce/catalyst/Button";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
-import FormLabel from "@material-ui/core/FormLabel";
-import Grid from "@material-ui/core/Grid";
-import { i18next } from "/client/api";
+
+import i18next from "i18next";
 import Logger from "/client/modules/logger";
 import generateSitemapsMutation from "../mutations/generateSitemaps";
 import updateShopSettingsMutation from "../mutations/updateShopSettings";
@@ -63,7 +67,14 @@ export default function SitemapSettings() {
   const [generateSitemaps] = useMutation(generateSitemapsMutation);
   const [updateShopSettings, { loading: isUpdatingShopSettings }] = useMutation(updateShopSettingsMutation);
 
-  if (!called || loadingSettings) return <Components.Loading />;
+  if (!called || loadingSettings) {
+    return (
+      <Box textAlign="center">
+        <CircularProgress variant="indeterminate" color="primary" />
+      </Box>
+    );
+  }
+
   if (error) {
     return (
       <Card>

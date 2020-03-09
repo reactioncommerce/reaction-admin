@@ -23,7 +23,13 @@ function ShopAddressSettings() {
   let isInitialView = false;
   let address = null;
 
-  if (loading) return <CircularProgress variant="indeterminate" color="primary" />;
+  if (loading) {
+    return (
+      <Box textAlign="center">
+        <CircularProgress variant="indeterminate" color="primary" />
+      </Box>
+    );
+  }
 
   // If an address has been set, render in read only mode
   if (addressBook && addressBook[0]) {

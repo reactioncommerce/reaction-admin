@@ -8,6 +8,7 @@ import { useSnackbar } from "notistack";
 import { Button, TextField } from "@reactioncommerce/catalyst";
 import { useMutation } from "@apollo/react-hooks";
 import {
+  Box,
   Card,
   CardHeader,
   CardActions,
@@ -103,7 +104,13 @@ export default function ShopLogoUrls() {
 
   const classes = useStyles();
 
-  if (!shop || isLoading) return <CircularProgress variant="indeterminate" color="primary" />;
+  if (!shop || isLoading) {
+    return (
+      <Box textAlign="center">
+        <CircularProgress variant="indeterminate" color="primary" />
+      </Box>
+    );
+  }
 
   return (
     <Card>

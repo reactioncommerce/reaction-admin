@@ -78,7 +78,13 @@ export default function ShopSettings() {
     value: shop
   });
 
-  if (loading) return <CircularProgress variant="indeterminate" color="primary" />;
+  if (loading) {
+    return (
+      <Box textAlign="center">
+        <CircularProgress variant="indeterminate" color="primary" />
+      </Box>
+    );
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
