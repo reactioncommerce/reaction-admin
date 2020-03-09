@@ -7,8 +7,10 @@ import {
   ListItem
 } from "@material-ui/core";
 import clsx from "classnames";
-import { useHistory } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import useOperatorRoutes from "imports/client/ui/hooks/useOperatorRoutes";
+
+const activeClassName = "settings-active-item";
 
 const useStyles = makeStyles((theme) => ({
   listItemContainer: {
@@ -16,8 +18,31 @@ const useStyles = makeStyles((theme) => ({
       display: "block"
     }
   },
-  listItem: {
-    paddingLeft: theme.spacing(4)
+  listItemRoot: {
+    paddingLeft: theme.spacing(4),
+    paddingTop: "unset",
+    paddingBottom: "unset"
+  },
+  listItemTextRoot: {
+    "paddingTop": theme.spacing(1),
+    "paddingBottom": theme.spacing(1),
+    "paddingLeft": theme.spacing(1),
+    "&:hover": {
+      backgroundColor: theme.palette.colors.darkBlue100,
+      borderRadius: 3
+    }
+  },
+  link: {
+    [`&.${activeClassName} span`]: {
+      color: theme.palette.colors.coolGrey500,
+      fontWeight: theme.typography.fontWeightSemiBold
+    }
+  },
+  linkBackground: {
+    [`&.${activeClassName} div`]: {
+      backgroundColor: theme.palette.colors.darkBlue100,
+      borderRadius: 3
+    }
   }
 }));
 
@@ -27,34 +52,37 @@ const useStyles = makeStyles((theme) => ({
  */
 export default function SettingsList() {
   const classes = useStyles();
-  const history = useHistory();
   const settingsRoutes = useOperatorRoutes({ groups: ["settings"] });
   let settingsList = [];
 
   if (Array.isArray(settingsRoutes)) {
     settingsList = settingsRoutes.map((setting) => (
-      <ListItem
-        key={`listItem-${setting.path}`}
-        component="nav"
-        ContainerProps={{
-          className: classes.listItemContainer
-        }}
-        ContainerComponent={({ children, ...props }) => (
-          <li {...props}>
-            {i18next.t(setting.sidebarI18nLabel) }
-            {children}
-          </li>
-        )}
-        className={clsx({
-          [classes.listItem]: true
-        })}
-        button
-        onClick={() => history.push(setting.path)}
+      <NavLink
+        activeClassName={activeClassName}
+        className={clsx({ [classes.link]: true, [classes.linkBackground]: true })}
+        to={setting.path}
+        key={setting.path}
       >
-        <ListItemText
-          primary={i18next.t(setting.sidebarI18nLabel)}
-        />
-      </ListItem>
+        <ListItem
+          component="nav"
+          ContainerProps={{
+            className: classes.listItemContainer
+          }}
+          button={false}
+          ContainerComponent={({ children, ...props }) => (
+            <li {...props}>
+              {i18next.t(setting.sidebarI18nLabel) }
+              {children}
+            </li>
+          )}
+          classes={{ root: classes.listItemRoot }}
+        >
+          <ListItemText
+            classes={{ root: classes.listItemTextRoot }}
+            primary={i18next.t(setting.sidebarI18nLabel)}
+          />
+        </ListItem>
+      </NavLink>
     ));
   }
 
