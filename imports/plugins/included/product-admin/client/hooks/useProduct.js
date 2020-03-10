@@ -68,7 +68,8 @@ function useProduct(args = {}) {
     variables: {
       productId,
       shopId
-    }
+    },
+    skip: !shopId
   });
 
   const { product } = productQueryResult || {};
