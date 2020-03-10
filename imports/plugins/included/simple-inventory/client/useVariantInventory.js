@@ -148,14 +148,16 @@ function useVariantInventory(args = {}) {
   }, [enqueueSnackbar, productId, productVariantId, recalculateReservedSimpleInventory, shopId]);
 
   const { data: inventoryQueryResult, isLoading: isLoadingInventory, refetch: refetchInventory } = useQuery(getInventoryInfo, {
-    variables: getInventoryInfoVariables
+    variables: getInventoryInfoVariables,
+    skip: !shopId
   });
 
   const { data: productQueryResult, isLoading: isLoadingProduct, refetch: refetchProduct } = useQuery(productQuery, {
     variables: {
       productId,
       shopId
-    }
+    },
+    skip: !shopId
   });
 
   const { product } = productQueryResult || {};
