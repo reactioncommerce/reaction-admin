@@ -76,7 +76,6 @@ function useProduct(args = {}) {
 
   let variant;
   let option;
-  // let parentVariant;
 
   if (product && variantId) {
     variant = product.variants.find(({ _id }) => _id === variantId);
