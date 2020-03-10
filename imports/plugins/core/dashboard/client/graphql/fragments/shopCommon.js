@@ -16,13 +16,20 @@ export default gql`
       phone
       isCommercial
     }
+    baseUOL
+    baseUOM
+    currency {
+      code
+    }
     description
     emails {
       address
     }
     keywords
+    language
     name
     slug
+    timezone
   }
 `;
 
