@@ -4,6 +4,8 @@ import SimpleSchema from "simpl-schema";
 import { Button, TextField } from "@reactioncommerce/catalyst";
 import useReactoForm from "reacto-form/cjs/useReactoForm";
 import muiOptions from "reacto-form/cjs/muiOptions";
+import moment from "moment-timezone";
+import _ from "lodash";
 import {
   Box,
   Card,
@@ -16,14 +18,18 @@ import {
   MenuItem
 } from "@material-ui/core";
 import useShopSettings from "/imports/plugins/core/dashboard/client/hooks/useShopSettings";
-import CountryOptions from "@reactioncommerce/api-utils/CountryOptions.js";
 import CurrencyOptions from "@reactioncommerce/api-utils/CurrencyOptions.js";
 import LanguageOptions from "@reactioncommerce/api-utils/LanguageOptions.js";
-import { convertWeight, convertLength } from "/lib/api";
+import getUnitOptions from "../helpers/getUnitOptions";
 
-const unitsOfMeasure = [];
-const unitsOfLength = [];
-const TimezoneOptions = [];
+const timezoneOptions = [];
+const timezones = moment.tz.names();
+for (const timezone of timezones) {
+  timezoneOptions.push({
+    value: timezone,
+    label: timezone
+  });
+}
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -37,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 
 const localizationSettings = new SimpleSchema({
   "currency": Object,
-  "currency.symbol": {
+  "currency.code": {
     type: String,
     optional: true
   },
@@ -68,6 +74,10 @@ const validator = localizationSettings.getFormValidator();
 export default function ShopSettings() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { loading, onUpdateShop, shop } = useShopSettings();
+
+  const unitsOfLength = getUnitOptions("uol", shop.unitsOfLength);
+  const unitsOfMeasure = getUnitOptions("uom", shop.unitsOfMeasure);
+
   const classes = useStyles();
   const {
     getFirstErrorMessage,
@@ -78,7 +88,11 @@ export default function ShopSettings() {
   } = useReactoForm({
     async onSubmit(formData) {
       setIsSubmitting(true);
-      await onUpdateShop(localizationSettings.clean(formData));
+      // Flatten currency object
+      const cleanedFormData = _.clone(localizationSettings.clean(formData));
+      const { currency: { code } } = cleanedFormData;
+      cleanedFormData.currency = code;
+      await onUpdateShop(cleanedFormData);
       setIsSubmitting(false);
     },
     validator(formData) {
@@ -113,6 +127,26 @@ export default function ShopSettings() {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
+              error={hasErrors(["timezone"])}
+              fullWidth
+              helperText={getFirstErrorMessage(["timezone"])}
+              label={i18next.t("admin.timezone")}
+              onKeyPress={(event) => {
+                if (event.key === "Enter") submitForm();
+              }}
+              select
+              {...timezoneInputProps}
+              value={timezoneInputProps.value}
+            >
+              {timezoneOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
               error={hasErrors(["currency.code"])}
               fullWidth
               helperText={getFirstErrorMessage(["currency.code"])}
@@ -122,6 +156,7 @@ export default function ShopSettings() {
               }}
               select
               {...currencyInputProps}
+              value={currencyInputProps.value}
             >
               {CurrencyOptions.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
@@ -161,6 +196,7 @@ export default function ShopSettings() {
               }}
               select
               {...baseUOMInputProps}
+              value={baseUOMInputProps.value}
             >
               {unitsOfMeasure.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
@@ -183,26 +219,6 @@ export default function ShopSettings() {
               value={languageInputProps.value}
             >
               {LanguageOptions.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              error={hasErrors(["timezone"])}
-              fullWidth
-              helperText={getFirstErrorMessage(["timezone"])}
-              label={i18next.t("admin.timezone")}
-              onKeyPress={(event) => {
-                if (event.key === "Enter") submitForm();
-              }}
-              select
-              {...timezoneInputProps}
-              value={timezoneInputProps.value}
-            >
-              {TimezoneOptions.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
                 </MenuItem>

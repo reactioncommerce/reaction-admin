@@ -30,6 +30,14 @@ export default gql`
     name
     slug
     timezone
+    unitsOfLength {
+      uol
+      label
+    }
+    unitsOfMeasure { 
+      uom
+      label
+    }
   }
 `;
 
