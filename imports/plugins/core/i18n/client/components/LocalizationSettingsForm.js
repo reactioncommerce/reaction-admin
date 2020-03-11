@@ -21,6 +21,7 @@ import useShopSettings from "/imports/plugins/core/dashboard/client/hooks/useSho
 import CurrencyOptions from "@reactioncommerce/api-utils/CurrencyOptions.js";
 import LanguageOptions from "@reactioncommerce/api-utils/LanguageOptions.js";
 import getUnitOptions from "../helpers/getUnitOptions";
+import { convertWeight, convertLength } from "/lib/api";
 
 const timezoneOptions = [];
 const timezones = moment.tz.names();
@@ -74,11 +75,11 @@ const validator = localizationSettings.getFormValidator();
 export default function ShopSettings() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { loading, onUpdateShop, shop } = useShopSettings();
+  const classes = useStyles();
 
   const unitsOfLength = getUnitOptions("uol", shop.unitsOfLength);
   const unitsOfMeasure = getUnitOptions("uom", shop.unitsOfMeasure);
 
-  const classes = useStyles();
   const {
     getFirstErrorMessage,
     getInputProps,
@@ -86,17 +87,28 @@ export default function ShopSettings() {
     isDirty,
     submitForm
   } = useReactoForm({
-    async onSubmit(formData) {
+    async onSubmit(userInput) {
       setIsSubmitting(true);
+
       // Flatten currency object
-      const cleanedFormData = _.clone(localizationSettings.clean(formData));
-      const { currency: { code } } = cleanedFormData;
-      cleanedFormData.currency = code;
-      await onUpdateShop(cleanedFormData);
+      const cleanedUserInput = _.clone(localizationSettings.clean(userInput));
+      const { currency: { code } } = cleanedUserInput;
+      cleanedUserInput.currency = code;
+
+      // Update default parcel size when UOL/UOM are updated
+      const parcelSize = {
+        weight: convertWeight(shop.baseUOM, userInput.baseUOM, shop.defaultParcelSize.weight),
+        height: convertLength(shop.baseUOL, userInput.baseUOL, shop.defaultParcelSize.height),
+        length: convertLength(shop.baseUOL, userInput.baseUOL, shop.defaultParcelSize.length),
+        width: convertLength(shop.baseUOL, userInput.baseUOL, shop.defaultParcelSize.width)
+      };
+      cleanedUserInput.defaultParcelSize = parcelSize;
+
+      await onUpdateShop(cleanedUserInput);
       setIsSubmitting(false);
     },
-    validator(formData) {
-      return validator(localizationSettings.clean(formData));
+    validator(userInput) {
+      return validator(localizationSettings.clean(userInput));
     },
     value: shop
   });

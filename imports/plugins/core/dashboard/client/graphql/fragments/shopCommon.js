@@ -21,6 +21,12 @@ export default gql`
     currency {
       code
     }
+    defaultParcelSize {
+      width
+      weight
+      height
+      length
+    }
     description
     emails {
       address
