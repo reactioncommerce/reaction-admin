@@ -12,7 +12,7 @@ import ChevronRight from "mdi-material-ui/ChevronRight";
 const useStyles = makeStyles((theme) => ({
   expandButton: {
     position: "absolute",
-    left: theme.spacing(1),
+    left: theme.spacing(2),
     top: "50%",
     transform: "translateY(-50%)",
     zIndex: 1
