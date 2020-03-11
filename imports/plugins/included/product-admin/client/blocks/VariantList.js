@@ -19,27 +19,54 @@ const useStyles = makeStyles((theme) => ({
   listItemContainer: {
     "&:hover $listItemAction": {
       display: "block"
+    },
+    [theme.breakpoints.up("md")]: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2)
     }
   },
   listItem: {
     "paddingLeft": theme.spacing(7),
-    "&$focusVisible": {
-      backgroundColor: "red"
+    "&$selected $listItemPrimaryText, &$selected:hover $listItemPrimaryText": {
+      fontWeight: theme.typography.fontWeightBold
     },
-    "&$selected, &$selected:hover": {
-      backgroundColor: "white",
-      boxShadow: theme.shadows[2],
-      borderRadius: theme.shape.borderRadius
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: theme.spacing(8)
+    },
+    [theme.breakpoints.up("md")]: {
+      "&$selected, &$selected:hover": {
+        backgroundColor: "transparent"
+      }
+    }
+  },
+  listItemButton: {
+    "transition": theme.transitions.create("background-color", {
+      duration: theme.transitions.duration.shortest
+    }),
+    "&:hover": {
+      "textDecoration": "none",
+      "backgroundColor": "white",
+      "boxShadow": theme.shadows[2],
+      "borderRadius": theme.shape.borderRadius,
+      "@media (hover: none)": {
+        backgroundColor: "transparent",
+        boxShadow: "none",
+        borderRadius: 0
+      }
     }
   },
   nested: {
-    paddingLeft: theme.spacing(4)
+    [theme.breakpoints.up("md")]: {
+      paddingLeft: theme.spacing(6)
+    }
   },
   listItemAction: {
     display: "none"
   },
   /* Pseudo-class applied to the `component`'s `focusVisibleClassName` prop if `button={true}`. */
   focusVisible: {},
+  /* Pseudo-class applied to the `ListItemText`'s `primary label` when `selected`. */
+  listItemPrimaryText: {},
   /* Pseudo-class applied to the root element if `selected={true}`. */
   selected: {}
 }));
@@ -119,6 +146,7 @@ export default function VariantList() {
               ContainerComponent={VariantListItemContainer}
               classes={{
                 root: classes.listItem,
+                button: classes.listItemButton,
                 selected: classes.selected
               }}
               className={clsx({
@@ -136,6 +164,9 @@ export default function VariantList() {
               }}
             >
               <ListItemText
+                primaryTypographyProps={{
+                  className: classes.listItemPrimaryText
+                }}
                 primary={variant.optionTitle || variant.title || "Untitled"}
                 secondary={getItemSecondaryLabel(variant)}
               />
