@@ -13,10 +13,6 @@ import { makeStyles, Box, Divider } from "@material-ui/core";
 import useProduct from "../hooks/useProduct";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2)
-  },
   breadcrumbs: {
     display: "flex",
     alignItems: "center",
@@ -104,12 +100,10 @@ function ProductHeader({ shouldDisplayStatus }) {
   }
 
   return (
-    <div className={classes.root}>
+    <>
       <Box
         display="flex"
         alignItems="center"
-        paddingRight={2}
-        paddingLeft={2}
       >
         <Box
           display="flex"
@@ -184,7 +178,7 @@ function ProductHeader({ shouldDisplayStatus }) {
           archiveMenuItem
         }
       </Menu>
-    </div>
+    </>
   );
 }
 
