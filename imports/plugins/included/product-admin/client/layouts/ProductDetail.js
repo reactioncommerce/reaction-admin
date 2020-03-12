@@ -46,6 +46,7 @@ function ProductDetail(props) {
           <Box
             paddingY={4}
             paddingLeft={4}
+            paddingRight={2}
           >
             <Blocks region="ProductDetailHeader" blockProps={blockProps} />
           </Box>
