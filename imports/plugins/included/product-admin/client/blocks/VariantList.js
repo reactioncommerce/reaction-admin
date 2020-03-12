@@ -26,16 +26,19 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   listItem: {
-    "paddingLeft": theme.spacing(7),
     "&$selected $listItemPrimaryText, &$selected:hover $listItemPrimaryText": {
       fontWeight: theme.typography.fontWeightBold
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.up("xs")]: {
       paddingLeft: theme.spacing(8)
     },
     [theme.breakpoints.up("md")]: {
-      "&$selected, &$selected:hover": {
+      "paddingLeft": theme.spacing(7),
+      "&$selected": {
         backgroundColor: "transparent"
+      },
+      "&$selected:hover": {
+        backgroundColor: "white"
       }
     }
   },
@@ -58,10 +61,15 @@ const useStyles = makeStyles((theme) => ({
   nested: {
     [theme.breakpoints.up("md")]: {
       paddingLeft: theme.spacing(6)
+    },
+    [theme.breakpoints.up("xs")]: {
+      paddingLeft: theme.spacing(4)
     }
   },
   listItemAction: {
-    display: "none"
+    [theme.breakpoints.up("md")]: {
+      display: "none"
+    }
   },
   /* Pseudo-class applied to the `component`'s `focusVisibleClassName` prop if `button={true}`. */
   focusVisible: {},
