@@ -9,10 +9,10 @@ import {
 import ChevronDown from "mdi-material-ui/ChevronDown";
 import ChevronRight from "mdi-material-ui/ChevronRight";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   expandButton: {
     position: "absolute",
-    left: 0,
+    left: theme.spacing(2),
     top: "50%",
     transform: "translateY(-50%)",
     zIndex: 1

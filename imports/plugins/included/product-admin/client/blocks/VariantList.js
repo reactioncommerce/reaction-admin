@@ -19,17 +19,64 @@ const useStyles = makeStyles((theme) => ({
   listItemContainer: {
     "&:hover $listItemAction": {
       display: "block"
+    },
+    [theme.breakpoints.up("md")]: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2)
     }
   },
   listItem: {
-    paddingLeft: theme.spacing(7)
+    "&$selected $listItemPrimaryText, &$selected:hover $listItemPrimaryText": {
+      fontWeight: theme.typography.fontWeightBold
+    },
+    [theme.breakpoints.up("xs")]: {
+      paddingLeft: theme.spacing(8)
+    },
+    [theme.breakpoints.up("md")]: {
+      "paddingLeft": theme.spacing(7),
+      "&$selected": {
+        backgroundColor: "transparent"
+      },
+      "&$selected:hover": {
+        backgroundColor: "white"
+      }
+    }
+  },
+  listItemButton: {
+    "transition": theme.transitions.create("background-color", {
+      duration: theme.transitions.duration.shortest
+    }),
+    "&:hover": {
+      "textDecoration": "none",
+      "backgroundColor": "white",
+      "boxShadow": theme.shadows[2],
+      "borderRadius": theme.shape.borderRadius,
+      "@media (hover: none)": {
+        backgroundColor: "transparent",
+        boxShadow: "none",
+        borderRadius: 0
+      }
+    }
   },
   nested: {
-    paddingLeft: theme.spacing(8)
+    [theme.breakpoints.up("md")]: {
+      paddingLeft: theme.spacing(6)
+    },
+    [theme.breakpoints.up("xs")]: {
+      paddingLeft: theme.spacing(4)
+    }
   },
   listItemAction: {
-    display: "none"
-  }
+    [theme.breakpoints.up("md")]: {
+      display: "none"
+    }
+  },
+  /* Pseudo-class applied to the `component`'s `focusVisibleClassName` prop if `button={true}`. */
+  focusVisible: {},
+  /* Pseudo-class applied to the `ListItemText`'s `primary label` when `selected`. */
+  listItemPrimaryText: {},
+  /* Pseudo-class applied to the root element if `selected={true}`. */
+  selected: {}
 }));
 
 /**
@@ -51,13 +98,14 @@ function getItemSecondaryLabel({ isVisible }) {
  */
 export default function VariantList() {
   const {
+    currentVariant,
     onArchiveProductVariants,
     onCreateVariant,
     onToggleVariantVisibility,
     onCloneProductVariants,
     onRestoreProduct,
     product,
-    variant: currentVariant
+    variant: variantProp
   } = useProduct();
   const classes = useStyles();
   const history = useHistory();
@@ -65,11 +113,11 @@ export default function VariantList() {
 
 
   useEffect(() => {
-    if (currentVariant) {
-      setExpandedIds((prevState) => [...prevState, currentVariant._id]);
+    if (variantProp) {
+      setExpandedIds((prevState) => [...prevState, variantProp._id]);
     }
   }, [
-    currentVariant
+    variantProp
   ]);
 
   const renderVariantTree = useCallback((variants, parentVariant) => {
@@ -95,17 +143,25 @@ export default function VariantList() {
             <ListItem
               component="nav"
               ContainerProps={{
-                className: classes.listItemContainer,
+                className: clsx({
+                  [classes.listItemContainer]: true,
+                  [classes.nested]: Boolean(parentVariant)
+                }),
                 isExpanded,
                 hasChildren,
                 onArrowButtonClick: () => toggleExpand(variant._id)
               }}
               ContainerComponent={VariantListItemContainer}
+              classes={{
+                root: classes.listItem,
+                button: classes.listItemButton,
+                selected: classes.selected
+              }}
               className={clsx({
-                [classes.listItem]: true,
-                [classes.nested]: Boolean(parentVariant)
+                // [classes.nested]: Boolean(parentVariant)
               })}
               button
+              selected={currentVariant && (currentVariant._id === variant._id)}
               onClick={() => {
                 const url = getPDPUrl(product._id, variant._id, parentVariant && parentVariant._id);
                 history.push(url);
@@ -116,6 +172,9 @@ export default function VariantList() {
               }}
             >
               <ListItemText
+                primaryTypographyProps={{
+                  className: classes.listItemPrimaryText
+                }}
                 primary={variant.optionTitle || variant.title || "Untitled"}
                 secondary={getItemSecondaryLabel(variant)}
               />
@@ -153,6 +212,7 @@ export default function VariantList() {
   }, [
     expandedIds,
     classes,
+    currentVariant,
     product,
     onArchiveProductVariants,
     onCreateVariant,

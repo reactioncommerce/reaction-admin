@@ -1,98 +1,22 @@
 import { useState, useCallback } from "react";
-import gql from "graphql-tag";
 import { useHistory, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import { Meteor } from "meteor/meteor";
 import i18next from "i18next";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import { useSnackbar } from "notistack";
-import PRODUCT_QUERY from "./ProductQuery";
-import UPDATE_PRODUCT from "./UpdateProductMutation";
-import UpdateProductVariantMutation from "./UpdateProductVariantMutation";
 
-const ARCHIVE_PRODUCTS = gql`
-  mutation archiveProducts($input: ArchiveProductsInput!) {
-    archiveProducts(input: $input) {
-      products {
-        _id
-      }
-    }
-  }
-`;
-
-const CLONE_PRODUCTS = gql`
-  mutation cloneProducts($input: CloneProductsInput!) {
-    cloneProducts(input: $input) {
-      products {
-        _id
-      }
-    }
-  }
-`;
-
-const CREATE_VARIANT = gql`
-mutation createProductVariant($input: CreateProductVariantInput!) {
-  createProductVariant(input: $input) {
-    variant {
-      _id
-    }
-  }
-}
-`;
-
-const CLONE_PRODUCT_VARIANTS = gql`
-  mutation cloneProducts($input: CloneProductVariantsInput!) {
-    cloneProductVariants(input: $input) {
-      variants {
-        _id
-      }
-    }
-  }
-`;
-
-
-const ARCHIVE_PRODUCT_VARIANTS = gql`
-  mutation cloneProducts($input: ArchiveProductVariantsInput!) {
-    archiveProductVariants(input: $input) {
-      variants {
-        _id
-      }
-    }
-  }
-`;
-
-const PUBLISH_TO_CATALOG = gql`
-  mutation ($productIds: [ID]!) {
-    publishProductsToCatalog(productIds: $productIds) {
-      product {
-        productId
-        title
-        isDeleted
-        supportedFulfillmentTypes
-        variants {
-          _id
-          title
-          options {
-            _id
-            title
-          }
-        }
-      }
-    }
-  }
-`;
-
-const updateProductVariantPricesMutation = gql`
-  mutation updateProductVariantPrices($input: UpdateProductVariantPricesInput!) {
-    updateProductVariantPrices(input: $input) {
-      variant {
-        _id
-        price
-        compareAtPrice
-      }
-    }
-  }
-`;
+// GraphQL Queries / Mutations
+import ArchiveProductsMutation from "../graphql/mutations/archiveProducts";
+import ArchiveProductVariantsMutation from "../graphql/mutations/archiveProductVariants";
+import CloneProductsMutation from "../graphql/mutations/cloneProducts";
+import CloneProductVariantsMutation from "../graphql/mutations/cloneProductVariants";
+import CreateProductVariantMutation from "../graphql/mutations/createProductVariant";
+import ProductQuery from "../graphql/queries/product";
+import PublishProductsToCatalogMutation from "../graphql/mutations/publishProductsToCatalog";
+import UpdateProductMutation from "../graphql/mutations/updateProduct";
+import UpdateProductVariantMutation from "../graphql/mutations/updateProductVariant";
+import UpdateProductVariantPricesMutation from "../graphql/mutations/updateProductVariantPrices";
 
 /**
  * Restore an archived product
@@ -123,15 +47,15 @@ function useProduct(args = {}) {
   const [newMetaField, setNewMetaField] = useState({ key: "", value: "" });
   const history = useHistory();
   const routeParams = useParams();
-  const [updateProduct] = useMutation(UPDATE_PRODUCT);
-  const [archiveProducts] = useMutation(ARCHIVE_PRODUCTS);
-  const [cloneProducts] = useMutation(CLONE_PRODUCTS);
-  const [createProductVariant] = useMutation(CREATE_VARIANT);
+  const [updateProduct] = useMutation(UpdateProductMutation);
+  const [archiveProducts] = useMutation(ArchiveProductsMutation);
+  const [cloneProducts] = useMutation(CloneProductsMutation);
+  const [createProductVariant] = useMutation(CreateProductVariantMutation);
   const [updateProductVariant] = useMutation(UpdateProductVariantMutation);
-  const [cloneProductVariants] = useMutation(CLONE_PRODUCT_VARIANTS);
-  const [archiveProductVariants] = useMutation(ARCHIVE_PRODUCT_VARIANTS);
-  const [publishProductsToCatalog] = useMutation(PUBLISH_TO_CATALOG);
-  const [updateProductVariantPrices] = useMutation(updateProductVariantPricesMutation);
+  const [cloneProductVariants] = useMutation(CloneProductVariantsMutation);
+  const [archiveProductVariants] = useMutation(ArchiveProductVariantsMutation);
+  const [publishProductsToCatalog] = useMutation(PublishProductsToCatalogMutation);
+  const [updateProductVariantPrices] = useMutation(UpdateProductVariantPricesMutation);
 
   const [currentShopId] = useCurrentShopId();
 
@@ -140,18 +64,18 @@ function useProduct(args = {}) {
   const optionId = routeParams.optionId || optionIdProp;
   const shopId = routeParams.shopId || currentShopId;
 
-  const { data: productQueryResult, isLoading, refetch: refetchProduct } = useQuery(PRODUCT_QUERY, {
+  const { data: productQueryResult, isLoading, refetch: refetchProduct } = useQuery(ProductQuery, {
     variables: {
       productId,
       shopId
-    }
+    },
+    skip: !shopId
   });
 
   const { product } = productQueryResult || {};
 
   let variant;
   let option;
-  // let parentVariant;
 
   if (product && variantId) {
     variant = product.variants.find(({ _id }) => _id === variantId);
@@ -181,12 +105,13 @@ function useProduct(args = {}) {
   const onArchiveProduct = useCallback(async (productLocal, redirectUrl) => {
     try {
       await archiveProducts({ variables: { input: { shopId, productIds: [productLocal] } } });
-      Alerts.toast(i18next.t("productDetailEdit.archiveProductsSuccess"), "success");
+      enqueueSnackbar(i18next.t("productDetailEdit.archiveProductsSuccess"), { variant: "success" });
       history.push(redirectUrl);
     } catch (error) {
-      Alerts.toast(i18next.t("productDetailEdit.archiveProductsFail", { err: error }), "error");
+      enqueueSnackbar(i18next.t("productDetailEdit.archiveProductsFail"), { variant: "success" });
     }
   }, [
+    enqueueSnackbar,
     history,
     archiveProducts,
     shopId
@@ -255,11 +180,12 @@ function useProduct(args = {}) {
         }
       });
 
-      Alerts.toast(i18next.t("productDetailEdit.updateProductFieldSuccess"), "success");
+      enqueueSnackbar(i18next.t("productDetailEdit.updateProductFieldSuccess"), { variant: "success" });
     } catch (error) {
-      Alerts.toast(i18next.t("productDetailEdit.updateProductFieldFail", { err: error }), "error");
+      enqueueSnackbar(i18next.t("productDetailEdit.updateProductFieldFail"), { variant: "error" });
     }
   }, [
+    enqueueSnackbar,
     product,
     shopId,
     updateProduct

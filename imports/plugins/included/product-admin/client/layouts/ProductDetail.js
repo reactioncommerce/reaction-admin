@@ -43,11 +43,15 @@ function ProductDetail(props) {
       AppBarComponent={<ProductToolbar />}
       PrimaryComponent={
         <>
-          <Box padding={2}>
+          <Box
+            paddingY={4}
+            paddingLeft={4}
+            paddingRight={2}
+          >
             <Blocks region="ProductDetailHeader" blockProps={blockProps} />
           </Box>
           <Divider />
-          <Box padding={2}>
+          <Box paddingY={2}>
             <Blocks region="ProductDetailSidebar" blockProps={blockProps} />
           </Box>
         </>
