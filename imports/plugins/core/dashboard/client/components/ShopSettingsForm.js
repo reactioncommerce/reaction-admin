@@ -14,7 +14,7 @@ import {
   CircularProgress,
   FormControlLabel,
   Grid,
-  Checkbox
+  Switch
 } from "@material-ui/core";
 import useShopSettings from "../hooks/useShopSettings";
 
@@ -151,7 +151,7 @@ export default function ShopSettings() {
           <Grid item xs={12}>
             <FormControlLabel
               control={
-                <Checkbox color="primary" />
+                <Switch color="primary" />
               }
               label={i18next.t("admin.settings.shop.allowGuestCheckout")}
               {...getInputProps("allowGuestCheckout", muiCheckboxOptions)}
