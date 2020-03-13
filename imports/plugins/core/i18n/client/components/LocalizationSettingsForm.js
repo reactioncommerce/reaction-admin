@@ -104,7 +104,6 @@ export default function ShopSettings() {
           width: convertLength(shop.baseUOL, userInput.baseUOL, shop.defaultParcelSize.width)
         };
         cleanedUserInput.defaultParcelSize = parcelSize;
-        console.log("updating parcel Size");
       }
 
       await onUpdateShop(cleanedUserInput);
