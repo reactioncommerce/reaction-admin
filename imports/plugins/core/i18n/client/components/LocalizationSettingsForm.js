@@ -95,14 +95,17 @@ export default function ShopSettings() {
       const { currency: { code } } = cleanedUserInput;
       cleanedUserInput.currency = code;
 
-      // Update default parcel size when UOL/UOM are updated
-      const parcelSize = {
-        weight: convertWeight(shop.baseUOM, userInput.baseUOM, shop.defaultParcelSize.weight),
-        height: convertLength(shop.baseUOL, userInput.baseUOL, shop.defaultParcelSize.height),
-        length: convertLength(shop.baseUOL, userInput.baseUOL, shop.defaultParcelSize.length),
-        width: convertLength(shop.baseUOL, userInput.baseUOL, shop.defaultParcelSize.width)
-      };
-      cleanedUserInput.defaultParcelSize = parcelSize;
+      // Only update default parcel size when UOL/UOM are changed by the user
+      if (userInput.baseUOL !== shop.baseUOL || userInput.baseUOM !== shop.baseUOM) {
+        const parcelSize = {
+          weight: convertWeight(shop.baseUOM, userInput.baseUOM, shop.defaultParcelSize.weight),
+          height: convertLength(shop.baseUOL, userInput.baseUOL, shop.defaultParcelSize.height),
+          length: convertLength(shop.baseUOL, userInput.baseUOL, shop.defaultParcelSize.length),
+          width: convertLength(shop.baseUOL, userInput.baseUOL, shop.defaultParcelSize.width)
+        };
+        cleanedUserInput.defaultParcelSize = parcelSize;
+        console.log("updating parcel Size");
+      }
 
       await onUpdateShop(cleanedUserInput);
       setIsSubmitting(false);
