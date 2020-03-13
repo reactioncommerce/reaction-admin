@@ -2,6 +2,7 @@ import React from "react";
 import i18next from "i18next";
 import { Blocks } from "@reactioncommerce/reaction-components";
 import {
+  Box,
   makeStyles,
   Typography
 } from "@material-ui/core";
@@ -24,7 +25,14 @@ export default function TaxSettingsRegion(props) {
       <Typography variant="h2" className={classes.header}>
         {i18next.t("admin.settings.taxes.header")}
       </Typography>
-      <Blocks region="TaxSettings" blockProps={props} />
+      <Blocks region="TaxSettings" blockProps={props}>
+        { (blocks) =>
+          blocks.map((block, index) => (
+            <Box paddingBottom={2} key={index}>
+              {block}
+            </Box>
+          ))}
+      </Blocks>
     </>
   );
 }

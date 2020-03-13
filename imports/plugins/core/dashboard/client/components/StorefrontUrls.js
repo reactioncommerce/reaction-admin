@@ -22,9 +22,6 @@ import withPrimaryShopId from "/imports/plugins/core/graphql/lib/hocs/withPrimar
 import withShop from "/imports/plugins/core/graphql/lib/hocs/withShop";
 
 const styles = (theme) => ({
-  card: {
-    marginBottom: theme.spacing(3)
-  },
   helpText: {
     marginTop: "10px"
   },
@@ -106,7 +103,7 @@ class StorefrontUrls extends Component {
     const { storefrontHomeUrl, storefrontLoginUrl, storefrontOrderUrl, storefrontOrdersUrl, storefrontAccountProfileUrl } = storefrontUrls || {};
 
     return (
-      <Card className={classes.card}>
+      <Card>
         <CardHeader
           subheader={i18next.t(
             "shopSettings.storefrontUrls.description",

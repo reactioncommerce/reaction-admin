@@ -1,9 +1,7 @@
 import { registerOperatorRoute } from "/imports/client/ui";
 import { registerBlock } from "@reactioncommerce/reaction-components";
 import LocalizationSettingsRegion from "./components/LocalizationSettingsRegion";
-import Localization from "./containers/localizationSettings";
-
-export { default as LocalizationSettings } from "./containers/localizationSettings";
+import LocalizationSettingsForm from "./components/LocalizationSettingsForm";
 
 registerOperatorRoute({
   group: "settings",
@@ -14,8 +12,8 @@ registerOperatorRoute({
 });
 
 registerBlock({
-  component: Localization,
-  name: "LocalizationSettingsGeneral",
+  component: LocalizationSettingsForm,
+  name: "LocalizationSettings",
   priority: 1,
   region: "LocalizationSettings"
 });

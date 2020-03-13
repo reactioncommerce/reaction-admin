@@ -7,26 +7,16 @@ import useReactoForm from "reacto-form/cjs/useReactoForm";
 import muiCheckboxOptions from "reacto-form/esm/muiCheckboxOptions";
 import muiOptions from "reacto-form/cjs/muiOptions";
 import {
+  Box,
   Card,
   CardContent,
   CardHeader,
   CircularProgress,
   FormControlLabel,
   Grid,
-  makeStyles,
-  Checkbox
+  Switch
 } from "@material-ui/core";
 import useShopSettings from "../hooks/useShopSettings";
-
-const useStyles = makeStyles((theme) => ({
-  card: {
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3)
-  },
-  saveButton: {
-    textAlign: "right"
-  }
-}));
 
 const shopSettings = new SimpleSchema({
   "allowGuestCheckout": {
@@ -38,7 +28,8 @@ const shopSettings = new SimpleSchema({
     min: 1
   },
   "emails": {
-    type: Array
+    type: Array,
+    optional: true
   },
   "emails.$": new SimpleSchema({
     address: {
@@ -67,13 +58,13 @@ const validator = shopSettings.getFormValidator();
  * @returns {Node} React node
  */
 export default function ShopSettings() {
-  const classes = useStyles();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { loading, onUpdateShop, shop } = useShopSettings();
   const {
     getFirstErrorMessage,
     getInputProps,
     hasErrors,
+    isDirty,
     submitForm
   } = useReactoForm({
     async onSubmit(formData) {
@@ -87,7 +78,13 @@ export default function ShopSettings() {
     value: shop
   });
 
-  if (loading) return <CircularProgress variant="indeterminate" color="primary" />;
+  if (loading) {
+    return (
+      <Box textAlign="center">
+        <CircularProgress variant="indeterminate" color="primary" />
+      </Box>
+    );
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -95,7 +92,7 @@ export default function ShopSettings() {
   };
 
   return (
-    <Card className={classes.card}>
+    <Card>
       <CardHeader title={i18next.t("admin.settings.shop.label")} />
       <CardContent>
         <Grid container spacing={2}>
@@ -154,25 +151,25 @@ export default function ShopSettings() {
           <Grid item xs={12}>
             <FormControlLabel
               control={
-                <Checkbox color="primary" />
+                <Switch color="primary" />
               }
               label={i18next.t("admin.settings.shop.allowGuestCheckout")}
               {...getInputProps("allowGuestCheckout", muiCheckboxOptions)}
             />
           </Grid>
-          <Grid classes={{ root: classes.saveButton }} item xs={12}>
-            <Button
-              color="primary"
-              disabled={isSubmitting}
-              variant="contained"
-              type="submit"
-              onClick={handleSubmit}
-              isWaiting={isSubmitting}
-            >
-              {i18next.t("app.save")}
-            </Button>
-          </Grid>
         </Grid>
+        <Box textAlign="right">
+          <Button
+            color="primary"
+            disabled={isSubmitting || !isDirty}
+            variant="contained"
+            type="submit"
+            onClick={handleSubmit}
+            isWaiting={isSubmitting}
+          >
+            {i18next.t("app.saveChanges")}
+          </Button>
+        </Box>
       </CardContent>
     </Card>
   );

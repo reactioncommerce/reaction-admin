@@ -8,20 +8,16 @@ import ShopSettingsRegion from "./components/ShopSettingsRegion";
 import SystemSettingsRegion from "./components/SystemSettingsRegion";
 
 // Settings
-import SystemInformation from "./components/SystemInformation";
-import ShopLogoUrls from "./components/ShopLogoUrls";
 import SettingsDashboard from "./components/SettingsDashboard";
-import ShopSettingsForm from "./components/ShopSettingsForm";
 import ShopAddressSettings from "./components/ShopAddressSettings";
+import ShopLogoUrls from "./components/ShopLogoUrls";
+import ShopSettingsForm from "./components/ShopSettingsForm";
 import StorefrontUrls from "./components/StorefrontUrls";
+import SystemInformation from "./components/SystemInformation";
 
 import "./components/shopBrandImageOption";
 import "./components/ShopBrandMediaManager";
 import "./containers/CreateFirstShopForm.js";
-
-import "./templates/shop/settings/settings.html";
-import "./templates/shop/settings/settings.less";
-import "./templates/shop/settings/settings.js";
 
 // Default landing page
 registerOperatorRoute({
