@@ -16,13 +16,34 @@ export default gql`
       phone
       isCommercial
     }
+    baseUOL
+    baseUOM
+    currency {
+      code
+    }
+    defaultParcelSize {
+      width
+      weight
+      height
+      length
+    }
     description
     emails {
       address
     }
     keywords
+    language
     name
     slug
+    timezone
+    unitsOfLength {
+      uol
+      label
+    }
+    unitsOfMeasure { 
+      uom
+      label
+    }
   }
 `;
 
