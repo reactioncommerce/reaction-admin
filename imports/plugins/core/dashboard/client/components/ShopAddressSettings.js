@@ -7,38 +7,29 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
-  makeStyles,
   Typography
 } from "@material-ui/core";
 import useShopSettings from "../hooks/useShopSettings";
 import ShopAddressForm from "./ShopAddressForm";
-
-const useStyles = makeStyles((theme) => ({
-  card: {
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3)
-  },
-  textField: {
-    minWidth: 350
-  },
-  saveButton: {
-    textAlign: "right"
-  }
-}));
 
 /**
  * Shop address settings form block component
  * @returns {Node} React node
  */
 function ShopAddressSettings() {
-  const classes = useStyles();
   const [isEditMode, setIsEditMode] = useState(false);
   const { loading, shop: { addressBook } } = useShopSettings();
   let readOnlyMode = false;
   let isInitialView = false;
   let address = null;
 
-  if (loading) return <CircularProgress variant="indeterminate" color="primary" />;
+  if (loading) {
+    return (
+      <Box textAlign="center">
+        <CircularProgress variant="indeterminate" color="primary" />
+      </Box>
+    );
+  }
 
   // If an address has been set, render in read only mode
   if (addressBook && addressBook[0]) {
@@ -58,7 +49,7 @@ function ShopAddressSettings() {
   };
 
   return (
-    <Card className={classes.card}>
+    <Card>
       <CardHeader title={i18next.t("admin.settings.address.label")} />
       <CardContent>
         {isInitialView &&

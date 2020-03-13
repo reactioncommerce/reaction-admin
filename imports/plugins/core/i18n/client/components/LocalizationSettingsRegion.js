@@ -2,6 +2,7 @@ import React from "react";
 import i18next from "i18next";
 import { Blocks } from "@reactioncommerce/reaction-components";
 import {
+  Box,
   makeStyles,
   Typography
 } from "@material-ui/core";
@@ -24,7 +25,14 @@ export default function LocalizationSettingsRegion(props) {
       <Typography variant="h2" className={classes.header}>
         {i18next.t("admin.settings.localization.header")}
       </Typography>
-      <Blocks region="LocalizationSettings" blockProps={props} />
+      <Blocks region="LocalizationSettings" blockProps={props}>
+        { (blocks) =>
+          blocks.map((block, index) => (
+            <Box paddingBottom={2} key={index}>
+              {block}
+            </Box>
+          ))}
+      </Blocks>
     </>
   );
 }

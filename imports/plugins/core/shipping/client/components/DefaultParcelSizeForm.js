@@ -90,6 +90,7 @@ export default function DefaultParcelSizeForm(props) {
     getFirstErrorMessage,
     getInputProps,
     hasErrors,
+    isDirty,
     submitForm
   } = useReactoForm({
     async onSubmit(formData) {
@@ -159,11 +160,11 @@ export default function DefaultParcelSizeForm(props) {
       <Grid className={classes.rightAlignedGrid} item xs={12}>
         <Button
           color="primary"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !isDirty}
           onClick={submitForm}
           variant="contained"
         >
-          {i18next.t("app.save")}
+          {i18next.t("app.saveChanges")}
         </Button>
       </Grid>
     </div>
