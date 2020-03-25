@@ -83,7 +83,8 @@ const VariantPricesForm = React.forwardRef((props, ref) => {
     <Card className={classes.card} ref={ref}>
       <CardHeader title={i18next.t("productVariant.prices")} />
       <CardContent>
-        { currentVariant && currentVariant.options ?
+        { currentVariant && Array.isArray(currentVariant.options) &&
+          (currentVariant.options.length > 0) ?
           <span>
             {i18next.t("productVariant.noPriceTracking")}
           </span>
