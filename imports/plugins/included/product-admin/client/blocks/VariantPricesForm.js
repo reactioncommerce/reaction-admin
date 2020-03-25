@@ -25,11 +25,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const formSchema = new SimpleSchema({
-  price: {
+  "price": {
     type: Number,
     optional: true
   },
-  compareAtPrice: {
+  "compareAtPrice": Object,
+  "compareAtPrice.amount": {
     type: Number,
     optional: true
   }
@@ -73,7 +74,7 @@ const VariantPricesForm = React.forwardRef((props, ref) => {
     validator(formData) {
       return validator(formSchema.clean(formData));
     },
-    value: currentVariant
+    value: (currentVariant && currentVariant.pricing) || {}
   });
 
   const isSaveDisabled = !product || !isDirty || isSubmitting;
@@ -82,58 +83,64 @@ const VariantPricesForm = React.forwardRef((props, ref) => {
     <Card className={classes.card} ref={ref}>
       <CardHeader title={i18next.t("productVariant.prices")} />
       <CardContent>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            submitForm();
-          }}
-        >
-          <Grid container spacing={1}>
-            <Grid item sm={6}>
-              <TextField
-                type="numeric"
-                className={classes.textField}
-                error={hasErrors(["price"])}
-                fullWidth
-                helperText={getFirstErrorMessage(["price"]) || i18next.t("admin.helpText.price")}
-                label={i18next.t("productVariant.price")}
-                placeholder="0.00"
-                {...getInputProps("price", muiOptions)}
-              />
+        { currentVariant && currentVariant.options ?
+          <span>
+            {i18next.t("productVariant.noPriceTracking")}
+          </span>
+          :
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              submitForm();
+            }}
+          >
+            <Grid container spacing={1}>
+              <Grid item sm={6}>
+                <TextField
+                  type="numeric"
+                  className={classes.textField}
+                  error={hasErrors(["price"])}
+                  fullWidth
+                  helperText={getFirstErrorMessage(["price"]) || i18next.t("admin.helpText.price")}
+                  label={i18next.t("productVariant.price")}
+                  placeholder="0.00"
+                  {...getInputProps("price", muiOptions)}
+                />
+              </Grid>
+              <Grid item sm={6}>
+                <TextField
+                  type="numeric"
+                  className={classes.textField}
+                  error={hasErrors(["compareAtPrice.amount"])}
+                  fullWidth
+                  helperText={getFirstErrorMessage(["compareAtPrice.amount"]) || i18next.t("admin.helpText.compareAtPrice")}
+                  label={i18next.t("productVariant.compareAtPrice")}
+                  placeholder="0.00"
+                  {...getInputProps("compareAtPrice.amount", muiOptions)}
+                />
+              </Grid>
             </Grid>
-            <Grid item sm={6}>
-              <TextField
-                type="numeric"
-                className={classes.textField}
-                error={hasErrors(["compareAtPrice"])}
-                fullWidth
-                helperText={getFirstErrorMessage(["compareAtPrice"]) || i18next.t("admin.helpText.compareAtPrice")}
-                label={i18next.t("productVariant.compareAtPrice")}
-                placeholder="0.00"
-                {...getInputProps("compareAtPrice", muiOptions)}
-              />
-            </Grid>
-          </Grid>
 
-          <Box display="flex" justifyContent="flex-end" alignItems="center">
-            {!isSaveDisabled &&
+            <Box display="flex" justifyContent="flex-end" alignItems="center">
+              {!isSaveDisabled &&
               <Box paddingRight={2}>
                 <Typography>
                   {i18next.t("productVariant.pricePublishWarning")}
                 </Typography>
               </Box>
-            }
-            <Button
-              color="primary"
-              disabled={isSaveDisabled}
-              isWaiting={isSubmitting}
-              type="submit"
-              variant="contained"
-            >
-              {i18next.t("app.saveChanges")}
-            </Button>
-          </Box>
-        </form>
+              }
+              <Button
+                color="primary"
+                disabled={isSaveDisabled}
+                isWaiting={isSubmitting}
+                type="submit"
+                variant="contained"
+              >
+                {i18next.t("app.saveChanges")}
+              </Button>
+            </Box>
+          </form>
+        }
       </CardContent>
     </Card>
   );

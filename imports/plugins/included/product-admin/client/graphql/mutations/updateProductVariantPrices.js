@@ -5,8 +5,12 @@ export default gql`
     updateProductVariantPrices(input: $input) {
       variant {
         _id
-        price
-        compareAtPrice
+        pricing {
+          compareAtPrice {
+            amount
+          }
+          price
+        }
       }
     }
   }
