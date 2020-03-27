@@ -25,7 +25,7 @@ const createMediaRecordMutation = gql`
  * @returns {Node} React component
  */
 function MediaUploader(props) {
-  const { canUploadMultiple, metadata, onError, onFiles, shopId } = props;
+  const { canUploadMultiple, metadata, onError, onFiles, refetchProduct, shopId } = props;
 
   const [isUploading, setIsUploading] = useState(false);
   const [createMediaRecord] = useMutation(createMediaRecordMutation, { ignoreResults: true });
@@ -61,7 +61,14 @@ function MediaUploader(props) {
 
     Promise.all(promises)
       .then(() => {
-        setIsUploading(false);
+        // This is a temporary workaround due to the fact that on the server,
+        // the sharp library generates product images in an async manner.
+        // A better solution would be to generate product images synchronously
+        // or a more robust client side polling solution.
+        window.setTimeout(async () => {
+          await refetchProduct();
+          setIsUploading(false);
+        }, 2000);
         return null;
       })
       .catch((error) => {
@@ -108,6 +115,7 @@ MediaUploader.propTypes = {
   metadata: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   onError: PropTypes.func,
   onFiles: PropTypes.func,
+  refetchProduct: PropTypes.func,
   shopId: PropTypes.string
 };
 

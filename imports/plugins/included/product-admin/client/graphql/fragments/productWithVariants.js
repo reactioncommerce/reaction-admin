@@ -14,6 +14,7 @@ export default gql`
       value
     }
     media {
+      _id
       URLs {
         small
       }

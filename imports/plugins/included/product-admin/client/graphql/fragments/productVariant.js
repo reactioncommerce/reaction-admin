@@ -17,6 +17,7 @@ export default gql`
     minOrderQuantity
     optionTitle
     media {
+      _id
       URLs {
         original
         small

@@ -12,7 +12,7 @@ import useProduct from "../hooks/useProduct";
  * @returns {React.Component} React component
  */
 function ProductMediaForm() {
-  const { product, shopId } = useProduct();
+  const { product, refetchProduct, shopId } = useProduct();
 
   if (!product) {
     return null;
@@ -23,6 +23,7 @@ function ProductMediaForm() {
       <CardHeader title={i18next.t("admin.productAdmin.mediaGallery")} />
       <CardContent>
         <ProductMediaGallery
+          refetchProduct={refetchProduct}
           editable={true}
           media={product.media}
           productId={product._id}
