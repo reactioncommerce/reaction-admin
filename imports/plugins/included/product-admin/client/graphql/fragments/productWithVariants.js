@@ -13,6 +13,12 @@ export default gql`
       key
       value
     }
+    media {
+      URLs {
+        small
+      }
+      priority
+    }
     originCountry
     pageTitle
     productType

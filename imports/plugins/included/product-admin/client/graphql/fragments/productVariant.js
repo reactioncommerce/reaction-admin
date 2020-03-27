@@ -16,6 +16,13 @@ export default gql`
     }
     minOrderQuantity
     optionTitle
+    media {
+      URLs {
+        original
+        small
+      }
+      priority
+    }
     originCountry
     pricing {
       compareAtPrice {
