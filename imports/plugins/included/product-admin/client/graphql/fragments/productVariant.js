@@ -17,6 +17,12 @@ export default gql`
     minOrderQuantity
     optionTitle
     originCountry
+    pricing {
+      compareAtPrice {
+        amount
+      }
+      price
+    }
     shop {
       _id
     }
