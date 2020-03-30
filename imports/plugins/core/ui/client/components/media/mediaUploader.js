@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import { useDropzone } from "react-dropzone";
+import decodeOpaqueId from "@reactioncommerce/api-utils/decodeOpaqueId.js";
 import { useMutation } from "@apollo/react-hooks";
 import Button from "@reactioncommerce/catalyst/Button";
 import LinearProgress from "@material-ui/core/LinearProgress";
@@ -32,7 +33,6 @@ function MediaUploader(props) {
 
   const uploadFiles = (acceptedFiles) => {
     const filesArray = Array.from(acceptedFiles);
-
     setIsUploading(true);
 
     const promises = filesArray.map(async (browserFile) => {
@@ -59,16 +59,43 @@ function MediaUploader(props) {
       });
     });
 
+
     Promise.all(promises)
-      .then(() => {
-        // This is a temporary workaround due to the fact that on the server,
+      .then((responses) => {
+        // NOTE: This is a temporary workaround due to the fact that on the server,
         // the sharp library generates product images in an async manner.
-        // A better solution would be to generate product images synchronously
-        // or a more robust client side polling solution.
-        window.setTimeout(async () => {
-          await refetchProduct();
+        // A better solution would be to use subscriptions
+        const uploadedMediaIds = responses.map((response) => response.data.createMediaRecord.mediaRecord._id);
+
+        // Poll server every half a second to determine if all media has been successfully processed
+        let isAllMediaProcessed = false;
+        const timerId = setInterval(async () => {
+          const { data: { product } } = await refetchProduct();
+          const productMedia = [];
+          product.media.forEach((media) => {
+            const { id } = decodeOpaqueId(media._id);
+            productMedia.push({ id, thumbnailUrl: media.URLs.small });
+          });
+
+          isAllMediaProcessed = uploadedMediaIds.every((uploadedMediaId) => {
+            const mediaItem = productMedia.find((item) => item.id === uploadedMediaId);
+
+            // If a url has been generated, then these media items has been processed successfully.
+            return mediaItem && mediaItem.thumbnailUrl !== String(null);
+          });
+
+          if (isAllMediaProcessed) {
+            setIsUploading(false);
+            clearTimeout(timerId);
+          }
+        }, 500);
+
+        // Stop polling after 20 seconds
+        setTimeout(() => {
+          clearTimeout(timerId);
           setIsUploading(false);
-        }, 2000);
+        }, 20000);
+
         return null;
       })
       .catch((error) => {
