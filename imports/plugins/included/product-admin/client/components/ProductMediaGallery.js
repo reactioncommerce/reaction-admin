@@ -12,6 +12,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import { useConfirmDialog } from "@reactioncommerce/catalyst";
 import { useSnackbar } from "notistack";
+import useProduct from "../hooks/useProduct";
 import ProductMediaItem from "./ProductMediaItem";
 
 const archiveMediaRecordMutation = gql`
@@ -44,12 +45,12 @@ function ProductMediaGallery(props) {
     editable,
     media,
     productId,
-    refetchProduct,
     shopId,
     variantId
   } = props;
 
   const { enqueueSnackbar } = useSnackbar();
+  const { refetchProduct } = useProduct();
   const [mediaItemToRemove, setMediaItemToRemove] = useState(null);
   const [archiveMediaRecord] = useMutation(archiveMediaRecordMutation, { ignoreResults: true });
   const [updateMediaRecordPriority] = useMutation(updateMediaRecordPriorityMutation, { ignoreResults: true });
@@ -168,7 +169,6 @@ ProductMediaGallery.propTypes = {
   media: PropTypes.arrayOf(PropTypes.object),
   onSetMediaPriority: PropTypes.func,
   productId: PropTypes.string,
-  refetchProduct: PropTypes.func,
   shopId: PropTypes.string,
   variantId: PropTypes.string
 };
