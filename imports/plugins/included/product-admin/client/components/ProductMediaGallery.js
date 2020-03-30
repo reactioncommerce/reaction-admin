@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import gql from "graphql-tag";
 import PropTypes from "prop-types";
 import Logger from "/client/modules/logger";
@@ -10,6 +10,8 @@ import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
+import { useConfirmDialog } from "@reactioncommerce/catalyst";
+import { useSnackbar } from "notistack";
 import ProductMediaItem from "./ProductMediaItem";
 
 const archiveMediaRecordMutation = gql`
@@ -42,39 +44,48 @@ function ProductMediaGallery(props) {
     editable,
     media,
     productId,
+    refetchProduct,
     shopId,
     variantId
   } = props;
 
+  const { enqueueSnackbar } = useSnackbar();
+  const [mediaItemToRemove, setMediaItemToRemove] = useState(null);
   const [archiveMediaRecord] = useMutation(archiveMediaRecordMutation, { ignoreResults: true });
   const [updateMediaRecordPriority] = useMutation(updateMediaRecordPriorityMutation, { ignoreResults: true });
 
-  const handleRemoveMedia = (mediaToRemove) => {
-    const imageUrl = mediaToRemove.URLs.medium;
-    Alerts.alert({
-      title: "Remove Media?",
-      type: "warning",
-      showCancelButton: true,
-      imageUrl,
-      imageHeight: 150
-    }, async (isConfirm) => {
-      if (isConfirm) {
-        archiveMediaRecord({
-          variables: {
-            input: {
-              mediaRecordId: mediaToRemove._id,
-              shopId
-            }
-          },
-          onError(error) {
-            Logger.error(error);
-            Alerts.toast("Unable to remove media", "error", {
-              autoHide: 10000
-            });
-          }
-        });
+  const handleRemoveMedia = async () => {
+    await archiveMediaRecord({
+      variables: {
+        input: {
+          mediaRecordId: mediaItemToRemove._id,
+          shopId
+        }
+      },
+      onError(error) {
+        Logger.error(error);
+        enqueueSnackbar("Unable to remove media", { variant: "error" });
       }
     });
+
+    // Re-fetch product data
+    refetchProduct();
+  };
+
+  const {
+    openDialog: openRemoveMediaDialog,
+    ConfirmDialog: RemoveMediaConfirmDialog
+  } = useConfirmDialog({
+    title: "Remove Media",
+    message: "Are you sure you want to remove this media item?",
+    onConfirm: () => {
+      handleRemoveMedia();
+    }
+  });
+
+  const confirmRemoveMediaItem = (mediaItem) => {
+    setMediaItemToRemove(mediaItem);
+    openRemoveMediaDialog();
   };
 
   const handleSetMediaPriority = async (mediaRecord, priority) => {
@@ -88,13 +99,10 @@ function ProductMediaGallery(props) {
       },
       onError(error) {
         Logger.error(error);
-        Alerts.toast("Unable to update media priority", "error", {
-          autoHide: 10000
-        });
+        enqueueSnackbar("Unable to update media priority", { variant: "error" });
       }
     });
   };
-
 
   let count = (Array.isArray(media) && media.length) || 0;
   const hasMedia = count > 0;
@@ -109,7 +117,7 @@ function ProductMediaGallery(props) {
   };
 
   const onUploadError = (error) => {
-    Alerts.toast(error.reason || error.message, "error");
+    enqueueSnackbar(error.reason || error.message, { variant: "error" });
   };
 
   return (
@@ -128,7 +136,7 @@ function ProductMediaGallery(props) {
               <ProductMediaItem
                 editable={editable}
                 key={mediaItem._id}
-                onRemoveMedia={handleRemoveMedia}
+                onRemoveMedia={confirmRemoveMediaItem}
                 onSetMediaPriority={handleSetMediaPriority}
                 size="small"
                 source={mediaItem}
@@ -142,6 +150,7 @@ function ProductMediaGallery(props) {
                   canUploadMultiple
                   metadata={getFileMetadata}
                   onError={onUploadError}
+                  refetchProduct={refetchProduct}
                   shopId={shopId}
                 />
               </TableCell>
@@ -149,6 +158,7 @@ function ProductMediaGallery(props) {
           }
         </TableBody>
       </Table>
+      <RemoveMediaConfirmDialog />
     </div>
   );
 }
@@ -158,6 +168,7 @@ ProductMediaGallery.propTypes = {
   media: PropTypes.arrayOf(PropTypes.object),
   onSetMediaPriority: PropTypes.func,
   productId: PropTypes.string,
+  refetchProduct: PropTypes.func,
   shopId: PropTypes.string,
   variantId: PropTypes.string
 };

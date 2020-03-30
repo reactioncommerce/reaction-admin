@@ -44,6 +44,9 @@ function ProductMediaItem(props) {
 
   let imageSrc = source.URLs[size];
 
+  // If there is no img src, then render nothing
+  if (imageSrc === String(null)) return null;
+
   if (imageSrc) {
     imageSrc = `${filesBaseUrl}${imageSrc}`;
   } else {
