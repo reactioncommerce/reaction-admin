@@ -21,7 +21,7 @@ const useStyles = makeStyles(() => ({
     height: 100
   },
   priorityField: {
-    width: 120
+    width: 70
   }
 }));
 
@@ -38,9 +38,9 @@ function ProductMediaItem(props) {
     size,
     source
   } = props;
+
   const classes = useStyles();
   const [priority, setPriority] = useState(source.priority);
-
 
   let imageSrc = source.URLs[size];
 
@@ -72,9 +72,8 @@ function ProductMediaItem(props) {
           onChange={(event) => {
             setPriority(() => {
               const intValue = parseInt(event.target.value, 10);
-              return {
-                priority: isInteger(intValue) ? intValue : null
-              };
+              const newPriority = isInteger(intValue) ? intValue : null;
+              return newPriority;
             });
           }}
         />
@@ -86,7 +85,6 @@ function ProductMediaItem(props) {
           src={imageSrc}
         />
       </TableCell>
-
       <TableCell align="right">
         <IconButton
           onClick={() => {
