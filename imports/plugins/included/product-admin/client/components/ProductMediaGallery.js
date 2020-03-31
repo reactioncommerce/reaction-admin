@@ -63,6 +63,14 @@ function ProductMediaGallery(props) {
           shopId
         }
       },
+      optimisticResponse: {
+        __typename: "Mutation",
+        archiveMediaRecord: {
+          id: mediaItemToRemove._id,
+          __typename: "MediaRecord",
+          mediaRecord: null
+        }
+      },
       onError(error) {
         Logger.error(error);
         enqueueSnackbar("Unable to remove media", { variant: "error" });
