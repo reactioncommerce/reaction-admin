@@ -8,6 +8,7 @@ import Button from "@reactioncommerce/catalyst/Button";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { FileRecord } from "@reactioncommerce/file-collections";
 import { registerComponent } from "@reactioncommerce/reaction-components";
+import _ from "lodash";
 import { i18next, Logger } from "/client/api";
 
 const createMediaRecordMutation = gql`
@@ -67,18 +68,39 @@ function MediaUploader(props) {
         // A better solution would be to use subscriptions
         const uploadedMediaIds = responses.map((response) => response.data.createMediaRecord.mediaRecord._id);
 
-        // Poll server every half a second to determine if all media has been successfully processed
+        // Poll server every two seconds to determine if all media has been successfully processed
         let isAllMediaProcessed = false;
         const timerId = setInterval(async () => {
           const { data: { product } } = await refetchProduct();
-          const productMedia = [];
-          product.media.forEach((media) => {
+
+          // Get media for product, variants and options
+          let allMedia = [product.media];
+          if (product.variants) {
+            product.variants.forEach((variant) => {
+              // Add variant media if set
+              if (variant.media) {
+                allMedia.push(variant.media);
+              }
+
+              // Add option media if set
+              if (variant.options) {
+                variant.options.forEach((option) => {
+                  allMedia.push(option.media);
+                });
+              }
+            });
+          }
+
+          allMedia = _.flatten(allMedia);
+
+          const mediaItems = [];
+          allMedia.forEach((media) => {
             const { id } = decodeOpaqueId(media._id);
-            productMedia.push({ id, thumbnailUrl: media.URLs.small });
+            mediaItems.push({ id, thumbnailUrl: media.URLs.small });
           });
 
           isAllMediaProcessed = uploadedMediaIds.every((uploadedMediaId) => {
-            const mediaItem = productMedia.find((item) => item.id === uploadedMediaId);
+            const mediaItem = mediaItems.find((item) => item.id === uploadedMediaId);
 
             // If a url has been generated, then these media items has been processed successfully.
             return mediaItem && mediaItem.thumbnailUrl !== String(null);
@@ -88,13 +110,13 @@ function MediaUploader(props) {
             setIsUploading(false);
             clearTimeout(timerId);
           }
-        }, 500);
+        }, 2000);
 
-        // Stop polling after 20 seconds
+        // Stop polling after 30 seconds
         setTimeout(() => {
           clearTimeout(timerId);
           setIsUploading(false);
-        }, 20000);
+        }, 30000);
 
         return null;
       })
