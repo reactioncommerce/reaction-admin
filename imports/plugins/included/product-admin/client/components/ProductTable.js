@@ -24,6 +24,18 @@ mutation createProduct($input: CreateProductInput!) {
 }
 `;
 
+const CSV_FILE_TYPES = [
+  "text/csv",
+  "text/plain",
+  "text/x-csv",
+  "application/vnd.ms-excel",
+  "application/csv",
+  "application/x-csv",
+  "text/comma-separated-values",
+  "text/x-comma-separated-values",
+  "text/tab-separated-values"
+];
+
 /**
  * ProductTable component
  * @returns {Node} React node
@@ -94,10 +106,11 @@ function ProductTable() {
   };
 
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    multiple: true,
+    accept: CSV_FILE_TYPES,
+    disableClick: true,
     disablePreview: true,
-    disableClick: true
+    multiple: true,
+    onDrop
   });
 
   const handleShowFilterByFile = (isVisible) => {
