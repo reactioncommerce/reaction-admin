@@ -1,23 +1,29 @@
 import React, { useState, useMemo, useCallback } from "react";
 import i18next from "i18next";
 import { useSnackbar } from "notistack";
-import DataTable, { useDataTable } from "@reactioncommerce/catalyst/DataTable";
+import {
+  Button,
+  DataTable,
+  useDataTable,
+  useConfirmDialog
+}
+  from "@reactioncommerce/catalyst";
+import { Box, Card, CardHeader, CardContent, makeStyles } from "@material-ui/core";
 import { useApolloClient } from "@apollo/react-hooks";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
-import { Box, Card, CardHeader, CardContent, makeStyles } from "@material-ui/core";
 import discountCodesQuery from "../graphql/queries/discountCodes";
 
 const useStyles = makeStyles({
   card: {
-    overflow: "visible",
-  },
+    overflow: "visible"
+  }
 });
 
 /**
- * @name DiscountCodesTable 
+ * @name DiscountCodesTable
  * @returns {React.Component} A React component
  */
-function  DiscountCodesTable() {
+function DiscountCodesTable() {
   const apolloClient = useApolloClient();
   const { enqueueSnackbar } = useSnackbar();
   const [isLoading, setIsLoading] = useState(false);
@@ -30,18 +36,30 @@ function  DiscountCodesTable() {
     () => [
       {
         Header: i18next.t("admin.discountsTable.headers.code"),
-        accessor: "code",
+        accessor: "code"
       },
       {
         Header: i18next.t("admin.discountsTable.headers.discount"),
-        accessor: "discount",
+        accessor: "discount"
       },
+      {
+        Header: i18next.t("admin.discountsTable.headers.discountMethod"),
+        accessor: "calculation.method"
+      },
+      {
+        Header: i18next.t("admin.discountsTable.headers.conditions.accountLimit"),
+        accessor: "conditions.accountLimit"
+      },
+      {
+        Header: i18next.t("admin.discountsTable.headers.conditions.redemptionLimit"),
+        accessor: "conditions.redemptionLimit"
+      }
     ],
     []
   );
 
   const onFetchData = useCallback(
-    async ({ globalFilter, pageIndex, pageSize, filtersByKey }) => {
+    async ({ globalFilter, pageIndex, pageSize }) => {
       // Wait for shop id to be available before fetching orders.
       setIsLoading(true);
       if (!shopId) {
@@ -51,14 +69,14 @@ function  DiscountCodesTable() {
       const { data, error } = await apolloClient.query({
         query: discountCodesQuery,
         variables: {
-          shopId: shopId,
+          shopId,
           first: pageSize,
           offset: pageIndex * pageSize,
           filters: {
-            searchField: globalFilter,
-          },
+            searchField: globalFilter
+          }
         },
-        fetchPolicy: "network-only",
+        fetchPolicy: "network-only"
       });
 
       if (error && error.length) {
@@ -75,14 +93,25 @@ function  DiscountCodesTable() {
     [apolloClient, enqueueSnackbar, shopId]
   );
 
+  // Create Discount form modal
+  const { ConfirmDialog, openDialog } = useConfirmDialog({
+    title: i18next.t("admin.discountCode.addDiscountModalTitle"),
+    content: (
+      <h2>Hello from the modal!</h2>
+    ),
+    onConfirm: () => {
+      console.log("Action confirmed");
+    }
+  });
+
   // Row click callback
-  const onRowClick = useCallback(
-    console.log("onRowClick")
-  );
+  const onRowClick = useCallback(() => {
+    openDialog();
+  }, [openDialog]);
 
   const labels = useMemo(
     () => ({
-      globalFilterPlaceholder: i18next.t("admin.table.filter.globalFilter")
+      globalFilterPlaceholder: i18next.t("admin.discountsTable.filterPlaceholder")
     }),
     []
   );
@@ -94,19 +123,29 @@ function  DiscountCodesTable() {
     pageCount,
     onFetchData,
     onRowClick,
-    getRowId: (row) => row._id,
+    getRowId: (row) => row._id
   });
+
 
   const classes = useStyles();
 
   return (
-    <Card className={classes.card}>
-      <CardHeader title={i18next.t("admin.discounts.title", "Discount Codes")} />
-      <CardContent>
-        <DataTable {...dataTableProps} isLoading={isLoading} />
-      </CardContent>
-    </Card>
+    <>
+      <Box marginBottom={2}>
+        <Button onClick={openDialog} variant="contained" color="primary" >
+          {i18next.t("admin.discountCode.addDiscount")}
+        </Button>
+      </Box>
+      <Card className={classes.card}>
+        <CardHeader title={i18next.t("admin.discounts.title", "Discount Codes")} />
+        <CardContent>
+          <DataTable {...dataTableProps} isLoading={isLoading} />
+        </CardContent>
+      </Card>
+      <ConfirmDialog />
+    </>
+
   );
 }
 
-export default  DiscountCodesTable;
+export default DiscountCodesTable;
