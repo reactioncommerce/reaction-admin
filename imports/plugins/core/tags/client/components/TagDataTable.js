@@ -464,10 +464,9 @@ class TagDataTable extends Component {
       selectWidth: 64
     };
 
-
     // All available props: https://github.com/tannerlinsley/react-table#props
     return (
-      <Query query={query} variables={variables}>
+      <Query query={query} variables={variables} fetchPolicy="network-only">
         {({ data, error, fetchMore, refetch }) => {
           if (error || !data) {
             if (error) Logger.error(error);
