@@ -4,8 +4,12 @@ import i18next from "i18next";
 import { useMutation } from "@apollo/react-hooks";
 import { useSnackbar } from "notistack";
 import SimpleSchema from "simpl-schema";
-import { Button, TextField } from "@reactioncommerce/catalyst";
+import { Button, TextField, ConfirmDialog } from "@reactioncommerce/catalyst";
 import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   makeStyles,
   MenuItem
@@ -14,16 +18,10 @@ import muiOptions from "reacto-form/cjs/muiOptions";
 import useReactoForm from "reacto-form/cjs/useReactoForm";
 import createDiscountCodeGQL from "../graphql/mutations/createDiscountCode";
 
-const useStyles = makeStyles((theme) => ({
-  deleteButton: {
-    marginRight: theme.spacing(1)
-  },
-  rightAlignedGrid: {
-    textAlign: "right"
-  },
-  textField: {
-    marginBottom: theme.spacing(4),
-    minWidth: 350
+const useStyles = makeStyles(() => ({
+  dialogTitle: {
+    fontSize: 18,
+    fontWeight: 500
   }
 }));
 
@@ -63,7 +61,8 @@ const formSchema = new SimpleSchema({
     optional: true
   },
   "discountMethod": {
-    type: String
+    type: String,
+    defaultValue: "code"
   }
 });
 const validator = formSchema.getFormValidator();
@@ -75,11 +74,11 @@ const validator = formSchema.getFormValidator();
  * @return {React.Node} React node
  */
 export default function DiscountCodeForm(props) {
-  const classes = useStyles();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCreateMode, setIsCreateMode] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const { doc, onSuccess = () => { }, shopId } = props;
+  const { discountCode, onSuccess = () => { }, shopId, isOpen, onCloseDialog } = props;
   const calculationMethods = [
     { label: "Credit", value: "credit" },
     { label: "Discount", value: "discount" },
@@ -92,9 +91,11 @@ export default function DiscountCodeForm(props) {
     onCompleted() {
       setIsSubmitting(false);
       onSuccess();
+      onCloseDialog();
     },
     onError() {
       setIsSubmitting(false);
+      onCloseDialog();
       enqueueSnackbar(i18next.t("admin.discountCodes.failure"), { variant: "warning" });
     }
   });
@@ -102,64 +103,69 @@ export default function DiscountCodeForm(props) {
   const {
     getFirstErrorMessage,
     getInputProps,
+    isDirty,
     hasErrors,
     submitForm
   } = useReactoForm({
     async onSubmit(formData) {
       setIsSubmitting(true);
 
-      if (doc) {
+      if (discountCode) {
         // Update discount code
       } else {
+        console.log("submitting with data: ", formData);
         await createDiscountCode({
           variables: {
             input: {
-              // In case doc has additional fields not allowed, we'll copy just what we want
-              code: formData.code,
-              calculation: {
-                method: formData.calculation.method
-              },
-              conditions: {
-                enabled: formData.conditions.enabled,
-                accountLimit: formData.conditions.accountLimit,
-                redemptionLimit: formData.conditions.redemptionLimit,
-                order: {
+              discountCode: {
+                // In case discountCode has additional fields not allowed, we'll copy just what we want
+                code: formData.code,
+                calculation: {
+                  method: formData.calculation.method
+                },
+                conditions: {
+                  enabled: formData.conditions.enabled,
+                  accountLimit: formData.conditions.accountLimit,
+                  redemptionLimit: formData.conditions.redemptionLimit,
+                  order: {
                   // Set to 0(can be applied infinitely)
-                  min: 0
-                }
-              },
-              description: formData.description,
-              shopId,
-              discount: formData.discount,
-              discountMethod: formData.discountMethod
+                    min: 0
+                  }
+                },
+                description: formData.description,
+                shopId,
+                discount: formData.discount,
+                discountMethod: formData.discountMethod
+              }
             }
           }
         });
       }
     },
     validator(formData) {
+      console.log("data to validate", formData);
+
       return validator({
-        // In case doc has additional fields not allowed, we'll copy just what we want
+        // In case discountCode has additional fields not allowed, we'll copy just what we want
         code: formData.code,
         calculation: {
           method: formData.calculation.method
         },
         conditions: {
-          enabled: formData.conditions.enabled,
-          accountLimit: formData.conditions.accountLimit,
-          redemptionLimit: formData.conditions.redemptionLimit,
+          // enabled: formData.conditions.enabled,
+          accountLimit: Number(formData.conditions.accountLimit),
+          redemptionLimit: Number(formData.conditions.redemptionLimit),
           order: {
             // Set to 0(can be applied infinitely)
             min: 0
           }
         },
-        description: formData.description,
-        shopId,
-        discount: formData.discount,
-        discountMethod: formData.discountMethod
+        // description: formData.description,
+        discountMethod: "code",
+        discount: formData.discount
       });
     },
-    value: doc
+    value: discountCode
   });
 
   let calculationMethodField;
@@ -167,7 +173,6 @@ export default function DiscountCodeForm(props) {
     const options = calculationMethods.map(({ value, label }) => ({ label, value }));
     calculationMethodField = (
       <TextField
-        className={classes.textField}
         error={hasErrors(["calculation.method"])}
         fullWidth
         helperText={getFirstErrorMessage(["calculation.method"])}
@@ -187,55 +192,126 @@ export default function DiscountCodeForm(props) {
     );
   }
 
+  const classes = useStyles();
+
   return (
     <div>
-      <TextField
-        className={classes.textField}
-        error={hasErrors(["code"])}
-        fullWidth
-        helperText={getFirstErrorMessage(["code"])}
-        label={i18next.t("admin.discountCode.form.code")}
-        onKeyPress={(event) => {
-          if (event.key === "Enter") submitForm();
-        }}
-        placeholder={i18next.t("admin.discountCode.form.codePlaceholder")}
-        {...getInputProps("code", muiOptions)}
-      />
-      {calculationMethodField}
-      <Grid className={classes.rightAlignedGrid} item xs={12}>
-        {!!doc &&
+      <Dialog open={isOpen} onClose={onCloseDialog} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">
+          <span className={classes.dialogTitle}>
+            {i18next.t("admin.discountCode.addDiscountModalTitle")}
+          </span>
+        </DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                error={hasErrors(["code"])}
+                fullWidth
+                helperText={getFirstErrorMessage(["code"])}
+                label={i18next.t("admin.discountCode.form.code")}
+                placeholder={i18next.t("admin.discountCode.form.codePlaceholder")}
+                {...getInputProps("code", muiOptions)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                error={hasErrors(["discount"])}
+                fullWidth
+                helperText={getFirstErrorMessage(["discount"])}
+                label={i18next.t("admin.discountCode.form.discount")}
+                placeholder={i18next.t("admin.discountCode.form.discountPlaceholder")}
+                {...getInputProps("discount", muiOptions)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                error={hasErrors(["conditions.accountLimit"])}
+                fullWidth
+                helperText={getFirstErrorMessage(["conditions.accountLimit"])}
+                label={i18next.t("admin.discountCode.form.accountLimit")}
+                placeholder={i18next.t("admin.discountCode.form.accountLimitPlaceholder")}
+                {...getInputProps("conditions.accountLimit", muiOptions)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                error={hasErrors(["conditions.redemptionLimit"])}
+                fullWidth
+                helperText={getFirstErrorMessage(["conditions.redemptionLimit"])}
+                label={i18next.t("admin.discountCode.form.redemptionLimit")}
+                onKeyPress={(event) => {
+                  if (event.key === "Enter") submitForm();
+                }}
+                placeholder={i18next.t("admin.discountCode.form.redemptionLimitPlaceholder")}
+                {...getInputProps("conditions.redemptionLimit", muiOptions)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              {calculationMethodField}
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          { !isCreateMode && (
+            <ConfirmDialog
+              title={i18next.t("admin.discountCode.form.deleteDialogTitle")}
+              message={i18next.t("admin.discountCode.form.deleteMessage")}
+              onConfirm={() => {
+                // deleteDiscountCode({
+                //   variables: {
+                //     input: {
+                //       shopId,
+                //       discountCodeId: discountCode._id
+                //     }
+                //   }
+                // });
+                console.log("Delete");
+                onCloseDialog();
+              }}
+            >
+              {({ openDialog }) => (
+                <Button variant="text"
+                  disabled={isSubmitting}
+                  onClick={openDialog}
+                  color="primary"
+                >
+                  {i18next.t("app.delete")}
+                </Button>
+
+              )}
+            </ConfirmDialog>
+          )}
+          <Button variant="outlined" onClick={onCloseDialog} color="primary">
+            {i18next.t("app.cancel")}
+          </Button>
           <Button
-            className={classes.deleteButton}
-            color="primary"
-            disabled={isSubmitting}
-            onClick={() => {
-              // deleteDiscountCode({
-              //   variables: {
-              //     input: {
-              //       shopId,
-              //       discountCodeId: doc._id
-              //     }
-              //   }
-              // });
-            }}
+            disabled={isSubmitting || !isDirty}
+            onClick={submitForm}
             variant="contained"
+            color="primary"
           >
-            {i18next.t("app.delete")}
-          </Button>}
-        <Button
-          color="primary"
-          isDisabled={isSubmitting}
-          onClick={submitForm}
-          variant="contained"
-        >
-          {i18next.t("app.save")}
-        </Button>
-      </Grid>
+            {i18next.t("app.save")}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
 
 DiscountCodeForm.propTypes = {
+  /**
+   * A discount code record
+   */
+  discountCode: PropTypes.object,
+  /**
+   * Determines whether the form dialog is open or not
+  */
+  isOpen: PropTypes.bool,
+  /**
+   * Function that closes the form dialog
+  */
+  onCloseDialog: PropTypes.func,
   /**
    * Function to call after form is successfully submitted
    */
@@ -243,5 +319,5 @@ DiscountCodeForm.propTypes = {
   /**
    * Shop ID to create/edit tax rate for
    */
-  shopId: PropTypes.string.isRequired
+  shopId: PropTypes.string
 };

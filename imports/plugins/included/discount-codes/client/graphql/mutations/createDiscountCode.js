@@ -1,9 +1,9 @@
 import gql from "graphql-tag";
 
 export default gql`
-  mutation createDiscountCodeMutation($input: CreateDiscountCodeInput!) {
+  mutation createDiscountCode($input: CreateDiscountCodeInput!) {
     createDiscountCode(input: $input) {
-      nodes {
+      discountCode {
         _id
       }
     }

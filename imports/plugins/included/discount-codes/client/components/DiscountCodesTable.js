@@ -4,14 +4,14 @@ import { useSnackbar } from "notistack";
 import {
   Button,
   DataTable,
-  useDataTable,
-  useConfirmDialog
+  useDataTable
 }
   from "@reactioncommerce/catalyst";
 import { Box, Card, CardHeader, CardContent, makeStyles } from "@material-ui/core";
 import { useApolloClient } from "@apollo/react-hooks";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import discountCodesQuery from "../graphql/queries/discountCodes";
+import DiscountCodeForm from "./DiscountCodeForm";
 
 const useStyles = makeStyles({
   card: {
@@ -29,6 +29,7 @@ function DiscountCodesTable() {
   const [isLoading, setIsLoading] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [tableData, setTableData] = useState([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [shopId] = useCurrentShopId();
 
   // Create and memoize the column data
@@ -93,21 +94,18 @@ function DiscountCodesTable() {
     [apolloClient, enqueueSnackbar, shopId]
   );
 
-  // Create Discount form modal
-  const { ConfirmDialog, openDialog } = useConfirmDialog({
-    title: i18next.t("admin.discountCode.addDiscountModalTitle"),
-    content: (
-      <h2>Hello from the modal!</h2>
-    ),
-    onConfirm: () => {
-      console.log("Action confirmed");
-    }
-  });
+  const openDialog = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleOnCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
 
   // Row click callback
   const onRowClick = useCallback(() => {
     openDialog();
-  }, [openDialog]);
+  }, []);
 
   const labels = useMemo(
     () => ({
@@ -142,9 +140,13 @@ function DiscountCodesTable() {
           <DataTable {...dataTableProps} isLoading={isLoading} />
         </CardContent>
       </Card>
-      <ConfirmDialog />
+      <DiscountCodeForm
+        isOpen={isDialogOpen}
+        onCloseDialog={handleOnCloseDialog}
+        shopId={shopId}
+        discountCode={null}
+      />
     </>
-
   );
 }
 
