@@ -7,7 +7,7 @@ const CircularProgress = ({ indeterminate }) => (
 );
 
 CircularProgress.propTypes = {
-  indeterminate: PropTypes.bool
+  indeterminate: PropTypes.bool // eslint-disable-line react/boolean-prop-naming
 };
 
 CircularProgress.defaultProps = {

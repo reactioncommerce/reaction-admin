@@ -123,5 +123,5 @@ registerComponent("ProductPublish", ProductPublishContainer, [
 // Decorate component and export
 export default compose(
   withApollo,
-  composeWithTracker(composer),
+  composeWithTracker(composer)
 )(ProductPublishContainer);
