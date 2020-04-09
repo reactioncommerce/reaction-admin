@@ -4,8 +4,10 @@ import i18next from "i18next";
 import { useMutation } from "@apollo/react-hooks";
 import { useSnackbar } from "notistack";
 import SimpleSchema from "simpl-schema";
+import _ from "lodash";
 import { Button, TextField, ConfirmDialog } from "@reactioncommerce/catalyst";
 import {
+  FormLabel,
   Dialog,
   DialogActions,
   DialogContent,
@@ -25,7 +27,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const formSchema = new SimpleSchema({
+const discountCodeSchema = new SimpleSchema({
   "code": {
     type: String
   },
@@ -33,7 +35,10 @@ const formSchema = new SimpleSchema({
   "calculation.method": {
     type: String
   },
-  "conditions": Object,
+  "conditions": {
+    type: Object,
+    optional: true
+  },
   "conditions.enabled": {
     type: Boolean,
     optional: true,
@@ -47,25 +52,19 @@ const formSchema = new SimpleSchema({
     type: Number,
     optional: true
   },
-  "conditions.order": Object,
-  "conditions.order.min": {
-    type: Number,
-    defaultValue: 0
-  },
   "description": {
     type: String,
     optional: true
   },
   "discount": {
-    type: String,
-    optional: true
+    type: String
   },
   "discountMethod": {
     type: String,
     defaultValue: "code"
   }
 });
-const validator = formSchema.getFormValidator();
+const validator = discountCodeSchema.getFormValidator();
 
 /**
  * @summary React component that renders the form for adding, updating, or deleting
@@ -78,7 +77,7 @@ export default function DiscountCodeForm(props) {
   const [isCreateMode, setIsCreateMode] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const { discountCode, onSuccess = () => { }, shopId, isOpen, onCloseDialog } = props;
+  const { discountCode, isOpen, onCloseDialog, refetch, shopId } = props;
   const calculationMethods = [
     { label: "Credit", value: "credit" },
     { label: "Discount", value: "discount" },
@@ -90,7 +89,7 @@ export default function DiscountCodeForm(props) {
     ignoreResults: true,
     onCompleted() {
       setIsSubmitting(false);
-      onSuccess();
+      refetch();
       onCloseDialog();
     },
     onError() {
@@ -113,59 +112,30 @@ export default function DiscountCodeForm(props) {
       if (discountCode) {
         // Update discount code
       } else {
-        console.log("submitting with data: ", formData);
+        const discountCodeInput = discountCodeSchema.clean(formData);
+        if (discountCodeInput.conditions) {
+          // Set order minimum to 0, this will allow a discount to be
+          // Redeemed infinitely on any number of orders.
+          _.set(discountCodeInput, "conditions.order.min", 0);
+        }
+
+        console.log("submitting with data: ", discountCodeInput);
+
         await createDiscountCode({
           variables: {
             input: {
-              discountCode: {
-                // In case discountCode has additional fields not allowed, we'll copy just what we want
-                code: formData.code,
-                calculation: {
-                  method: formData.calculation.method
-                },
-                conditions: {
-                  enabled: formData.conditions.enabled,
-                  accountLimit: formData.conditions.accountLimit,
-                  redemptionLimit: formData.conditions.redemptionLimit,
-                  order: {
-                  // Set to 0(can be applied infinitely)
-                    min: 0
-                  }
-                },
-                description: formData.description,
-                shopId,
-                discount: formData.discount,
-                discountMethod: formData.discountMethod
-              }
+              discountCode: discountCodeInput,
+              shopId
             }
           }
         });
       }
     },
     validator(formData) {
-      console.log("data to validate", formData);
-
-      return validator({
-        // In case discountCode has additional fields not allowed, we'll copy just what we want
-        code: formData.code,
-        calculation: {
-          method: formData.calculation.method
-        },
-        conditions: {
-          // enabled: formData.conditions.enabled,
-          accountLimit: Number(formData.conditions.accountLimit),
-          redemptionLimit: Number(formData.conditions.redemptionLimit),
-          order: {
-            // Set to 0(can be applied infinitely)
-            min: 0
-          }
-        },
-        // description: formData.description,
-        discountMethod: "code",
-        discount: formData.discount
-      });
+      return validator(discountCodeSchema.clean(formData));
     },
-    value: discountCode
+    value: discountCode,
+    logErrorsOnSubmit: true
   });
 
   let calculationMethodField;
@@ -225,6 +195,12 @@ export default function DiscountCodeForm(props) {
               />
             </Grid>
             <Grid item xs={12}>
+              {calculationMethodField}
+            </Grid>
+            <Grid item xs={12}>
+              <FormLabel component="legend">Conditions</FormLabel>
+            </Grid>
+            <Grid item xs={12}>
               <TextField
                 error={hasErrors(["conditions.accountLimit"])}
                 fullWidth
@@ -246,9 +222,6 @@ export default function DiscountCodeForm(props) {
                 placeholder={i18next.t("admin.discountCode.form.redemptionLimitPlaceholder")}
                 {...getInputProps("conditions.redemptionLimit", muiOptions)}
               />
-            </Grid>
-            <Grid item xs={12}>
-              {calculationMethodField}
             </Grid>
           </Grid>
         </DialogContent>
@@ -315,7 +288,7 @@ DiscountCodeForm.propTypes = {
   /**
    * Function to call after form is successfully submitted
    */
-  onSuccess: PropTypes.func,
+  refetch: PropTypes.func,
   /**
    * Shop ID to create/edit tax rate for
    */

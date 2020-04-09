@@ -124,6 +124,7 @@ function DiscountCodesTable() {
     getRowId: (row) => row._id
   });
 
+  const { refetch } = dataTableProps;
 
   const classes = useStyles();
 
@@ -141,10 +142,11 @@ function DiscountCodesTable() {
         </CardContent>
       </Card>
       <DiscountCodeForm
+        discountCode={null}
         isOpen={isDialogOpen}
         onCloseDialog={handleOnCloseDialog}
         shopId={shopId}
-        discountCode={null}
+        refetch={refetch}
       />
     </>
   );
