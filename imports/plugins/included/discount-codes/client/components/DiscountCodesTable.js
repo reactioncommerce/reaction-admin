@@ -30,6 +30,8 @@ function DiscountCodesTable() {
   const [pageCount, setPageCount] = useState(1);
   const [tableData, setTableData] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedDiscountCode, setSelectedDiscountCode] = useState(null);
+  const [isCreateMode, setIsCreateMode] = useState(false);
   const [shopId] = useCurrentShopId();
 
   // Create and memoize the column data
@@ -98,12 +100,20 @@ function DiscountCodesTable() {
     setIsDialogOpen(true);
   };
 
+  const onCreateDiscountCode = () => {
+    setIsCreateMode(true);
+    setSelectedDiscountCode(null);
+    openDialog();
+  };
+
   const handleOnCloseDialog = () => {
     setIsDialogOpen(false);
   };
 
   // Row click callback
-  const onRowClick = useCallback(() => {
+  const onRowClick = useCallback((data) => {
+    setSelectedDiscountCode(data.row.original);
+    setIsCreateMode(false);
     openDialog();
   }, []);
 
@@ -131,7 +141,7 @@ function DiscountCodesTable() {
   return (
     <>
       <Box marginBottom={2}>
-        <Button onClick={openDialog} variant="contained" color="primary" >
+        <Button onClick={onCreateDiscountCode} variant="contained" color="primary" >
           {i18next.t("admin.discountCode.addDiscount")}
         </Button>
       </Box>
@@ -142,7 +152,8 @@ function DiscountCodesTable() {
         </CardContent>
       </Card>
       <DiscountCodeForm
-        discountCode={null}
+        discountCode={selectedDiscountCode}
+        isCreateMode={isCreateMode}
         isOpen={isDialogOpen}
         onCloseDialog={handleOnCloseDialog}
         shopId={shopId}

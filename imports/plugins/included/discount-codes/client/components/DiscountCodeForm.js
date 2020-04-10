@@ -19,11 +19,15 @@ import {
 import muiOptions from "reacto-form/cjs/muiOptions";
 import useReactoForm from "reacto-form/cjs/useReactoForm";
 import createDiscountCodeGQL from "../graphql/mutations/createDiscountCode";
+import deleteDiscountCodeGQL from "../graphql/mutations/deleteDiscountCode";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   dialogTitle: {
     fontSize: 18,
     fontWeight: 500
+  },
+  legend: {
+    marginBottom: theme.spacing(1)
   }
 }));
 
@@ -74,10 +78,9 @@ const validator = discountCodeSchema.getFormValidator();
  */
 export default function DiscountCodeForm(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isCreateMode, setIsCreateMode] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const { discountCode, isOpen, onCloseDialog, refetch, shopId } = props;
+  const { discountCode, isCreateMode, isOpen, onCloseDialog, refetch, shopId } = props;
   const calculationMethods = [
     { label: "Credit", value: "credit" },
     { label: "Discount", value: "discount" },
@@ -99,6 +102,20 @@ export default function DiscountCodeForm(props) {
     }
   });
 
+  const [deleteDiscountCode] = useMutation(deleteDiscountCodeGQL, {
+    ignoreResults: true,
+    onCompleted() {
+      refetch();
+      setIsSubmitting(false);
+      onCloseDialog();
+    },
+    onError() {
+      setIsSubmitting(false);
+      onCloseDialog();
+      enqueueSnackbar(i18next.t("admin.discountCodes.failure"), { variant: "warning" });
+    }
+  });
+
   const {
     getFirstErrorMessage,
     getInputProps,
@@ -111,15 +128,15 @@ export default function DiscountCodeForm(props) {
 
       if (discountCode) {
         // Update discount code
+        console.log("Update discount code");
       } else {
+        // Create a new discount code
         const discountCodeInput = discountCodeSchema.clean(formData);
         if (discountCodeInput.conditions) {
           // Set order minimum to 0, this will allow a discount to be
           // Redeemed infinitely on any number of orders.
           _.set(discountCodeInput, "conditions.order.min", 0);
         }
-
-        console.log("submitting with data: ", discountCodeInput);
 
         await createDiscountCode({
           variables: {
@@ -198,7 +215,9 @@ export default function DiscountCodeForm(props) {
               {calculationMethodField}
             </Grid>
             <Grid item xs={12}>
-              <FormLabel component="legend">Conditions</FormLabel>
+              <FormLabel component="legend" classes={{ root: classes.legend }}>
+                Conditions
+              </FormLabel>
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -230,17 +249,15 @@ export default function DiscountCodeForm(props) {
             <ConfirmDialog
               title={i18next.t("admin.discountCode.form.deleteDialogTitle")}
               message={i18next.t("admin.discountCode.form.deleteMessage")}
-              onConfirm={() => {
-                // deleteDiscountCode({
-                //   variables: {
-                //     input: {
-                //       shopId,
-                //       discountCodeId: discountCode._id
-                //     }
-                //   }
-                // });
-                console.log("Delete");
-                onCloseDialog();
+              onConfirm={async () => {
+                await deleteDiscountCode({
+                  variables: {
+                    input: {
+                      shopId,
+                      discountCodeId: discountCode._id
+                    }
+                  }
+                });
               }}
             >
               {({ openDialog }) => (
@@ -277,6 +294,10 @@ DiscountCodeForm.propTypes = {
    * A discount code record
    */
   discountCode: PropTypes.object,
+  /**
+   * Determines if the dialog is in create or edit mode
+   */
+  isCreateMode: PropTypes.bool,
   /**
    * Determines whether the form dialog is open or not
   */
