@@ -21,8 +21,6 @@ const GroupsTable = (props) => {
     }
   }));
 
-  console.log(group);
-
   return (
     <Components.List>
       <Components.ListItem label={group.name} />
