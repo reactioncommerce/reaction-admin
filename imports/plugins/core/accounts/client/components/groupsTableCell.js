@@ -15,7 +15,7 @@ const GroupsTableCell = (props) => {
     moment
   } = props;
 
-  const email = _.get(account, "emails[0].address", "");
+  const email = account.emailRecords[0].address;
   const groups = adminGroups;
   const userAvatar = getUserAvatar(account);
   const createdAt = (moment && moment(account.createdAt).format("MMM Do")) || account.createdAt.toLocaleString();
@@ -31,7 +31,7 @@ const GroupsTableCell = (props) => {
     );
   }
 
-  if (columnName === "email") {
+  if (columnName === "emailRecords") {
     return (
       <div className="table-cell body">
         <span>{email}</span>

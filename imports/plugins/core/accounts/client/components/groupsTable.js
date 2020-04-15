@@ -6,7 +6,7 @@ import { SortableTable } from "/imports/plugins/core/ui/client/components";
 
 const GroupsTable = (props) => {
   const { group } = props;
-  const fields = ["name", "email", "createdAt", "dropdown", "button"];
+  const fields = ["name", "emailRecords", "createdAt", "dropdown", "button"];
 
   const tableClass = (length) => classnames({
     "accounts-group-table": true,
@@ -14,13 +14,14 @@ const GroupsTable = (props) => {
   });
 
   const columnMetadata = fields.map((columnName) => ({
-    Header: <Components.GroupHeader columnName={columnName} numberOfRows={group.users && group.users.length} />,
+    Header: <Components.GroupHeader columnName={columnName} numberOfRows={group.users && group.users.length}/>,
     accessor: "",
-    // TODO: Review this line - copied disable line from shippo carriers.js
     Cell: (data) => { // eslint-disable-line
       return <Components.GroupsTableCell account={data.value} columnName={columnName} {...props} />;
     }
   }));
+
+  console.log(group);
 
   return (
     <Components.List>

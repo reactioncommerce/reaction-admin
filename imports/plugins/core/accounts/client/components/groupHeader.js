@@ -14,7 +14,7 @@ const GroupHeader = ({ columnName }) => {
       </div>
     );
   }
-  if (columnName === "email") {
+  if (columnName === "emailRecords") {
     return (
       <div className="group-header-email">
         <Components.Translation className="content-cell" defaultValue="Email" i18nKey="admin.groups.email" />
