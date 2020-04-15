@@ -15,29 +15,37 @@ class AccountsDashboard extends Component {
 
   constructor(props) {
     super(props);
-    const { accounts, adminGroups, groups } = this.props;
-    const sortedGroups = sortUsersIntoGroups({ groups: sortGroups(adminGroups), accounts }) || [];
-    const defaultSelectedGroup = sortedGroups[0];
+    const { accounts, adminGroups, groups, isLoadingAccounts, isLoadingGroups } = this.props;
 
-    this.state = {
-      accounts,
-      groups: sortGroups(groups),
-      adminGroups: sortedGroups,
-      selectedGroup: defaultSelectedGroup
-    };
+    if (isLoadingAccounts === false && isLoadingGroups === false && Array.isArray(accounts) && Array.isArray(groups)) {
+      const sortedGroups = sortUsersIntoGroups({ groups: sortGroups(adminGroups), accounts }) || [];
+      const defaultSelectedGroup = sortedGroups[0];
+
+      this.state = {
+        accounts,
+        groups: sortGroups(groups),
+        adminGroups: sortedGroups,
+        selectedGroup: defaultSelectedGroup
+      };
+    } else {
+      this.state = {};
+    }
   }
 
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps) {
-    const { adminGroups, accounts, groups } = nextProps;
-    const sortedGroups = sortUsersIntoGroups({ groups: sortGroups(adminGroups), accounts });
-    const selectedGroup = adminGroups.find((grp) => grp._id === (this.state.selectedGroup || {})._id);
-    this.setState({
-      adminGroups: sortedGroups,
-      groups: sortGroups(groups),
-      accounts,
-      selectedGroup
-    });
+    const { adminGroups, accounts, groups, isLoadingAccounts, isLoadingGroups } = nextProps;
+
+    if (isLoadingAccounts === false && isLoadingGroups === false && Array.isArray(accounts) && Array.isArray(groups)) {
+      const sortedGroups = sortUsersIntoGroups({ groups: sortGroups(adminGroups), accounts });
+      const selectedGroup = adminGroups.find((grp) => grp._id === (this.state.selectedGroup || {})._id);
+      this.setState({
+        adminGroups: sortedGroups,
+        groups: sortGroups(groups),
+        accounts,
+        selectedGroup
+      });
+    }
   }
 
   handleGroupSelect = (group) => {
@@ -89,14 +97,16 @@ class AccountsDashboard extends Component {
   }
 
   render() {
+    const { isLoadingAccounts, isLoadingGroups } = this.props;
+
     return (
       <div className="accounts-table">
         <div className="group-container" style={{ textAlign: "right" }}>
           <DetailDrawerButton color="primary" variant="outlined">{i18next.t("admin.dashboard.manageGroups")}</DetailDrawerButton>
         </div>
-        {this.renderGroupsTable(this.state.adminGroups)}
+        {isLoadingAccounts || isLoadingGroups ? "" : this.renderGroupsTable(this.state.adminGroups)}
         <DetailDrawer title={i18next.t("admin.dashboard.manageGroups")}>
-          {this.renderGroupDetail()}
+          {isLoadingAccounts || isLoadingGroups ? "Loading..." : this.renderGroupDetail()}
         </DetailDrawer>
       </div>
     );

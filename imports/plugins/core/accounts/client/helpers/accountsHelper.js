@@ -12,7 +12,12 @@ import * as Collections from "/lib/collections";
  */
 export default function sortUsersIntoGroups({ accounts, groups }) {
   const newGroups = groups.map((group) => {
-    const matchingAccounts = accounts.filter((acc) => acc.groups && acc.groups.indexOf(group._id) > -1);
+    const matchingAccounts = accounts.filter((acc) => {
+      const accountGroups = acc.groups && acc.groups.nodes;
+      const accountGroupIds = accountGroups.map((accountGroup) => accountGroup._id);
+
+      return accountGroupIds.includes(group._id);
+    });
     group.users = _.compact(matchingAccounts);
     return group;
   });
@@ -35,7 +40,7 @@ export default function sortUsersIntoGroups({ accounts, groups }) {
  * @returns {Array}        [description]
  */
 export function sortGroups(groups) {
-  return groups.sort((prev, next) => {
+  return groups && groups.sort((prev, next) => {
     if (next.slug === "owner") { return 1; } // owner tops
     return next.permissions.length - prev.permissions.length;
   });

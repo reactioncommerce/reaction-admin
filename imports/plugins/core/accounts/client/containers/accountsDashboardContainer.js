@@ -1,14 +1,17 @@
 import { compose, withProps } from "recompose";
 import Alert from "sweetalert2";
-import { registerComponent, composeWithTracker, withIsAdmin } from "@reactioncommerce/reaction-components";
+import { registerComponent, withIsAdmin } from "@reactioncommerce/reaction-components";
 import { Meteor } from "meteor/meteor";
 import getOpaqueIds from "/imports/plugins/core/core/client/util/getOpaqueIds";
 import simpleGraphQLClient from "/imports/plugins/core/graphql/lib/helpers/simpleClient";
-import { Accounts, Groups } from "/lib/collections";
-import { Reaction, i18next } from "/client/api";
+import withOpaqueShopId from "/imports/plugins/core/graphql/lib/hocs/withOpaqueShopId";
+import { Accounts } from "/lib/collections";
+import { i18next } from "/client/api";
 import AccountsDashboard from "../components/accountsDashboard";
 import addAccountToGroupMutation from "./addAccountToGroup.graphql";
 import removeAccountFromGroupMutation from "./removeAccountFromGroup.graphql";
+import withAccounts from "../hocs/withAccounts";
+import withGroups from "../hocs/withGroups";
 
 const addAccountToGroupMutate = simpleGraphQLClient.createMutationFunction(addAccountToGroupMutation);
 const removeAccountFromGroupMutate = simpleGraphQLClient.createMutationFunction(removeAccountFromGroupMutation);
@@ -103,40 +106,18 @@ const handlers = {
   }
 };
 
-const composer = (props, onData) => {
-  const shopId = Reaction.getShopId();
-  if (!shopId) return;
-
-  const grpSub = Meteor.subscribe("Groups", { shopId });
-  const accountSub = Meteor.subscribe("Accounts");
-
-  if (accountSub.ready() && grpSub.ready()) {
-    const groups = Groups.find({ shopId }).fetch();
-    const adminGroups = groups.filter((group) => group.slug !== "customer" && group.slug !== "guest");
-
-    // Find all accounts that are in any of the admin groups
-    // or not in any group
-    const adminGroupIds = adminGroups.map((group) => group._id);
-    const accounts = Accounts.find({
-      $or: [
-        { groups: { $in: adminGroupIds } },
-        { groups: null },
-        { groups: { $size: 0 } }
-      ]
-    }).fetch();
-
-    onData(null, { accounts, adminGroups, groups });
-  }
-};
-
 registerComponent("AccountsDashboard", AccountsDashboard, [
   withIsAdmin,
-  composeWithTracker(composer),
+  withOpaqueShopId,
+  withGroups,
+  withAccounts,
   withProps(handlers)
 ]);
 
 export default compose(
   withIsAdmin,
-  composeWithTracker(composer),
+  withOpaqueShopId,
+  withGroups,
+  withAccounts,
   withProps(handlers)
 )(AccountsDashboard);
