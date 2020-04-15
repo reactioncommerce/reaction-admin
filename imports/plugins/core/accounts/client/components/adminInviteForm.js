@@ -11,7 +11,7 @@ import InlineAlert from "@reactioncommerce/components/InlineAlert/v1";
 import { getDefaultUserInviteGroup, getUserByEmail } from "../helpers/accountsHelper";
 import gql from "graphql-tag";
 import { Mutation } from "react-apollo";
-import getOpaqueIds from "/imports/plugins/core/core/client/util/getOpaqueIds";
+import withOpaqueShopId from "/imports/plugins/core/graphql/lib/hocs/withOpaqueShopId";
 
 const iconComponents = {
   iconDismiss: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" /><path d="M0 0h24v24H0z" fill="none" /></svg>
@@ -66,23 +66,10 @@ class AdminInviteForm extends Component {
     alertArray: this.state.alertArray.filter((alert) => !_.isEqual(alert, oldAlert))
   });
 
-  sendInvitation = async (options, mutation) => {
-    const [
-      opaqueGroupId,
-      opaqueShopId
-    ] = await getOpaqueIds([
-      { namespace: "Group", id: options.groupId },
-      { namespace: "Shop", id: options.shopId }
-    ]);
-
+  sendInvitation = async (input, mutation) => {
     await mutation({
       variables: {
-        input: {
-          email: options.email,
-          groupId: opaqueGroupId,
-          name: options.name,
-          shopId: opaqueShopId
-        }
+        input
       }
     });
   }
@@ -108,7 +95,8 @@ class AdminInviteForm extends Component {
 
     const isEmailVerified = matchingEmail && matchingEmail.verified;
 
-    const options = { email, name, shopId: Reaction.getShopId(), groupId: group._id };
+    const { shopId } = this.props;
+    const options = { email, name, shopId, groupId: group._id };
 
     if (matchingAccount) {
       return Alerts.alert({
@@ -258,6 +246,8 @@ class AdminInviteForm extends Component {
   }
 }
 
-registerComponent("AdminInviteForm", AdminInviteForm);
+registerComponent("AdminInviteForm", AdminInviteForm, [
+  withOpaqueShopId
+]);
 
-export default AdminInviteForm;
+export default withOpaqueShopId(AdminInviteForm);
