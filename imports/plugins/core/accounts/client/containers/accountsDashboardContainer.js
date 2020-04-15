@@ -2,7 +2,6 @@ import { compose, withProps } from "recompose";
 import Alert from "sweetalert2";
 import { registerComponent, withIsAdmin } from "@reactioncommerce/reaction-components";
 import { Meteor } from "meteor/meteor";
-import getOpaqueIds from "/imports/plugins/core/core/client/util/getOpaqueIds";
 import simpleGraphQLClient from "/imports/plugins/core/graphql/lib/helpers/simpleClient";
 import withOpaqueShopId from "/imports/plugins/core/graphql/lib/hocs/withOpaqueShopId";
 import { Accounts } from "/lib/collections";
@@ -64,15 +63,10 @@ const handlers = {
       }
 
       try {
-        const [
-          opaqueAccountId,
-          opaqueGroupId
-        ] = await getOpaqueIds([
-          { namespace: "Account", id: account._id },
-          { namespace: "Group", id: groupId }
-        ]);
-
-        await addAccountToGroupMutate({ accountId: opaqueAccountId, groupId: opaqueGroupId });
+        await addAccountToGroupMutate({
+          accountId: account._id,
+          groupId
+        });
       } catch (error) {
         Alerts.toast(i18next.t("admin.groups.addUserError", { err: error.message }), "error");
       }
@@ -88,15 +82,10 @@ const handlers = {
       if (!value) return null;
 
       try {
-        const [
-          opaqueAccountId,
-          opaqueGroupId
-        ] = await getOpaqueIds([
-          { namespace: "Account", id: account._id },
-          { namespace: "Group", id: groupId }
-        ]);
-
-        await removeAccountFromGroupMutate({ accountId: opaqueAccountId, groupId: opaqueGroupId });
+        await removeAccountFromGroupMutate({
+          accountId: account._id,
+          groupId
+        });
       } catch (error) {
         Alerts.toast(i18next.t("admin.groups.removeUserError", { err: error.message }), "error");
       }
