@@ -20,6 +20,7 @@ import muiOptions from "reacto-form/cjs/muiOptions";
 import useReactoForm from "reacto-form/cjs/useReactoForm";
 import createDiscountCodeGQL from "../graphql/mutations/createDiscountCode";
 import deleteDiscountCodeGQL from "../graphql/mutations/deleteDiscountCode";
+import updateDiscountCodeGQL from "../graphql/mutations/updateDiscountCode";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -88,31 +89,48 @@ export default function DiscountCodeForm(props) {
     { label: "Shipping", value: "shipping" }
   ];
 
+  const onSuccess = () => {
+    setIsSubmitting(false);
+    refetch();
+    onCloseDialog();
+  };
+
+  const onFailure = () => {
+    setIsSubmitting(false);
+    onCloseDialog();
+    enqueueSnackbar(i18next.t("admin.discountCodes.failure"), { variant: "warning" });
+  };
+
   const [createDiscountCode] = useMutation(createDiscountCodeGQL, {
     ignoreResults: true,
     onCompleted() {
-      setIsSubmitting(false);
-      refetch();
-      onCloseDialog();
+      onSuccess();
+      enqueueSnackbar(i18next.t("admin.discountCode.createSuccess"), { variant: "success" });
     },
     onError() {
-      setIsSubmitting(false);
-      onCloseDialog();
-      enqueueSnackbar(i18next.t("admin.discountCodes.failure"), { variant: "warning" });
+      onFailure();
     }
   });
 
   const [deleteDiscountCode] = useMutation(deleteDiscountCodeGQL, {
     ignoreResults: true,
     onCompleted() {
-      refetch();
-      setIsSubmitting(false);
-      onCloseDialog();
+      onSuccess();
+      enqueueSnackbar(i18next.t("admin.discountCode.deleteSuccess"), { variant: "success" });
     },
     onError() {
-      setIsSubmitting(false);
-      onCloseDialog();
-      enqueueSnackbar(i18next.t("admin.discountCodes.failure"), { variant: "warning" });
+      onFailure();
+    }
+  });
+
+  const [updateDiscountCode] = useMutation(updateDiscountCodeGQL, {
+    ignoreResults: true,
+    onCompleted() {
+      onSuccess();
+      enqueueSnackbar(i18next.t("admin.discountCode.updateSuccess"), { variant: "success" });
+    },
+    onError() {
+      onFailure();
     }
   });
 
@@ -127,8 +145,21 @@ export default function DiscountCodeForm(props) {
       setIsSubmitting(true);
 
       if (discountCode) {
-        // Update discount code
-        console.log("Update discount code");
+        const discountCodeInput = discountCodeSchema.clean(formData);
+        if (discountCodeInput.conditions) {
+          // Set order minimum to 0, this will allow a discount to be
+          // Redeemed infinitely on any number of orders.
+          _.set(discountCodeInput, "conditions.order.min", 0);
+        }
+        await updateDiscountCode({
+          variables: {
+            input: {
+              discountCode: discountCodeInput,
+              discountCodeId: discountCode._id,
+              shopId
+            }
+          }
+        });
       } else {
         // Create a new discount code
         const discountCodeInput = discountCodeSchema.clean(formData);
