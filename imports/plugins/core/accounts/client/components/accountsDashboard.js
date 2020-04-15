@@ -104,9 +104,9 @@ class AccountsDashboard extends Component {
         <div className="group-container" style={{ textAlign: "right" }}>
           <DetailDrawerButton color="primary" variant="outlined">{i18next.t("admin.dashboard.manageGroups")}</DetailDrawerButton>
         </div>
-        {isLoadingAccounts || isLoadingGroups ? "" : this.renderGroupsTable(this.state.adminGroups)}
+        {isLoadingAccounts || isLoadingGroups ? <Components.Loading /> : this.renderGroupsTable(this.state.adminGroups)}
         <DetailDrawer title={i18next.t("admin.dashboard.manageGroups")}>
-          {isLoadingAccounts || isLoadingGroups ? "Loading..." : this.renderGroupDetail()}
+          {isLoadingAccounts || isLoadingGroups ? <Components.Loading /> : this.renderGroupDetail()}
         </DetailDrawer>
       </div>
     );
