@@ -23,6 +23,9 @@ import deleteDiscountCodeGQL from "../graphql/mutations/deleteDiscountCode";
 import updateDiscountCodeGQL from "../graphql/mutations/updateDiscountCode";
 
 const useStyles = makeStyles((theme) => ({
+  deleteButton: {
+    marginRight: "auto"
+  },
   dialogTitle: {
     fontSize: 18,
     fontWeight: 500
@@ -292,7 +295,9 @@ export default function DiscountCodeForm(props) {
               }}
             >
               {({ openDialog }) => (
-                <Button variant="text"
+                <Button 
+                  variant="text"
+                  classes={{ root: classes.deleteButton }}
                   disabled={isSubmitting}
                   onClick={openDialog}
                   color="primary"
