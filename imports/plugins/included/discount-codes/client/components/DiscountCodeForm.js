@@ -295,7 +295,7 @@ export default function DiscountCodeForm(props) {
               }}
             >
               {({ openDialog }) => (
-                <Button 
+                <Button
                   variant="text"
                   classes={{ root: classes.deleteButton }}
                   disabled={isSubmitting}
