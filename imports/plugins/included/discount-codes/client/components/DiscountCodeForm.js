@@ -98,7 +98,7 @@ export default function DiscountCodeForm(props) {
   const onFailure = () => {
     setIsSubmitting(false);
     onCloseDialog();
-    enqueueSnackbar(i18next.t("admin.discountCodes.failure"), { variant: "warning" });
+    enqueueSnackbar(i18next.t("admin.discountCode.failure"), { variant: "warning" });
   };
 
   const [createDiscountCode] = useMutation(createDiscountCodeGQL, {
