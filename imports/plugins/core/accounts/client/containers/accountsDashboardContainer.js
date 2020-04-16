@@ -1,4 +1,5 @@
-import { compose, withProps } from "recompose";
+import React from "react";
+import { compose } from "recompose";
 import Alert from "sweetalert2";
 import { registerComponent, withIsAdmin } from "@reactioncommerce/reaction-components";
 import { Meteor } from "meteor/meteor";
@@ -11,6 +12,7 @@ import addAccountToGroupMutation from "./addAccountToGroup.graphql";
 import removeAccountFromGroupMutation from "./removeAccountFromGroup.graphql";
 import withAccounts from "../hocs/withAccounts";
 import withGroups from "../hocs/withGroups";
+import useAuth from "../../../../../client/ui/hooks/useAuth";
 
 const addAccountToGroupMutate = simpleGraphQLClient.createMutationFunction(addAccountToGroupMutation);
 const removeAccountFromGroupMutate = simpleGraphQLClient.createMutationFunction(removeAccountFromGroupMutation);
@@ -45,14 +47,15 @@ function alertConfirmChangeOwner() {
   });
 }
 
-const handlers = {
-  handleUserGroupChange({ account, currentGroupId, ownerGrpId, onMethodLoad, onMethodDone }) {
+function AccountsDashboardContainer(props) {
+  const { viewer: loggedInAccount } = useAuth();
+
+  const handleUserGroupChange = ({ account, currentGroupId, ownerGrpId, onMethodLoad, onMethodDone }) => {
     return async (event, groupId) => {
       if (onMethodLoad) onMethodLoad();
 
       // Confirm if removing owner role from myself
       if (currentGroupId === ownerGrpId) {
-        const loggedInAccount = Accounts.findOne({ userId: Meteor.userId() });
         if (loggedInAccount && loggedInAccount._id === account._id) {
           const { value } = await alertConfirmChangeOwner();
           if (!value) {
@@ -74,9 +77,9 @@ const handlers = {
       if (onMethodDone) onMethodDone();
       return null;
     };
-  },
+  };
 
-  handleRemoveUserFromGroup(account, groupId) {
+  const handleRemoveUserFromGroup = (account, groupId) => {
     return async () => {
       const { value } = await alertConfirmRemoveUser();
       if (!value) return null;
@@ -92,21 +95,27 @@ const handlers = {
 
       return null;
     };
-  }
-};
+  };
 
-registerComponent("AccountsDashboard", AccountsDashboard, [
+  return (
+    <AccountsDashboard
+      {...props}
+      handleUserGroupChange={handleUserGroupChange}
+      handleRemoveUserFromGroup={handleRemoveUserFromGroup}
+    />
+  );
+}
+
+registerComponent("AccountsDashboard", AccountsDashboardContainer, [
   withIsAdmin,
   withOpaqueShopId,
   withGroups,
-  withAccounts,
-  withProps(handlers)
+  withAccounts
 ]);
 
 export default compose(
   withIsAdmin,
   withOpaqueShopId,
   withGroups,
-  withAccounts,
-  withProps(handlers)
-)(AccountsDashboard);
+  withAccounts
+)(AccountsDashboardContainer);
