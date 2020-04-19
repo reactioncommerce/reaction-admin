@@ -87,47 +87,22 @@ class PermissionsList extends Component {
     return false;
   };
 
-  renderSubPermissions(permission) {
-    if (permission.permissions.length) {
-      return (
-        <div className="child-item">
-          {permission.permissions.map((childPermission, index) => (
-            <Components.ListItem
-              key={`${childPermission.name}-${index}`}
-              actionType="switch"
-              label={childPermission.label}
-              switchOn={this.checked(childPermission.permission)}
-              switchName={childPermission.permission}
-              onSwitchChange={this.togglePermission(childPermission)}
-            />
-          ))}
-        </div>
-      );
-    }
-    return null;
-  }
-
-  renderPermissions(permissions) {
-    const jsx = [];
-    permissions.forEach((permission, key) => {
-      jsx.push(<div className="permission-item" key={`${permission.name}-${key}`}>
-        <Components.ListItem
-          label={permission.label}
-          actionType="switch"
-          switchOn={this.checked(permission.name)}
-          switchName={permission.name}
-          onSwitchChange={this.togglePermission(permission)}
-        />
-        {this.renderSubPermissions(permission)}
-      </div>);
-    });
-    return jsx;
-  }
-
   render() {
+    const { permissions } = this.props;
+
     return (
       <div className="permissions-list">
-        {this.renderPermissions(_.compact(this.props.permissions))}
+        {permissions && permissions.map((permission) => (
+          <div className="permission-item" key={`${permission.name}-${permission._id}`}>
+            <Components.ListItem
+              label={permission.name}
+              actionType="switch"
+              switchOn={this.checked(permission.name)}
+              switchName={permission.name}
+              onSwitchChange={this.togglePermission(permission)}
+            />
+          </div>
+        ))}
       </div>
     );
   }

@@ -2,17 +2,16 @@ import React from "react";
 import { compose } from "recompose";
 import Alert from "sweetalert2";
 import { registerComponent, withIsAdmin } from "@reactioncommerce/reaction-components";
-import { Meteor } from "meteor/meteor";
 import simpleGraphQLClient from "/imports/plugins/core/graphql/lib/helpers/simpleClient";
 import withOpaqueShopId from "/imports/plugins/core/graphql/lib/hocs/withOpaqueShopId";
-import { Accounts } from "/lib/collections";
 import { i18next } from "/client/api";
 import AccountsDashboard from "../components/accountsDashboard";
 import addAccountToGroupMutation from "./addAccountToGroup.graphql";
 import removeAccountFromGroupMutation from "./removeAccountFromGroup.graphql";
 import withAccounts from "../hocs/withAccounts";
 import withGroups from "../hocs/withGroups";
-import useAuth from "../../../../../client/ui/hooks/useAuth";
+import withRoles from "../hocs/withRoles";
+import useAuth from "/imports/client/ui/hooks/useAuth";
 
 const addAccountToGroupMutate = simpleGraphQLClient.createMutationFunction(addAccountToGroupMutation);
 const removeAccountFromGroupMutate = simpleGraphQLClient.createMutationFunction(removeAccountFromGroupMutation);
@@ -110,12 +109,14 @@ registerComponent("AccountsDashboard", AccountsDashboardContainer, [
   withIsAdmin,
   withOpaqueShopId,
   withGroups,
-  withAccounts
+  withAccounts,
+  withRoles
 ]);
 
 export default compose(
   withIsAdmin,
   withOpaqueShopId,
   withGroups,
-  withAccounts
+  withAccounts,
+  withRoles
 )(AccountsDashboardContainer);

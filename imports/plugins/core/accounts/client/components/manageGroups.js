@@ -51,15 +51,14 @@ class ManageGroups extends Component {
             groups={groupsInvitable}
           />
         }
-        {this.props.isAdmin &&
-          <div className={classes.editGroup}>
-            <Components.EditGroup
-              groups={this.state.groups}
-              selectedGroup={this.state.group}
-              onChangeGroup={this.props.onChangeGroup}
-            />
-          </div>
-        }
+        <div className={classes.editGroup}>
+          <Components.EditGroup
+            groups={this.state.groups}
+            roles={this.props.roles}
+            selectedGroup={this.state.group}
+            onChangeGroup={this.props.onChangeGroup}
+          />
+        </div>
       </div>
     );
   }
