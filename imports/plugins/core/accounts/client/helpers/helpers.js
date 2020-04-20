@@ -1,20 +1,15 @@
 import React from "react";
-import { Accounts } from "meteor/accounts-base";
-import * as Collections from "/lib/collections";
 import { Components } from "@reactioncommerce/reaction-components";
 
 /**
- * @method getUserAvatar
+ * @method getAccountAvatar
  * @memberof Accounts
- * @summary ReactionAvatar Component helper to get a user's Avatar
- * @example const userAvatar = getUserAvatar(account);
- * @param  {Object} currentUser User
+ * @summary ReactionAvatar Component helper to get an account's Avatar
+ * @example const accountAvatar = getAccountAvatar(account);
+ * @param  {Object} account The account to render the avatar for
  * @returns {Component}          ReactionAvatar component
  */
-export function getUserAvatar(currentUser) {
-  const user = currentUser || Accounts.user();
-
-  const account = Collections.Accounts.findOne(user._id);
+export function getAccountAvatar(account) {
   // first we check picture exists. Picture has higher priority to display
   if (account && account.profile && account.profile.picture) {
     const { picture } = account.profile;
@@ -27,8 +22,9 @@ export function getUserAvatar(currentUser) {
       />
     );
   }
-  if (user.emails && user.emails.length === 1) {
-    const email = user.emails[0].address;
+
+  if (Array.isArray(account.emailRecords) && account.emailRecords.length >= 1) {
+    const email = account.emailRecords[0].address;
 
     return (
       <Components.ReactionAvatar

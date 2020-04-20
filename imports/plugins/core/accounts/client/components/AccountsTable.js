@@ -6,6 +6,7 @@ import DataTable, { useDataTable } from "@reactioncommerce/catalyst/DataTable";
 import { useSnackbar } from "notistack";
 import { makeStyles } from "@material-ui/core";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
+import { getAccountAvatar } from "/imports/plugins/core/accounts/client/helpers/helpers";
 import accountsQuery from "../graphql/queries/accounts";
 import archiveGroups from "../graphql/mutations/archiveGroups";
 import updateGroup from "../graphql/mutations/updateGroup";
@@ -50,10 +51,8 @@ function AccountsTable(props) {
   const columns = useMemo(() => [
     {
       Header: "",
-      accessor: (row) => {
-        const email = row.emailRecords[0].address;
-
-        return email;
+      accessor: (account) => {
+        return getAccountAvatar(account);
       },
       id: "profilePicture"
     }, {
