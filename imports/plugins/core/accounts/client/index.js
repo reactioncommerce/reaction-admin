@@ -2,7 +2,7 @@ import React from "react";
 import AccountIcon from "mdi-material-ui/AccountMultiple";
 
 import { registerOperatorRoute } from "/imports/client/ui";
-import Accounts from "./containers/accountsDashboardContainer";
+import GroupCards from "./components/GroupCards";
 
 export { default as AccountsDashboard } from "./components/accountsDashboard";
 export { default as AdminInviteForm } from "./components/adminInviteForm";
@@ -27,7 +27,7 @@ registerOperatorRoute({
   group: "navigation",
   path: "/accounts",
   priority: 40,
-  MainComponent: Accounts,
+  MainComponent: GroupCards,
   // eslint-disable-next-line react/display-name, react/no-multi-comp
   SidebarIconComponent: (props) => <AccountIcon {...props} />,
   sidebarI18nLabel: "admin.dashboard.accountsLabel"
