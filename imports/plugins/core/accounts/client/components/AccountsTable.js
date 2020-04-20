@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { useApolloClient, useMutation } from "@apollo/react-hooks";
 import i18next from "i18next";
 import { useHistory } from "react-router-dom";
@@ -69,8 +69,7 @@ function AccountsTable(props) {
     }
   ], []);
 
-
-  const onFetchData = useCallback(async ({ globalFilter, manualFilters, pageIndex, pageSize }) => {
+  const onFetchData = useCallback(async ({ pageIndex, pageSize }) => {
     // Wait for shop id to be available before fetching products.
     setIsLoading(true);
     if (!shopId) {
@@ -80,9 +79,7 @@ function AccountsTable(props) {
     const { data } = await apolloClient.query({
       query: accountsQuery,
       variables: {
-        shopId,
         groupIds: [props.group._id],
-        query: globalFilter,
         first: pageSize,
         limit: (pageIndex + 1) * pageSize,
         offset: pageIndex * pageSize
@@ -101,14 +98,10 @@ function AccountsTable(props) {
     setSelectedRows(rows || []);
   }, []);
 
-  const labels = useMemo(() => ({
-    globalFilterPlaceholder: i18next.t("admin.productTable.filters.placeholder")
-  }), []);
-
   const dataTableProps = useDataTable({
     columns,
     data: tableData,
-    labels,
+    isFilterable: false,
     pageCount,
     onFetchData,
     onRowSelect,
@@ -126,26 +119,18 @@ function AccountsTable(props) {
     }
 
     if (createProductError) {
-      enqueueSnackbar(i18next.t("admin.productTable.bulkActions.error", { variant: "error" }));
+      enqueueSnackbar(i18next.t("admin.accountsTable.bulkActions.error", { variant: "error" }));
     }
   };
 
   // Create options for the built-in ActionMenu in the DataTable
   const options = useMemo(() => [{
-    label: i18next.t("admin.productTable.bulkActions.addRemoveTags"),
+    label: i18next.t("admin.accountsTable.bulkActions.addRemoveGroups"),
     isDisabled: selectedRows.length === 0,
     onClick: () => {
       setTagSelectorVisibility(true);
     }
-  }], [apolloClient, enqueueSnackbar, refetch, selectedRows, shopId]);
-
-  const classes = useStyles();
-  const selectedAccount = selectedRows.length ? `${selectedRows.length} selected` : "";
-  const cardTitle = (
-    <Fragment>
-      {i18next.t("admin.accounts")}<span className={classes.selectedAccount}>{selectedAccount}</span>
-    </Fragment>
-  );
+  }], [selectedRows]);
 
   return (
     <DataTable
