@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { Fragment, useState, useMemo, useCallback } from "react";
 import { useApolloClient, useMutation } from "@apollo/react-hooks";
 import i18next from "i18next";
 import { useHistory } from "react-router-dom";
@@ -12,6 +12,8 @@ import archiveGroups from "../graphql/mutations/archiveGroups";
 import updateGroup from "../graphql/mutations/updateGroup";
 import cloneGroups from "../graphql/mutations/cloneGroups";
 import createGroupMutation from "../graphql/mutations/createGroup";
+import GroupSelectorDialog from "./GroupSelector/GroupSelectorDialog";
+import useGroups from "../hooks/useGroups";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -37,6 +39,7 @@ function AccountsTable(props) {
   const history = useHistory();
   const [shopId] = useCurrentShopId();
   const [createGroup, { error: createProductError }] = useMutation(createGroupMutation);
+  const { isLoadingGroups, groups } = useGroups(shopId);
 
   // React-Table state
   const [isLoading, setIsLoading] = useState(false);
@@ -45,15 +48,13 @@ function AccountsTable(props) {
   const [tableData, setTableData] = useState([]);
 
   // Tag selector state
-  const [isTagSelectorVisible, setTagSelectorVisibility] = useState(false);
+  const [isGroupSelectorVisible, setGroupSelectorVisibility] = useState(false);
 
   // Create and memoize the column data
   const columns = useMemo(() => [
     {
       Header: "",
-      accessor: (account) => {
-        return getAccountAvatar(account);
-      },
+      accessor: (account) => getAccountAvatar(account),
       id: "profilePicture"
     }, {
       Header: i18next.t("admin.accountsTable.header.email"),
@@ -110,34 +111,32 @@ function AccountsTable(props) {
 
   const { refetch } = dataTableProps;
 
-  const handleCreateGroup = async () => {
-    const { data } = await createGroup({ variables: { input: { shopId } } });
-
-    if (data) {
-      const { createGroup: { product } } = data;
-      history.push(`/products/${product._id}`);
-    }
-
-    if (createProductError) {
-      enqueueSnackbar(i18next.t("admin.accountsTable.bulkActions.error", { variant: "error" }));
-    }
-  };
-
   // Create options for the built-in ActionMenu in the DataTable
   const options = useMemo(() => [{
-    label: i18next.t("admin.accountsTable.bulkActions.addRemoveGroups"),
+    label: i18next.t("admin.accountsTable.bulkActions.addRemoveGroupsFromAccount"),
     isDisabled: selectedRows.length === 0,
     onClick: () => {
-      setTagSelectorVisibility(true);
+      setGroupSelectorVisibility(true);
     }
   }], [selectedRows]);
 
   return (
-    <DataTable
-      {...dataTableProps}
-      actionMenuProps={{ options }}
-      isLoading={isLoading}
-    />
+    <Fragment>
+      {selectedRows && !isLoadingGroups &&
+        <GroupSelectorDialog
+          isOpen={isGroupSelectorVisible}
+          onSuccess={() => null}
+          onClose={() => setGroupSelectorVisibility(false)}
+          accounts={tableData.filter((account) => selectedRows.includes(account._id))}
+          groups={groups}
+        />
+      }
+      <DataTable
+        {...dataTableProps}
+        actionMenuProps={{ options }}
+        isLoading={isLoading}
+      />
+    </Fragment>
   );
 }
 

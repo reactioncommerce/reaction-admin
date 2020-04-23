@@ -27,6 +27,7 @@ export default gql`
           address
           verified
         }
+        groups
         name
       }
       totalCount

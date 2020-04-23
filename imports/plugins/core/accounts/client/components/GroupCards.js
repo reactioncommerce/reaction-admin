@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import classNames from "classnames";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import i18next from "i18next";
 import Button from "@reactioncommerce/catalyst/Button";
 import { useSnackbar } from "notistack";
-import { Card, CardHeader, CardContent, Grid, makeStyles } from "@material-ui/core";
+import { Card, CardHeader, CardContent, Collapse, Grid, IconButton, makeStyles } from "@material-ui/core";
+import ExpandMoreIcon from "mdi-material-ui/ChevronUp";
 import { Components } from "@reactioncommerce/reaction-components";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import groupsQuery from "../graphql/queries/groups";
@@ -18,11 +20,21 @@ const useStyles = makeStyles((theme) => ({
     overflow: "visible"
   },
   cardHeader: {
-    paddingBottom: 0
+    // paddingBottom: 0
   },
   selectedProducts: {
     fontWeight: 400,
     marginLeft: theme.spacing(1)
+  },
+  expand: {
+    transform: 'rotate(0deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    })
+  },
+  expandOpen: {
+    transform: 'rotate(180deg)',
   }
 }));
 
