@@ -55,16 +55,14 @@ const useStyles = makeStyles((theme) => ({
  */
 function GroupSelector({ isOpen, onClose, onSuccess, accounts, groups }) {
   const apolloClient = useApolloClient();
-  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedGroups, setSelectedGroups] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
-  console.log(accounts);
-
   // eslint-disable-next-line consistent-return
   const handleTagsAction = async (option) => {
-    const tagIds = selectedTags && selectedTags.map(({ value }) => (value));
+    const tagIds = selectedGroups && selectedGroups.map(({ value }) => (value));
 
     // Prevent user from executing action if he/she has not // yet selected at least one tag
     if (!tagIds.length) {
@@ -125,13 +123,18 @@ function GroupSelector({ isOpen, onClose, onSuccess, accounts, groups }) {
     }
 
     onClose();
-    setSelectedTags([]);
+    setSelectedGroups([]);
   };
 
   const groupsForSelect = groups.map((group) => ({ value: group._id, label: group.name }));
 
-  if (accounts && accounts.length === 1 && selectedTags && selectedTags.length === 0) {
-    setSelectedTags(accounts.groups);
+  // If modifying one single account, pre-select groups that the account already belongs to
+  if (Array.isArray(accounts) && accounts.length === 1 &&
+    accounts[0].groups && Array.isArray(accounts[0].groups.nodes) && accounts[0].groups.nodes.length > 0 &&
+    selectedGroups && selectedGroups.length === 0) {
+
+    const preSelectedGroups = accounts[0].groups.nodes.map((group) => ({ value: group._id, label: group.name }));
+    setSelectedGroups(preSelectedGroups);
   }
 
   return (
@@ -154,13 +157,11 @@ function GroupSelector({ isOpen, onClose, onSuccess, accounts, groups }) {
         <Grid container spacing={1} className={classes.cardContainer}>
           <Grid item sm={12}>
             <Select
-              cacheOptions
-              defaultOptions
-              isAsync
               isMulti
               options={groupsForSelect}
-              onSelection={(tags) => setSelectedTags(tags)}
+              onSelection={(tags) => setSelectedGroups(tags)}
               placeholder={i18next.t("admin.addRemoveGroupsFromAccount.inputPlaceholder")}
+              value={selectedGroups}
             />
           </Grid>
         </Grid>

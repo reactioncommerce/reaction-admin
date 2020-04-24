@@ -27,7 +27,12 @@ export default gql`
           address
           verified
         }
-        groups
+        groups {
+          nodes {
+            _id
+            name
+          }
+        }
         name
       }
       totalCount
