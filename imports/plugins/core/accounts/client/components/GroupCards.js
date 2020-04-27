@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import classNames from "classnames";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import i18next from "i18next";
@@ -14,27 +14,12 @@ import updateGroup from "../graphql/mutations/updateGroup";
 import cloneGroups from "../graphql/mutations/cloneGroups";
 import createGroupMutation from "../graphql/mutations/createGroup";
 import AccountsTable from "./AccountsTable";
+import CreateGroupDialog from "./CreateGroup/CreateGroupDialog";
+import useGroups from "../hooks/useGroups";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   card: {
     overflow: "visible"
-  },
-  cardHeader: {
-    // paddingBottom: 0
-  },
-  selectedProducts: {
-    fontWeight: 400,
-    marginLeft: theme.spacing(1)
-  },
-  expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    })
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
   }
 }));
 
@@ -48,21 +33,10 @@ function GroupCards() {
   const [shopId] = useCurrentShopId();
   const [createGroup, { error: createGroupError }] = useMutation(createGroupMutation);
   const classes = useStyles();
+  const [isCreateGroupDialogVisible, setCreateGroupDialogVisibility] = useState(false);
+  const { isLoadingGroups, groups, refetchGroups } = useGroups(shopId);
 
-  const { data: groupData, loading, refetch: refetchGroups } = useQuery(groupsQuery, {
-    variables: {
-      shopId
-    },
-    fetchPolicy: "network-only"
-  });
-
-  let groups;
-
-  if (groupData && groupData.groups && groupData.groups.nodes) {
-    groups = groupData.groups.nodes;
-  }
-
-  const handleCreateGroup = async () => {
+  const handleShowCreateGroupModal = async () => {
     const { data } = await createGroup({ variables: { input: { shopId } } });
 
     if (data) {
@@ -75,23 +49,31 @@ function GroupCards() {
   };
 
   return (
-    <Grid container spacing={3}>
-      <Grid item sm={12}>
-        <Button color="primary" variant="contained" onClick={handleCreateGroup}>
-          {i18next.t("admin.createGroup") || "Create group"}
-        </Button>
+    <Fragment>
+      <CreateGroupDialog
+        isOpen={isCreateGroupDialogVisible}
+        onSuccess={refetchGroups}
+        onClose={() => setCreateGroupDialogVisibility(false)}
+        shopId={shopId}
+      />
+      <Grid container spacing={3}>
+        <Grid item sm={12}>
+          <Button color="primary" variant="contained" onClick={() => setCreateGroupDialogVisibility(true)}>
+            {i18next.t("admin.createGroup") || "Create group"}
+          </Button>
+        </Grid>
+        <Grid item sm={12}>
+          {!shopId || !groups || isLoadingGroups ? <Components.Loading /> : groups.map((group) => (
+            <Card className={classes.card} key={group._id}>
+              <CardHeader classes={{ root: classes.cardHeader }} title={group.name} />
+              <CardContent>
+                <AccountsTable group={group} />
+              </CardContent>
+            </Card>
+          ))}
+        </Grid>
       </Grid>
-      <Grid item sm={12}>
-        {!shopId || !groups || loading ? <Components.Loading /> : groups.map((group) => (
-          <Card className={classes.card} key={group._id}>
-            <CardHeader classes={{ root: classes.cardHeader }} title={group.name} />
-            <CardContent>
-              <AccountsTable group={group} />
-            </CardContent>
-          </Card>
-        ))}
-      </Grid>
-    </Grid>
+    </Fragment>
   );
 }
 
