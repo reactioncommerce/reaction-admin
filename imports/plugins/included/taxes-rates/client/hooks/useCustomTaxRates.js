@@ -10,6 +10,7 @@ const getTaxRatesQuery = gql`
         postal
         rate
         region
+        sourcing
         taxCode
       }
       totalCount

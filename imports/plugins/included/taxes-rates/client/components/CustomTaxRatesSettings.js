@@ -69,6 +69,10 @@ export default function CustomTaxRatesSettings() {
     Cell: cellWithDefaultText,
     Header: i18next.t("admin.taxGrid.postal")
   }, {
+    accessor: "sourcing",
+    Cell: cellWithDefaultText,
+    Header: i18next.t("admin.taxGrid.sourcing")
+  }, {
     accessor: "taxCode",
     Cell: cellWithDefaultText,
     Header: i18next.t("admin.taxGrid.taxCode")
