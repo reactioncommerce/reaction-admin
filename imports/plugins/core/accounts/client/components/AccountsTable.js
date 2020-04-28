@@ -12,7 +12,7 @@ import archiveGroups from "../graphql/mutations/archiveGroups";
 import updateGroup from "../graphql/mutations/updateGroup";
 import cloneGroups from "../graphql/mutations/cloneGroups";
 import createGroupMutation from "../graphql/mutations/createGroup";
-import GroupSelectorDialog from "./GroupSelector/GroupSelectorDialog";
+import GroupSelectorDialog from "./GroupSelectorDialog";
 import useGroups from "../hooks/useGroups";
 
 const useStyles = makeStyles((theme) => ({

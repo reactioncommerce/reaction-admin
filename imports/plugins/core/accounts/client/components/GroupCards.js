@@ -14,7 +14,7 @@ import updateGroup from "../graphql/mutations/updateGroup";
 import cloneGroups from "../graphql/mutations/cloneGroups";
 import createGroupMutation from "../graphql/mutations/createGroup";
 import AccountsTable from "./AccountsTable";
-import CreateGroupDialog from "./CreateGroup/CreateGroupDialog";
+import CreateGroupDialog from "./CreateGroupDialog";
 import useGroups from "../hooks/useGroups";
 
 const useStyles = makeStyles(() => ({

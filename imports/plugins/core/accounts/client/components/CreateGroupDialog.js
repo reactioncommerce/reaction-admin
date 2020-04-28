@@ -20,8 +20,8 @@ import {
   IconButton,
   makeStyles
 } from "@material-ui/core";
-import useRoles from "../../hooks/useRoles";
-import createGroupMutation from "../../graphql/mutations/createGroup";
+import useRoles from "../hooks/useRoles";
+import createGroupMutation from "../graphql/mutations/createGroup";
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -72,7 +72,7 @@ function CreateGroup({ isOpen, onClose, onSuccess, shopId }) {
     },
     onError() {
       setIsSubmitting(false);
-      enqueueSnackbar(i18next.t("admin.groupCards.createGroupDialog.saveFailed"), { variant: "warning" });
+      enqueueSnackbar(i18next.t("admin.groupCards.createGroupDialog.saveFailed"), { variant: "error" });
     }
   });
 

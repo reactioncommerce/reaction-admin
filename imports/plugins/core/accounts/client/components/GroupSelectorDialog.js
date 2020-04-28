@@ -5,7 +5,7 @@ import CloseIcon from "mdi-material-ui/Close";
 import Button from "@reactioncommerce/catalyst/Button";
 import Select from "@reactioncommerce/catalyst/Select";
 import SplitButton from "@reactioncommerce/catalyst/SplitButton";
-import { useApolloClient } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import { useSnackbar } from "notistack";
 import {
   Box,
@@ -17,16 +17,7 @@ import {
   IconButton,
   makeStyles
 } from "@material-ui/core";
-import { ADD_TAGS_TO_PRODUCTS, REMOVE_TAGS_FROM_PRODUCTS } from "./mutations";
-
-const ACTION_OPTIONS = [{
-  label: "Add tags to products",
-  type: "ADD"
-}, {
-  label: "Remove tags from products",
-  isDestructive: true,
-  type: "REMOVE"
-}];
+import updateGroupsForAccountsMutation from "../graphql/mutations/updateGroupsForAccounts";
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -54,74 +45,44 @@ const useStyles = makeStyles((theme) => ({
  * @returns {React.Component} A React component
  */
 function GroupSelector({ isOpen, onClose, onSuccess, accounts, groups }) {
-  const apolloClient = useApolloClient();
   const [selectedGroups, setSelectedGroups] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
+  const [updateGroupsForAccounts] = useMutation(updateGroupsForAccountsMutation, {
+    ignoreResults: true,
+    onCompleted() {
+      setIsSubmitting(false);
+      onSuccess();
+    },
+    onError() {
+      setIsSubmitting(false);
+      enqueueSnackbar(i18next.t("admin.accountsTable.groupSelectorDialog.saveFailed"), { variant: "error" });
+    }
+  });
+
   // eslint-disable-next-line consistent-return
-  const handleTagsAction = async (option) => {
-    const tagIds = selectedGroups && selectedGroups.map(({ value }) => (value));
+  const handleSubmit = async () => {
+    const groupIds = selectedGroups && selectedGroups.map(({ value }) => (value));
 
-    // Prevent user from executing action if he/she has not // yet selected at least one tag
-    if (!tagIds.length) {
-      return enqueueSnackbar(i18next.t("admin.addRemoveTags.invalidSelection"), { variant: "warning" });
+    // Prevent user from executing action if they haven't yet selected at least one group
+    if (!groupIds.length) {
+      return enqueueSnackbar(i18next.t("admin.accountsTable.groupSelectorDialog.invalidSelection"), { variant: "warning" });
     }
 
-    let mutationName;
-    let data; let loading; let error;
-    setIsLoading(true);
-    switch (option.type) {
-      case "ADD":
-        mutationName = "addTagsToProducts";
-        ({ data, loading, error } = await apolloClient.mutate({
-          mutation: ADD_TAGS_TO_PRODUCTS,
-          variables: {
-            input: {
-              accountIds,
-              groupId,
-              tagIds
-            }
-          }
-        }));
+    setIsSubmitting(true);
 
-        setIsLoading(loading);
-        break;
-      case "REMOVE":
-        mutationName = "removeTagsFromProducts";
-        ({ data, loading, error } = await apolloClient.mutate({
-          mutation: REMOVE_TAGS_FROM_PRODUCTS,
-          variables: {
-            input: {
-              accountIds,
-              groupId,
-              tagIds
-            }
-          }
-        }));
-
-        setIsLoading(loading);
-        break;
-
-      default:
-        break;
-    }
-
-    if (data && data[mutationName]) {
-      // Notify user of performed action
-      if (mutationName.startsWith("add")) {
-        enqueueSnackbar(i18next.t("admin.addRemoveTags.addConfirmation"));
-      } else {
-        enqueueSnackbar(i18next.t("admin.addRemoveTags.removeConfirmation"));
+    await updateGroupsForAccounts({
+      variables: {
+        input: {
+          groupIds,
+          accountIds: accounts.map((account) => account._id)
+        }
       }
-      onSuccess && onSuccess();
-    }
+    });
 
-    if (error) {
-      enqueueSnackbar(i18next.t("admin.addRemoveTags.errorMessage"), { variant: "error" });
-    }
-
+    setIsSubmitting(false);
     onClose();
     setSelectedGroups([]);
   };
@@ -160,7 +121,7 @@ function GroupSelector({ isOpen, onClose, onSuccess, accounts, groups }) {
               isMulti
               options={groupsForSelect}
               onSelection={(tags) => setSelectedGroups(tags)}
-              placeholder={i18next.t("admin.addRemoveGroupsFromAccount.inputPlaceholder")}
+              placeholder={i18next.t("admin.accountsTable.groupSelectorDialog.inputPlaceholder")}
               value={selectedGroups}
             />
           </Grid>
@@ -174,12 +135,15 @@ function GroupSelector({ isOpen, onClose, onSuccess, accounts, groups }) {
             {i18next.t("app.cancel")}
           </Button>
         </Box>
-        <SplitButton
+        <Button
           color="primary"
-          options={ACTION_OPTIONS}
-          onClick={handleTagsAction}
-          isWaiting={isLoading}
-        />
+          disabled={isSubmitting}
+          variant="contained"
+          onClick={handleSubmit}
+          type="submit"
+        >
+          {isSubmitting ? i18next.t("app.settings.saveProcessing") : i18next.t("app.saveChanges")}
+        </Button>
       </CardActions>
     </Dialog>
   );
