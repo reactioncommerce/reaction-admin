@@ -15,6 +15,7 @@ import cloneGroups from "../graphql/mutations/cloneGroups";
 import createGroupMutation from "../graphql/mutations/createGroup";
 import AccountsTable from "./AccountsTable";
 import CreateGroupDialog from "./CreateGroupDialog";
+import InviteShopMemberDialog from "./InviteShopMemberDialog";
 import useGroups from "../hooks/useGroups";
 
 const useStyles = makeStyles(() => ({
@@ -34,19 +35,8 @@ function GroupCards() {
   const [createGroup, { error: createGroupError }] = useMutation(createGroupMutation);
   const classes = useStyles();
   const [isCreateGroupDialogVisible, setCreateGroupDialogVisibility] = useState(false);
+  const [isInviteShopMemberDialogVisible, setInviteShopMemberDialogVisibility] = useState(false);
   const { isLoadingGroups, groups, refetchGroups } = useGroups(shopId);
-
-  const handleShowCreateGroupModal = async () => {
-    const { data } = await createGroup({ variables: { input: { shopId } } });
-
-    if (data) {
-      refetchGroups();
-    }
-
-    if (createGroupError) {
-      enqueueSnackbar(i18next.t("admin.productTable.bulkActions.error", { variant: "error" }));
-    }
-  };
 
   return (
     <Fragment>
@@ -56,10 +46,20 @@ function GroupCards() {
         onClose={() => setCreateGroupDialogVisibility(false)}
         shopId={shopId}
       />
+      <InviteShopMemberDialog
+        isOpen={isInviteShopMemberDialogVisible}
+        onSuccess={() => true}
+        onClose={() => setInviteShopMemberDialogVisibility(false)}
+        groups={groups}
+        shopId={shopId}
+      />
       <Grid container spacing={3}>
         <Grid item sm={12}>
           <Button color="primary" variant="contained" onClick={() => setCreateGroupDialogVisibility(true)}>
             {i18next.t("admin.createGroup") || "Create group"}
+          </Button>
+          <Button color="primary" variant="contained" onClick={() => setInviteShopMemberDialogVisibility(true)}>
+            {i18next.t("admin.inviteShopMember") || "Invite shop member"}
           </Button>
         </Grid>
         <Grid item sm={12}>
@@ -67,7 +67,7 @@ function GroupCards() {
             <Card className={classes.card} key={group._id}>
               <CardHeader classes={{ root: classes.cardHeader }} title={group.name} />
               <CardContent>
-                <AccountsTable group={group} />
+                <AccountsTable group={group} groups={groups} isLoadingGroups={isLoadingGroups} />
               </CardContent>
             </Card>
           ))}

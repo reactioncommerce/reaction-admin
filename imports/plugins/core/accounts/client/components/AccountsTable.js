@@ -39,7 +39,6 @@ function AccountsTable(props) {
   const history = useHistory();
   const [shopId] = useCurrentShopId();
   const [createGroup, { error: createProductError }] = useMutation(createGroupMutation);
-  const { isLoadingGroups, groups } = useGroups(shopId);
 
   // React-Table state
   const [isLoading, setIsLoading] = useState(false);
@@ -122,13 +121,13 @@ function AccountsTable(props) {
 
   return (
     <Fragment>
-      {selectedRows && !isLoadingGroups &&
+      {selectedRows && !props.isLoadingGroups &&
         <GroupSelectorDialog
           isOpen={isGroupSelectorVisible}
           onSuccess={() => null}
           onClose={() => setGroupSelectorVisibility(false)}
           accounts={tableData.filter((account) => selectedRows.includes(account._id))}
-          groups={groups}
+          groups={props.groups}
         />
       }
       <DataTable
