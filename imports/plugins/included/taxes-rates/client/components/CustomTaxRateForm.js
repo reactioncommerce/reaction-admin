@@ -151,10 +151,10 @@ export default function CustomTaxRateForm(props) {
           variables: {
             input: {
               // In case doc has additional fields not allowed, we'll copy just what we want
-              country: formData.country,
-              postal: formData.postal,
+              country: formData.country || null,
+              postal: formData.postal || null,
               rate: Number(formData.rate),
-              region: formData.region,
+              region: formData.region || null,
               shopId,
               sourcing: formData.sourcing,
               taxCode: formData.taxCode,
@@ -167,10 +167,10 @@ export default function CustomTaxRateForm(props) {
           variables: {
             input: {
               // In case doc has additional fields not allowed, we'll copy just what we want
-              country: formData.country,
-              postal: formData.postal,
+              country: formData.country || null,
+              postal: formData.postal || null,
               rate: Number(formData.rate),
-              region: formData.region,
+              region: formData.region || null,
               shopId,
               sourcing: formData.sourcing,
               taxCode: formData.taxCode
@@ -182,10 +182,10 @@ export default function CustomTaxRateForm(props) {
     validator(formData) {
       return validator({
         // In case doc has additional fields not allowed, we'll copy just what we want
-        country: formData.country,
-        postal: formData.postal,
+        country: formData.country || null,
+        postal: formData.postal || null,
         rate: Number(formData.rate),
-        region: formData.region,
+        region: formData.region || null,
         sourcing: formData.sourcing,
         taxCode: formData.taxCode
       });
