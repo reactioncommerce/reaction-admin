@@ -2,6 +2,7 @@ import React, { Fragment, useState } from "react";
 import classNames from "classnames";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import i18next from "i18next";
+import startCase from "lodash/startCase";
 import Button from "@reactioncommerce/catalyst/Button";
 import { useSnackbar } from "notistack";
 import { Card, CardHeader, CardContent, Collapse, Grid, IconButton, makeStyles } from "@material-ui/core";
@@ -65,7 +66,7 @@ function GroupCards() {
         <Grid item sm={12}>
           {!shopId || !groups || isLoadingGroups ? <Components.Loading /> : groups.map((group) => (
             <Card className={classes.card} key={group._id}>
-              <CardHeader classes={{ root: classes.cardHeader }} title={group.name} />
+              <CardHeader classes={{ root: classes.cardHeader }} title={startCase(group.name)} />
               <CardContent>
                 <AccountsTable group={group} groups={groups} isLoadingGroups={isLoadingGroups} />
               </CardContent>
