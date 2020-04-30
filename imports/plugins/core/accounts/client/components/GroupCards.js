@@ -1,12 +1,7 @@
 import React, { Fragment, useState } from "react";
-import classNames from "classnames";
-import { useMutation, useQuery } from "@apollo/react-hooks";
 import i18next from "i18next";
-import startCase from "lodash/startCase";
 import Button from "@reactioncommerce/catalyst/Button";
-import { useSnackbar } from "notistack";
-import { Card, CardHeader, CardContent, Collapse, Grid, IconButton, makeStyles } from "@material-ui/core";
-import ExpandMoreIcon from "mdi-material-ui/ChevronUp";
+import { Grid, makeStyles } from "@material-ui/core";
 import { Components } from "@reactioncommerce/reaction-components";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import groupsQuery from "../graphql/queries/groups";
@@ -14,14 +9,20 @@ import archiveGroups from "../graphql/mutations/archiveGroups";
 import updateGroup from "../graphql/mutations/updateGroup";
 import cloneGroups from "../graphql/mutations/cloneGroups";
 import createGroupMutation from "../graphql/mutations/createGroup";
-import AccountsTable from "./AccountsTable";
 import CreateGroupDialog from "./CreateGroupDialog";
 import InviteShopMemberDialog from "./InviteShopMemberDialog";
+import GroupCard from "./GroupCard";
 import useGroups from "../hooks/useGroups";
 
 const useStyles = makeStyles(() => ({
-  card: {
-    overflow: "visible"
+  actionButtons: {
+    marginTop: "1rem"
+  },
+  actionButton: {
+    marginLeft: ".5rem",
+    "&:first-child": {
+      marginLeft: 0
+    }
   }
 }));
 
@@ -31,13 +32,11 @@ const useStyles = makeStyles(() => ({
  * @returns {React.Component} A React component
  */
 function GroupCards() {
-  const { enqueueSnackbar } = useSnackbar();
   const [shopId] = useCurrentShopId();
-  const [createGroup, { error: createGroupError }] = useMutation(createGroupMutation);
-  const classes = useStyles();
   const [isCreateGroupDialogVisible, setCreateGroupDialogVisibility] = useState(false);
   const [isInviteShopMemberDialogVisible, setInviteShopMemberDialogVisibility] = useState(false);
   const { isLoadingGroups, groups, refetchGroups } = useGroups(shopId);
+  const classes = useStyles();
 
   return (
     <Fragment>
@@ -55,22 +54,17 @@ function GroupCards() {
         shopId={shopId}
       />
       <Grid container spacing={3}>
-        <Grid item sm={12}>
-          <Button color="primary" variant="contained" onClick={() => setCreateGroupDialogVisibility(true)}>
+        <Grid item sm={12} className={classes.actionButtons}>
+          <Button className={classes.actionButton} color="primary" variant="contained" onClick={() => setCreateGroupDialogVisibility(true)}>
             {i18next.t("admin.createGroup") || "Create group"}
           </Button>
-          <Button color="primary" variant="contained" onClick={() => setInviteShopMemberDialogVisibility(true)}>
-            {i18next.t("admin.inviteShopMember") || "Invite shop member"}
+          <Button className={classes.actionButton} color="primary" variant="contained" onClick={() => setInviteShopMemberDialogVisibility(true)}>
+            {i18next.t("admin.inviteStaffMember") || "Invite staff member"}
           </Button>
         </Grid>
         <Grid item sm={12}>
           {!shopId || !groups || isLoadingGroups ? <Components.Loading /> : groups.map((group) => (
-            <Card className={classes.card} key={group._id}>
-              <CardHeader classes={{ root: classes.cardHeader }} title={startCase(group.name)} />
-              <CardContent>
-                <AccountsTable group={group} groups={groups} isLoadingGroups={isLoadingGroups} />
-              </CardContent>
-            </Card>
+            <GroupCard group={group} groups={groups} isLoadingGroups={isLoadingGroups} />
           ))}
         </Grid>
       </Grid>
