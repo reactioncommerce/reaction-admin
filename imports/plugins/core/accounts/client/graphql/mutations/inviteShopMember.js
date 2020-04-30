@@ -4,9 +4,6 @@ export default gql`
   mutation inviteShopMember($input: InviteShopMemberInput!) {
     inviteShopMember(input: $input) {
       clientMutationId
-      account {
-        _id
-      }
     }
   }
 `;

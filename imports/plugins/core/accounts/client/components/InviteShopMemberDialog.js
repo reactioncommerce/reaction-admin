@@ -44,9 +44,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const formSchema = new SimpleSchema({
-  groupName: {
+  name: {
     type: String
   },
+  email: {
+    type: String,
+    min: 3
+  }
 });
 const validator = formSchema.getFormValidator();
 
