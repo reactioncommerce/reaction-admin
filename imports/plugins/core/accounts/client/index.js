@@ -2,19 +2,10 @@ import React from "react";
 import AccountIcon from "mdi-material-ui/AccountMultiple";
 
 import { registerOperatorRoute } from "/imports/client/ui";
+
 import Accounts from "./components/Accounts";
 
-export { default as AdminInviteForm } from "./components/adminInviteForm";
-export { default as EditGroup } from "./components/editGroup";
-export { default as GroupForm } from "./components/groupForm";
-export { default as GroupsTable } from "./components/groupsTable";
-export { default as GroupsTableButton } from "./components/groupsTableButton";
-export { default as GroupsTableCell } from "./components/groupsTableCell";
-export { default as ManageGroups } from "./components/manageGroups";
-export { default as PermissionsList } from "./components/permissionsList";
 export { default as UpdateEmail } from "./containers/updateEmail";
-
-export { default as EditGroupContainer } from "./containers/editGroupContainer";
 export { default as VerifyAccount } from "./containers/verifyAccount";
 
 import "./templates/profile/profile.html";
