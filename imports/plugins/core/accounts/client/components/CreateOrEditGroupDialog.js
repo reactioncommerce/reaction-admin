@@ -22,6 +22,7 @@ import {
 } from "@material-ui/core";
 import useRoles from "../hooks/useRoles";
 import createGroupMutation from "../graphql/mutations/createGroup";
+import updateGroupMutation from "../graphql/mutations/updateGroup";
 
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
@@ -44,37 +45,52 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const formSchema = new SimpleSchema({
-  groupName: {
+  name: {
     type: String
-  },
+  }
 });
 const validator = formSchema.getFormValidator();
 
 /**
- * CreateGroup component
+ * CreateOrEditGroup component
  * @param {Object} props Component props
  * @returns {React.Component} A React component
  */
-function CreateGroup({ isOpen, onClose, onSuccess, shopId }) {
+function CreateOrEditGroup({ isOpen, onClose, onSuccess, group, shopId }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedRoles, setSelectedRoles] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
   const { roles } = useRoles(shopId);
 
-  const [createGroup] = useMutation(createGroupMutation, {
+  const [selectedRoles, setSelectedRoles] = useState(group ? group.permissions.map((role) => ({ label: role, value: role })) : []);
+
+  let mutation = createGroupMutation;
+
+  if (group) {
+    mutation = updateGroupMutation;
+  }
+
+  const [createOrUpdateGroup] = useMutation(mutation, {
     ignoreResults: true,
     onCompleted() {
       setIsSubmitting(false);
       onSuccess();
+      onClose();
     },
     onError() {
       setIsSubmitting(false);
-      enqueueSnackbar(i18next.t("admin.groupCards.createGroupDialog.saveFailed"), { variant: "error" });
+      enqueueSnackbar(i18next.t("admin.groupCards.createOrUpdateGroupDialog.saveFailed"), { variant: "error" });
     }
   });
+
+  const initialValues = {};
+  const groupIdVariable = {};
+
+  if (group) {
+    initialValues.value = group;
+    groupIdVariable.groupId = group._id;
+  }
 
   const {
     getFirstErrorMessage,
@@ -86,14 +102,17 @@ function CreateGroup({ isOpen, onClose, onSuccess, shopId }) {
     async onSubmit(formData) {
       setIsSubmitting(true);
 
-      await createGroup({
+      await createOrUpdateGroup({
         variables: {
           input: {
             group: {
-              name: formData.groupName,
+              name: formData.name,
+              description: formData.description,
+              slug: formData.slug,
               permissions: selectedRoles.map((role) => role.value)
             },
-            shopId
+            shopId,
+            ...groupIdVariable
           }
         }
       });
@@ -102,7 +121,8 @@ function CreateGroup({ isOpen, onClose, onSuccess, shopId }) {
     },
     validator(formData) {
       return validator(formSchema.clean(formData));
-    }
+    },
+    ...initialValues
   });
 
   const handleSubmit = (event) => {
@@ -126,25 +146,44 @@ function CreateGroup({ isOpen, onClose, onSuccess, shopId }) {
             <CloseIcon />
           </IconButton>
         }
-        title={i18next.t("admin.groupCards.createGroupDialog.title")}
+        title={i18next.t("admin.groupCards.createOrUpdateGroupDialog.title")}
       />
       <CardContent>
         <Grid container spacing={1} className={classes.cardContainer}>
           <Grid item sm={12}>
             <TextField
-              error={hasErrors(["groupName"])}
+              error={hasErrors(["name"])}
               fullWidth
-              helperText={getFirstErrorMessage(["groupName"])}
-              label={i18next.t("admin.groupCards.createGroupDialog.groupName")}
-              {...getInputProps("groupName", muiOptions)}
+              helperText={getFirstErrorMessage(["name"])}
+              label={i18next.t("admin.groupCards.createOrUpdateGroupDialog.name")}
+              {...getInputProps("name", muiOptions)}
+            />
+          </Grid>
+          <Grid item sm={12}>
+            <TextField
+              error={hasErrors(["slug"])}
+              fullWidth
+              helperText={getFirstErrorMessage(["slug"])}
+              label={i18next.t("admin.groupCards.createOrUpdateGroupDialog.slug")}
+              {...getInputProps("slug", muiOptions)}
+            />
+          </Grid>
+          <Grid item sm={12}>
+            <TextField
+              error={hasErrors(["description"])}
+              fullWidth
+              helperText={getFirstErrorMessage(["description"])}
+              label={i18next.t("admin.groupCards.createOrUpdateGroupDialog.description")}
+              {...getInputProps("description", muiOptions)}
             />
           </Grid>
           <Grid item sm={12}>
             <Select
+              fullWidth
               isMulti
               options={rolesForSelect}
-              onSelection={(roles) => setSelectedRoles(roles)}
-              placeholder={i18next.t("admin.groupCards.createGroupDialog.selectRoles")}
+              onSelection={setSelectedRoles}
+              placeholder={i18next.t("admin.groupCards.createOrUpdateGroupDialog.selectRoles")}
               value={selectedRoles}
             />
           </Grid>
@@ -172,11 +211,12 @@ function CreateGroup({ isOpen, onClose, onSuccess, shopId }) {
   );
 }
 
-CreateGroup.propTypes = {
+CreateOrEditGroup.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func,
-  shopId: PropTypes.string
+  group: PropTypes.object,
+  shopId: PropTypes.string.isRequired
 };
 
-export default CreateGroup;
+export default CreateOrEditGroup;

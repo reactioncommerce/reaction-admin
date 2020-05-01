@@ -2,6 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import { Grid, Typography, makeStyles } from "@material-ui/core";
 import ChevronDownIcon from "mdi-material-ui/ChevronDown";
+import PencilIcon from "mdi-material-ui/Pencil";
 import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = makeStyles((theme) => ({
@@ -22,13 +23,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function GroupCardHeader({ children, expanded, onExpandClick }) {
+function GroupCardHeader({ children: title, expanded, onEdit, onExpandClick }) {
   const classes = useStyles();
 
   return (
     <Grid container>
       <Grid item sm={11} className={classes.titleContainer}>
-        {children}
+        <IconButton onClick={onEdit}>
+          <PencilIcon />
+        </IconButton>
+        {title}
       </Grid>
       <Grid item sm={1}>
         <IconButton

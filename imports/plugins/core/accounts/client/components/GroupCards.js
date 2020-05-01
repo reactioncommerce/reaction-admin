@@ -9,7 +9,7 @@ import archiveGroups from "../graphql/mutations/archiveGroups";
 import updateGroup from "../graphql/mutations/updateGroup";
 import cloneGroups from "../graphql/mutations/cloneGroups";
 import createGroupMutation from "../graphql/mutations/createGroup";
-import CreateGroupDialog from "./CreateGroupDialog";
+import CreateOrEditGroupDialog from "./CreateOrEditGroupDialog";
 import InviteShopMemberDialog from "./InviteShopMemberDialog";
 import GroupCard from "./GroupCard";
 import useGroups from "../hooks/useGroups";
@@ -40,7 +40,7 @@ function GroupCards() {
 
   return (
     <Fragment>
-      <CreateGroupDialog
+      <CreateOrEditGroupDialog
         isOpen={isCreateGroupDialogVisible}
         onSuccess={refetchGroups}
         onClose={() => setCreateGroupDialogVisibility(false)}
@@ -64,7 +64,13 @@ function GroupCards() {
         </Grid>
         <Grid item sm={12}>
           {!shopId || !groups || isLoadingGroups ? <Components.Loading /> : groups.map((group) => (
-            <GroupCard group={group} groups={groups} isLoadingGroups={isLoadingGroups} />
+            <GroupCard
+              group={group}
+              groups={groups}
+              isLoadingGroups={isLoadingGroups}
+              refetchGroups={refetchGroups}
+              shopId={shopId}
+            />
           ))}
         </Grid>
       </Grid>

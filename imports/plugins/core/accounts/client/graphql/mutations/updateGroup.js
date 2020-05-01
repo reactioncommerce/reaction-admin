@@ -1,9 +1,11 @@
 import gql from "graphql-tag";
 
 export default gql`
-  mutation createAccountGroup($input: CreateAccountGroupInput!) {
-    createAccountGroup(input: $input) {
-      group
+  mutation updateAccountGroup($input: UpdateAccountGroupInput!) {
+    updateAccountGroup(input: $input) {
+      group {
+        _id
+      }
     }
   }
 `;
