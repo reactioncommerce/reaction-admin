@@ -3,6 +3,7 @@ import i18next from "i18next";
 import Divider from "@material-ui/core/Divider";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
+import Customers from "./Customers";
 import GroupCards from "./GroupCards";
 
 /**
@@ -28,7 +29,7 @@ function Accounts() {
       }
 
       {currentTab === 1 &&
-        <h1>Customers</h1>
+        <Customers />
       }
 
       {currentTab === 2 &&
