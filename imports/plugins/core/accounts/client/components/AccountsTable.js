@@ -1,32 +1,11 @@
 import React, { Fragment, useState, useMemo, useCallback } from "react";
-import { useApolloClient, useMutation } from "@apollo/react-hooks";
+import { useApolloClient } from "@apollo/react-hooks";
 import i18next from "i18next";
-import { useHistory } from "react-router-dom";
 import DataTable, { useDataTable } from "@reactioncommerce/catalyst/DataTable";
-import { useSnackbar } from "notistack";
-import { makeStyles } from "@material-ui/core";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import { getAccountAvatar } from "/imports/plugins/core/accounts/client/helpers/helpers";
 import accountsQuery from "../graphql/queries/accounts";
-import archiveGroups from "../graphql/mutations/archiveGroups";
-import updateGroup from "../graphql/mutations/updateGroup";
-import cloneGroups from "../graphql/mutations/cloneGroups";
-import createGroupMutation from "../graphql/mutations/createGroup";
 import GroupSelectorDialog from "./GroupSelectorDialog";
-import useGroups from "../hooks/useGroups";
-
-const useStyles = makeStyles((theme) => ({
-  card: {
-    overflow: "visible"
-  },
-  cardHeader: {
-    paddingBottom: 0
-  },
-  selectedAccount: {
-    fontWeight: 400,
-    marginLeft: theme.spacing(1)
-  }
-}));
 
 /**
  * @summary Main products view
@@ -35,10 +14,7 @@ const useStyles = makeStyles((theme) => ({
  */
 function AccountsTable(props) {
   const apolloClient = useApolloClient();
-  const { enqueueSnackbar } = useSnackbar();
-  const history = useHistory();
   const [shopId] = useCurrentShopId();
-  const [createGroup, { error: createProductError }] = useMutation(createGroupMutation);
 
   // React-Table state
   const [isLoading, setIsLoading] = useState(false);
@@ -57,11 +33,7 @@ function AccountsTable(props) {
       id: "profilePicture"
     }, {
       Header: i18next.t("admin.accountsTable.header.email"),
-      accessor: (row) => {
-        const email = row.emailRecords[0].address;
-
-        return email;
-      },
+      accessor: (row) => row.emailRecords[0].address,
       id: "email"
     }, {
       Header: i18next.t("admin.accountsTable.header.name"),
@@ -107,8 +79,6 @@ function AccountsTable(props) {
     onRowSelect,
     getRowId: (row) => row._id
   });
-
-  const { refetch } = dataTableProps;
 
   // Create options for the built-in ActionMenu in the DataTable
   const options = useMemo(() => [{
