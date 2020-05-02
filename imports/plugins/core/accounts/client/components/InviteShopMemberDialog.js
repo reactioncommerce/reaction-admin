@@ -73,7 +73,7 @@ function InviteShopMember({ isOpen, onClose, onSuccess, groups, shopId }) {
     },
     onError() {
       setIsSubmitting(false);
-      enqueueSnackbar(i18next.t("admin.groupCards.inviteShopMemberDialog.saveFailed"), { variant: "error" });
+      enqueueSnackbar(i18next.t("admin.groupCards.inviteStaffMemberDialog.saveFailed"), { variant: "error" });
     }
   });
 
@@ -126,7 +126,7 @@ function InviteShopMember({ isOpen, onClose, onSuccess, groups, shopId }) {
             <CloseIcon />
           </IconButton>
         }
-        title={i18next.t("admin.groupCards.inviteShopMemberDialog.title")}
+        title={i18next.t("admin.groupCards.inviteStaffMemberDialog.title")}
       />
       <CardContent>
         <Grid container spacing={1} className={classes.cardContainer}>
@@ -135,7 +135,7 @@ function InviteShopMember({ isOpen, onClose, onSuccess, groups, shopId }) {
               error={hasErrors(["name"])}
               fullWidth
               helperText={getFirstErrorMessage(["name"])}
-              label={i18next.t("admin.groupCards.inviteShopMemberDialog.name")}
+              label={i18next.t("admin.groupCards.inviteStaffMemberDialog.name")}
               {...getInputProps("name", muiOptions)}
             />
           </Grid>
@@ -144,7 +144,7 @@ function InviteShopMember({ isOpen, onClose, onSuccess, groups, shopId }) {
               error={hasErrors(["email"])}
               fullWidth
               helperText={getFirstErrorMessage(["email"])}
-              label={i18next.t("admin.groupCards.inviteShopMemberDialog.email")}
+              label={i18next.t("admin.groupCards.inviteStaffMemberDialog.email")}
               {...getInputProps("email", muiOptions)}
             />
           </Grid>
@@ -153,7 +153,7 @@ function InviteShopMember({ isOpen, onClose, onSuccess, groups, shopId }) {
               isMulti
               options={groupsForSelect}
               onSelection={(groups) => setSelectedGroups(groups)}
-              placeholder={i18next.t("admin.groupCards.inviteShopMemberDialog.selectRoles")}
+              placeholder={i18next.t("admin.groupCards.inviteStaffMemberDialog.selectGroups")}
               value={selectedGroups}
             />
           </Grid>

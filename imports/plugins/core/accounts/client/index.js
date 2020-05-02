@@ -18,7 +18,7 @@ registerOperatorRoute({
   MainComponent: Accounts,
   // eslint-disable-next-line react/display-name, react/no-multi-comp
   SidebarIconComponent: (props) => <AccountIcon {...props} />,
-  sidebarI18nLabel: "admin.dashboard.accountsLabel"
+  sidebarI18nLabel: "admin.accounts.accountsLabel"
 });
 
 registerOperatorRoute({

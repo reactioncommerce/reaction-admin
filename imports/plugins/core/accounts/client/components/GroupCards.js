@@ -51,10 +51,10 @@ function GroupCards() {
       <Grid container spacing={3}>
         <Grid item sm={12} className={classes.actionButtons}>
           <Button className={classes.actionButton} color="primary" variant="contained" onClick={() => setCreateGroupDialogVisibility(true)}>
-            {i18next.t("admin.createGroup") || "Create group"}
+            {i18next.t("admin.accounts.createGroup") || "Create group"}
           </Button>
           <Button className={classes.actionButton} color="primary" variant="contained" onClick={() => setInviteShopMemberDialogVisibility(true)}>
-            {i18next.t("admin.inviteStaffMember") || "Invite staff member"}
+            {i18next.t("admin.accounts.inviteStaffMember") || "Invite staff member"}
           </Button>
         </Grid>
         <Grid item sm={12}>
