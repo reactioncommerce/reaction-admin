@@ -5,6 +5,7 @@ import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Customers from "./Customers";
 import GroupCards from "./GroupCards";
+import Invitations from "./Invitations";
 
 /**
  * @summary Main accounts view
@@ -33,7 +34,7 @@ function Accounts() {
       }
 
       {currentTab === 2 &&
-        <h1>Invites</h1>
+        <Invitations />
       }
     </Fragment>
   );
