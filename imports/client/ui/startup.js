@@ -7,6 +7,8 @@ import { Tracker } from "meteor/tracker";
 import { ThemeProvider } from "styled-components";
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import { ApolloProvider } from "react-apollo";
+import { DndProvider } from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
 import { ComponentsProvider } from "@reactioncommerce/components-context";
 import { TranslationProvider } from "/imports/plugins/core/ui/client/providers";
 import initApollo from "/imports/plugins/core/graphql/lib/helpers/initApollo";
@@ -78,13 +80,15 @@ Meteor.startup(() => {
                     <ThemeProvider theme={theme}>
                       <MuiThemeProvider theme={defaultTheme}>
                         <SnackbarProvider anchorOrigin={snackbarPosition} maxSnack={3}>
-                          <Route>
-                            {(routeProps) => (
-                              <RouterContext.Provider value={routeProps}>
-                                <App />
-                              </RouterContext.Provider>
-                            )}
-                          </Route>
+                          <DndProvider backend={HTML5Backend}>
+                            <Route>
+                              {(routeProps) => (
+                                <RouterContext.Provider value={routeProps}>
+                                  <App />
+                                </RouterContext.Provider>
+                              )}
+                            </Route>
+                          </DndProvider>
                         </SnackbarProvider>
                       </MuiThemeProvider>
                     </ThemeProvider>
