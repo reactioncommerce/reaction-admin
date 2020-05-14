@@ -1,3 +1,20 @@
+# v3.0.0-beta.7
+
+This is the seventh beta release of the Reaction Admin project that is designed to work with our new Reaction API.
+
+### Refactors
+
+refactor: de-meteorize discount codes view ([#255](http://github.com/reactioncommerce/reaction-admin/pull/255))
+
+### Fixes
+
+fix: navigation tree not showing up ([#278](http://github.com/reactioncommerce/reaction-admin/pull/278))
+fix: use network-only fetchPolicy for tag table ([#254](http://github.com/reactioncommerce/reaction-admin/pull/254))
+
+## Contributors
+
+Thanks to @loan-laux for contributing to this release! 🎉
+
 # v3.0.0-beta.6
 
 This is the sixth beta release of the Reaction Admin project that is designed to work with our new Reaction API.
