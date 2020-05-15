@@ -10,7 +10,7 @@ defaults: &defaults
     DOCKER_NAMESPACE: "reactioncommerce"
     DOCKER_NAME: "admin"
   docker:
-    - image: circleci/node:12.14.0-stretch
+    - image: circleci/node:12.16.1-stretch
 
 jobs:
   install-dependencies:
@@ -23,7 +23,7 @@ jobs:
             - reaction-admin-v3-node-modules-{{ .Branch }}
       - run:
           name: Install the same NPM version that Meteor uses
-          command: sudo npm i -g npm@6.4.1
+          command: sudo npm i -g npm@6.14.0
       - run:
           name: Install NPM dependencies
           command: npm -v && npm ci

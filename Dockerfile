@@ -1,4 +1,4 @@
-FROM reactioncommerce/meteor:1.9.0-v1 as builder
+FROM reactioncommerce/meteor:1.10.2-v1 as builder
 
 ENV APP_SOURCE_DIR /usr/local/src/appsrc
 ENV APP_BUNDLE_DIR /usr/local/src/build
@@ -25,7 +25,7 @@ RUN printf "\\n[-] Building Meteor application...\\n" \
 ##############################################################################
 # final build stage - create the final production image
 ##############################################################################
-FROM node:12.14.0-slim
+FROM node:12.16.1-slim
 
 LABEL maintainer="Reaction Commerce <engineering@reactioncommerce.com>"
 
@@ -44,7 +44,7 @@ WORKDIR /usr/local/src/app/programs/server/
 RUN npm install --production --no-audit
 
 # Also install mongodb pkg needed by the waitForMongo script
-RUN npm install -E --no-save mongodb@3.3.5
+RUN npm install -E --no-save mongodb@3.5.7
 
 WORKDIR /usr/local/src/app
 
