@@ -1,4 +1,4 @@
-import SettingsIcon from "mdi-material-ui/Settings";
+import SettingsIcon from "mdi-material-ui/Cog";
 import { registerBlock } from "@reactioncommerce/reaction-components";
 import { registerOperatorRoute } from "/imports/client/ui";
 import OperatorLanding from "/imports/plugins/core/dashboard/client/components/OperatorLanding";
