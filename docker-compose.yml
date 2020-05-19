@@ -13,7 +13,7 @@ networks:
 
 services:
   reaction-admin:
-    image: reactioncommerce/admin:3.0.0-beta.6
+    image: reactioncommerce/admin:3.0.0-beta.7
     env_file:
       - ./.env
     networks:
