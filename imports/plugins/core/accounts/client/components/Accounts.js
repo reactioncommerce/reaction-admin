@@ -17,7 +17,7 @@ function Accounts() {
 
   return (
     <Fragment>
-      <Tabs value={currentTab} onChange={(e, value) => setCurrentTab(value)}>
+      <Tabs value={currentTab} onChange={(event, value) => setCurrentTab(value)}>
         <Tab label={i18next.t("admin.accounts.tabs.staff")} />
         <Tab label={i18next.t("admin.accounts.tabs.customers")} />
         <Tab label={i18next.t("admin.accounts.tabs.invites")} />

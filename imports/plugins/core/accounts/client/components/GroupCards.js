@@ -4,17 +4,17 @@ import Button from "@reactioncommerce/catalyst/Button";
 import { Grid, makeStyles } from "@material-ui/core";
 import { Components } from "@reactioncommerce/reaction-components";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
+import useGroups from "../hooks/useGroups";
 import CreateOrEditGroupDialog from "./CreateOrEditGroupDialog";
 import InviteShopMemberDialog from "./InviteShopMemberDialog";
 import GroupCard from "./GroupCard";
-import useGroups from "../hooks/useGroups";
 
 const useStyles = makeStyles(() => ({
   actionButtons: {
     marginTop: "1rem"
   },
   actionButton: {
-    marginLeft: ".5rem",
+    "marginLeft": ".5rem",
     "&:first-child": {
       marginLeft: 0
     }

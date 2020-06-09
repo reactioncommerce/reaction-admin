@@ -1,4 +1,5 @@
 import React, { Fragment, useState, useMemo, useCallback } from "react";
+import PropTypes from "prop-types";
 import { useApolloClient } from "@apollo/react-hooks";
 import i18next from "i18next";
 import DataTable, { useDataTable } from "@reactioncommerce/catalyst/DataTable";
@@ -10,6 +11,7 @@ import GroupSelectorDialog from "./GroupSelectorDialog";
 /**
  * @summary Main products view
  * @name ProductsTable
+ * @param {Object} props - the component's props
  * @returns {React.Component} A React component
  */
 function AccountsTable(props) {
@@ -108,5 +110,13 @@ function AccountsTable(props) {
     </Fragment>
   );
 }
+
+AccountsTable.propTypes = {
+  group: PropTypes.shape({
+    _id: PropTypes.string.isRequired
+  }),
+  groups: PropTypes.arrayOf(PropTypes.object),
+  isLoadingGroups: PropTypes.bool
+};
 
 export default AccountsTable;

@@ -20,7 +20,6 @@ import {
   IconButton,
   makeStyles
 } from "@material-ui/core";
-import useRoles from "../hooks/useRoles";
 import inviteShopMemberMutation from "../graphql/mutations/inviteShopMember";
 
 const useStyles = makeStyles((theme) => ({
@@ -152,7 +151,7 @@ function InviteShopMember({ isOpen, onClose, onSuccess, groups, shopId }) {
             <Select
               isMulti
               options={groupsForSelect}
-              onSelection={(groups) => setSelectedGroups(groups)}
+              onSelection={(groupsToSelect) => setSelectedGroups(groupsToSelect)}
               placeholder={i18next.t("admin.groupCards.inviteStaffMemberDialog.selectGroups")}
               value={selectedGroups}
             />
@@ -182,6 +181,7 @@ function InviteShopMember({ isOpen, onClose, onSuccess, groups, shopId }) {
 }
 
 InviteShopMember.propTypes = {
+  groups: PropTypes.arrayOf(PropTypes.object),
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func,

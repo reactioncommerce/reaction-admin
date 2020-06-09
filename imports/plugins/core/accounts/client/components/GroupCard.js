@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
+import PropTypes from "prop-types";
 import startCase from "lodash/startCase";
-import { Card, CardHeader, CardContent, Collapse, IconButton, makeStyles } from "@material-ui/core";
+import { Card, CardHeader, CardContent, Collapse, makeStyles } from "@material-ui/core";
 import AccountsTable from "./AccountsTable";
 import GroupCardHeader from "./GroupCardHeader";
 import CreateOrEditGroupDialog from "./CreateOrEditGroupDialog";
@@ -36,7 +37,7 @@ function GroupCard({ group, groups, isLoadingGroups, refetchGroups, shopId }) {
           classes={{ root: classes.cardHeader }}
           component={(props) => (
             <GroupCardHeader
-              expanded={isExpanded}
+              isExpanded={isExpanded}
               onEdit={() => setEditGroupDialogVisibility(true)}
               onExpandClick={setIsExpanded}
               {...props}
@@ -57,5 +58,16 @@ function GroupCard({ group, groups, isLoadingGroups, refetchGroups, shopId }) {
     </Fragment>
   );
 }
+
+GroupCard.propTypes = {
+  group: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
+  }),
+  groups: PropTypes.arrayOf(PropTypes.object),
+  isLoadingGroups: PropTypes.bool,
+  refetchGroups: PropTypes.func,
+  shopId: PropTypes.string
+};
 
 export default GroupCard;

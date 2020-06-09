@@ -4,7 +4,6 @@ import i18next from "i18next";
 import CloseIcon from "mdi-material-ui/Close";
 import Button from "@reactioncommerce/catalyst/Button";
 import Select from "@reactioncommerce/catalyst/Select";
-import SplitButton from "@reactioncommerce/catalyst/SplitButton";
 import { useMutation } from "@apollo/react-hooks";
 import { useSnackbar } from "notistack";
 import {
@@ -89,11 +88,12 @@ function GroupSelector({ isOpen, onClose, onSuccess, accounts, groups }) {
 
   const groupsForSelect = groups.map((group) => ({ value: group._id, label: group.name }));
 
-  // If modifying one single account, pre-select groups that the account already belongs to
-  if (Array.isArray(accounts) && accounts.length === 1 &&
-    accounts[0].groups && Array.isArray(accounts[0].groups.nodes) && accounts[0].groups.nodes.length > 0 &&
-    selectedGroups && selectedGroups.length === 0) {
+  const editingSingleAccount = Array.isArray(accounts) && accounts.length === 1;
+  const accountHasGroups = accounts[0] && accounts[0].groups && Array.isArray(accounts[0].groups.nodes) && accounts[0].groups.nodes.length > 0;
+  const noGroupsSelected = selectedGroups && selectedGroups.length === 0;
 
+  // If modifying one single account, pre-select groups that the account already belongs to
+  if (editingSingleAccount && accountHasGroups && noGroupsSelected) {
     const preSelectedGroups = accounts[0].groups.nodes.map((group) => ({ value: group._id, label: group.name }));
     setSelectedGroups(preSelectedGroups);
   }
@@ -150,11 +150,11 @@ function GroupSelector({ isOpen, onClose, onSuccess, accounts, groups }) {
 }
 
 GroupSelector.propTypes = {
+  accounts: PropTypes.arrayOf(PropTypes.object).isRequired,
+  groups: PropTypes.arrayOf(PropTypes.object).isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onSuccess: PropTypes.func,
-  accounts: PropTypes.arrayOf(PropTypes.object).isRequired,
-  groups: PropTypes.arrayOf(PropTypes.object).isRequired
+  onSuccess: PropTypes.func
 };
 
 export default GroupSelector;

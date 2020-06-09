@@ -1,6 +1,7 @@
 import React from "react";
+import PropTypes from "prop-types";
 import classNames from "classnames";
-import { Grid, Typography, makeStyles } from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
 import ChevronDownIcon from "mdi-material-ui/ChevronDown";
 import PencilIcon from "mdi-material-ui/Pencil";
 import IconButton from "@material-ui/core/IconButton";
@@ -15,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     })
   },
   expandOpen: {
-    transform: "rotate(180deg)",
+    transform: "rotate(180deg)"
   },
   titleContainer: {
     display: "flex",
@@ -23,7 +24,17 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function GroupCardHeader({ children: title, expanded, onEdit, onExpandClick }) {
+/**
+ * @summary Renders the group card header
+ * @name GroupCardHeader
+ * @param {Object} props - the component's props
+ * @param {String} props.children - the group's title component
+ * @param {Boolean} props.isExpanded - whether the group card should be expanded
+ * @param {Function} props.onEdit - called back when clicking the edit button
+ * @param {Function} props.onExpandClick - called back when clicking the expand button
+ * @returns {React.Component} - the GroupCardHeader component
+ */
+function GroupCardHeader({ children: title, isExpanded, onEdit, onExpandClick }) {
   const classes = useStyles();
 
   return (
@@ -38,10 +49,10 @@ function GroupCardHeader({ children: title, expanded, onEdit, onExpandClick }) {
         <IconButton
           className={classNames({
             [classes.expand]: true,
-            [classes.expandOpen]: expanded,
+            [classes.expandOpen]: isExpanded
           })}
-          onClick={() => onExpandClick(!expanded)}
-          aria-expanded={expanded}
+          onClick={() => onExpandClick(!isExpanded)}
+          aria-expanded={isExpanded}
           aria-label="show more"
         >
           <ChevronDownIcon />
@@ -50,5 +61,12 @@ function GroupCardHeader({ children: title, expanded, onEdit, onExpandClick }) {
     </Grid>
   );
 }
+
+GroupCardHeader.propTypes = {
+  children: PropTypes.func.isRequired,
+  isExpanded: PropTypes.bool,
+  onEdit: PropTypes.func,
+  onExpandClick: PropTypes.func
+};
 
 export default GroupCardHeader;

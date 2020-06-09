@@ -2,7 +2,9 @@ import { useLazyQuery } from "@apollo/react-hooks";
 import rolesQuery from "../graphql/queries/roles";
 
 /**
- * Hook to get groups
+ * @summary Hook to get groups
+ * @name useRoles
+ * @param {String} shopId - the shop ID to get roles for
  * @return {Object} Permissions
  */
 export default function useRoles(shopId) {

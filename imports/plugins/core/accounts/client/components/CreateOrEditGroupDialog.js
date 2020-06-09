@@ -212,10 +212,10 @@ function CreateOrEditGroup({ isOpen, onClose, onSuccess, group, shopId }) {
 }
 
 CreateOrEditGroup.propTypes = {
+  group: PropTypes.object,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func,
-  group: PropTypes.object,
   shopId: PropTypes.string.isRequired
 };
 

@@ -19,5 +19,5 @@ import verifyAccount from "./verifyAccount";
 export default {
   "accounts/setActiveShopId": setActiveShopId,
   "accounts/updateEmailAddress": updateEmailAddress,
-  "accounts/verifyAccount": verifyAccount,
+  "accounts/verifyAccount": verifyAccount
 };
