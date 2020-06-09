@@ -22,8 +22,8 @@ const useStyles = makeStyles(() => ({
 }));
 
 /**
- * @summary Main products view
- * @name ProductsTable
+ * @summary Main groups view
+ * @name GroupCards
  * @returns {React.Component} A React component
  */
 function GroupCards() {

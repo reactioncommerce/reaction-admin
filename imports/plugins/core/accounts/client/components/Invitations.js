@@ -15,8 +15,8 @@ const useStyles = makeStyles(() => ({
 
 
 /**
- * @summary Main products view
- * @name ProductsTable
+ * @summary Main invitations view
+ * @name Invitations
  * @returns {React.Component} A React component
  */
 function Invitations() {

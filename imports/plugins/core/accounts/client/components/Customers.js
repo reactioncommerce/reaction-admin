@@ -13,10 +13,9 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-
 /**
- * @summary Main products view
- * @name ProductsTable
+ * @summary Main customers view
+ * @name CustomersTable
  * @returns {React.Component} A React component
  */
 function Customers() {
