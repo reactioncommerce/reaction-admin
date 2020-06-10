@@ -63,6 +63,7 @@ function GroupCards() {
               group={group}
               groups={groups}
               isLoadingGroups={isLoadingGroups}
+              key={group._id}
               refetchGroups={refetchGroups}
               shopId={shopId}
             />
