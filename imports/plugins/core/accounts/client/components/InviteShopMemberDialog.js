@@ -23,7 +23,7 @@ import {
 import inviteShopMemberMutation from "../graphql/mutations/inviteShopMember";
 
 const useStyles = makeStyles((theme) => ({
-  cardRoot: {
+  dialogPaper: {
     overflow: "visible",
     padding: theme.spacing(2)
   },
@@ -113,9 +113,9 @@ function InviteShopMember({ isOpen, onClose, onSuccess, groups, shopId }) {
 
   return (
     <Dialog
+      classes={{ paper: classes.dialogPaper }}
       open={isOpen}
       onClose={onClose}
-      classes={{ root: classes.cardRoot }}
       fullWidth
       maxWidth="sm"
     >

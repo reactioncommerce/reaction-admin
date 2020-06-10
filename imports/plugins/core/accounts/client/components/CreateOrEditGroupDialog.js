@@ -25,7 +25,7 @@ import createGroupMutation from "../graphql/mutations/createGroup";
 import updateGroupMutation from "../graphql/mutations/updateGroup";
 
 const useStyles = makeStyles((theme) => ({
-  cardRoot: {
+  dialogPaper: {
     overflow: "visible",
     padding: theme.spacing(2)
   },
@@ -134,9 +134,9 @@ function CreateOrEditGroup({ isOpen, onClose, onSuccess, group, shopId }) {
 
   return (
     <Dialog
+      classes={{ paper: classes.dialogPaper }}
       open={isOpen}
       onClose={onClose}
-      classes={{ root: classes.cardRoot }}
       fullWidth
       maxWidth="sm"
     >
