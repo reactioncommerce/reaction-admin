@@ -57,6 +57,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const sourcingOptions = ["destination","origin"];
+
 const formSchema = new SimpleSchema({
   country: {
     type: String,
@@ -74,6 +76,10 @@ const formSchema = new SimpleSchema({
   region: {
     type: String,
     optional: true
+  },
+  sourcing: {
+    type: String,
+    allowedValues: sourcingOptions
   },
   taxCode: {
     type: String,
@@ -145,11 +151,12 @@ export default function CustomTaxRateForm(props) {
           variables: {
             input: {
               // In case doc has additional fields not allowed, we'll copy just what we want
-              country: formData.country,
-              postal: formData.postal,
+              country: formData.country || null,
+              postal: formData.postal || null,
               rate: Number(formData.rate),
-              region: formData.region,
+              region: formData.region || null,
               shopId,
+              sourcing: formData.sourcing,
               taxCode: formData.taxCode,
               taxRateId: formData._id
             }
@@ -160,11 +167,12 @@ export default function CustomTaxRateForm(props) {
           variables: {
             input: {
               // In case doc has additional fields not allowed, we'll copy just what we want
-              country: formData.country,
-              postal: formData.postal,
+              country: formData.country || null,
+              postal: formData.postal || null,
               rate: Number(formData.rate),
-              region: formData.region,
+              region: formData.region || null,
               shopId,
+              sourcing: formData.sourcing,
               taxCode: formData.taxCode
             }
           }
@@ -174,10 +182,11 @@ export default function CustomTaxRateForm(props) {
     validator(formData) {
       return validator({
         // In case doc has additional fields not allowed, we'll copy just what we want
-        country: formData.country,
-        postal: formData.postal,
+        country: formData.country || null,
+        postal: formData.postal || null,
         rate: Number(formData.rate),
-        region: formData.region,
+        region: formData.region || null,
+        sourcing: formData.sourcing,
         taxCode: formData.taxCode
       });
     },
@@ -283,6 +292,24 @@ export default function CustomTaxRateForm(props) {
         {...getInputProps("postal", muiOptions)}
       />
       {taxCodesField}
+      <TextField
+        className={classes.textField}
+        error={hasErrors(["sourcing"])}
+        fullWidth
+        helperText={getFirstErrorMessage(["sourcing"])}
+        label={i18next.t("admin.taxFormFields.sourcing")}
+        onKeyPress={(event) => {
+          if (event.key === "Enter") submitForm();
+        }}
+        select
+        {...getInputProps("sourcing", muiOptions)}
+      >
+        {sourcingOptions.map((option) => (
+          <MenuItem key={option} value={option}>
+            {i18next.t(`admin.taxSourcingOptions.${option}`)}
+          </MenuItem>
+        ))}
+      </TextField>
       <Grid className={classes.rightAlignedGrid} item xs={12}>
         {!!doc &&
           <Button
@@ -326,6 +353,7 @@ CustomTaxRateForm.propTypes = {
     postal: PropTypes.string,
     rate: PropTypes.number,
     region: PropTypes.string,
+    sourcing: PropTypes.string,
     taxCode: PropTypes.string
   }),
   /**
