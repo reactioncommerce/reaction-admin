@@ -216,7 +216,7 @@ CreateOrEditGroup.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func,
-  shopId: PropTypes.string.isRequired
+  shopId: PropTypes.string
 };
 
 export default CreateOrEditGroup;
