@@ -1,5 +1,3 @@
-import getUserId from "./getUserId";
-import groupMethods from "./group";
 import setActiveShopId from "./setActiveShopId";
 import updateEmailAddress from "./updateEmailAddress";
 import verifyAccount from "./verifyAccount";
@@ -21,7 +19,5 @@ import verifyAccount from "./verifyAccount";
 export default {
   "accounts/setActiveShopId": setActiveShopId,
   "accounts/updateEmailAddress": updateEmailAddress,
-  "accounts/verifyAccount": verifyAccount,
-  "reaction/getUserId": getUserId,
-  ...groupMethods
+  "accounts/verifyAccount": verifyAccount
 };
