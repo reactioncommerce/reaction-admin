@@ -63,7 +63,7 @@ function GroupCardHeader({ children: title, isExpanded, onEdit, onExpandClick })
 }
 
 GroupCardHeader.propTypes = {
-  children: PropTypes.func.isRequired,
+  children: PropTypes.arrayOf(PropTypes.node).isRequired,
   isExpanded: PropTypes.bool,
   onEdit: PropTypes.func,
   onExpandClick: PropTypes.func
