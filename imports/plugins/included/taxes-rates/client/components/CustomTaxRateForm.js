@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const sourcingOptions = ["destination","origin"];
+const sourcingOptions = ["destination", "origin"];
 
 const formSchema = new SimpleSchema({
   country: {
