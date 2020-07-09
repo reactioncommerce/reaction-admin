@@ -16,6 +16,10 @@ query getViewer {
     lastName
     name
     primaryEmailAddress
+    adminUIShops {
+      _id
+      name
+    }
   }
 }
 `;
