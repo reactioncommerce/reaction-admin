@@ -96,7 +96,7 @@ export default function ShopSettings() {
       cleanedUserInput.currency = code;
 
       // Only update default parcel size when UOL/UOM are changed by the user
-      if (userInput.baseUOL !== shop.baseUOL || userInput.baseUOM !== shop.baseUOM) {
+      if (shop.defaultParcelSize && (userInput.baseUOL !== shop.baseUOL || userInput.baseUOM !== shop.baseUOM)) {
         const parcelSize = {
           weight: convertWeight(shop.baseUOM, userInput.baseUOM, shop.defaultParcelSize.weight),
           height: convertLength(shop.baseUOL, userInput.baseUOL, shop.defaultParcelSize.height),
