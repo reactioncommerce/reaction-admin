@@ -1,3 +1,14 @@
+# v3.0.0-beta.9
+
+### Fixes
+
+- fix: Update defaultParcelSize only when it exists([#295](https://github.com/reactioncommerce/reaction-admin/pull/295))
+- fix: Reaction.hasPermission method shopId ([#298](https://github.com/reactioncommerce/reaction-admin/pull/298))
+
+## Contributors
+
+Thanks to @manizuca and @mikoscz for contributing to this release! 🎉
+
 # v3.0.0-beta.8
 
 ### Features
