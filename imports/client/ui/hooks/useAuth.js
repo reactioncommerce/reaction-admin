@@ -18,7 +18,15 @@ query getViewer {
     primaryEmailAddress
     adminUIShops {
       _id
+      brandAssets {
+        navbarBrandImage {
+          large
+        }
+      }
       name
+      shopLogoUrls {
+        primaryShopLogoUrl
+      }
     }
   }
 }

@@ -80,6 +80,7 @@ function Dashboard(props) {
             setPrimarySidebarOpen(value);
           }}
           onDrawerClose={onClosePrimarySidebar}
+          viewer={viewer}
         />
         <OperatorRoutes
           isExactMatch={true}

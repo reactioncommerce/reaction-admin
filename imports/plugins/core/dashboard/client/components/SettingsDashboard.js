@@ -31,7 +31,7 @@ export default function SettingsDashboard() {
                 <Route
                   key={settingRoute.path}
                   component={settingRoute.MainComponent}
-                  path={settingRoute.path}
+                  path={`/:shopId/${settingRoute.path}`}
                 />
               ))
             }

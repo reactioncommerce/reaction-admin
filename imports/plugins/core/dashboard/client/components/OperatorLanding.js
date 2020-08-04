@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import Helmet from "react-helmet";
-import { Link } from "react-router-dom";
+import { Link, Redirect, useParams } from "react-router-dom";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -11,7 +11,7 @@ import { Components } from "@reactioncommerce/reaction-components";
 import { i18next } from "/client/api";
 import ShopLogoWithData from "/imports/client/ui/components/ShopLogoWithData/ShopLogoWithData";
 import useIsAppLoading from "/imports/client/ui/hooks/useIsAppLoading.js";
-import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId.js";
+import useAuth from "/imports/client/ui/hooks/useAuth";
 
 /**
  * OperatorLanding
@@ -19,13 +19,25 @@ import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId.js";
  * @returns {Node} React component
  */
 function OperatorLanding() {
+  const { viewer } = useAuth();
+  const routeParams = useParams();
   const [isAppLoading] = useIsAppLoading();
-  const [currentShopId] = useCurrentShopId();
 
   if (isAppLoading) return <Components.Loading />;
 
   let content;
-  if (currentShopId) {
+
+  debugger;
+
+  if (!routeParams.shopId && viewer?.adminUIShops?.length > 0) {
+    debugger;
+
+    return (
+      <Redirect to={`/${viewer.adminUIShops[0]._id}`} />
+    );
+  }
+
+  if (routeParams.shopId) {
     content = (
       <Fragment>
         <Grid item>
@@ -66,7 +78,7 @@ function OperatorLanding() {
       >
         <Grid item />
         <Grid item>
-          <ShopLogoWithData size={100} />
+          {/*<ShopLogoWithData size={100} />*/}
         </Grid>
         {content}
       </Grid>

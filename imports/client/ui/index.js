@@ -63,8 +63,17 @@ export function registerOperatorRoute(route) {
   operatorRoutes.push({
     ...route,
     ...additionalProps,
+    path: `/:shopId${route.path}`,
     MainComponent: component
   });
+
+  if (route.path === "/") {
+    operatorRoutes.push({
+      ...route,
+      ...additionalProps,
+      MainComponent: component
+    });
+  }
 }
 
 /**

@@ -1,6 +1,6 @@
 import React from "react";
 import { compose, withState } from "recompose";
-import { NavLink, withRouter } from "react-router-dom";
+import {NavLink, useParams, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 import AppBar from "@material-ui/core/AppBar";
 import Fab from "@material-ui/core/Fab";
@@ -97,12 +97,16 @@ function Sidebar(props) {
     isMobile,
     isSidebarOpen,
     onDrawerClose,
-    setIsSettingsOpen
+    setIsSettingsOpen,
+    viewer
   } = props;
 
   const [isAppLoading] = useIsAppLoading();
   const [currentShopId] = useCurrentShopId();
   const primaryRoutes = useOperatorRoutes({ groups: ["navigation"] });
+  const routeParams = useParams();
+
+  const { shopId } = routeParams;
 
   let drawerProps = {
     classes: {
@@ -164,7 +168,7 @@ function Sidebar(props) {
         position="sticky"
       >
         <Toolbar className={classes.toolbar}>
-          <ShopLogoWithData className={classes.shopLogo} shouldShowShopName size={32} />
+          <ShopLogoWithData className={classes.shopLogo} shopId={shopId} shouldShowShopName size={32} viewer={viewer}/>
 
           <Hidden mdUp>
             <Fab classes={{ root: classes.closeButton }} onClick={onDrawerClose} size="small">
@@ -187,7 +191,8 @@ Sidebar.propTypes = {
   isMobile: PropTypes.bool,
   isSidebarOpen: PropTypes.bool.isRequired,
   onDrawerClose: PropTypes.func.isRequired,
-  setIsSettingsOpen: PropTypes.func.isRequired
+  setIsSettingsOpen: PropTypes.func.isRequired,
+  viewer: PropTypes.object
 };
 
 Sidebar.defaultProps = {
