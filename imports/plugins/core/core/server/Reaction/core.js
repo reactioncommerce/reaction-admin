@@ -113,7 +113,7 @@ export default {
         const groupPermissionsForShop = groups.filter((grp) => grp.shopId === shopId).map((grp) => grp.permissions);
         const flattenedGroupPermissionsForShop = _.flattenDeep(groupPermissionsForShop);
         const uniquePermissionsForShop = _.uniq(flattenedGroupPermissionsForShop);
-        accountPermissions[group] = uniquePermissionsForShop;
+        accountPermissions[shopId] = uniquePermissionsForShop;
       });
     }
 
