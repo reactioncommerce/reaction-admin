@@ -1,8 +1,12 @@
 import envalid from "envalid";
 
-const { num, str } = envalid;
+const { num, str, bool } = envalid;
 
 export default envalid.cleanEnv(process.env, {
+  MOCK_TLS_TERMINATION: bool({
+    default: false,
+    desc: "The OAuth server requires 'X-Forwarded-Proto' header to be set to 'https'."
+  }),
   OAUTH2_ADMIN_URL: str({
     desc: "An OAuth2 OpenID Connect compliant URL",
     example: "http://hydra.reaction.localhost:4445"
