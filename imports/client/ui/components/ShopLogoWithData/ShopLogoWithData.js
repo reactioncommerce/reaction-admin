@@ -2,8 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { compose } from "recompose";
 import classNames from "classnames";
-import gql from "graphql-tag";
-import { Query } from "react-apollo";
 import { Link, useLocation } from "react-router-dom";
 import InputBase from "@material-ui/core/InputBase";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -11,8 +9,6 @@ import Select from "@material-ui/core/Select";
 import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { withComponents } from "@reactioncommerce/components-context";
-import withPrimaryShopId from "/imports/plugins/core/graphql/lib/hocs/withPrimaryShopId";
-import GenericErrorBoundary from "../GenericErrorBoundary";
 
 const defaultLogo = "/resources/reaction-logo-circular.svg";
 
@@ -84,7 +80,7 @@ function ShopLogoWithData({ className, classes, shouldShowShopName, shopId, link
         const linkUrl = location.pathname.replace(/\/(.*)\//g, `/${shop._id}/`);
 
         return (
-          <MenuItem value={shop._id}>
+          <MenuItem value={shop._id} key={shop._id}>
             <Link
               className={classNames(classes.root, className)}
               to={linkUrl}
@@ -129,7 +125,6 @@ ShopLogoWithData.defaultProps = {
 };
 
 export default compose(
-  withPrimaryShopId,
   withComponents,
   withStyles(styles, { name: "RuiShopLogoWithData" })
 )(ShopLogoWithData);
