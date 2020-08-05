@@ -190,7 +190,7 @@ function ProductsTable() {
 
     if (data) {
       const { createProduct: { product } } = data;
-      history.push(`/products/${product._id}`);
+      history.push(`/${shopId}/products/${product._id}`);
     }
 
     if (createProductError) {

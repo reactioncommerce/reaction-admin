@@ -9,11 +9,11 @@ import useCurrentShopId from "../../../../../client/ui/hooks/useCurrentShopId";
  */
 function withPrimaryShopId(Component) {
   /**
- * @summary WithPrimaryShopId HOC
- * @deprecated Function components should use `useCurrentShopId` hook directly
- * @param {Object} props React props
- * @return {Object} Rendered component instance
- */
+   * @summary WithPrimaryShopId HOC
+   * @deprecated Function components should use `useCurrentShopId` hook directly
+   * @param {Object} props React props
+   * @return {Object} Rendered component instance
+   */
   function WithPrimaryShopId(props) {
     const [shopId] = useCurrentShopId();
 
