@@ -4,7 +4,7 @@ import { compose } from "recompose";
 import classNames from "classnames";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import InputBase from "@material-ui/core/InputBase";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
@@ -45,6 +45,8 @@ const ShopSelectorInput = withStyles(() => ({
  * @returns {Node} React component
  */
 function ShopLogoWithData({ className, classes, shouldShowShopName, shopId, linkTo, size, viewer }) {
+  const location = useLocation();
+
   let adminUIShops = [];
 
   if (viewer?.adminUIShops) {
@@ -79,12 +81,13 @@ function ShopLogoWithData({ className, classes, shouldShowShopName, shopId, link
       {adminUIShops.map((shop) => {
         const customLogoFromUpload = shop.brandAssets && shop.brandAssets.navbarBrandImage && shop.brandAssets.navbarBrandImage.large;
         const customLogoFromUrlInput = shop.shopLogoUrls && shop.shopLogoUrls.primaryShopLogoUrl;
+        const linkUrl = location.pathname.replace(/\/(.*)\//g, `/${shop._id}/`);
 
         return (
           <MenuItem value={shop._id}>
             <Link
               className={classNames(classes.root, className)}
-              to={`/${shop._id}/`}
+              to={linkUrl}
             >
               <img
                 alt={shop.name}
