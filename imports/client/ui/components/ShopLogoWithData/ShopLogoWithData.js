@@ -44,7 +44,7 @@ const ShopSelectorInput = withStyles(() => ({
  * @param {Object} props Component props
  * @returns {Node} React component
  */
-function ShopLogoWithData({ className, classes, shopId, shouldShowShopName, linkTo, size, viewer }) {
+function ShopLogoWithData({ className, classes, shouldShowShopName, shopId, linkTo, size, viewer }) {
   let adminUIShops = [];
 
   if (viewer?.adminUIShops) {
