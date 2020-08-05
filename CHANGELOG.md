@@ -1,8 +1,12 @@
 # v3.0.0-beta.9
 
+### Features
+
+- feat: Enable mock TLS termination on calls to Hydra ([#302](https://github.com/reactioncommerce/reaction-admin/pull/302))
+
 ### Fixes
 
-- fix: Update defaultParcelSize only when it exists([#295](https://github.com/reactioncommerce/reaction-admin/pull/295))
+- fix: Update defaultParcelSize only when it exists ([#295](https://github.com/reactioncommerce/reaction-admin/pull/295))
 - fix: Reaction.hasPermission method shopId ([#298](https://github.com/reactioncommerce/reaction-admin/pull/298))
 
 ## Contributors
