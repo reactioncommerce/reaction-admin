@@ -133,7 +133,7 @@ function Sidebar(props) {
           <NavLink
             activeClassName={activeClassName}
             className={classes.link}
-            to={route.href || route.path}
+            to={(route.href || route.path).replace(":shopId", currentShopId)}
             key={route.path}
             onClick={() => {
               setIsSettingsOpen(false);

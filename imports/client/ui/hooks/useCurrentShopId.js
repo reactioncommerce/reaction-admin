@@ -8,12 +8,20 @@ import { useLocation } from "react-router-dom";
 export default function useCurrentShopId() {
   const location = useLocation();
 
-  const { params } = matchPath(location.pathname, {
+  if (!location || !location.pathname) {
+    return [];
+  }
+
+  const route = matchPath(location.pathname, {
     path: "/:shopId/",
     exact: false
   });
 
-  const { shopId } = params;
+  if (!route) {
+    return [];
+  }
+
+  const { shopId } = route.params;
 
   return [shopId];
 }
