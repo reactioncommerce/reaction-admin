@@ -1,21 +1,28 @@
-import { composeWithTracker } from "@reactioncommerce/reaction-components";
-import { Reaction } from "/client/api";
-import Logger from "/client/modules/logger";
-import getOpaqueIds from "/imports/plugins/core/core/client/util/getOpaqueIds";
+import React from "react";
+import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 
-const composer = (props, onData) => {
-  const shopId = Reaction.getShopId();
+/**
+ * @summary withOpaqueShopId HOC wrapper
+ * @deprecated Function components should use `useCurrentShopId` hook directly
+ * @param {React.Component} Component React component
+ * @return {Function} HOC
+ */
+function withOpaqueShopId(Component) {
+  /**
+   * @summary WithOpaqueShopId HOC
+   * @deprecated Function components should use `useCurrentShopId` hook directly
+   * @param {Object} props React props
+   * @return {Object} Rendered component instance
+   */
+  function WithOpaqueShopId(props) {
+    const [shopId] = useCurrentShopId();
 
-  getOpaqueIds([{ namespace: "Shop", id: shopId }])
-    .then(([opaqueShopId]) => {
-      onData(null, {
-        shopId: opaqueShopId
-      });
-      return null;
-    })
-    .catch((error) => {
-      Logger.error(error);
-    });
-};
+    return (
+      <Component {...props} shopId={shopId} />
+    );
+  }
 
-export default composeWithTracker(composer);
+  return WithOpaqueShopId;
+}
+
+export default withOpaqueShopId;
