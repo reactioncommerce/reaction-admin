@@ -6,10 +6,18 @@ import { Meteor } from "meteor/meteor";
 import config from "../config.js";
 
 const {
+  MOCK_TLS_TERMINATION,
   OAUTH2_ADMIN_URL,
   OAUTH2_CLIENT_ID,
   ROOT_URL
 } = config;
+
+let mockTlsTermination = {};
+if (MOCK_TLS_TERMINATION) {
+  mockTlsTermination = {
+    "X-Forwarded-Proto": "https"
+  };
+}
 
 const makeAbsolute = (relativeUrl, baseUrl = ROOT_URL) => {
   const url = new URL(relativeUrl, baseUrl);
@@ -52,7 +60,7 @@ export async function ensureHydraClient() {
 
   const getClientResponse = await fetch(makeAbsolute(`/clients/${OAUTH2_CLIENT_ID}`, OAUTH2_ADMIN_URL), {
     method: "GET",
-    headers: { "Content-Type": "application/json" }
+    headers: { "Content-Type": "application/json", ...mockTlsTermination }
   });
 
   if (![200, 404].includes(getClientResponse.status)) {
@@ -66,7 +74,7 @@ export async function ensureHydraClient() {
 
     const updateClientResponse = await fetch(makeAbsolute(`clients/${OAUTH2_CLIENT_ID}`, OAUTH2_ADMIN_URL), {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...mockTlsTermination },
       body: JSON.stringify(hydraClient)
     });
 
@@ -81,7 +89,7 @@ export async function ensureHydraClient() {
 
     const response = await fetch(makeAbsolute("/clients", OAUTH2_ADMIN_URL), {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...mockTlsTermination },
       body: JSON.stringify(hydraClient)
     });
 
@@ -110,7 +118,7 @@ export async function ensureHydraClient() {
  */
 export async function expandAuthToken(token) {
   const response = await fetch(makeAbsolute("/oauth2/introspect", OAUTH2_ADMIN_URL), {
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    headers: { "Content-Type": "application/x-www-form-urlencoded", ...mockTlsTermination },
     method: "POST",
     body: `token=${encodeURIComponent(token)}`
   });
