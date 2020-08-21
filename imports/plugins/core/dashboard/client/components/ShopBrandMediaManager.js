@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Components, composeWithTracker, registerComponent } from "@reactioncommerce/reaction-components";
 import { Media } from "/imports/plugins/core/files/client";
+import useProduct from "/imports/plugins/included/product-admin/client/hooks/useProduct.js";
 
 /**
  * ShopBrandMediaManager
@@ -10,6 +11,7 @@ import { Media } from "/imports/plugins/core/files/client";
  */
 function ShopBrandMediaManager(props) {
   const { afterSetBrandImage, brandMedia, shop } = props;
+  const { refetchProduct } = useProduct();
 
   if (!shop) return null;
 
@@ -28,7 +30,7 @@ function ShopBrandMediaManager(props) {
           />
         ))}
       </div>
-      <Components.MediaUploader canUploadMultiple metadata={metadata} shopId={shop._id} />
+      <Components.MediaUploader canUploadMultiple metadata={metadata} refetchProduct={refetchProduct} shopId={shop._id} />
     </div>
   );
 }
