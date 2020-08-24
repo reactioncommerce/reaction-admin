@@ -27,11 +27,7 @@ function OperatorLanding() {
 
   let content;
 
-  debugger;
-
   if (!routeParams.shopId && viewer?.adminUIShops?.length > 0) {
-    debugger;
-
     return (
       <Redirect to={`/${viewer.adminUIShops[0]._id}`} />
     );
