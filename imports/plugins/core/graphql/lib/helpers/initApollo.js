@@ -13,6 +13,19 @@ let sharedClient;
 let token;
 
 /**
+ * @summary Initiate Meteor login for DDP connection
+ * @param {String} token The login token
+ * @returns {undefined}
+ */
+function callLoginMethod(token) {
+  Accounts.callLoginMethod({
+    methodArguments: [{
+      accessToken: token
+    }]
+  });
+}
+
+/**
  * @summary Set the access token that GraphQL requests will use in the Authorization header
  * @param {String} value New token value
  * @return {undefined}
@@ -28,14 +41,11 @@ export function setAccessToken(value) {
   // We do this because we have effectively switched users here. We don't want data from the previous user
   // (or the previous non-authenticated queries) to be kept.
   if (previousToken !== token) {
-    if (sharedClient) sharedClient.resetStore();
-
-    // If we are logged in with OAuth, log in as the same use with Meteor for the DDP connection
-    Accounts.callLoginMethod({
-      methodArguments: [{
-        accessToken: token
-      }]
-    });
+    if (sharedClient) {
+      sharedClient.resetStore().then(() => callLoginMethod(token));
+    } else {
+      callLoginMethod(token);
+    }
   }
 }
 
