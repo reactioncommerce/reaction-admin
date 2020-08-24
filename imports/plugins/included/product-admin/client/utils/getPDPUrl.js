@@ -8,20 +8,16 @@
  * @returns {String} A relative Url to the product's detail page
  */
 export default function getPDPUrl({ productId, variantId, parentVariantId, shopId }) {
-  let url;
+  let url = `/${shopId}/`;
 
   if (variantId && parentVariantId) {
     // Option
-    url = `/products/${productId}/${parentVariantId}/${variantId}`;
+    url = `${url}products/${productId}/${parentVariantId}/${variantId}`;
   } else if (variantId) {
     // Variant
-    url = `/products/${productId}/${variantId}`;
+    url = `${url}products/${productId}/${variantId}`;
   } else {
-    url = `/products/${productId}`;
-  }
-
-  if (shopId) {
-    url = `${url}?shopId=${shopId}`;
+    url = `${url}products/${productId}`;
   }
 
   return url;
