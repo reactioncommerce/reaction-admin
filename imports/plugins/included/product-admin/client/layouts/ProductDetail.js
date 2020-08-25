@@ -60,7 +60,7 @@ function ProductDetail(props) {
         <Container maxWidth="md">
           <Switch>
             <Route
-              path="/products/:handle/:variantId/:optionId?"
+              path="/:shopId/products/:handle/:variantId/:optionId?"
               render={() => (
                 <Blocks region="VariantDetailMain" blockProps={blockProps}>
                   {(blocks) =>
@@ -74,7 +74,7 @@ function ProductDetail(props) {
               )}
             />
             <Route
-              path="/products/:handle/"
+              path="/:shopId/products/:handle/"
               render={() => (
                 <Blocks region="ProductDetailMain" blockProps={blockProps}>
                   {(blocks) =>
