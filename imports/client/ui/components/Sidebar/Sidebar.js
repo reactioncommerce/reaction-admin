@@ -1,6 +1,6 @@
 import React from "react";
 import { compose, withState } from "recompose";
-import { NavLink, useParams, withRouter } from "react-router-dom";
+import { NavLink, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import AppBar from "@material-ui/core/AppBar";
 import Fab from "@material-ui/core/Fab";
