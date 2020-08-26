@@ -60,7 +60,9 @@ export default function useAuth() {
   setAccessToken(accessToken);
 
   const [getViewer, {
-    data: viewerData
+    data: viewerData,
+    loading,
+    refetch
   }] = useLazyQuery(
     viewerQuery,
     {
@@ -91,7 +93,9 @@ export default function useAuth() {
   };
 
   return {
+    isViewerLoading: loading,
     logout,
+    refetchViewer: refetch,
     viewer: viewerData ? viewerData.viewer : null
   };
 }
