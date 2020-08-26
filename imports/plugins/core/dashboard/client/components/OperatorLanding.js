@@ -55,7 +55,7 @@ function OperatorLanding() {
         <Card elevation={0}>
           <CardHeader title={i18next.t("admin.landing.createFirstShop")} />
           <CardContent>
-            <Components.CreateFirstShopForm />
+            <Components.CreateShopForm />
           </CardContent>
         </Card>
       </Grid>

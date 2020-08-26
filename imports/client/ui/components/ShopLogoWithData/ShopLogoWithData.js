@@ -104,6 +104,20 @@ function ShopLogoWithData({ className, classes, shouldShowShopName, shopId, link
           </MenuItem>
         );
       })}
+      <MenuItem value="new-shop" key="new-shop">
+        <Link
+          className={classNames(classes.root, className)}
+          to={"/new-shop"}
+        >
+          <Typography
+            variant="h3"
+            component="span"
+            className={classes.logoName}
+          >
+            New Shop
+          </Typography>
+        </Link>
+      </MenuItem>
     </Select>
   );
 }

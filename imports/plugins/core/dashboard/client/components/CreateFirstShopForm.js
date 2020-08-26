@@ -23,11 +23,11 @@ const formSchema = new SimpleSchema({
 const validator = formSchema.getFormValidator();
 
 /**
- * CreateFirstShopForm
+ * CreateShopForm
  * @param {Object} props Component props
  * @returns {Node} React component
  */
-function CreateFirstShopForm(props) {
+function CreateShopForm(props) {
   const { onSubmit } = props;
 
   const classes = useStyles();
@@ -73,8 +73,8 @@ function CreateFirstShopForm(props) {
   );
 }
 
-CreateFirstShopForm.propTypes = {
+CreateShopForm.propTypes = {
   onSubmit: PropTypes.func.isRequired
 };
 
-export default CreateFirstShopForm;
+export default CreateShopForm;

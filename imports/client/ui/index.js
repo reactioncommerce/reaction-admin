@@ -60,17 +60,17 @@ export function registerOperatorRoute(route) {
 
   component = compose(...hocs, setDisplayName(`Reaction(${name})`))(component);
 
-  operatorRoutes.push({
-    ...route,
-    ...additionalProps,
-    path: `/:shopId${route.path}`,
-    MainComponent: component
-  });
-
-  if (route.path === "/") {
+  if (["/", "/new-shop"].includes(route.path)) {
     operatorRoutes.push({
       ...route,
       ...additionalProps,
+      MainComponent: component
+    });
+  } else {
+    operatorRoutes.push({
+      ...route,
+      ...additionalProps,
+      path: `/:shopId${route.path}`,
       MainComponent: component
     });
   }

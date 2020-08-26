@@ -1,7 +1,8 @@
 import SettingsIcon from "mdi-material-ui/Cog";
-import { registerBlock } from "@reactioncommerce/reaction-components";
+import { Components, registerBlock } from "@reactioncommerce/reaction-components";
 import { registerOperatorRoute } from "/imports/client/ui";
-import OperatorLanding from "/imports/plugins/core/dashboard/client/components/OperatorLanding";
+import OperatorLanding from "./components/OperatorLanding";
+import CreateShopForm from "./containers/CreateShopForm";
 
 // Settings block regions
 import ShopSettingsRegion from "./components/ShopSettingsRegion";
@@ -17,12 +18,16 @@ import SystemInformation from "./components/SystemInformation";
 
 import "./components/shopBrandImageOption";
 import "./components/ShopBrandMediaManager";
-import "./containers/CreateFirstShopForm.js";
 
 // Default landing page
 registerOperatorRoute({
   path: "/",
   MainComponent: OperatorLanding
+});
+
+registerOperatorRoute({
+  path: "/new-shop",
+  MainComponent: CreateShopForm
 });
 
 registerOperatorRoute({
