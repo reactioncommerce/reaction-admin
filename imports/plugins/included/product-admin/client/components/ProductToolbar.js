@@ -4,6 +4,7 @@ import i18next from "i18next";
 import { Typography, Box } from "@material-ui/core";
 import { Button } from "@reactioncommerce/catalyst";
 import PrimaryAppBar from "/imports/client/ui/components/PrimaryAppBar";
+import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId.js";
 import useProduct from "../hooks/useProduct";
 
 /**
@@ -12,6 +13,7 @@ import useProduct from "../hooks/useProduct";
  */
 function ProductToolbar() {
   const { product, onPublishProduct } = useProduct();
+  const [shopId] = useCurrentShopId();
   const history = useHistory();
 
   if (!product) {
@@ -26,7 +28,7 @@ function ProductToolbar() {
     <PrimaryAppBar
       title={"Products"}
       onBackButtonClick={() => {
-        history.push("/products");
+        history.push(`/${shopId}/products`);
       }}
     >
       <Box display="flex" alignItems="center">
