@@ -621,8 +621,6 @@ Router.initPackageRoutes = (options) => {
   const index = allRouteDefinitions.find((route) => route.name === "index") || {};
   const indexComponent = index.options && index.options.component;
 
-  debugger;
-
   reactRouterRoutes.push((
     <Route
       key="index"

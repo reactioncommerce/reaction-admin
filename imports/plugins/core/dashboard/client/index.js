@@ -1,5 +1,5 @@
 import SettingsIcon from "mdi-material-ui/Cog";
-import { Components, registerBlock } from "@reactioncommerce/reaction-components";
+import { registerBlock } from "@reactioncommerce/reaction-components";
 import { registerOperatorRoute } from "/imports/client/ui";
 import OperatorLanding from "./components/OperatorLanding";
 import CreateShopForm from "./containers/CreateShopForm";

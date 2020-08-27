@@ -6,6 +6,7 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { getOperationAST } from "graphql";
 import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
+import Logger from "/client/modules/logger";
 
 const { graphQlApiUrlHttp, graphQlApiUrlWebSocket } = Meteor.settings.public;
 
@@ -14,13 +15,13 @@ let token;
 
 /**
  * @summary Initiate Meteor login for DDP connection
- * @param {String} token The login token
+ * @param {String} loginToken The login token
  * @returns {undefined}
  */
-function callLoginMethod(token) {
+function callLoginMethod(loginToken) {
   Accounts.callLoginMethod({
     methodArguments: [{
-      accessToken: token
+      accessToken: loginToken
     }]
   });
 }
@@ -42,7 +43,9 @@ export function setAccessToken(value) {
   // (or the previous non-authenticated queries) to be kept.
   if (previousToken !== token) {
     if (sharedClient) {
-      sharedClient.resetStore().then(() => callLoginMethod(token));
+      sharedClient.resetStore()
+        .then(() => callLoginMethod(token))
+        .catch((err) => Logger.error(err));
     } else {
       callLoginMethod(token);
     }
