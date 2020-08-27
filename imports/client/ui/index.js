@@ -23,7 +23,7 @@ export const defaultRouteGroups = {
  * @returns {undefined}
  */
 export function registerOperatorRoute(route) {
-  const { isNavigationLink, isSetting, layoutComponent, mainComponent, MainComponent, hocs = [] } = route;
+  const { createRouteWithPrefix, createRouteWithNoPrefix, isNavigationLink, isSetting, layoutComponent, mainComponent, MainComponent, hocs = [] } = route;
   const additionalProps = {};
 
   if (isNavigationLink) {
@@ -60,13 +60,15 @@ export function registerOperatorRoute(route) {
 
   component = compose(...hocs, setDisplayName(`Reaction(${name})`))(component);
 
-  if (["/", "/new-shop"].includes(route.path)) {
+  if (createRouteWithNoPrefix === true) {
     operatorRoutes.push({
       ...route,
       ...additionalProps,
       MainComponent: component
     });
-  } else {
+  }
+
+  if (createRouteWithPrefix !== false) {
     operatorRoutes.push({
       ...route,
       ...additionalProps,

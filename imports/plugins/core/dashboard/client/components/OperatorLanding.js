@@ -46,19 +46,17 @@ function OperatorLanding() {
           {/*<ShopLogoWithData size={100} />*/}
         </Grid>
 
-        <Fragment>
-          <Grid item>
-            <Typography align="center" variant="body1">
-              {/* eslint-disable-next-line max-len */}
-              Use Reaction Admin to manage <Link to="/orders">Orders</Link>, <Link to="/products">Products</Link>, <Link to="/tags">Tags</Link>, <Link to="/accounts">Accounts</Link>, and <Link to="/navigation">Navigation</Link>, or change shop settings.
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Typography align="center" variant="body1">
-              See our <MuiLink href="https://docs.reactioncommerce.com/docs/dashboard">Store Operator’s Guide</MuiLink> for more information.
-            </Typography>
-          </Grid>
-        </Fragment>
+        <Grid item>
+          <Typography align="center" variant="body1">
+            {/* eslint-disable-next-line max-len */}
+            Use Reaction Admin to manage <Link to="/orders">Orders</Link>, <Link to="/products">Products</Link>, <Link to="/tags">Tags</Link>, <Link to="/accounts">Accounts</Link>, and <Link to="/navigation">Navigation</Link>, or change shop settings.
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography align="center" variant="body1">
+            See our <MuiLink href="https://docs.reactioncommerce.com/docs/dashboard">Store Operator’s Guide</MuiLink> for more information.
+          </Typography>
+        </Grid>
       </Grid>
     </Fragment>
   );
