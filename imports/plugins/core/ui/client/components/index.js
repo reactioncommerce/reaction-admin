@@ -17,8 +17,6 @@ export { MediaItem, MediaUploader } from "./media";
 export { default as FlatButton } from "./button/flatButton";
 export { SortableTable } from "./table";
 export { default as Loading } from "./loading/loading";
-export * from "./toolbar";
-// export * from "./popover";
 // export * from "./menu";
 // export * from "./buttonGroup";
 // export { Switch } from "./switch";
