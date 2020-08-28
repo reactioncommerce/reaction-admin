@@ -31,11 +31,11 @@ class TagFormPageWithData extends Component {
   }
 
   handleCreate = (tag) => {
-    this.props.history.push(`/tags/edit/${tag._id}`);
+    this.props.history.push(`/${this.props.shopId}/tags/edit/${tag._id}`);
   }
 
   handleCancel = () => {
-    this.props.history.push("/tags");
+    this.props.history.push(`/${this.props.shopId}/tags`);
   }
 
   handleUpload = (files) => {
