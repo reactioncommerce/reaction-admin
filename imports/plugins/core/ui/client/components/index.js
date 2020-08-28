@@ -1,7 +1,5 @@
 export { default as Icon } from "./icon/icon";
 export { default as CircularProgress } from "./progress/circularProgress";
-export { default as Divider } from "./divider/divider";
-export { default as VerticalDivider } from "./divider/verticalDivider";
 export { default as TextField } from "./textfield/textfield";
 export {
   Button,
@@ -19,7 +17,7 @@ export { MediaItem, MediaUploader } from "./media";
 export { default as FlatButton } from "./button/flatButton";
 export { SortableTable } from "./table";
 export { default as Loading } from "./loading/loading";
-// export * from "./toolbar";
+export * from "./toolbar";
 // export * from "./popover";
 // export * from "./menu";
 // export * from "./buttonGroup";
@@ -31,6 +29,6 @@ export { Overlay } from "./modal"; // keep
 // export * from "./tabs";
 // export { default as Select } from "./select/select.react";
 // export { default as ClickToCopy } from "./clickToCopy/clickToCopy";
-export { ReactionAvatar } from "./avatar";
+export { ReactionAvatar } from "./avatar"; // keep
 // export * from "./notFound";
 // export { CalendarPicker } from "./calendarPicker/calendarPicker";

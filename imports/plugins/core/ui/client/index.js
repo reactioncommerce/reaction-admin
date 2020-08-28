@@ -13,8 +13,6 @@ import "./components/cards/cardGroup.html";
 import "./components/cards/cards.html";
 import "./components/cards/cards.js";
 
-import "./components/numericInput/numericInput.js";
-
 import "./components/textfield/textfield.html";
 
 // Safe css import for npm package
