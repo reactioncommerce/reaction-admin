@@ -146,10 +146,10 @@ function useProduct(args = {}) {
       if (redirectOnCreate) {
         if (data && parentIdLocal === product._id) {
           const newVariantId = data.createProductVariant && data.createProductVariant.variant && data.createProductVariant.variant._id;
-          history.push(`/products/${product._id}/${newVariantId}`);
+          history.push(`/${shopIdLocal}/products/${product._id}/${newVariantId}`);
         } else {
           const newOptionId = data.createProductVariant && data.createProductVariant.variant && data.createProductVariant.variant._id;
-          history.push(`/products/${product._id}/${parentIdLocal}/${newOptionId}`);
+          history.push(`/${shopIdLocal}/products/${product._id}/${parentIdLocal}/${newOptionId}`);
         }
       }
 
@@ -373,9 +373,9 @@ function useProduct(args = {}) {
         let redirectUrl;
 
         if (option) {
-          redirectUrl = `/products/${product._id}/${variant._id}`;
+          redirectUrl = `/${shopIdLocal}/products/${product._id}/${variant._id}`;
         } else {
-          redirectUrl = `/products/${product._id}`;
+          redirectUrl = `/${shopIdLocal}/products/${product._id}`;
         }
 
         history.push(redirectUrl);
