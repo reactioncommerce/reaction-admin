@@ -11,10 +11,9 @@ export { Badge } from "./badge";
 export { Link } from "./link";
 export {
   Translation,
-  // Currency
+  Currency
 } from "./translation";
-// export { default as Tooltip } from "./tooltip/tooltip";
-// export { Metadata, Metafield } from "./metadata";
+export { default as Tooltip } from "./tooltip/tooltip";
 // export * from "./cards";
 export { MediaItem, MediaUploader } from "./media"; // keep
 export { default as FlatButton } from "./button/flatButton"; // keep
