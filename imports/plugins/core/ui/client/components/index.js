@@ -1,13 +1,8 @@
-// export { App } from "./app";
 export { default as Icon } from "./icon/icon"; // keep
-export { default as CircularProgress } from "./progress/circularProgress";
+export { default as CircularProgress } from "./progress/circularProgress"; //keep
 export { default as Divider } from "./divider/divider"; // keep
 export { default as VerticalDivider } from "./divider/verticalDivider"; // keep
-// export { default as Items } from "./items/items";
-// export { default as Item } from "./items/item";
 export { default as TextField } from "./textfield/textfield"; // keep
-// export { default as NumericInput } from "./numericInput/numericInput";
-// export { default as NumberTypeInput } from "./numericInput/numberTypeInput";
 export {
   Button, // keep
   IconButton, // keep
@@ -25,7 +20,7 @@ export {
 // export { default as Tooltip } from "./tooltip/tooltip";
 // export { Metadata, Metafield } from "./metadata";
 // export * from "./cards";
-// export { MediaItem, MediaUploader } from "./media";
+export { MediaItem, MediaUploader } from "./media"; // keep
 export { default as FlatButton } from "./button/flatButton"; // keep
 export { SortableTable } from "./table"; // keep
 // export { Checkbox, RolloverCheckbox } from "./checkbox";
