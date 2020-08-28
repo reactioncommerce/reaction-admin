@@ -15,7 +15,6 @@ export { Link } from "./link";
 export { Translation, Currency } from "./translation";
 export { default as Tooltip } from "./tooltip/tooltip";
 export { Metadata, Metafield } from "./metadata";
-export { TagList, TagItem } from "./tags";
 export * from "./cards";
 export { MediaItem, MediaUploader } from "./media";
 export { default as FlatButton } from "./button/flatButton";
