@@ -14,7 +14,7 @@ export {
   Currency
 } from "./translation";
 export { default as Tooltip } from "./tooltip/tooltip";
-// export * from "./cards";
+export * from "./cards";
 export { MediaItem, MediaUploader } from "./media"; // keep
 export { default as FlatButton } from "./button/flatButton"; // keep
 export { SortableTable } from "./table"; // keep
