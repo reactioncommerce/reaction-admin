@@ -15,12 +15,10 @@ export {
 } from "./translation";
 export { default as Tooltip } from "./tooltip/tooltip";
 export * from "./cards";
-export { MediaItem, MediaUploader } from "./media"; // keep
-export { default as FlatButton } from "./button/flatButton"; // keep
-export { SortableTable } from "./table"; // keep
-// export { Checkbox, RolloverCheckbox } from "./checkbox";
-export { default as Loading } from "./loading/loading"; // keep
-// export * from "./forms";
+export { MediaItem, MediaUploader } from "./media";
+export { default as FlatButton } from "./button/flatButton";
+export { SortableTable } from "./table";
+export { default as Loading } from "./loading/loading";
 // export * from "./toolbar";
 // export * from "./popover";
 // export * from "./menu";
