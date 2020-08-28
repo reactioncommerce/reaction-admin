@@ -1,20 +1,16 @@
-export { default as Icon } from "./icon/icon"; // keep
-export { default as CircularProgress } from "./progress/circularProgress"; //keep
-export { default as Divider } from "./divider/divider"; // keep
-export { default as VerticalDivider } from "./divider/verticalDivider"; // keep
-export { default as TextField } from "./textfield/textfield"; // keep
+export { default as Icon } from "./icon/icon";
+export { default as CircularProgress } from "./progress/circularProgress";
+export { default as Divider } from "./divider/divider";
+export { default as VerticalDivider } from "./divider/verticalDivider";
+export { default as TextField } from "./textfield/textfield";
 export {
-  Button, // keep
-  IconButton, // keep
-  // EditButton,
-  // VisibilityButton,
-  // Handle,
-  // ButtonSelect
+  Button,
+  IconButton
 } from "./button";
-export { Badge } from "./badge"; // keep
-export { Link } from "./link"; // keep
+export { Badge } from "./badge";
+export { Link } from "./link";
 export {
-  Translation, // keep
+  Translation,
   // Currency
 } from "./translation";
 // export { default as Tooltip } from "./tooltip/tooltip";
