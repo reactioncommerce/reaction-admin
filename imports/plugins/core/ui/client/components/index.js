@@ -18,7 +18,6 @@ export { default as FlatButton } from "./button/flatButton";
 export { SortableTable } from "./table";
 export { default as Loading } from "./loading/loading";
 export { Switch } from "./switch";
-// export { default as ClickToCopy } from "./clickToCopy/clickToCopy";
-export { ReactionAvatar } from "./avatar"; // keep
+export { ReactionAvatar } from "./avatar";
 // export * from "./notFound";
 // export { CalendarPicker } from "./calendarPicker/calendarPicker";
