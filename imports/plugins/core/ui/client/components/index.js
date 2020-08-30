@@ -18,7 +18,6 @@ export { default as FlatButton } from "./button/flatButton";
 export { SortableTable } from "./table";
 export { default as Loading } from "./loading/loading";
 export { Switch } from "./switch";
-export { List, ListItem } from "./list";
 // export { default as Slider } from "./slider/slider";
 // export { default as MultiSelect } from "./multiselect/multiselect";
 export { Overlay } from "./modal"; // keep
