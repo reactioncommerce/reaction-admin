@@ -19,4 +19,3 @@ export { SortableTable } from "./table";
 export { default as Loading } from "./loading/loading";
 export { Switch } from "./switch";
 export { ReactionAvatar } from "./avatar";
-// export { CalendarPicker } from "./calendarPicker/calendarPicker";
