@@ -18,11 +18,8 @@ export { default as FlatButton } from "./button/flatButton";
 export { SortableTable } from "./table";
 export { default as Loading } from "./loading/loading";
 export { Switch } from "./switch";
-// export { default as Slider } from "./slider/slider";
-// export { default as MultiSelect } from "./multiselect/multiselect";
 export { Overlay } from "./modal"; // keep
 // export * from "./tabs";
-// export { default as Select } from "./select/select.react";
 // export { default as ClickToCopy } from "./clickToCopy/clickToCopy";
 export { ReactionAvatar } from "./avatar"; // keep
 // export * from "./notFound";
