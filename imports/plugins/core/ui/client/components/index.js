@@ -17,7 +17,6 @@ export { MediaItem, MediaUploader } from "./media";
 export { default as FlatButton } from "./button/flatButton";
 export { SortableTable } from "./table";
 export { default as Loading } from "./loading/loading";
-// export * from "./buttonGroup";
 // export { Switch } from "./switch";
 // export { List, ListItem } from "./list";
 // export { default as Slider } from "./slider/slider";
