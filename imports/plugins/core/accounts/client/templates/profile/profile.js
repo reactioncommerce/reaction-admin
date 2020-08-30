@@ -35,11 +35,6 @@ function getTargetAccount() {
   return account;
 }
 
-Template.accountProfile.onCreated(() => {
-  // hide actionView if open, doesn't relate to profile page
-  Reaction.hideActionView();
-});
-
 Template.accountProfile.helpers({
   /**
    * @method doesUserExist
