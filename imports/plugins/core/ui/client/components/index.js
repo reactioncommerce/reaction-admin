@@ -18,8 +18,7 @@ export { default as FlatButton } from "./button/flatButton";
 export { SortableTable } from "./table";
 export { default as Loading } from "./loading/loading";
 export { Switch } from "./switch";
-export { Overlay } from "./modal"; // keep
-// export * from "./tabs";
+export { Overlay } from "./modal";
 // export { default as ClickToCopy } from "./clickToCopy/clickToCopy";
 export { ReactionAvatar } from "./avatar"; // keep
 // export * from "./notFound";
