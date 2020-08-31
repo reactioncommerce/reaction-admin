@@ -45,7 +45,7 @@ function OperatorLanding() {
       >
         <Grid item />
         <Grid item>
-           <ShopLogoWithData shopId={shopId} size={100} />
+          <ShopLogoWithData shopId={shopId} size={100} />
         </Grid>
 
         <Grid item>
