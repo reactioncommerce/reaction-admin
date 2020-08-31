@@ -78,9 +78,7 @@ function ShopLogoWithData({ className, classes, shouldShowShopName, shopId, link
         const customLogoFromUpload = shop.brandAssets && shop.brandAssets.navbarBrandImage && shop.brandAssets.navbarBrandImage.large;
         const customLogoFromUrlInput = shop.shopLogoUrls && shop.shopLogoUrls.primaryShopLogoUrl;
         // Replace only the first segment of the URL with the shop ID and keep the rest (if any)
-        const linkUrl = location.pathname.replace(/(\/.[^/]*(\/.*)?)/g, (match, firstUrlSegment, restOfUrl) => {
-          return `/${shop._id}${restOfUrl || ""}`;
-        });
+        const linkUrl = location.pathname.replace(/(\/.[^/]*(\/.*)?)/g, (match, firstUrlSegment, restOfUrl) => `/${shop._id}${restOfUrl || ""}`);
 
         return (
           <MenuItem value={shop._id} key={shop._id}>
