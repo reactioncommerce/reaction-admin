@@ -23,11 +23,12 @@ function useShopSettings(args = {}) {
   const { enqueueSnackbar } = useSnackbar();
   const [fetchShop, { called, loading, data: shopQueryResult, refetch: refetchShopQuery }] = useLazyQuery(shopQuery);
 
-  if (shopId && !called) {
+  if (shopId && (!called || (shopQueryResult && shopQueryResult.shop?._id !== shopId))) {
     fetchShop({
       variables: {
         id: shopId
-      }
+      },
+      fetchPolicy: "network-only"
     });
   }
 
