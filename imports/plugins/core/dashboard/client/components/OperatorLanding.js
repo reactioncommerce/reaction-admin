@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import MuiLink from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import { Components } from "@reactioncommerce/reaction-components";
-import ShopLogoWithData from "/imports/client/ui/components/ShopLogoWithData/ShopLogoWithData";
+import ShopSelectorWithData from "/imports/client/ui/components/ShopSelectorWithData/ShopSelectorWithData";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId.js";
 import useIsAppLoading from "/imports/client/ui/hooks/useIsAppLoading.js";
 import useAuth from "/imports/client/ui/hooks/useAuth";
@@ -45,7 +45,7 @@ function OperatorLanding() {
       >
         <Grid item />
         <Grid item>
-          {/* <ShopLogoWithData size={100} /> */}
+          {/* <ShopSelectorWithData size={100} /> */}
         </Grid>
 
         <Grid item>

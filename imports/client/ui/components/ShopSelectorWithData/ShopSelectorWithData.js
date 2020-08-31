@@ -36,11 +36,11 @@ const ShopSelectorInput = withStyles(() => ({
 }))(InputBase);
 
 /**
- * ShopLogoWithData
+ * ShopSelectorWithData
  * @param {Object} props Component props
  * @returns {Node} React component
  */
-function ShopLogoWithData({ className, classes, shouldShowShopName, shopId, linkTo, size, viewer }) {
+function ShopSelectorWithData({ className, classes, shouldShowShopName, shopId, linkTo, size, viewer }) {
   const location = useLocation();
 
   let adminUIShops = [];
@@ -123,7 +123,7 @@ function ShopLogoWithData({ className, classes, shouldShowShopName, shopId, link
   );
 }
 
-ShopLogoWithData.propTypes = {
+ShopSelectorWithData.propTypes = {
   className: PropTypes.string,
   classes: PropTypes.object,
   linkTo: PropTypes.string,
@@ -133,7 +133,7 @@ ShopLogoWithData.propTypes = {
   viewer: PropTypes.object
 };
 
-ShopLogoWithData.defaultProps = {
+ShopSelectorWithData.defaultProps = {
   linkTo: "/",
   shouldShowShopName: false,
   size: 60
@@ -141,5 +141,5 @@ ShopLogoWithData.defaultProps = {
 
 export default compose(
   withComponents,
-  withStyles(styles, { name: "RuiShopLogoWithData" })
-)(ShopLogoWithData);
+  withStyles(styles, { name: "RuiShopSelectorWithData" })
+)(ShopSelectorWithData);

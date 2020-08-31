@@ -16,7 +16,7 @@ import CloseIcon from "mdi-material-ui/Close";
 import { Translation } from "/imports/plugins/core/ui/client/components";
 import useIsAppLoading from "/imports/client/ui/hooks/useIsAppLoading.js";
 import useCurrentShopId from "../../hooks/useCurrentShopId";
-import ShopLogoWithData from "../ShopLogoWithData";
+import ShopSelectorWithData from "../ShopSelectorWithData";
 import useOperatorRoutes from "../../hooks/useOperatorRoutes";
 
 const activeClassName = "nav-item-active";
@@ -165,7 +165,7 @@ function Sidebar(props) {
         position="sticky"
       >
         <Toolbar className={classes.toolbar}>
-          <ShopLogoWithData
+          <ShopSelectorWithData
             className={classes.shopLogo}
             shouldShowShopName
             shopId={currentShopId}
