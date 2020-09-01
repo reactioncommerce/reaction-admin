@@ -1,7 +1,6 @@
 import _ from "lodash";
 import { Accounts as MeteorAccounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
-import { Session } from "meteor/session";
 import { Tracker } from "meteor/tracker";
 import { ReactiveVar } from "meteor/reactive-var";
 import { ReactiveDict } from "meteor/reactive-dict";
