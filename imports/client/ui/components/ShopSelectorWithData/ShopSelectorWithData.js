@@ -21,11 +21,14 @@ const styles = (theme) => ({
     marginRight: theme.spacing(2)
   },
   logoName: {
-    color: theme.palette.colors.black15
+    color: theme.palette.colors.black
+  },
+  selected: {
+    color: theme.palette.colors.coolGrey500
   }
 });
 
-const ShopSelectorInput = withStyles(() => ({
+const ShopSelectorInput = withStyles((theme) => ({
   input: {
     "border": "none",
     "&:focus": {
@@ -96,7 +99,10 @@ function ShopSelectorWithData({ className, classes, shouldShowShopName, shopId, 
                 <Typography
                   variant="h3"
                   component="span"
-                  className={classes.logoName}
+                  className={classNames({
+                    [classes.logoName]: true,
+                    [classes.selected]: shop._id === shopId
+                  })}
                 >
                   {shop.name}
                 </Typography>
