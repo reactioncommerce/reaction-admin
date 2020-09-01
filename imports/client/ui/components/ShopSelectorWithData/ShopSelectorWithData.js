@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { compose } from "recompose";
 import classNames from "classnames";
 import { Link, useLocation } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import InputBase from "@material-ui/core/InputBase";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
@@ -20,15 +22,32 @@ const styles = (theme) => ({
   logo: {
     marginRight: theme.spacing(2)
   },
-  logoName: {
-    color: theme.palette.colors.black
+  menuItem: {
+    "& a span": {
+      color: theme.palette.colors.black90
+    }
   },
-  selected: {
-    color: theme.palette.colors.coolGrey500
+  selectMenu: {
+    "& a span": {
+      color: theme.palette.colors.black15
+    }
+  },
+  dummyShopName: {
+    color: theme.palette.colors.black15
+  },
+  newShopLink: {
+    "color": theme.palette.colors.darkBlue,
+    "&:hover": {
+      color: theme.palette.colors.darkBlue
+    }
+  },
+  plusIcon: {
+    display: "flex",
+    justifyContent: "center"
   }
 });
 
-const ShopSelectorInput = withStyles((theme) => ({
+const ShopSelectorInput = withStyles(() => ({
   input: {
     "border": "none",
     "&:focus": {
@@ -64,9 +83,9 @@ function ShopSelectorWithData({ className, classes, shouldShowShopName, shopId, 
         />
         {shouldShowShopName &&
         <Typography
-          variant="h3"
+          className={classes.dummyShopName}
           component="span"
-          className={classes.logoName}
+          variant="h3"
         >
           Reaction Commerce
         </Typography>
@@ -76,7 +95,7 @@ function ShopSelectorWithData({ className, classes, shouldShowShopName, shopId, 
   }
 
   return (
-    <Select value={shopId} input={<ShopSelectorInput />}>
+    <Select className={classes.selectMenu} value={shopId} input={<ShopSelectorInput />}>
       {adminUIShops.map((shop) => {
         const customLogoFromUpload = shop.brandAssets && shop.brandAssets.navbarBrandImage && shop.brandAssets.navbarBrandImage.large;
         const customLogoFromUrlInput = shop.shopLogoUrls && shop.shopLogoUrls.primaryShopLogoUrl;
@@ -84,7 +103,7 @@ function ShopSelectorWithData({ className, classes, shouldShowShopName, shopId, 
         const linkUrl = location.pathname.replace(/(\/.[^/]*(\/.*)?)/g, (match, firstUrlSegment, restOfUrl) => `/${shop._id}${restOfUrl || ""}`);
 
         return (
-          <MenuItem value={shop._id} key={shop._id}>
+          <MenuItem className={classes.menuItem} value={shop._id} key={shop._id}>
             <Link
               className={classNames(classes.root, className)}
               to={linkUrl}
@@ -99,10 +118,6 @@ function ShopSelectorWithData({ className, classes, shouldShowShopName, shopId, 
                 <Typography
                   variant="h3"
                   component="span"
-                  className={classNames({
-                    [classes.logoName]: true,
-                    [classes.selected]: shop._id === shopId
-                  })}
                 >
                   {shop.name}
                 </Typography>
@@ -111,15 +126,17 @@ function ShopSelectorWithData({ className, classes, shouldShowShopName, shopId, 
           </MenuItem>
         );
       })}
-      <MenuItem value="new-shop" key="new-shop">
+      <MenuItem className={classes.menuItem} value="new-shop" key="new-shop">
         <Link
-          className={classNames(classes.root, className)}
+          className={classNames([classes.root, className, classes.newShopLink])}
           to={"/new-shop"}
         >
+          <div className={classNames([classes.logo, classes.plusIcon])} style={{ width: size }}>
+            <FontAwesomeIcon icon={faPlus} />
+          </div>
           <Typography
             variant="h3"
             component="span"
-            className={classes.logoName}
           >
             New Shop
           </Typography>
