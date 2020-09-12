@@ -295,7 +295,7 @@ function useProduct(args = {}) {
             shopId: shopIdLocal,
             prices: {
               price,
-              compareAtPrice: compareAtPrice.amount
+              compareAtPrice: compareAtPrice?.amount
             },
             variantId: variantIdLocal
           }

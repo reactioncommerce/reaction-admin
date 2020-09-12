@@ -29,7 +29,10 @@ const formSchema = new SimpleSchema({
     type: Number,
     optional: true
   },
-  "compareAtPrice": Object,
+  "compareAtPrice": {
+    type: Object,
+    optional: true
+  },
   "compareAtPrice.amount": {
     type: Number,
     optional: true
