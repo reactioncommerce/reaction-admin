@@ -44,6 +44,9 @@ const styles = (theme) => ({
   plusIcon: {
     display: "flex",
     justifyContent: "center"
+  },
+  selectArrow: {
+    color: theme.palette.colors.black15
   }
 });
 
@@ -95,7 +98,7 @@ function ShopSelectorWithData({ className, classes, shouldShowShopName, shopId, 
   }
 
   return (
-    <Select className={classes.selectMenu} value={shopId} input={<ShopSelectorInput />}>
+    <Select classes={{ selectMenu: classes.selectMenu, icon: classes.selectArrow }} value={shopId} input={<ShopSelectorInput />}>
       {adminUIShops.map((shop) => {
         const customLogoFromUpload = shop.brandAssets && shop.brandAssets.navbarBrandImage && shop.brandAssets.navbarBrandImage.large;
         const customLogoFromUrlInput = shop.shopLogoUrls && shop.shopLogoUrls.primaryShopLogoUrl;
