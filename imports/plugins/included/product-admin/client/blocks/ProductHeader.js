@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import { Link } from "react-router-dom";
-import { i18next, Reaction } from "/client/api";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -10,7 +9,10 @@ import Typography from "@material-ui/core/Typography";
 import DotsHorizontalIcon from "mdi-material-ui/DotsHorizontal";
 import ConfirmDialog from "@reactioncommerce/catalyst/ConfirmDialog";
 import { makeStyles, Box, Divider } from "@material-ui/core";
+import { i18next, Reaction } from "/client/api";
+import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import useProduct from "../hooks/useProduct";
+import getPDPUrl from "../utils/getPDPUrl";
 
 const useStyles = makeStyles((theme) => ({
   breadcrumbs: {
@@ -49,13 +51,14 @@ function ProductHeader({ shouldDisplayStatus }) {
     variant,
     option
   } = useProduct();
+  const [shopId] = useCurrentShopId();
 
   if (!product) {
     return null;
   }
 
-  const hasCloneProductPermission = Reaction.hasPermission(["reaction:legacy:products/clone"], Reaction.getUserId(), Reaction.getShopId());
-  const hasArchiveProductPermission = Reaction.hasPermission(["reaction:legacy:products/archive"], Reaction.getUserId(), Reaction.getShopId());
+  const hasCloneProductPermission = Reaction.hasPermission(["reaction:legacy:products/clone"], Reaction.getUserId(), shopId);
+  const hasArchiveProductPermission = Reaction.hasPermission(["reaction:legacy:products/archive"], Reaction.getUserId(), shopId);
 
   // Archive menu item
   let archiveMenuItem = (
@@ -65,12 +68,14 @@ function ProductHeader({ shouldDisplayStatus }) {
       onConfirm={() => {
         let redirectUrl;
 
-        if (option) {
-          redirectUrl = `/products/${product._id}/${variant._id}`;
-        } else if (variant) {
-          redirectUrl = `/products/${product._id}`;
+        if (option || variant) {
+          redirectUrl = getPDPUrl({
+            productId: product._id,
+            variantId: variant._id,
+            shopId
+          });
         } else {
-          redirectUrl = "/products";
+          redirectUrl = `${shopId}/products`;
         }
 
         onArchiveProduct(product._id, redirectUrl);
@@ -110,7 +115,7 @@ function ProductHeader({ shouldDisplayStatus }) {
           flexDirection="column"
           flex="1"
         >
-          <Link className={classes.breadcrumbLink} to={`/products/${product._id}`}>
+          <Link className={classes.breadcrumbLink} to={getPDPUrl({ productId: product._id, shopId })}>
             <Typography variant="h2">
               <Helmet title={product.title} />
               {product.title || "Untitled Product"}

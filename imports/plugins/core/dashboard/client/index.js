@@ -1,7 +1,8 @@
 import SettingsIcon from "mdi-material-ui/Cog";
 import { registerBlock } from "@reactioncommerce/reaction-components";
 import { registerOperatorRoute } from "/imports/client/ui";
-import OperatorLanding from "/imports/plugins/core/dashboard/client/components/OperatorLanding";
+import OperatorLanding from "./components/OperatorLanding";
+import CreateShopForm from "./containers/CreateShopForm";
 
 // Settings block regions
 import ShopSettingsRegion from "./components/ShopSettingsRegion";
@@ -17,10 +18,21 @@ import SystemInformation from "./components/SystemInformation";
 
 import "./components/shopBrandImageOption";
 import "./components/ShopBrandMediaManager";
-import "./containers/CreateFirstShopForm.js";
 
-// Default landing page
+// We're creating `/new-shop` before `/` because the latter also creates `/:shopId`, which would confuse the router
+// when visiting `/new-shop` and make it think that we're accessing a shop with the ID `new-shop`.
 registerOperatorRoute({
+  // We don't want our route to have the `/:shopId` prefix added. Our route will only be `/new-shop`.
+  createRouteWithNoPrefix: true,
+  // We don't want a `/:shopId/new-shop` route created
+  createRouteWithPrefix: false,
+  path: "/new-shop",
+  MainComponent: CreateShopForm
+});
+
+// Default landing page. Will create `/` as well as `/:shopId` automatically.
+registerOperatorRoute({
+  createRouteWithNoPrefix: true,
   path: "/",
   MainComponent: OperatorLanding
 });

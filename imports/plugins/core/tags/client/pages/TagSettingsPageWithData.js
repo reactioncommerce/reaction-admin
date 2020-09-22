@@ -58,12 +58,12 @@ class TagSettings extends Component {
         selection: []
       });
 
-      this.props.history.push(`/tags/edit/${rowData._id}`);
+      this.props.history.push(`/${this.props.shopId}/tags/edit/${rowData._id}`);
     }
   }
 
   handleShowCreateForm = () => {
-    this.props.history.push("/tags/create");
+    this.props.history.push(`/${this.props.shopId}/tags/create`);
   }
 
   handleBulkAction = async (action, itemIds) => {

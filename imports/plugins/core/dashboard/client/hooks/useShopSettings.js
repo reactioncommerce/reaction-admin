@@ -23,7 +23,8 @@ function useShopSettings(args = {}) {
   const { enqueueSnackbar } = useSnackbar();
   const [fetchShop, { called, loading, data: shopQueryResult, refetch: refetchShopQuery }] = useLazyQuery(shopQuery);
 
-  if (shopId && !called) {
+  // Allow fetching only if we didn't fetch before, or if the shop ID has changed
+  if (shopId && (!called || (shopQueryResult && shopQueryResult.shop?._id !== shopId))) {
     fetchShop({
       variables: {
         id: shopId

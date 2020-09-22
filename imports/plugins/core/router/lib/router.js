@@ -612,9 +612,21 @@ Router.initPackageRoutes = (options) => {
   const reactRouterRoutes = uniqRoutes.map((route, index) => (
     <Route
       key={`${route.name}-${index}`}
-      path={route.route}
+      path={`/:shopId${route.route}`}
       exact={true}
       render={route.options.component}
+    />
+  ));
+
+  const index = allRouteDefinitions.find((route) => route.name === "index") || {};
+  const indexComponent = index.options && index.options.component;
+
+  reactRouterRoutes.push((
+    <Route
+      key="index"
+      path="/"
+      exact={true}
+      render={indexComponent}
     />
   ));
 

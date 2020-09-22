@@ -6,11 +6,25 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { getOperationAST } from "graphql";
 import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
+import Logger from "/client/modules/logger";
 
 const { graphQlApiUrlHttp, graphQlApiUrlWebSocket } = Meteor.settings.public;
 
 let sharedClient;
 let token;
+
+/**
+ * @summary Initiate Meteor login for DDP connection
+ * @param {String} loginToken The login token
+ * @returns {undefined}
+ */
+function callLoginMethod(loginToken) {
+  Accounts.callLoginMethod({
+    methodArguments: [{
+      accessToken: loginToken
+    }]
+  });
+}
 
 /**
  * @summary Set the access token that GraphQL requests will use in the Authorization header
@@ -28,14 +42,13 @@ export function setAccessToken(value) {
   // We do this because we have effectively switched users here. We don't want data from the previous user
   // (or the previous non-authenticated queries) to be kept.
   if (previousToken !== token) {
-    if (sharedClient) sharedClient.resetStore();
-
-    // If we are logged in with OAuth, log in as the same use with Meteor for the DDP connection
-    Accounts.callLoginMethod({
-      methodArguments: [{
-        accessToken: token
-      }]
-    });
+    if (sharedClient) {
+      sharedClient.resetStore()
+        .then(() => callLoginMethod(token))
+        .catch((err) => Logger.error(err));
+    } else {
+      callLoginMethod(token);
+    }
   }
 }
 

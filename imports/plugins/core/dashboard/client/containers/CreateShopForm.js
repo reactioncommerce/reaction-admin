@@ -1,9 +1,10 @@
 import React from "react";
 import { registerComponent } from "@reactioncommerce/reaction-components";
 import { useMutation } from "@apollo/react-hooks";
+import { useHistory, useLocation } from "react-router-dom";
 import gql from "graphql-tag";
 import Logger from "/client/modules/logger";
-import CreateFirstShopForm from "../components/CreateFirstShopForm.js";
+import CreateShopForm from "../components/CreateShopForm.js";
 
 const createShopMutation = gql`
   mutation createShop($input: CreateShopInput!) {
@@ -16,25 +17,34 @@ const createShopMutation = gql`
 `;
 
 /**
- * CreateFirstShopForm
+ * CreateShopForm
  * @returns {Node} React component
  */
-function CreateFirstShopFormContainer() {
+export default function CreateShopFormContainer() {
   const [createShop] = useMutation(createShopMutation, { ignoreResults: true });
+  const { search } = useLocation();
+  const history = useHistory();
 
   return (
-    <CreateFirstShopForm
+    <CreateShopForm
       onSubmit={async (input) => {
-        await createShop({
-          variables: { input },
+        const { data } = await createShop({
+          variables: {
+            input: {
+              ...input,
+              type: search.includes("primary") ? "primary" : "merchant"
+            }
+          },
           onError(error) {
             Logger.error(error);
             Alerts.toast("Unable to create shop", "error", { autoHide: 10000 });
           }
         });
+
+        if (data?.createShop?.shop?._id) history.push(`/${data.createShop.shop._id}`);
       }}
     />
   );
 }
 
-registerComponent("CreateFirstShopForm", CreateFirstShopFormContainer);
+registerComponent("CreateShopForm", CreateShopFormContainer);

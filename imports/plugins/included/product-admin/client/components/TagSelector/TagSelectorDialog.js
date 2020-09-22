@@ -17,6 +17,7 @@ import {
   IconButton,
   makeStyles
 } from "@material-ui/core";
+import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import { getTags } from "./helpers";
 import { ADD_TAGS_TO_PRODUCTS, REMOVE_TAGS_FROM_PRODUCTS } from "./mutations";
 
@@ -56,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
  */
 function TagSelector({ isOpen, onClose, onSuccess, productIds, shopId }) {
   const apolloClient = useApolloClient();
+  const [currentShopId] = useCurrentShopId();
   const [selectedTags, setSelectedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const classes = useStyles();
@@ -151,7 +153,7 @@ function TagSelector({ isOpen, onClose, onSuccess, productIds, shopId }) {
               defaultOptions
               isAsync
               isMulti
-              loadOptions={(query) => getTags(apolloClient, query)}
+              loadOptions={(query) => getTags(apolloClient, query, currentShopId)}
               onSelection={(tags) => setSelectedTags(tags)}
               placeholder={i18next.t("admin.addRemoveTags.inputPlaceholder")}
             />

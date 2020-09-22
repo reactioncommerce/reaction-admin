@@ -155,7 +155,7 @@ function ProductsTable() {
 
   // Row click callback
   const onRowClick = useCallback(async ({ row }) => {
-    const href = getPDPUrl(row.original._id);
+    const href = getPDPUrl({ productId: row.original._id, shopId: row.original.shop._id });
     history.push(href);
   }, [history]);
 
@@ -190,7 +190,7 @@ function ProductsTable() {
 
     if (data) {
       const { createProduct: { product } } = data;
-      history.push(`/products/${product._id}`);
+      history.push(`/${shopId}/products/${product._id}`);
     }
 
     if (createProductError) {

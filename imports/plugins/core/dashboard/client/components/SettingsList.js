@@ -8,7 +8,8 @@ import {
 } from "@material-ui/core";
 import clsx from "classnames";
 import { NavLink } from "react-router-dom";
-import useOperatorRoutes from "imports/client/ui/hooks/useOperatorRoutes";
+import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
+import useOperatorRoutes from "/imports/client/ui/hooks/useOperatorRoutes";
 
 const activeClassName = "settings-active-item";
 
@@ -48,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SettingsList() {
   const classes = useStyles();
   const settingsRoutes = useOperatorRoutes({ groups: ["settings"] });
+  const [currentShopId] = useCurrentShopId();
   let settingsList = [];
 
   if (Array.isArray(settingsRoutes)) {
@@ -55,7 +57,7 @@ export default function SettingsList() {
       <NavLink
         activeClassName={activeClassName}
         className={clsx({ [classes.link]: true, [classes.linkBackground]: true })}
-        to={setting.path}
+        to={setting.path.replace(":shopId", currentShopId)}
         key={setting.path}
       >
         <ListItem

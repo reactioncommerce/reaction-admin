@@ -163,7 +163,12 @@ export default function VariantList() {
               button
               selected={currentVariant && (currentVariant._id === variant._id)}
               onClick={() => {
-                const url = getPDPUrl(product._id, variant._id, parentVariant && parentVariant._id);
+                const url = getPDPUrl({
+                  productId: product._id,
+                  variantId: variant._id,
+                  parentVariantId: parentVariant && parentVariant._id,
+                  shopId: product.shop._id
+                });
                 history.push(url);
 
                 if (!parentVariant) {

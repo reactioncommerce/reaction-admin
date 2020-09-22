@@ -1,34 +1,27 @@
-import { useState, useEffect } from "react";
-import Logger from "/client/modules/logger";
-import getOpaqueIds from "/imports/plugins/core/core/client/util/getOpaqueIds";
-import useCurrentInternalShopId from "./useCurrentInternalShopId.js";
+import { matchPath } from "react-router";
+import { useLocation } from "react-router-dom";
 
 /**
- * React Hook that gets the globally current shop ID
+ * React Hook that gets the globally current shop ID from the `:shopId` URL prefix param
  * @return {Array} [currentShopId]
  */
 export default function useCurrentShopId() {
-  const [internalShopId] = useCurrentInternalShopId();
-  const [currentShopId, setCurrentShopId] = useState(null);
+  const location = useLocation();
 
-  useEffect(() => {
-    let isMounted = true;
+  if (!location || !location.pathname) {
+    return [];
+  }
 
-    getOpaqueIds([
-      { namespace: "Shop", id: internalShopId }
-    ])
-      .then(([opaqueShopId]) => {
-        if (isMounted) setCurrentShopId(opaqueShopId);
-        return null;
-      })
-      .catch((error) => {
-        Logger.error(error);
-      });
+  const route = matchPath(location.pathname, {
+    path: "/:shopId/",
+    exact: false
+  });
 
-    return () => {
-      isMounted = false;
-    };
-  }, [internalShopId]);
+  if (!route) {
+    return [];
+  }
 
-  return [currentShopId];
+  const { shopId } = route.params;
+
+  return [shopId];
 }

@@ -1,17 +1,14 @@
 import React, { Fragment } from "react";
 import Helmet from "react-helmet";
-import { Link } from "react-router-dom";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
+import { Link, Redirect, useParams } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import MuiLink from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import { Components } from "@reactioncommerce/reaction-components";
-import { i18next } from "/client/api";
 import ShopLogoWithData from "/imports/client/ui/components/ShopLogoWithData/ShopLogoWithData";
-import useIsAppLoading from "/imports/client/ui/hooks/useIsAppLoading.js";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId.js";
+import useIsAppLoading from "/imports/client/ui/hooks/useIsAppLoading.js";
+import useAuth from "/imports/client/ui/hooks/useAuth";
 
 /**
  * OperatorLanding
@@ -19,38 +16,20 @@ import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId.js";
  * @returns {Node} React component
  */
 function OperatorLanding() {
+  const { isViewerLoading, viewer } = useAuth();
+  const [shopId] = useCurrentShopId();
+  const routeParams = useParams();
   const [isAppLoading] = useIsAppLoading();
-  const [currentShopId] = useCurrentShopId();
 
-  if (isAppLoading) return <Components.Loading />;
+  if (isAppLoading || isViewerLoading) return <Components.Loading />;
 
-  let content;
-  if (currentShopId) {
-    content = (
-      <Fragment>
-        <Grid item>
-          <Typography align="center" variant="body1">
-            {/* eslint-disable-next-line max-len */}
-            Use Reaction Admin to manage <Link to="/orders">Orders</Link>, <Link to="/products">Products</Link>, <Link to="/tags">Tags</Link>, <Link to="/accounts">Accounts</Link>, and <Link to="/navigation">Navigation</Link>, or change shop settings.
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Typography align="center" variant="body1">
-            See our <MuiLink href="https://docs.reactioncommerce.com/docs/dashboard">Store Operator’s Guide</MuiLink> for more information.
-          </Typography>
-        </Grid>
-      </Fragment>
+  if (!routeParams.shopId && viewer?.adminUIShops?.length > 0) {
+    return (
+      <Redirect to={`/${viewer.adminUIShops[0]._id}`} />
     );
-  } else {
-    content = (
-      <Grid item>
-        <Card elevation={0}>
-          <CardHeader title={i18next.t("admin.landing.createFirstShop")} />
-          <CardContent>
-            <Components.CreateFirstShopForm />
-          </CardContent>
-        </Card>
-      </Grid>
+  } else if (!routeParams.shopId && viewer) {
+    return (
+      <Redirect to={"/new-shop?primary=true"} />
     );
   }
 
@@ -66,9 +45,20 @@ function OperatorLanding() {
       >
         <Grid item />
         <Grid item>
-          <ShopLogoWithData size={100} />
+          <ShopLogoWithData shopId={shopId} size={100} />
         </Grid>
-        {content}
+
+        <Grid item>
+          <Typography align="center" variant="body1">
+            {/* eslint-disable-next-line max-len */}
+            Use Reaction Admin to manage <Link to={`/${shopId}/orders`}>Orders</Link>, <Link to={`/${shopId}/products`}>Products</Link>, <Link to={`/${shopId}/tags`}>Tags</Link>, <Link to={`/${shopId}/accounts`}>Accounts</Link>, and <Link to={`/${shopId}/navigation`}>Navigation</Link>, or change shop settings.
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography align="center" variant="body1">
+            See our <MuiLink href="https://docs.reactioncommerce.com/docs/dashboard">Store Operator’s Guide</MuiLink> for more information.
+          </Typography>
+        </Grid>
       </Grid>
     </Fragment>
   );
