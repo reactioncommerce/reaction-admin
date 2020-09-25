@@ -1,4 +1,23 @@
+# v3.0.0-beta.10
+
+This is the 10th beta release of the Reaction Admin project that is designed to work with our new Reaction API.
+
+### Features
+
+- feat: Add global shop selector for multi-shop usage ([#297](https://github.com/reactioncommerce/reaction-admin/pull/297))
+
+### Chores
+
+- chore: update to Meteor 1.11.1 ([#323](https://github.com/reactioncommerce/reaction-admin/pull/323))
+- chore: remove dead code ([#317](https://github.com/reactioncommerce/reaction-admin/pull/317))
+
+## Contributors
+
+Thanks to @loan-laux for contributing to this release! 🎉
+
 # v3.0.0-beta.9
+
+This is the ninth beta release of the Reaction Admin project that is designed to work with our new Reaction API.
 
 ### Features
 
@@ -14,6 +33,8 @@
 Thanks to @manizuca and @mikoscz for contributing to this release! 🎉
 
 # v3.0.0-beta.8
+
+This is the eighth beta release of the Reaction Admin project that is designed to work with our new Reaction API.
 
 ### Features
 
