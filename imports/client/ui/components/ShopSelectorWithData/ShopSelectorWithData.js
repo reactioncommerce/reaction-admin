@@ -11,6 +11,7 @@ import Select from "@material-ui/core/Select";
 import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { withComponents } from "@reactioncommerce/components-context";
+import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 
 const defaultLogo = "/resources/reaction-logo-circular.svg";
 
@@ -65,8 +66,9 @@ const ShopSelectorInput = withStyles(() => ({
  * @param {Object} props Component props
  * @returns {Node} React component
  */
-function ShopSelectorWithData({ className, classes, shouldShowShopName, shopId, linkTo, size, viewer }) {
+function ShopSelectorWithData({ className, classes, shouldShowShopName, linkTo, size, viewer }) {
   const location = useLocation();
+  const [currentShopId] = useCurrentShopId();
 
   let adminUIShops = [];
 
@@ -98,7 +100,7 @@ function ShopSelectorWithData({ className, classes, shouldShowShopName, shopId, 
   }
 
   return (
-    <Select classes={{ selectMenu: classes.selectMenu, icon: classes.selectArrow }} value={shopId} input={<ShopSelectorInput />}>
+    <Select classes={{ selectMenu: classes.selectMenu, icon: classes.selectArrow }} value={currentShopId || "new-shop"} input={<ShopSelectorInput />}>
       {adminUIShops.map((shop) => {
         const customLogoFromUpload = shop.brandAssets && shop.brandAssets.navbarBrandImage && shop.brandAssets.navbarBrandImage.large;
         const customLogoFromUrlInput = shop.shopLogoUrls && shop.shopLogoUrls.primaryShopLogoUrl;

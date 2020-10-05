@@ -168,7 +168,6 @@ function Sidebar(props) {
           <ShopSelectorWithData
             className={classes.shopLogo}
             shouldShowShopName
-            shopId={currentShopId}
             size={32}
             viewer={viewer}
           />
