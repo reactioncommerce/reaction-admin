@@ -1,7 +1,7 @@
 import React from "react";
 import { registerComponent } from "@reactioncommerce/reaction-components";
 import { useMutation } from "@apollo/react-hooks";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import gql from "graphql-tag";
 import Logger from "/client/modules/logger";
 import CreateShopForm from "../components/CreateShopForm.js";
@@ -15,14 +15,12 @@ const createShopMutation = gql`
     }
   }
 `;
-
 /**
  * CreateShopForm
  * @returns {Node} React component
  */
 export default function CreateShopFormContainer() {
   const [createShop] = useMutation(createShopMutation, { ignoreResults: true });
-  const { search } = useLocation();
   const history = useHistory();
 
   return (
@@ -30,10 +28,7 @@ export default function CreateShopFormContainer() {
       onSubmit={async (input) => {
         const { data } = await createShop({
           variables: {
-            input: {
-              ...input,
-              type: search.includes("primary") ? "primary" : "merchant"
-            }
+            input
           },
           onError(error) {
             Logger.error(error);

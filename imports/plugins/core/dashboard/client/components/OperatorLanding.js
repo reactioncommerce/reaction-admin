@@ -29,7 +29,7 @@ function OperatorLanding() {
     );
   } else if (!routeParams.shopId && viewer) {
     return (
-      <Redirect to={"/new-shop?primary=true"} />
+      <Redirect to={"/new-shop"} />
     );
   }
 
