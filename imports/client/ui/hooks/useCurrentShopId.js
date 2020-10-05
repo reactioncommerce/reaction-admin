@@ -23,5 +23,9 @@ export default function useCurrentShopId() {
 
   const { shopId } = route.params;
 
+  if (shopId === "new-shop") {
+    return [];
+  }
+
   return [shopId];
 }
