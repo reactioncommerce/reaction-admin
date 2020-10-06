@@ -22,10 +22,7 @@ export default function useOperatorRoutes(options = {}) {
     sort = defaultRouteSort
   } = options;
 
-  const { shop, shopId } = useCurrentShop();
-  console.log(shopId);
-  console.log(shop);
-
+  const { shop } = useCurrentShop();
 
   const routes = useMemo(() => {
     let filteredRoutes;
