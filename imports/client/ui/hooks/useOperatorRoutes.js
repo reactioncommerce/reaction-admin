@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { operatorRoutes } from "../index";
+import useCurrentShop from "/imports/client/ui/hooks/useCurrentShop.js";
 
 export const defaultRouteSort = (routeA, routeB) => (
   (routeA.priority || Number.MAX_SAFE_INTEGER) - (routeB.priority || Number.MAX_SAFE_INTEGER)
@@ -21,6 +22,8 @@ export default function useOperatorRoutes(options = {}) {
     sort = defaultRouteSort
   } = options;
 
+  const { shop } = useCurrentShop();
+
   const routes = useMemo(() => {
     let filteredRoutes;
     if (Array.isArray(groups)) {
@@ -33,6 +36,16 @@ export default function useOperatorRoutes(options = {}) {
 
     if (sort) {
       filteredRoutes = filteredRoutes.sort(sort);
+    }
+
+    if (shop) {
+      filteredRoutes = filteredRoutes.filter(({ shouldShowSidebarLink }) => {
+        if (shouldShowSidebarLink) {
+          return shouldShowSidebarLink(shop);
+        }
+
+        return true;
+      });
     }
 
     return filteredRoutes;

@@ -33,7 +33,8 @@ export function registerOperatorRoute(route) {
     layoutComponent,
     mainComponent,
     MainComponent,
-    path
+    path,
+    shouldShowSidebarLink
   } = route;
   const additionalProps = {};
 
@@ -75,7 +76,8 @@ export function registerOperatorRoute(route) {
     operatorRoutes.push({
       ...route,
       ...additionalProps,
-      MainComponent: component
+      MainComponent: component,
+      shouldShowSidebarLink
     });
   }
 
@@ -85,7 +87,8 @@ export function registerOperatorRoute(route) {
       ...additionalProps,
       path: `/:shopId${path}`,
       href: href ? `/:shopId${href}` : null,
-      MainComponent: component
+      MainComponent: component,
+      shouldShowSidebarLink
     });
   }
 }
