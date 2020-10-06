@@ -20,6 +20,7 @@ const getShopQuery = gql`
       shopLogoUrls {
         primaryShopLogoUrl
       }
+      shopType
       storefrontUrls {
         storefrontHomeUrl
         storefrontLoginUrl
@@ -43,7 +44,7 @@ export default function useCurrentShop() {
   });
 
   // Wait until we're sure we have a shop ID to call the query
-  if (shopId && !called) {
+  if ((shopId && !called) || (shopId && !loading && data?.shop?._id !== shopId)) {
     getShop({
       variables: { id: shopId }
     });
