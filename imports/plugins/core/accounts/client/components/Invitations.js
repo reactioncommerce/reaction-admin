@@ -1,9 +1,9 @@
 import React, { useState, useMemo, useCallback } from "react";
+import PropTypes from "prop-types";
 import { useApolloClient } from "@apollo/react-hooks";
 import i18next from "i18next";
 import { Card, CardContent, makeStyles } from "@material-ui/core";
 import DataTable, { useDataTable } from "@reactioncommerce/catalyst/DataTable";
-import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import { getAccountAvatar } from "/imports/plugins/core/accounts/client/helpers/helpers";
 import invitationsQuery from "../graphql/queries/invitations";
 
@@ -13,15 +13,13 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-
 /**
  * @summary Main invitations view
  * @name Invitations
  * @returns {React.Component} A React component
  */
-function Invitations() {
+function Invitations({ shopId }) {
   const apolloClient = useApolloClient();
-  const [shopId] = useCurrentShopId();
 
   // React-Table state
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +44,7 @@ function Invitations() {
       id: "invitedBy"
     }, {
       Header: i18next.t("admin.invitationsTable.header.shop"),
-      accessor: (row) => row.shop.name,
+      accessor: (row) => row.shop?.name,
       id: "shop"
     }, {
       Header: i18next.t("admin.invitationsTable.header.groups"),
@@ -58,14 +56,11 @@ function Invitations() {
   const onFetchData = useCallback(async ({ pageIndex, pageSize }) => {
     // Wait for shop id to be available before fetching products.
     setIsLoading(true);
-    if (!shopId) {
-      return;
-    }
 
     const { data } = await apolloClient.query({
       query: invitationsQuery,
       variables: {
-        shopIds: [shopId],
+        shopIds: shopId ? [shopId] : [],
         first: pageSize,
         limit: (pageIndex + 1) * pageSize,
         offset: pageIndex * pageSize
@@ -100,5 +95,9 @@ function Invitations() {
     </Card>
   );
 }
+
+Invitations.propTypes = {
+  shopId: PropTypes.string
+};
 
 export default Invitations;
