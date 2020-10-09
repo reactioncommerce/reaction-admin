@@ -3,6 +3,7 @@ import i18next from "i18next";
 import Divider from "@material-ui/core/Divider";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
+import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import Customers from "./Customers";
 import GroupCards from "./GroupCards";
 import Invitations from "./Invitations";
@@ -14,6 +15,7 @@ import Invitations from "./Invitations";
  */
 function Accounts() {
   const [currentTab, setCurrentTab] = useState(0);
+  const [shopId] = useCurrentShopId();
 
   return (
     <Fragment>
@@ -34,7 +36,7 @@ function Accounts() {
       }
 
       {currentTab === 2 &&
-        <Invitations />
+        <Invitations shopId={shopId} />
       }
     </Fragment>
   );
