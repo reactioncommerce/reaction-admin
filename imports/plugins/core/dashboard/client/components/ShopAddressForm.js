@@ -223,7 +223,7 @@ function ShopAddressForm({ isEditMode, isInitialView, setIsEditMode }) {
           onClick={handleSubmit}
           type="submit"
         >
-          {isSubmitting ? i18next.t("app.settings.saveProcessing") : i18next.t("app.saveChanges")}
+          {isSubmitting ? i18next.t("admin.settings.saveProcessing") : i18next.t("app.saveChanges")}
         </Button>
       </DialogActions>
     </Dialog>
