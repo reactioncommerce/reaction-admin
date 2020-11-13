@@ -416,6 +416,11 @@ export default {
     format: "%s%v",
     symbol: "₦"
   },
+  NPR: {
+    enabled: false,
+    format: "%s%v",
+    symbol: "रू"
+  },
   PHP: {
     enabled: false,
     format: "%s %v",
