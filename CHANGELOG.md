@@ -1,3 +1,29 @@
+# v3.0.0-beta.11
+
+This is the 11th beta release of the Reaction Admin project that is designed to work with our new Reaction API.
+
+## Feature
+
+- feat: Add NPR currency definition ([#332](https://github.com/reactioncommerce/reaction-admin/pull/332))
+- feat: Allow the Invitations table to show invitations for all shops ([#331](https://github.com/reactioncommerce/reaction-admin/pull/331))
+- feat: Add shouldShowSidebarLink to registerOperatorRoute ([#329](https://github.com/reactioncommerce/reaction-admin/pull/329))
+
+## Fixes
+
+- fix: Correct "processing changes" translation name ([#333](https://github.com/reactioncommerce/reaction-admin/pull/333))
+- fix: import missing function ([#315](https://github.com/reactioncommerce/reaction-admin/pull/315))
+- fix: make compareAtPrice optional in form schema ([#322](https://github.com/reactioncommerce/reaction-admin/pull/322))
+- fix: hide sidebar on new-shop page ([#327](https://github.com/reactioncommerce/reaction-admin/pull/327))
+- fix: shop selector blank on page load ([#328](https://github.com/reactioncommerce/reaction-admin/pull/328))
+
+## Chores
+
+- chore: don't use querystring arg for shop type ([#326](https://github.com/reactioncommerce/reaction-admin/pull/326))
+
+## Contributors
+
+Thanks to @Manizuca, @dineshdb, @loan-laux and @CristianCucunuba for contributing to this release! 🎉
+
 # v3.0.0-beta.10
 
 This is the 10th beta release of the Reaction Admin project that is designed to work with our new Reaction API.
