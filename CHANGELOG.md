@@ -2,7 +2,7 @@
 
 This is the 11th beta release of the Reaction Admin project that is designed to work with our new Reaction API.
 
-## Feature
+## Features
 
 - feat: Add NPR currency definition ([#332](https://github.com/reactioncommerce/reaction-admin/pull/332))
 - feat: Allow the Invitations table to show invitations for all shops ([#331](https://github.com/reactioncommerce/reaction-admin/pull/331))
