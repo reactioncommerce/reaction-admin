@@ -155,8 +155,8 @@ function OrdersTable() {
 
   // Row click callback
   const onRowClick = useCallback(async ({ row }) => {
-    history.push(`/orders/${row.values.referenceId}`);
-  }, [history]);
+    history.push(`/${shopId}/orders/${row.values.referenceId}`);
+  }, [history, shopId]);
 
   const labels = useMemo(() => ({
     "globalFilterPlaceholder": i18next.t("admin.table.filter.globalFilter"),
