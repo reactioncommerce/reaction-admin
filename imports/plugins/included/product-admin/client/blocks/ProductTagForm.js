@@ -31,6 +31,8 @@ function ProductTagForm() {
     handleDeleteProductTag({ tag });
   }, [handleDeleteProductTag]);
 
+  refetchProduct();
+
   if (product && Array.isArray(product.tags.nodes)) {
     content = product.tags.nodes.map((tag) => (
       <Box
