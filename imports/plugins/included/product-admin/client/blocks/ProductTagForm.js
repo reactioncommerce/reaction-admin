@@ -33,6 +33,7 @@ function ProductTagForm() {
 
   useEffect(() => {
     refetchProduct();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (product && Array.isArray(product.tags.nodes)) {
