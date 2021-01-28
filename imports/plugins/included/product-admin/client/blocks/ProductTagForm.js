@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { i18next } from "/client/api";
 import {
   Card,
@@ -31,7 +31,9 @@ function ProductTagForm() {
     handleDeleteProductTag({ tag });
   }, [handleDeleteProductTag]);
 
-  refetchProduct();
+  useEffect(() => {
+    refetchProduct();
+  });
 
   if (product && Array.isArray(product.tags.nodes)) {
     content = product.tags.nodes.map((tag) => (
