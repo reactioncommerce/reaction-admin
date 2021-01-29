@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { i18next } from "/client/api";
 import {
   Card,
@@ -30,6 +30,11 @@ function ProductTagForm() {
   const onDeleteTag = useCallback((tag) => {
     handleDeleteProductTag({ tag });
   }, [handleDeleteProductTag]);
+
+  useEffect(() => {
+    refetchProduct();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (product && Array.isArray(product.tags.nodes)) {
     content = product.tags.nodes.map((tag) => (
