@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 const formSchema = new SimpleSchema({
   title: {
     type: String,
-    optional: true
+    optional: false
   },
   permalink: {
     type: String,
