@@ -1,3 +1,22 @@
+# v3.0.0-beta.12
+
+Reaction v3.0.0-beta.12 adds minor features or bug fixes and contains no breaking changes since v3.0.0-beta.11.
+
+## Fixes
+
+ - Fix: Tags not rendering without manual refresh ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
+ - (fix) Linting error ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
+ - (fix) Refetch product only on initial render of component ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
+ - (fix) Refetch product only on initial render or update of component ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
+ - (fix) Refresh product data prior to mapping tags ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
+ - Fix order detail page link ([#337](https://github.com/reactioncommerce/reaction-admin/pull/#337))
+ - include shopId in order detail view URL ([#337](https://github.com/reactioncommerce/reaction-admin/pull/#337))
+
+
+## Contributors
+
+ Special thanks to jessica wolvington, Loan Laux for contributing to the release!
+
 # v3.0.0-beta.11
 
 This is the 11th beta release of the Reaction Admin project that is designed to work with our new Reaction API.
