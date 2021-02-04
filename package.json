@@ -142,6 +142,8 @@
     "@babel/plugin-syntax-import-meta": "7.2.0",
     "@babel/preset-env": "7.4.5",
     "@babel/preset-react": "7.0.0",
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
     "@reactioncommerce/eslint-config": "^2.1.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "10.0.3",
@@ -166,11 +168,13 @@
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^2.1.2",
     "fs-extra": "^7.0.1",
+    "husky": "^5.0.8",
     "jest": "^24.8.0",
     "jest-junit": "^6.4.0",
     "js-yaml": "^3.13.1",
     "jsdoc": "^3.6.3",
     "nock": "^9.6.1",
+    "pinst": "^2.1.4",
     "react-addons-test-utils": "15.6.2",
     "snyk": "^1.217.3",
     "wait-for-expect": "^1.2.0"
@@ -189,7 +193,10 @@
     "test:unit:watch": "BABEL_DISABLE_CACHE=1 REACTION_LOG_LEVEL=ERROR jest --maxWorkers=4 --watch",
     "test:file": "REACTION_LOG_LEVEL=ERROR jest --runInBand --watch",
     "docs": "jsdoc . --configure .reaction/jsdoc/jsdoc.json --readme .reaction/jsdoc/templates/static/README.md",
-    "version": "echo $npm_package_version"
+    "version": "echo $npm_package_version",
+    "postinstall": "husky install",
+    "prepublishOnly": "pinst --disable",
+    "postpublish": "pinst --enable"
   },
   "babel": {
     "plugins": [
@@ -313,5 +320,10 @@
   },
   "prettier": {
     "arrowParens": "always"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   }
 }
