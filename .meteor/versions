@@ -39,6 +39,7 @@ fetch@0.1.1
 gadicc:blaze-react-component@1.4.3
 geojson-utils@1.0.10
 hot-code-push@1.0.4
+hot-module-replacement@0.2.0
 html-tools@1.0.11
 htmljs@1.0.11
 http@1.4.3
@@ -63,6 +64,7 @@ mobile-status-bar@1.1.0
 modern-browsers@0.1.5
 modules@0.16.0
 modules-runtime@0.12.0
+modules-runtime-hot@0.13.0
 momentjs:moment@2.25.2
 mongo@1.10.1
 mongo-decimal@0.1.2

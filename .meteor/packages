@@ -47,3 +47,4 @@ orionsoft:graphql-compiler
 
 # Custom Packages
 jquery
+hot-module-replacement
