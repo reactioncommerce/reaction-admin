@@ -1,3 +1,26 @@
+# v3.0.0-beta.12
+
+Reaction v3.0.0-beta.12 adds minor features or bug fixes and contains no breaking changes since v3.0.0-beta.11.
+
+## Fixes
+
+ - (fix): Make title in product form required in validation to prevent error in storefront ([#340](https://github.com/reactioncommerce/reaction-admin/pull/#340))
+ - (fix): Tags not rendering without manual refresh ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
+ - (fix) Linting error ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
+ - (fix) Refetch product only on initial render of component ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
+ - (fix) Refetch product only on initial render or update of component ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
+ - (fix) Refresh product data prior to mapping tags ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
+ - (fix) order detail page link ([#337](https://github.com/reactioncommerce/reaction-admin/pull/#337))
+ - (fix) include shopId in order detail view URL ([#337](https://github.com/reactioncommerce/reaction-admin/pull/#337))
+
+## Chores
+
+- (chore): adding git hooks for commit-msg ([#346](https://github.com/reactioncommerce/reaction-admin/pull/#346))
+
+## Contributors
+
+ Special thanks to Loan Laux for contributing to the release!
+
 # v3.0.0-beta.11
 
 This is the 11th beta release of the Reaction Admin project that is designed to work with our new Reaction API.
