@@ -198,7 +198,6 @@ function useProduct(args = {}) {
    * @param {Object} [args.productId] Product ID to update. Leave blank for current product.
    * @param {Object} [args.shopId] Shop ID of the product to update. Leave blank for current shop.
    */
-
   const onUpdateProduct = useCallback(async ({
     product: productLocal,
     productId: productIdLocal = product._id,
