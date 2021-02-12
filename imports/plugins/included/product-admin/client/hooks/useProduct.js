@@ -225,7 +225,8 @@ function useProduct(args = {}) {
     enqueueSnackbar,
     product,
     shopId,
-    updateProduct
+    updateProduct,
+    refetchProduct
   ]);
 
   const handleDeleteProductTag = useCallback(async ({
@@ -286,7 +287,7 @@ function useProduct(args = {}) {
     } catch (error) {
       enqueueSnackbar(i18next.t("productVariant.updateVariantFail"), { variant: "error" });
     }
-  }, [enqueueSnackbar, shopId, updateProductVariant]);
+  }, [enqueueSnackbar, shopId, updateProductVariant, refetchProduct]);
 
   const onUpdateProductVariantPrices = useCallback(async ({
     variantPrices: variantPricesLocal,
@@ -315,7 +316,7 @@ function useProduct(args = {}) {
     } catch (error) {
       enqueueSnackbar(i18next.t("productVariant.updateVariantPricesFail"), { variant: "error" });
     }
-  }, [enqueueSnackbar, shopId, updateProductVariantPrices]);
+  }, [enqueueSnackbar, shopId, updateProductVariantPrices, refetchProduct]);
 
   const onToggleVariantVisibility = useCallback(async ({
     variant: variantLocal,
