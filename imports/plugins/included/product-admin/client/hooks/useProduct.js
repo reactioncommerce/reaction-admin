@@ -279,6 +279,9 @@ function useProduct(args = {}) {
         }
       });
 
+      // Refetch on success to force a cache update
+      refetchProduct();
+
       enqueueSnackbar(i18next.t("productVariant.updateVariantSuccess"), { variant: "success" });
     } catch (error) {
       enqueueSnackbar(i18next.t("productVariant.updateVariantFail"), { variant: "error" });
@@ -304,6 +307,9 @@ function useProduct(args = {}) {
           }
         }
       });
+
+      // Refetch on success to force a cache update
+      refetchProduct();
 
       enqueueSnackbar(i18next.t("productVariant.updateVariantPricesSuccess"), { variant: "success" });
     } catch (error) {
