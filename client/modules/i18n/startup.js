@@ -15,6 +15,8 @@ import i18next, { getLabelsFor, getValidationErrorMessages, i18nextDep } from ".
 
 const { i18nBaseUrl } = Meteor.settings.public;
 
+// Keep track of current langage.
+let currentLanguage = null;
 const configuredI18next = i18next
   // https://github.com/i18next/i18next-browser-languageDetector
   // Sets initial language to load based on `lng` query string
@@ -107,9 +109,12 @@ Meteor.startup(() => {
   Tracker.autorun(() => {
     const shopId = Reaction.getPrimaryShopId();
     const shop = shopId && Shops.findOne({ _id: shopId });
-    const shopLanguage = (shop && shop.language) || null;
-
-    initializeI18n(shopLanguage || "en");
+    const shopLanguage = (shop && shop.language) || "en";
+    // Only need to re-initialize if the language was switched
+    if (shopLanguage !== currentLanguage) {
+      currentLanguage = shopLanguage;
+      initializeI18n(shopLanguage);
+    }
   });
 
   //
