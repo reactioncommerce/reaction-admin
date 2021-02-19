@@ -31,7 +31,6 @@ function OrderHeader(props) {
   const { payments } = order;
   const paymentStatuses = payments.map((payment) => payment.status);
   const uniqueStatuses = [...new Set(paymentStatuses)];
-
   const [currentShopId] = useCurrentShopId();
 
   let paymentStatusChip;
