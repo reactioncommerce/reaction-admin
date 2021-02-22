@@ -72,6 +72,11 @@ const ProductSocialForm = React.forwardRef((props, ref) => {
 
       setIsSubmitting(false);
     },
+    onChange: async (formData) => {
+      await onUpdateProduct({
+        product: formSchema.clean(formData)
+      });
+    },
     validator(formData) {
       return validator(formSchema.clean(formData));
     },

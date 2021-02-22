@@ -99,6 +99,12 @@ const VariantDetailForm = React.forwardRef((props, ref) => {
 
       setIsSubmitting(false);
     },
+    onChange: async (formData) => {
+      await onUpdateProductVariant({
+        variantId: editingVariant._id,
+        variant: formSchema.clean(formData)
+      });
+    },
     validator(formData) {
       return validator(formSchema.clean(formData));
     },

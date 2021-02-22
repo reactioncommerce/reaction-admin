@@ -102,6 +102,7 @@ const ProductDetailForm = React.forwardRef((props, ref) => {
     submitForm
   } = useReactoForm({
     async onSubmit(formData) {
+
       const shouldConformSitemapGenerate =
         formData.shouldAppearInSitemap !== product.shouldAppearInSitemap
         && formData.isVisible && !formData.isDeleted;
@@ -117,6 +118,11 @@ const ProductDetailForm = React.forwardRef((props, ref) => {
       }
 
       setIsSubmitting(false);
+    },
+    onChange: async (formData) => {
+      await onUpdateProduct({
+        product: formSchema.clean(formData)
+      });
     },
     validator(formData) {
       return validator(formSchema.clean(formData));
