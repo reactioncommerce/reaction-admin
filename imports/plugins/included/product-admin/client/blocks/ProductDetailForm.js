@@ -102,7 +102,6 @@ const ProductDetailForm = React.forwardRef((props, ref) => {
     submitForm
   } = useReactoForm({
     async onSubmit(formData) {
-
       const shouldConformSitemapGenerate =
         formData.shouldAppearInSitemap !== product.shouldAppearInSitemap
         && formData.isVisible && !formData.isDeleted;
