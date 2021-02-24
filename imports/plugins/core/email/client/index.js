@@ -1,7 +1,7 @@
 import { registerOperatorRoute } from "/imports/client/ui";
 import { registerBlock } from "@reactioncommerce/reaction-components";
 import EmailSettingsRegion from "./components/EmailSettingsRegion";
-import EmailSettings from "./containers/EmailSettings";
+import EmailTable from "./components/EmailTable";
 
 registerOperatorRoute({
   group: "settings",
@@ -12,7 +12,7 @@ registerOperatorRoute({
 });
 
 registerBlock({
-  component: EmailSettings,
+  component: EmailTable,
   name: "EmailSettingsGeneral",
   priority: 1,
   region: "EmailSettings"
