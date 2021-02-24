@@ -10,6 +10,8 @@ import EmailTableColumn from "./emailTableColumn";
 
 const DEFAULT_PAGE_SIZE = 20;
 
+const formattedCell = (row) => <EmailTableColumn row={row} />;
+
 /**
  * @summary React component that renders a table listing all e-mail jobs for the current shop
  * @param {Object} props React props
@@ -31,18 +33,14 @@ export default function EmailTable() {
     Header: i18next.t("admin.logs.headers.data.to")
   }, {
     accessor: "updated",
-    Cell: (row) => (
-      <EmailTableColumn row={row} />
-    ),
+    Cell: formattedCell,
     Header: i18next.t("admin.logs.headers.updated")
   }, {
     accessor: "data.subject",
     Header: i18next.t("admin.logs.headers.data.subject")
   }, {
     accessor: "status",
-    Cell: (row) => (
-      <EmailTableColumn row={row} />
-    ),
+    Cell: formattedCell,
     Header: i18next.t("admin.logs.headers.status")
   }];
 
