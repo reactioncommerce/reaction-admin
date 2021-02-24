@@ -10,6 +10,7 @@ import EmailTableColumn from "./emailTableColumn";
 
 const DEFAULT_PAGE_SIZE = 20;
 
+// eslint-disable-next-line react/no-multi-comp
 const formattedCell = (row) => <EmailTableColumn row={row} />;
 
 /**
