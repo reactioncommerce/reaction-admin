@@ -13,8 +13,8 @@ export default gql`
             thumbnail
           }
         }
-        price {
-          range
+        pricing {
+          displayPrice
         }
         publishedProductHash
         variants {

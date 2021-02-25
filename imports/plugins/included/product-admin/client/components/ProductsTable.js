@@ -103,7 +103,7 @@ function ProductsTable() {
     },
     {
       Header: i18next.t("admin.productTable.header.price"),
-      accessor: "price.range"
+      accessor: "pricing.displayPrice"
     },
     {
       Header: i18next.t("admin.productTable.header.published"),
