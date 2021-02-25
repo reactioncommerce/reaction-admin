@@ -92,7 +92,8 @@ function InviteShopMember({ isOpen, onClose, onSuccess, groups, shopId }) {
             email: formData.email,
             groupIds: selectedGroups.map((role) => role.value),
             name: formData.name,
-            shopId
+            shopId,
+            shouldGetAdminUIAccess: true
           }
         }
       });
