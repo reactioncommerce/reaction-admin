@@ -3,9 +3,6 @@ import { registerOperatorRoute } from "/imports/client/ui";
 import EmailTemplateSettingsRegion from "./components/EmailTemplateSettingsRegion";
 import EmailTemplateTable from "./components/EmailTemplateTable";
 
-import "./templates/settings.html";
-import "./templates/settings.js";
-
 registerOperatorRoute({
   group: "settings",
   path: "/settings/templates",
