@@ -89,7 +89,13 @@ export default function SitemapSettings() {
   const { sitemapRefreshPeriod } = data && data.shopSettings;
 
   const onGenerateClick = () => {
-    generateSitemaps();
+    generateSitemaps({
+      variables: {
+        input: {
+          shopId
+        }
+      }
+    });
     Alerts.toast(i18next.t("shopSettings.sitemapRefreshInitiated"), "success");
   };
 
