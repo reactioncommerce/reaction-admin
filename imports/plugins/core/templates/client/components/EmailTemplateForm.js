@@ -31,17 +31,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const emailTemplateSchema = new SimpleSchema({
-  "title": {
+  title: {
     type: String
   },
-  "subject": {
+  subject: {
     type: String
   },
-  "language": {
+  language: {
     type: String,
     defaultValue: "en"
   },
-  "template": {
+  template: {
     type: String
   }
 });

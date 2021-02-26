@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback } from "react";
 import i18next from "i18next";
 import { useSnackbar } from "notistack";
 import { DataTable, useDataTable } from "@reactioncommerce/catalyst";
-import { Card, CardHeader, CardContent, makeStyles } from "@material-ui/core";
+import { Card, CardContent, makeStyles } from "@material-ui/core";
 import { useApolloClient } from "@apollo/react-hooks";
 import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import emailTemplatesQuery from "../graphql/queries/emailTemplates";
