@@ -102,7 +102,8 @@ OrderAppBar.propTypes = {
   classes: PropTypes.object,
   order: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    status: PropTypes.string
+    status: PropTypes.string,
+    fulfillmentGroups: PropTypes.array
   })
 };
 
