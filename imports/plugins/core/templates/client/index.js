@@ -1,7 +1,7 @@
 import { registerBlock } from "@reactioncommerce/reaction-components";
 import { registerOperatorRoute } from "/imports/client/ui";
 import EmailTemplateSettingsRegion from "./components/EmailTemplateSettingsRegion";
-import { getReactComponentOrBlazeTemplate } from "/imports/plugins/core/components/lib/ReactComponentOrBlazeTemplate";
+import EmailTemplateTable from "./components/EmailTemplateTable";
 
 import "./templates/settings.html";
 import "./templates/settings.js";
@@ -17,6 +17,6 @@ registerOperatorRoute({
 registerBlock({
   region: "EmailTemplateSettings",
   name: "EmailTemplateSettingsGeneral",
-  component: () => getReactComponentOrBlazeTemplate("templateSettings"),
+  component: EmailTemplateTable,
   priority: 1
 });
