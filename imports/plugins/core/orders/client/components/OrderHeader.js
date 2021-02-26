@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import { withMoment } from "@reactioncommerce/reaction-components";
 import { i18next } from "/client/api";
 import DetailDrawerButton from "/imports/client/ui/components/DetailDrawerButton";
+import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 import OrderStatusChip from "./OrderStatusChip";
 
 const styles = (theme) => ({
@@ -30,6 +31,7 @@ function OrderHeader(props) {
   const { payments } = order;
   const paymentStatuses = payments.map((payment) => payment.status);
   const uniqueStatuses = [...new Set(paymentStatuses)];
+  const [currentShopId] = useCurrentShopId();
 
   let paymentStatusChip;
   // If there are multiple payment statuses, show Multiple statuses badge
@@ -66,7 +68,7 @@ function OrderHeader(props) {
           {paymentStatusChip}
           <Grid item>
             <Button
-              href={`/orders/print/${order.referenceId}`}
+              href={`/${currentShopId}/orders/print/${order.referenceId}`}
               variant="text"
             >
               {i18next.t("admin.orderWorkflow.invoice.printInvoice", "Print invoice")}

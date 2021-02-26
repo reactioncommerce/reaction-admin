@@ -6,6 +6,7 @@ import ChevronLeftIcon from "mdi-material-ui/ChevronLeft";
 import { Button, Divider, Grid, makeStyles, Typography } from "@material-ui/core";
 import Address from "@reactioncommerce/components/Address/v1";
 import { i18next } from "/client/api";
+import useCurrentShopId from "/imports/client/ui/hooks/useCurrentShopId";
 
 const useStyles = makeStyles((theme) => ({
   "dividerSpacing": {
@@ -51,6 +52,7 @@ function OrderPrint(props) {
   const classes = useStyles();
   const { fulfillmentGroups } = order;
   const orderDate = new Date(order.createdAt).toLocaleDateString("en-US");
+  const [currentShopId] = useCurrentShopId();
 
   return (
     <Fragment>
@@ -60,7 +62,7 @@ function OrderPrint(props) {
           <Grid container alignItems="center" direction="row" justify="space-between">
             <Grid item>
               <Button
-                href={`/orders/${order.referenceId}`}
+                href={`/${currentShopId}/orders/${order.referenceId}`}
               >
                 <ChevronLeftIcon className={classes.iconButton} />
                 Back
