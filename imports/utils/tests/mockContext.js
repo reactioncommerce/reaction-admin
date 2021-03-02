@@ -24,7 +24,6 @@ const mockContext = {
   "Assets",
   "Cart",
   "Catalog",
-  "Emails",
   "ExampleIOUPaymentRefunds",
   "Groups",
   "MediaRecords",

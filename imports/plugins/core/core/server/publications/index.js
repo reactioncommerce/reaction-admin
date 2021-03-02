@@ -8,4 +8,3 @@ import "./collections/shops";
 import "./collections/tags";
 import "./collections/themes";
 import "./counts";
-import "./email";

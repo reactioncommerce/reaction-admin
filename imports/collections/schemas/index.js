@@ -20,7 +20,6 @@ export * from "./assets";
 export * from "./catalog";
 export * from "./cart";
 export * from "./core";
-export * from "./emails";
 export * from "./layouts";
 export * from "./metafield";
 export * from "./navigationItems";
