@@ -1,3 +1,47 @@
+# v3.0.0-beta.13
+
+Reaction v3.0.0-beta.13 adds minor features or bug fixes and contains no breaking changes since v3.0.0-beta.12.
+
+## Chore
+
+ - chore: fix linting on OrderAppBar ([#344](https://github.com/reactioncommerce/reaction-admin/pull/#344))
+ - chore: fix linting ([#344](https://github.com/reactioncommerce/reaction-admin/pull/#344))
+ - chore: remove unused reactionLayout and Templates Meteor pub ([#344](https://github.com/reactioncommerce/reaction-admin/pull/#344))
+ - chore: clean up unused Blaze email template code ([#344](https://github.com/reactioncommerce/reaction-admin/pull/#344))
+ - chore: implement GraphQL-based email template table and edit form ([#344](https://github.com/reactioncommerce/reaction-admin/pull/#344))
+ - chore: hopefully finally fix linting ([#344](https://github.com/reactioncommerce/reaction-admin/pull/#344))
+ - chore: silence no-multi-comp eslint rule ([#344](https://github.com/reactioncommerce/reaction-admin/pull/#344))
+ - chore: fix linting ([#344](https://github.com/reactioncommerce/reaction-admin/pull/#344))
+ - chore: remove unused Emails and Jobs publications, collections and schemas ([#344](https://github.com/reactioncommerce/reaction-admin/pull/#344))
+ - chore: update production image Node version ([#344](https://github.com/reactioncommerce/reaction-admin/pull/#344))
+
+## Feature
+
+ - feat: use emailJobs GraphQL query to get emails ([#344](https://github.com/reactioncommerce/reaction-admin/pull/#344))
+
+## Fixes
+
+ - fix: pass shopId to generateSitemaps ([#344](https://github.com/reactioncommerce/reaction-admin/pull/#344))
+ - fix: use pricing instead of price in products query ([#344](https://github.com/reactioncommerce/reaction-admin/pull/#344))
+ - fix: enable admin UI access for invited staff members ([#344](https://github.com/reactioncommerce/reaction-admin/pull/#344))
+ - fix: add currentShopId to printable order back button link ([#344](https://github.com/reactioncommerce/reaction-admin/pull/#344))
+ - fix: add currentShopId prefix to print invoice link ([#344](https://github.com/reactioncommerce/reaction-admin/pull/#344))
+ - fix: prevent race condition between i18next and shop loading ([#341](https://github.com/reactioncommerce/reaction-admin/pull/#341))
+ - fix: allow empty strings in shopURL ([#339](https://github.com/reactioncommerce/reaction-admin/pull/#339))
+ - fix: fix linting issues ([#339](https://github.com/reactioncommerce/reaction-admin/pull/#339))
+ - fix: refetch product on price change or variant update ([#339](https://github.com/reactioncommerce/reaction-admin/pull/#339))
+ - fix: removing extra space ([of](https://github.com/reactioncommerce/reaction-admin/pull/of))
+ - fix: refetching product after update of product to register publishable changes ([of](https://github.com/reactioncommerce/reaction-admin/pull/of))
+ - update base Docker image ([of](https://github.com/reactioncommerce/reaction-admin/pull/of))
+ - update package-lock and fix linting ([of](https://github.com/reactioncommerce/reaction-admin/pull/of))
+ - update React to 16.14.0 ([of](https://github.com/reactioncommerce/reaction-admin/pull/of))
+ - add hot-module-replacement ([of](https://github.com/reactioncommerce/reaction-admin/pull/of))
+ - update to Meteor 2.0 ([of](https://github.com/reactioncommerce/reaction-admin/pull/of))
+
+## Contributors
+
+ Special thanks to Loan Laux for contributing to the release!
+
 # v3.0.0-beta.12
 
 Reaction v3.0.0-beta.12 adds minor features or bug fixes and contains no breaking changes since v3.0.0-beta.11.
