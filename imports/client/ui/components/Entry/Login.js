@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -7,7 +8,7 @@ import Button from "@material-ui/core/Button";
 import red from "@material-ui/core/colors/red";
 
 import getAccountsHandler from "../../../../../lib/accountsServer";
-import hashPassword from '../../../../../lib/utils/hashPassword';
+import hashPassword from "../../../../../lib/utils/hashPassword";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -41,7 +42,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-
+/**
+ * Component to render to allow user to login
+ * @param {Object} props of structure { closeModal: func, openModal: func }
+ * @returns {Object} jsx
+ */
 export default function Login(props) {
   const { closeModal, openModal, refetch } = props;
   const classes = useStyles();
@@ -76,8 +81,8 @@ export default function Login(props) {
       });
       await refetch();
       closeModal();
-    } catch (e) {
-      setError(e.message);
+    } catch (err) {
+      setError(err.message);
     }
   };
   return (
@@ -95,10 +100,20 @@ export default function Login(props) {
           type="password"
         />
       </FormControl>
-      <div className={classes.forgotPassword} onClick={handleForgotPasswordClick}>Forgot Password?</div>
+      <div className={classes.forgotPassword} onClick={handleForgotPasswordClick} onKeyDown={handleForgotPasswordClick} role="button"
+        tabIndex={0}
+      >Forgot Password?</div>
       <Button onClick={registerUser} color="primary" variant="contained">Sign In</Button>
       {!!error && <div className={classes.error}>{error}</div>}
-      <div className={classes.switchEntryMode} onClick={handleOpenSignUp}>Don't have an account? Sign Up</div>
+      <div className={classes.switchEntryMode} onClick={handleOpenSignUp} onKeyDown={handleOpenSignUp} role="button"
+        tabIndex={0}
+      >Don't have an account? Sign Up</div>
     </form>
   );
 }
+
+Login.propTypes = {
+  closeModal: PropTypes.func,
+  openModal: PropTypes.func,
+  refetch: PropTypes.func
+};

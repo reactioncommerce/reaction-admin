@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -7,7 +8,7 @@ import Button from "@material-ui/core/Button";
 import red from "@material-ui/core/colors/red";
 
 import getAccountsHandler from "../../../../../lib/accountsServer";
-import hashPassword from '../../../../../lib/utils/hashPassword';
+import hashPassword from "../../../../../lib/utils/hashPassword";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,7 +37,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-
+/**
+ * Component to render when user tries to signup.
+ * @param {Object} props of structure { closeModal: func, openModal: func }
+ * @returns {Object} jsx
+ */
 export default function SignUp(props) {
   const { closeModal, openModal, refetch } = props;
   const classes = useStyles();
@@ -63,8 +68,8 @@ export default function SignUp(props) {
       await passwordClient.createUser({ email, password: hashPassword(password) });
       await refetch();
       closeModal();
-    } catch (e) {
-      setError(e.message);
+    } catch (err) {
+      setError(err.message);
     }
   };
   return (
@@ -84,7 +89,15 @@ export default function SignUp(props) {
       </FormControl>
       <Button onClick={registerUser} color="primary" variant="contained" className={classes.signUpButton}>Sign Up</Button>
       {!!error && <div className={classes.error}>{error}</div>}
-      <div className={classes.switchEntryMode} onClick={handleOpenLogIn}>Already have an account? Log In</div>
+      <div className={classes.switchEntryMode} onClick={handleOpenLogIn} onKeyDown={handleOpenLogIn} role="button"
+        tabIndex={0}
+      >Already have an account? Log In</div>
     </form>
   );
 }
+
+SignUp.propTypes = {
+  closeModal: PropTypes.func,
+  openModal: PropTypes.func,
+  refetch: PropTypes.func
+};

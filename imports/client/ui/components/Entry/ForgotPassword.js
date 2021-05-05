@@ -1,11 +1,11 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import Button from "@material-ui/core/Button";
 import red from "@material-ui/core/colors/red";
-import green from "@material-ui/core/colors/green";
 
 import getAccountsHandler from "../../../../../lib/accountsServer";
 
@@ -36,7 +36,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-
+/**
+ * component to render when user forgets their password
+ * @param {Object} props of structure { openModal: func }
+ * @returns {Object} jsx
+ */
 export default function ForgotPassword(props) {
   const { openModal } = props;
   const classes = useStyles();
@@ -55,8 +59,8 @@ export default function ForgotPassword(props) {
     try {
       await passwordClient.requestPasswordReset(email);
       setSuccess("Check your inbox for password reset email");
-    } catch (e) {
-      setError(e.message);
+    } catch (err) {
+      setError(err.message);
     }
   };
   return (
@@ -71,7 +75,13 @@ export default function ForgotPassword(props) {
       <Button onClick={handleForgotPassword} color="primary" variant="contained" className={classes.sendButton}>Send link to reset password</Button>
       {!!error && <div className={classes.error}>{error}</div>}
       {!!success && <div className={classes.success}>{success}</div>}
-      <div className={classes.switchEntryMode} onClick={handleOpenLogIn}>Go to Log In</div>
+      <div className={classes.switchEntryMode} onClick={handleOpenLogIn} onKeyDown={handleOpenLogIn} role="button"
+        tabIndex={0}
+      >Go to Log In</div>
     </form>
   );
 }
+
+ForgotPassword.propTypes = {
+  openModal: PropTypes.func
+};

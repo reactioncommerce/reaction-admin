@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -7,7 +8,7 @@ import Button from "@material-ui/core/Button";
 import red from "@material-ui/core/colors/red";
 
 import getAccountsHandler from "../../../../../lib/accountsServer";
-import hashPassword from '../../../../../lib/utils/hashPassword';
+import hashPassword from "../../../../../lib/utils/hashPassword";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -29,7 +30,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-
+/**
+ *
+ * @param {Object} props of the structure { closeModal: function called to close the modal }
+ * @returns {Object} the component to render for updating password
+ */
 export default function ChangePassword(props) {
   const { closeModal } = props;
   const classes = useStyles();
@@ -49,8 +54,8 @@ export default function ChangePassword(props) {
     try {
       await passwordClient.changePassword(hashPassword(oldPassword), hashPassword(newPassword));
       closeModal();
-    } catch (e) {
-      setError(e.message);
+    } catch (err) {
+      setError(err.message);
     }
   };
   return (
@@ -73,3 +78,7 @@ export default function ChangePassword(props) {
     </form>
   );
 }
+
+ChangePassword.propTypes = {
+  closeModal: PropTypes.func
+};

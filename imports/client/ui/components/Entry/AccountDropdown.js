@@ -1,4 +1,5 @@
 import React, { useState, Fragment, useEffect } from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { useLocation } from "react-router-dom";
 import IconButton from "@material-ui/core/IconButton";
@@ -10,15 +11,19 @@ import { i18next } from "/client/api";
 import ViewerInfo from "@reactioncommerce/components/ViewerInfo/v1";
 import Link from "@material-ui/core/Link";
 import Modal from "@material-ui/core/Modal";
+import getAccountsHandler from "../../../../../lib/accountsServer";
 import Login from "./Login";
 import SignUp from "./SignUp";
 import ChangePassword from "./ChangePassword";
 import ForgotPassword from "./ForgotPassword";
 import ResetPassword from "./ResetPassword";
-import getAccountsHandler from "../../../../../lib/accountsServer";
 
+/**
+ * function to get query params passed to the current URL
+ * @returns {Object} query params of the URL
+ */
 function useQuery() {
-  return new URLSearchParams(useLocation().search);
+  return new URLSearchParams(useLocation().search); // eslint-disable-line node/no-unsupported-features/node-builtins
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -50,7 +55,7 @@ const AccountDropdown = (props) => {
     viewer,
     refetchViewer
   } = props;
-  let query = useQuery();
+  const query = useQuery();
   const resetToken = query.get("resetToken");
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -81,7 +86,7 @@ const AccountDropdown = (props) => {
 
   const handleSignOut = async () => {
     await accountsClient.logout();
-    await refetch();
+    await refetchViewer();
     onClose();
   };
 
@@ -169,6 +174,13 @@ const AccountDropdown = (props) => {
       </Popover>
     </Fragment>
   );
+};
+
+AccountDropdown.propTypes = {
+  refetchViewer: PropTypes.func,
+  viewer: PropTypes.shape({
+    _id: PropTypes.string
+  })
 };
 
 export default AccountDropdown;

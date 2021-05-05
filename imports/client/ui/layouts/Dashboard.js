@@ -99,6 +99,7 @@ Dashboard.propTypes = {
   }),
   location: PropTypes.object,
   logout: PropTypes.func,
+  refetchViewer: PropTypes.func,
   viewer: PropTypes.object,
   width: PropTypes.string
 };

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -8,7 +9,7 @@ import red from "@material-ui/core/colors/red";
 import { useHistory } from "react-router-dom";
 
 import getAccountsHandler from "../../../../../lib/accountsServer";
-import hashPassword from '../../../../../lib/utils/hashPassword';
+import hashPassword from "../../../../../lib/utils/hashPassword";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -37,7 +38,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-
+/**
+ * Component to render when user wants to reset their password
+ * @param {Object} props of structure { resetToken: string?, openModal: func }
+ * @returns {Object} jsx
+ */
 export default function ResetPassword(props) {
   const { resetToken, openModal } = props;
   const history = useHistory();
@@ -58,8 +63,8 @@ export default function ResetPassword(props) {
     try {
       await passwordClient.resetPassword(resetToken, hashPassword(password));
       history.push("/");
-    } catch (e) {
-      setError(e.message);
+    } catch (err) {
+      setError(err.message);
     }
   };
   return (
@@ -73,7 +78,14 @@ export default function ResetPassword(props) {
       </FormControl>
       {!!error && <div className={classes.error}>{error}</div>}
       <Button className={classes.resetButton} onClick={resetPassword} color="primary" variant="contained">Reset Password</Button>
-      <div className={classes.switchEntryMode} onClick={handleOpenForgotPassword}>Send reset link again</div>
+      <div className={classes.switchEntryMode} onClick={handleOpenForgotPassword} onKeyDown={handleOpenForgotPassword} role="button"
+        tabIndex={0}
+      >Send reset link again</div>
     </form>
   );
 }
+
+ResetPassword.propTypes = {
+  openModal: PropTypes.func,
+  resetToken: PropTypes.string
+};
