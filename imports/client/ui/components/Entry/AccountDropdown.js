@@ -125,7 +125,7 @@ const AccountDropdown = (props) => {
           <ViewerInfo viewer={viewer} />
         </ButtonBase>
         :
-        <IconButton color="inherit" onClick={toggleOpen}>
+        <IconButton color="primary" onClick={toggleOpen}>
           <AccountIcon />
         </IconButton>
       }
