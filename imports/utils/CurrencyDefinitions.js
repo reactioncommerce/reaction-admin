@@ -169,7 +169,7 @@ export default {
     scale: 0
   },
   CNY: {
-    enabled: true,
+    enabled: false,
     format: "%s%v",
     symbol: "¥"
   },
@@ -232,12 +232,12 @@ export default {
     thousand: "."
   },
   DZD: {
-    enabled: true,
+    enabled: false,
     format: "%v %s",
     symbol: "دج"
   },
   EGP: {
-    enabled: true,
+    enabled: false,
     format: "%s%v",
     symbol: "£",
     decimal: ",",
@@ -259,7 +259,7 @@ export default {
     symbol: "$"
   },
   EUR: {
-    enabled: true,
+    enabled: false,
     format: "%v %s",
     symbol: "€",
     decimal: ",",
@@ -288,7 +288,7 @@ export default {
     symbol: "£"
   },
   GBP: {
-    enabled: true,
+    enabled: false,
     format: "%s%v",
     symbol: "£"
   },
@@ -347,7 +347,7 @@ export default {
     thousand: "."
   },
   ILS: {
-    enabled: true,
+    enabled: false,
     format: "%s%v",
     symbol: "₪"
   },
@@ -378,6 +378,11 @@ export default {
     enabled: false,
     format: "%v %s",
     symbol: "KZT"
+  },
+  LKR: {
+    enabled: true,
+    format: "%s%v",
+    symbol: "Rs. "
   },
   MAD: {
     enabled: false,
@@ -412,7 +417,7 @@ export default {
     symbol: "$"
   },
   NGN: {
-    enabled: true,
+    enabled: false,
     format: "%s%v",
     symbol: "₦"
   },
@@ -439,7 +444,7 @@ export default {
     symbol: "﷼"
   },
   RUB: {
-    enabled: true,
+    enabled: false,
     format: "%v %s",
     symbol: "руб.",
     decimal: ",",
