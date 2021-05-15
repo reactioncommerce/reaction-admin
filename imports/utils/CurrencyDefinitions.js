@@ -379,6 +379,11 @@ export default {
     format: "%v %s",
     symbol: "KZT"
   },
+  LKR: {
+    enabled: true,
+    format: "%s %v",
+    symbol: "Rs."
+  },
   MAD: {
     enabled: false,
     format: "%v %s",
