@@ -381,8 +381,8 @@ export default {
   },
   LKR: {
     enabled: true,
-    format: "%s%v",
-    symbol: "Rs. "
+    format: "%s %v",
+    symbol: "Rs."
   },
   MAD: {
     enabled: false,
