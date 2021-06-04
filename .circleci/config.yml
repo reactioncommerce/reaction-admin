@@ -95,6 +95,10 @@ workflows:
           requires:
             - install-dependencies
       - docker-build-push:
+          filters:
+            branches:
+              only:
+                - trunk
           context: reaction-publish-docker
           requires:
             - dockerfile-lint
