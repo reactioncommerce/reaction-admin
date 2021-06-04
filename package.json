@@ -119,7 +119,7 @@
     "reacto-form": "^1.5.0",
     "recompose": "^0.26.0",
     "shallowequal": "^1.0.2",
-    "simpl-schema": "1.5.0",
+    "simpl-schema": "1.10.2",
     "slugify": "1.3.1",
     "store": "^2.0.12",
     "stripe": "^7.10.0",
