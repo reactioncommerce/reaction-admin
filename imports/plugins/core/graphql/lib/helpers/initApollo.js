@@ -4,9 +4,9 @@ import { HttpLink } from "apollo-link-http";
 import { WebSocketLink } from "apollo-link-ws";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { getOperationAST } from "graphql";
+import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
-import { accountsLink } from "@accounts/apollo-link";
-import getAccountsHandler from "../../../../../../lib/accountsServer";
+import Logger from "/client/modules/logger";
 
 const { graphQlApiUrlHttp, graphQlApiUrlWebSocket } = Meteor.settings.public;
 
@@ -14,12 +14,42 @@ let sharedClient;
 let token;
 
 /**
+ * @summary Initiate Meteor login for DDP connection
+ * @param {String} loginToken The login token
+ * @returns {undefined}
+ */
+function callLoginMethod(loginToken) {
+  Accounts.callLoginMethod({
+    methodArguments: [{
+      accessToken: loginToken
+    }]
+  });
+}
+
+/**
  * @summary Set the access token that GraphQL requests will use in the Authorization header
  * @param {String} value New token value
  * @return {undefined}
  */
 export function setAccessToken(value) {
+  const previousToken = token;
   token = value;
+
+  // "Resets your entire store by clearing out your cache and then re-executing all of your active queries.
+  // This makes it so that you may guarantee that there is no data left in your store from a time
+  // before you called this method."
+  //
+  // We do this because we have effectively switched users here. We don't want data from the previous user
+  // (or the previous non-authenticated queries) to be kept.
+  if (previousToken !== token) {
+    if (sharedClient) {
+      sharedClient.resetStore()
+        .then(() => callLoginMethod(token))
+        .catch((err) => Logger.error(err));
+    } else {
+      callLoginMethod(token);
+    }
+  }
 }
 
 /**
@@ -36,13 +66,22 @@ export function setSimpleClientTokenHeader(client) {
   }
 }
 
-const { accountsClient } = getAccountsHandler();
-const authLink = accountsLink(() => accountsClient);
+const authenticationLink = new ApolloLink((operation, forward) => {
+  if (typeof token === "string") {
+    operation.setContext(() => ({
+      headers: {
+        Authorization: token
+      }
+    }));
+  }
+
+  return forward(operation);
+});
 
 const httpLink = new HttpLink({ uri: graphQlApiUrlHttp });
 
 const standardLink = ApolloLink.from([
-  authLink,
+  authenticationLink,
   httpLink
 ]);
 
@@ -59,7 +98,7 @@ if (graphQlApiUrlWebSocket && graphQlApiUrlWebSocket.length) {
       options: {
         reconnect: true, // auto-reconnect
         connectionParams: {
-          authToken: localStorage.getItem("accounts:accessToken")
+          authToken: localStorage.getItem("Meteor.loginToken")
         }
       }
     }),
@@ -74,7 +113,6 @@ if (graphQlApiUrlWebSocket && graphQlApiUrlWebSocket.length) {
  */
 export default function initApollo() {
   if (sharedClient) return sharedClient;
-
 
   sharedClient = new ApolloClient({
     link: linkWithSubscriptions || standardLink,

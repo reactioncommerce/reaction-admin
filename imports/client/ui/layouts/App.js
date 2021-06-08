@@ -1,4 +1,5 @@
 import React from "react";
+import { OidcSecure } from "@axa-fr/react-oidc-context";
 import { Components } from "@reactioncommerce/reaction-components";
 import useAuth from "../hooks/useAuth";
 import Dashboard from "./Dashboard";
@@ -9,13 +10,15 @@ import useIsAppLoading from "/imports/client/ui/hooks/useIsAppLoading.js";
  * @returns {React.ReactElement} React component
  */
 function App() {
-  const { viewer, refetchViewer } = useAuth();
+  const { logout, viewer } = useAuth();
   const [isAppLoading] = useIsAppLoading();
 
   if (isAppLoading) return <Components.Loading />;
 
   return (
-    <Dashboard viewer={viewer} refetchViewer={refetchViewer} />
+    <OidcSecure>
+      <Dashboard logout={logout} viewer={viewer} />
+    </OidcSecure>
   );
 }
 
