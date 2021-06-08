@@ -1,46 +1,67 @@
+# v3.0.0-beta.14
+
+Reaction v3.0.0-beta.14 adds minor features or bug fixes and contains no breaking changes since v3.0.0-beta.13.
+
+## Chore
+
+- chore(deps): bump simpl-schema from 1.5.0 to 1.10.2
+- chore(deps): bump ua-parser-js from 0.7.23 to 0.7.28
+- chore(deps): bump url-parse from 1.4.7 to 1.5.1
+- chore(deps): bump hosted-git-info from 2.8.8 to 2.8.9
+- chore(deps): bump lodash from 4.17.20 to 4.17.21
+- chore: docker push only trunk ([#367](https://github.com/reactioncommerce/reaction-admin/pull/367))
+
+## Fixes
+
+- fix: add LKR currency ([#368](https://github.com/reactioncommerce/reaction-admin/pull/368))
+
+## Contributors
+
+Special thanks to @dileepab for contributing to the release!
+
 # v3.0.0-beta.13
 
 Reaction v3.0.0-beta.13 adds minor features or bug fixes and contains no breaking changes since v3.0.0-beta.12.
 
 ## Chore
 
- - chore: fix linting on OrderAppBar ([#354](https://github.com/reactioncommerce/reaction-admin/pull/354))
- - chore: fix linting ([#354](https://github.com/reactioncommerce/reaction-admin/pull/354))
- - chore: remove unused reactionLayout and Templates Meteor pub ([#354](https://github.com/reactioncommerce/reaction-admin/pull/354))
- - chore: clean up unused Blaze email template code ([#354](https://github.com/reactioncommerce/reaction-admin/pull/354))
- - chore: implement GraphQL-based email template table and edit form ([#354](https://github.com/reactioncommerce/reaction-admin/pull/354))
- - chore: hopefully finally fix linting ([#350](https://github.com/reactioncommerce/reaction-admin/pull/350))
- - chore: silence no-multi-comp eslint rule ([#350](https://github.com/reactioncommerce/reaction-admin/pull/350))
- - chore: fix linting ([#350](https://github.com/reactioncommerce/reaction-admin/pull/350))
- - chore: remove unused Emails and Jobs publications, collections and schemas ([#350](https://github.com/reactioncommerce/reaction-admin/pull/350))
- - chore: update production image Node version ([#344](https://github.com/reactioncommerce/reaction-admin/pull/344))
+- chore: fix linting on OrderAppBar ([#354](https://github.com/reactioncommerce/reaction-admin/pull/354))
+- chore: fix linting ([#354](https://github.com/reactioncommerce/reaction-admin/pull/354))
+- chore: remove unused reactionLayout and Templates Meteor pub ([#354](https://github.com/reactioncommerce/reaction-admin/pull/354))
+- chore: clean up unused Blaze email template code ([#354](https://github.com/reactioncommerce/reaction-admin/pull/354))
+- chore: implement GraphQL-based email template table and edit form ([#354](https://github.com/reactioncommerce/reaction-admin/pull/354))
+- chore: hopefully finally fix linting ([#350](https://github.com/reactioncommerce/reaction-admin/pull/350))
+- chore: silence no-multi-comp eslint rule ([#350](https://github.com/reactioncommerce/reaction-admin/pull/350))
+- chore: fix linting ([#350](https://github.com/reactioncommerce/reaction-admin/pull/350))
+- chore: remove unused Emails and Jobs publications, collections and schemas ([#350](https://github.com/reactioncommerce/reaction-admin/pull/350))
+- chore: update production image Node version ([#344](https://github.com/reactioncommerce/reaction-admin/pull/344))
 
 ## Feature
 
- - feat: use emailJobs GraphQL query to get emails ([#350](https://github.com/reactioncommerce/reaction-admin/pull/350))
+- feat: use emailJobs GraphQL query to get emails ([#350](https://github.com/reactioncommerce/reaction-admin/pull/350))
 
 ## Fixes
 
- - fix: pass shopId to generateSitemaps ([#353](https://github.com/reactioncommerce/reaction-admin/pull/353))
- - fix: use pricing instead of price in products query ([#352](https://github.com/reactioncommerce/reaction-admin/pull/352))
- - fix: enable admin UI access for invited staff members ([#351](https://github.com/reactioncommerce/reaction-admin/pull/351))
- - fix: add currentShopId to printable order back button link ([#349](https://github.com/reactioncommerce/reaction-admin/pull/349))
- - fix: add currentShopId prefix to print invoice link ([#349](https://github.com/reactioncommerce/reaction-admin/pull/349))
- - fix: prevent race condition between i18next and shop loading ([#341](https://github.com/reactioncommerce/reaction-admin/pull/341))
- - fix: allow empty strings in shopURL ([#339](https://github.com/reactioncommerce/reaction-admin/pull/339))
- - fix: fix linting issues ([#347](https://github.com/reactioncommerce/reaction-admin/pull/347))
- - fix: refetch product on price change or variant update ([#347](https://github.com/reactioncommerce/reaction-admin/pull/347))
- - fix: removing extra space ([#347](https://github.com/reactioncommerce/reaction-admin/pull/347))
- - fix: refetching product after update of product to register publishable changes ([#347](https://github.com/reactioncommerce/reaction-admin/pull/347))
- - update base Docker image ([#344](https://github.com/reactioncommerce/reaction-admin/pull/344))
- - update package-lock and fix linting ([#344](https://github.com/reactioncommerce/reaction-admin/pull/344))
- - update React to 16.14.0 ([#344](https://github.com/reactioncommerce/reaction-admin/pull/344))
- - add hot-module-replacement ([#344](https://github.com/reactioncommerce/reaction-admin/pull/344))
- - update to Meteor 2.0 ([#344](https://github.com/reactioncommerce/reaction-admin/pull/344))
+- fix: pass shopId to generateSitemaps ([#353](https://github.com/reactioncommerce/reaction-admin/pull/353))
+- fix: use pricing instead of price in products query ([#352](https://github.com/reactioncommerce/reaction-admin/pull/352))
+- fix: enable admin UI access for invited staff members ([#351](https://github.com/reactioncommerce/reaction-admin/pull/351))
+- fix: add currentShopId to printable order back button link ([#349](https://github.com/reactioncommerce/reaction-admin/pull/349))
+- fix: add currentShopId prefix to print invoice link ([#349](https://github.com/reactioncommerce/reaction-admin/pull/349))
+- fix: prevent race condition between i18next and shop loading ([#341](https://github.com/reactioncommerce/reaction-admin/pull/341))
+- fix: allow empty strings in shopURL ([#339](https://github.com/reactioncommerce/reaction-admin/pull/339))
+- fix: fix linting issues ([#347](https://github.com/reactioncommerce/reaction-admin/pull/347))
+- fix: refetch product on price change or variant update ([#347](https://github.com/reactioncommerce/reaction-admin/pull/347))
+- fix: removing extra space ([#347](https://github.com/reactioncommerce/reaction-admin/pull/347))
+- fix: refetching product after update of product to register publishable changes ([#347](https://github.com/reactioncommerce/reaction-admin/pull/347))
+- update base Docker image ([#344](https://github.com/reactioncommerce/reaction-admin/pull/344))
+- update package-lock and fix linting ([#344](https://github.com/reactioncommerce/reaction-admin/pull/344))
+- update React to 16.14.0 ([#344](https://github.com/reactioncommerce/reaction-admin/pull/344))
+- add hot-module-replacement ([#344](https://github.com/reactioncommerce/reaction-admin/pull/344))
+- update to Meteor 2.0 ([#344](https://github.com/reactioncommerce/reaction-admin/pull/344))
 
 ## Contributors
 
- Special thanks to Loan Laux for contributing to the release!
+Special thanks to Loan Laux for contributing to the release!
 
 # v3.0.0-beta.12
 
@@ -48,14 +69,14 @@ Reaction v3.0.0-beta.12 adds minor features or bug fixes and contains no breakin
 
 ## Fixes
 
- - (fix): Make title in product form required in validation to prevent error in storefront ([#340](https://github.com/reactioncommerce/reaction-admin/pull/#340))
- - (fix): Tags not rendering without manual refresh ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
- - (fix) Linting error ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
- - (fix) Refetch product only on initial render of component ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
- - (fix) Refetch product only on initial render or update of component ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
- - (fix) Refresh product data prior to mapping tags ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
- - (fix) order detail page link ([#337](https://github.com/reactioncommerce/reaction-admin/pull/#337))
- - (fix) include shopId in order detail view URL ([#337](https://github.com/reactioncommerce/reaction-admin/pull/#337))
+- (fix): Make title in product form required in validation to prevent error in storefront ([#340](https://github.com/reactioncommerce/reaction-admin/pull/#340))
+- (fix): Tags not rendering without manual refresh ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
+- (fix) Linting error ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
+- (fix) Refetch product only on initial render of component ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
+- (fix) Refetch product only on initial render or update of component ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
+- (fix) Refresh product data prior to mapping tags ([#338](https://github.com/reactioncommerce/reaction-admin/pull/#338))
+- (fix) order detail page link ([#337](https://github.com/reactioncommerce/reaction-admin/pull/#337))
+- (fix) include shopId in order detail view URL ([#337](https://github.com/reactioncommerce/reaction-admin/pull/#337))
 
 ## Chores
 
@@ -63,7 +84,7 @@ Reaction v3.0.0-beta.12 adds minor features or bug fixes and contains no breakin
 
 ## Contributors
 
- Special thanks to Loan Laux for contributing to the release!
+Special thanks to Loan Laux for contributing to the release!
 
 # v3.0.0-beta.11
 
@@ -193,7 +214,7 @@ This is the fifth beta release of the Reaction Admin project that is designed to
 
 This is the fourth beta release of the Reaction Admin project that is designed to work with our new Reaction API.
 
-*Reaction releases will no longer be coordinated across all projects - we'll release each project, independently, as needed. This means version numbers will no longer be in sync. The newest versions of each project will work together. This change has two exceptions: we will release all projects in coordination for a `beta` release, and all projects in coordination for the official `v3.0.0` release.*
+_Reaction releases will no longer be coordinated across all projects - we'll release each project, independently, as needed. This means version numbers will no longer be in sync. The newest versions of each project will work together. This change has two exceptions: we will release all projects in coordination for a `beta` release, and all projects in coordination for the official `v3.0.0` release._
 
 ### Fixes
 
@@ -205,7 +226,7 @@ This is the fourth beta release of the Reaction Admin project that is designed t
 
 This is the third beta release of the Reaction Admin project that is designed to work with our new Reaction API.
 
-*Reaction releases will no longer be coordinated across all projects - we'll release each project, independently, as needed. This means version numbers will no longer be in sync. The newest versions of each project will work together. This change has two exceptions: we will release all projects in coordination for a `beta` release, and all projects in coordination for the official `v3.0.0` release.*
+_Reaction releases will no longer be coordinated across all projects - we'll release each project, independently, as needed. This means version numbers will no longer be in sync. The newest versions of each project will work together. This change has two exceptions: we will release all projects in coordination for a `beta` release, and all projects in coordination for the official `v3.0.0` release._
 
 ### Features
 
@@ -219,7 +240,7 @@ This is the third beta release of the Reaction Admin project that is designed to
 
 This is the second beta release of the Reaction Admin project that is designed to work with our new Reaction API.
 
-*Reaction releases will no longer be coordinated across all projects - we'll release each project, independently, as needed. This means version numbers will no longer be in sync. The newest versions of each project will work together. This change has two exceptions: we will release all projects in coordination for a `beta` release, and all projects in coordination for the official `v3.0.0` release.*
+_Reaction releases will no longer be coordinated across all projects - we'll release each project, independently, as needed. This means version numbers will no longer be in sync. The newest versions of each project will work together. This change has two exceptions: we will release all projects in coordination for a `beta` release, and all projects in coordination for the official `v3.0.0` release._
 
 ### Features
 
@@ -246,7 +267,7 @@ This is the second beta release of the Reaction Admin project that is designed t
 
 This is the beta release of the Reaction Admin project that is designed to work with our new Reaction API.
 
-*Reaction releases will no longer be coordinated across all projects - we'll release each project, independently, as needed. This means version numbers will no longer be in sync. The newest versions of each project will work together. This change has two exceptions: we will release all projects in coordination for a `beta` release, and all projects in coordination for the official `v3.0.0` release.*
+_Reaction releases will no longer be coordinated across all projects - we'll release each project, independently, as needed. This means version numbers will no longer be in sync. The newest versions of each project will work together. This change has two exceptions: we will release all projects in coordination for a `beta` release, and all projects in coordination for the official `v3.0.0` release._
 
 ### Features
 
@@ -279,12 +300,10 @@ This is the beta release of the Reaction Admin project that is designed to work 
 - Move client config to `.env` [(#92](https://github.com/reactioncommerce/reaction-admin/pull/92))
 - Updated UI for all tax settings [#(127](https://github.com/reactioncommerce/reaction-admin/pull/127))
 
-
 ### Chores
 
 - Add missing dependency for `subscriptions-transport-ws` [(#32](https://github.com/reactioncommerce/reaction-admin/pull/32))
 - Use published image for docker-compose [#(131](https://github.com/reactioncommerce/reaction-admin/pull/131))
-
 
 ### Fixes
 
@@ -293,7 +312,6 @@ This is the beta release of the Reaction Admin project that is designed to work 
 - Resolves some reaction-admin bugs such as: creating products and updating them works well now, publishing products, tag page, and navigation ([#89](https://github.com/reactioncommerce/reaction-admin/pull/89))
 - Resolve port conflict `9229` with core reaction ([#90](https://github.com/reactioncommerce/reaction-admin/pull/90))
 - Make bin/setup always run from the desired path ([#129](https://github.com/reactioncommerce/reaction-admin/pull/129))
-
 
 ### Refactors
 
