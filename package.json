@@ -10,10 +10,6 @@
       },
       {
         "name": "trunk",
-        "prerelease": "beta-test"
-      },
-      {
-        "name": "akarshit-semantic-release",
         "prerelease": "beta",
         "channel": false
       }
@@ -194,8 +190,8 @@
     "@babel/plugin-syntax-import-meta": "7.2.0",
     "@babel/preset-env": "7.4.5",
     "@babel/preset-react": "7.0.0",
-    "@commitlint/cli": "^11.0.0",
-    "@commitlint/config-conventional": "^11.0.0",
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
     "@reactioncommerce/eslint-config": "^2.1.0",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/exec": "^5.0.0",
@@ -232,7 +228,6 @@
     "jsdoc": "^3.6.3",
     "nock": "^9.6.1",
     "pinst": "^2.1.4",
-    "react-addons-test-utils": "15.6.2",
     "snyk": "^1.217.3",
     "wait-for-expect": "^1.2.0"
   },
