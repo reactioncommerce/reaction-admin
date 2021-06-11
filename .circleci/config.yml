@@ -79,7 +79,7 @@ jobs:
             - reaction-admin-v3-node-modules-{{ .Branch }}
       - run:
           name: Push the latest version to npm
-          command: npx semantic-release --dry-run
+          command: npx semantic-release
 
   docker-build-push:
     <<: *defaults
@@ -90,7 +90,7 @@ jobs:
       - run:
           name: Build and push production Docker image
           command: |
-            VERSION=$(git describe --tags `git rev-list --tags --max-count=1` | cut -c2-100)-TEST
+            VERSION=$(git describe --tags `git rev-list --tags --max-count=1` | cut -c2-100)
             docker build -t ${DOCKER_REPOSITORY}:${VERSION} .
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker push ${DOCKER_REPOSITORY}:${VERSION}
@@ -115,7 +115,6 @@ workflows:
             branches:
               only:
                 - trunk
-                - akarshit-semantic-release
           requires:
             - dockerfile-lint
             - eslint
@@ -126,6 +125,5 @@ workflows:
             branches:
               only:
                 - trunk
-                - akarshit-semantic-release
           requires:
             - release
