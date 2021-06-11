@@ -239,7 +239,7 @@
     "inspect-docker": "node --experimental-modules  ./.reaction/scripts/run.mjs --inspect=0.0.0.0:9229",
     "inspect-brk-docker": "node --experimental-modules  ./.reaction/scripts/run.mjs --inspect-brk=0.0.0.0:9229",
     "lint": "eslint .",
-    "lint:errors": "eslint . --quiet",
+    "lint:errors": "eslint . -quiet",
     "lint:warnings": "eslint --max-warnings=0",
     "test": "npm run test:unit",
     "test:unit": "BABEL_DISABLE_CACHE=1 REACTION_LOG_LEVEL=ERROR jest --maxWorkers=4",
