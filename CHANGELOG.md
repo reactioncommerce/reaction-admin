@@ -1,3 +1,11 @@
+# [3.0.0-beta.15](https://github.com/reactioncommerce/reaction-admin/compare/v3.0.0-beta.14...v3.0.0-beta.15) (2021-06-15)
+
+
+### Bug Fixes
+
+* configure to pre-release beta from trunk ([7e469d7](https://github.com/reactioncommerce/reaction-admin/commit/7e469d7d6f62dbbca255af6db74a2637f5f84f3e))
+* configure to pre-release beta from trunk ([6b81b14](https://github.com/reactioncommerce/reaction-admin/commit/6b81b1438f6be3c892c77c6b3c7d59f862531787))
+
 # v3.0.0-beta.14
 
 Reaction v3.0.0-beta.14 adds minor features or bug fixes and contains no breaking changes since v3.0.0-beta.13.
