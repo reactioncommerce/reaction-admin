@@ -3,6 +3,53 @@
   "description": "Reaction is a modern reactive, real-time event driven ecommerce platform.",
   "version": "3.0.0-beta.14",
   "main": "main.js",
+  "release": {
+    "branches": [
+      {
+        "name": "master"
+      },
+      {
+        "name": "trunk",
+        "prerelease": "beta",
+        "channel": false
+      }
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "sed -i 's/${lastRelease.version}/${nextRelease.version}/g' docker-compose.yml"
+        }
+      ],
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogFile": "CHANGELOG.md"
+        }
+      ],
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": false
+        }
+      ],
+      "@semantic-release/github",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "package.json",
+            "package-lock.json",
+            "CHANGELOG.md",
+            "docker-compose.yml"
+          ],
+          "message": "chore(release): v${nextRelease.version} [skip ci]"
+        }
+      ]
+    ]
+  },
   "directories": {
     "test": "tests"
   },
@@ -112,6 +159,7 @@
     "react-transition-group": "2.4.0",
     "reacto-form": "^1.5.0",
     "recompose": "^0.26.0",
+    "semantic-release": "^17.4.3",
     "shallowequal": "^1.0.2",
     "simpl-schema": "1.10.2",
     "slugify": "1.3.1",
@@ -142,9 +190,12 @@
     "@babel/plugin-syntax-import-meta": "7.2.0",
     "@babel/preset-env": "7.4.5",
     "@babel/preset-react": "7.0.0",
-    "@commitlint/cli": "^11.0.0",
-    "@commitlint/config-conventional": "^11.0.0",
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
     "@reactioncommerce/eslint-config": "^2.1.0",
+    "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/exec": "^5.0.0",
+    "@semantic-release/git": "^9.0.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "10.0.3",
     "babel-jest": "^24.8.0",
@@ -188,7 +239,7 @@
     "inspect-docker": "node --experimental-modules  ./.reaction/scripts/run.mjs --inspect=0.0.0.0:9229",
     "inspect-brk-docker": "node --experimental-modules  ./.reaction/scripts/run.mjs --inspect-brk=0.0.0.0:9229",
     "lint": "eslint .",
-    "lint:errors": "eslint . --quiet",
+    "lint:errors": "eslint . -quiet",
     "lint:warnings": "eslint --max-warnings=0",
     "test": "npm run test:unit",
     "test:unit": "BABEL_DISABLE_CACHE=1 REACTION_LOG_LEVEL=ERROR jest --maxWorkers=4",
