@@ -3,20 +3,47 @@ FROM reactioncommerce/meteor:1.10.2-v1
 # hadolint ignore=DL3002
 USER root
 
+RUN apt-get update && apt-get install sudo
+
+RUN  set -ex; \
+     \
+     curl -o /usr/local/bin/su-exec.c https://raw.githubusercontent.com/ncopa/su-exec/master/su-exec.c; \
+     \
+     fetch_deps='gcc libc-dev'; \
+     apt-get update; \
+     apt-get install -y --no-install-recommends $fetch_deps; \
+     rm -rf /var/lib/apt/lists/*; \
+     gcc -Wall \
+         /usr/local/bin/su-exec.c -o/usr/local/bin/su-exec; \
+     chown root:root /usr/local/bin/su-exec; \
+     chmod 0755 /usr/local/bin/su-exec; \
+     rm /usr/local/bin/su-exec.c; \
+     \
+     apt-get purge -y --auto-remove $fetch_deps
+
+RUN mkdir -p /usr/local/src/app && chown node:node /usr/local/src/app
+
+COPY ./scripts /usr/local/src/app-scripts
+
 # Ensure that all files will be linked in owned by node user.
 # Every directory that will be listed in `volumes` section of
 # docker-compose.yml needs to be pre-created and chown'd here.
 # See https://github.com/docker/compose/issues/3270#issuecomment-363478501
 RUN mkdir -p /usr/local/src/app/node_modules \
   && mkdir -p /usr/local/src/app/.meteor/local \
-  && chown node /usr/local/src/app \
   && chown node /usr/local/src/app/node_modules \
   && chown node /usr/local/src/app/.meteor/local
 
 WORKDIR /usr/local/src/app
+ENV PATH=$PATH:/usr/local/src/app/node_modules/.bin \
+    BUILD_ENV=development NODE_ENV=development
 
 USER node
 
 ENV PATH $PATH:/usr/local/src/app/node_modules/.bin:/home/node/.meteor
 
 CMD ["npm", "run", "start:dev"]
+
+USER root
+
+ENTRYPOINT ["/usr/local/src/app-scripts/entrypoint.sh"]
