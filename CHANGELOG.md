@@ -1,3 +1,10 @@
+# [3.0.0-beta.16](https://github.com/reactioncommerce/reaction-admin/compare/v3.0.0-beta.15...v3.0.0-beta.16) (2021-07-11)
+
+
+### Bug Fixes
+
+* blank screen on production creation ([e143506](https://github.com/reactioncommerce/reaction-admin/commit/e1435063b2349c09c3e2bcf0c51c3532cbdfabc8))
+
 # [3.0.0-beta.15](https://github.com/reactioncommerce/reaction-admin/compare/v3.0.0-beta.14...v3.0.0-beta.15) (2021-06-15)
 
 
