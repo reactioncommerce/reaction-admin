@@ -118,7 +118,7 @@ export default {
     }
 
     // if accountPermissions includes any of checkPermissions, then we return true
-    return accountPermissions[group].some((permission) => checkPermissions.includes(permission));
+    return accountPermissions[group] && accountPermissions[group].some((permission) => checkPermissions.includes(permission));
   },
 
   /**

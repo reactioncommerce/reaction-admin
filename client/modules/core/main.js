@@ -174,7 +174,7 @@ export default {
       permissions = _.uniq(permissions);
 
       // if accountPermissions includes any of permissions, then we return true
-      return accountPermissions[permissionsGroup].some((permission) => permissions.includes(permission));
+      return accountPermissions[permissionsGroup] && accountPermissions[permissionsGroup].some((permission) => permissions.includes(permission));
     }
 
     /**
