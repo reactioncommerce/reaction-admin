@@ -1,3 +1,10 @@
+# [3.0.0-beta.17](https://github.com/reactioncommerce/reaction-admin/compare/v3.0.0-beta.16...v3.0.0-beta.17) (2021-07-13)
+
+
+### Bug Fixes
+
+* merge conflict ([73e4f01](https://github.com/reactioncommerce/reaction-admin/commit/73e4f01adfb05fb139f2458c685da4b265ed8221))
+
 # [3.0.0-beta.16](https://github.com/reactioncommerce/reaction-admin/compare/v3.0.0-beta.15...v3.0.0-beta.16) (2021-07-11)
 
 
