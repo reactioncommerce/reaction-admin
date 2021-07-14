@@ -87,7 +87,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-          version: 20.10.75
+          version: 20.10.6
       - run:
           name: Build and push production Docker image
           command: |
