@@ -1,3 +1,10 @@
+# [3.0.0-beta.18](https://github.com/reactioncommerce/reaction-admin/compare/v3.0.0-beta.17...v3.0.0-beta.18) (2021-07-14)
+
+
+### Bug Fixes
+
+* docker build fails on circle ci ([c8686cb](https://github.com/reactioncommerce/reaction-admin/commit/c8686cb23ea72086c5fbf58a6187283f47452e10))
+
 # [3.0.0-beta.17](https://github.com/reactioncommerce/reaction-admin/compare/v3.0.0-beta.16...v3.0.0-beta.17) (2021-07-13)
 
 
