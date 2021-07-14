@@ -94,6 +94,7 @@ jobs:
             VERSION=$(git describe --tags `git rev-list --tags --max-count=1` | cut -c2-100)
             docker build -t ${DOCKER_REPOSITORY}:${VERSION} .
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+            docker push ${DOCKER_REPOSITORY}:${VERSION}
             
 
 workflows:
@@ -122,5 +123,9 @@ workflows:
             - test-unit
       - docker-build-push:
           context: reaction-publish-docker
+          filters:
+            branches:
+              only:
+                - trunk
           requires:
-            - install-dependencies
+            - release
